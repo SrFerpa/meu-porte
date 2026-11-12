@@ -96,7 +96,9 @@
       align-items: center;
       justify-content: center;
       font-size: 1.65rem;
+      pointer-events: none;
     }
+    .class-card h3, .class-card .role, .class-card .desc { pointer-events: none; }
     .class-card h3 { margin-bottom: 4px; font-size: 1.05rem; }
     .class-card .role { font-size: 0.74rem; color: #ffa502; margin-bottom: 6px; font-weight: bold; }
     .class-card .desc { font-size: 0.76rem; color: #ced6e0; line-height: 1.28; }
@@ -322,7 +324,7 @@
 </head>
 <body>
 
-  <!-- TELA PRINCIPAL COM CARDS JÁ NO HTML -->
+  <!-- TELA PRINCIPAL -->
   <div id="char-screen">
     <h1>⚔️ Asa de Cristal 2.5D ⚔️</h1>
     <p class="subtitle">Crie um novo Herói ou selecione um dos seus personagens salvos abaixo</p>
@@ -330,31 +332,31 @@
     <div class="section-box">
       <h2>✨ Criar Novo Personagem</h2>
       <div class="class-grid" id="class-grid">
-        <div class="class-card selected" data-class="cavaleiro" onclick="pickClass('cavaleiro', this)">
+        <div class="class-card selected" id="card-cavaleiro" onclick="selecionarClasse('cavaleiro')">
           <div class="class-icon" style="background:#eccc6822; border:2px solid #eccc68; color:#eccc68">🛡️</div>
           <h3 style="color:#eccc68">Cavaleiro</h3>
           <div class="role">Tanque / Corpo a Corpo</div>
           <div class="desc">Alta defesa e vida. Protege aliados e resiste a grandes chefes.</div>
         </div>
-        <div class="class-card" data-class="mago" onclick="pickClass('mago', this)">
+        <div class="class-card" id="card-mago" onclick="selecionarClasse('mago')">
           <div class="class-icon" style="background:#70a1ff22; border:2px solid #70a1ff; color:#70a1ff">🔮</div>
           <h3 style="color:#70a1ff">Mago</h3>
           <div class="role">Dano Mágico / Área</div>
           <div class="desc">Domina fogo e gelo para destruir vários inimigos à distância.</div>
         </div>
-        <div class="class-card" data-class="arqueiro" onclick="pickClass('arqueiro', this)">
+        <div class="class-card" id="card-arqueiro" onclick="selecionarClasse('arqueiro')">
           <div class="class-icon" style="background:#2ed57322; border:2px solid #2ed573; color:#2ed573">🏹</div>
           <h3 style="color:#2ed573">Arqueiro</h3>
           <div class="role">Dano Físico / Crítico</div>
           <div class="desc">Ataques rápidos à distância com alta chance de acerto crítico.</div>
         </div>
-        <div class="class-card" data-class="sacerdote" onclick="pickClass('sacerdote', this)">
+        <div class="class-card" id="card-sacerdote" onclick="selecionarClasse('sacerdote')">
           <div class="class-icon" style="background:#f1f2f622; border:2px solid #f1f2f6; color:#f1f2f6">✨</div>
           <h3 style="color:#f1f2f6">Sacerdote</h3>
           <div class="role">Suporte / Luz Sagrada</div>
           <div class="desc">Canaliza a luz para curar ferimentos e punir criaturas das trevas.</div>
         </div>
-        <div class="class-card" data-class="assassino" onclick="pickClass('assassino', this)">
+        <div class="class-card" id="card-assassino" onclick="selecionarClasse('assassino')">
           <div class="class-icon" style="background:#ff475722; border:2px solid #ff4757; color:#ff4757">🗡️</div>
           <h3 style="color:#ff4757">Assassino</h3>
           <div class="role">Furtivo / Explosão</div>
@@ -364,7 +366,7 @@
 
       <div class="start-box">
         <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="HeroiLuz">
-        <button class="btn-play" id="btn-create-char" onclick="createCharacterInSlot()">Criar e Entrar</button>
+        <button type="button" class="btn-play" id="btn-create-char" onclick="criarPersonagem()">Criar e Entrar</button>
       </div>
     </div>
 
@@ -399,9 +401,9 @@
       <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span></div>
     </div>
     <div class="top-menu-buttons">
-      <button class="btn-hud" onclick="toggleModal('bag-modal')">🎒 Mochila (B)</button>
-      <button class="btn-hud" onclick="toggleModal('forge-modal')">🔨 Forja (F)</button>
-      <button class="btn-hud switch-char" onclick="returnToCharSelect()">👥 Personagens</button>
+      <button type="button" class="btn-hud" onclick="toggleModal('bag-modal')">🎒 Mochila (B)</button>
+      <button type="button" class="btn-hud" onclick="toggleModal('forge-modal')">🔨 Forja (F)</button>
+      <button type="button" class="btn-hud switch-char" onclick="returnToCharSelect()">👥 Personagens</button>
     </div>
   </div>
 
@@ -422,7 +424,7 @@
   <div class="modal-window" id="bag-modal">
     <div class="modal-header">
       <h3>🎒 Personagem & Mochila</h3>
-      <button class="btn-close-modal" onclick="closeAllModals()">X</button>
+      <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
       <div class="equip-column">
@@ -433,7 +435,7 @@
       <div class="bag-column">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <h4 style="margin:0;">📦 Mochila (<span id="bag-count">0</span>/24)</h4>
-          <button class="btn-mini btn-sell" style="flex:none; padding:4px 8px;" onclick="sellAllCommon()">Vender Comuns</button>
+          <button type="button" class="btn-mini btn-sell" style="flex:none; padding:4px 8px;" onclick="sellAllCommon()">Vender Comuns</button>
         </div>
         <div class="bag-grid" id="bag-grid"></div>
       </div>
@@ -444,7 +446,7 @@
   <div class="modal-window" id="forge-modal">
     <div class="modal-header">
       <h3>🔨 Forja & Aprimoramento (+1 até +12)</h3>
-      <button class="btn-close-modal" onclick="closeAllModals()">X</button>
+      <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
       <div class="forge-list">
@@ -458,25 +460,25 @@
   </div>
 
 <script>
-  const STORAGE_KEY_SLOTS = 'asaDeCristal_slots_v2';
-  const WORLD_SIZE = 1400;
-  const keysPressed = {};
+  var STORAGE_KEY_SLOTS = 'asaDeCristal_slots_v2';
+  var WORLD_SIZE = 1400;
+  var keysPressed = {};
 
-  let characterSlots = [null, null, null];
-  let activeSlotIndex = -1;
-  let selectedClassKey = 'cavaleiro';
-  let player = null;
-  let enemies = [];
-  let floatingTexts = [];
-  let effects = [];
-  let clickMarker = null;
-  let autoCombat = false;
-  let gameRunning = false;
-  let loopStarted = false;
-  let selectedForgeSlot = 'weapon';
-  let lastTime = performance.now();
+  var characterSlots = [null, null, null];
+  var activeSlotIndex = -1;
+  var selectedClassKey = 'cavaleiro';
+  var player = null;
+  var enemies = [];
+  var floatingTexts = [];
+  var effects = [];
+  var clickMarker = null;
+  var autoCombat = false;
+  var gameRunning = false;
+  var loopStarted = false;
+  var selectedForgeSlot = 'weapon';
+  var lastTime = performance.now();
 
-  const CLASSES = {
+  var CLASSES = {
     cavaleiro: {
       name: 'Cavaleiro', icon: '🛡️', color: '#eccc68', baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, range: 65,
       skills: [
@@ -524,14 +526,47 @@
     }
   };
 
-  const RARITIES = {
+  function selecionarClasse(classe) {
+    selectedClassKey = classe;
+    var todos = document.querySelectorAll('.class-card');
+    for (var i = 0; i < todos.length; i++) {
+      todos[i].classList.remove('selected');
+    }
+    var escolhido = document.getElementById('card-' + classe);
+    if (escolhido) {
+      escolhido.classList.add('selected');
+    }
+  }
+
+  function criarPersonagem() {
+    var emptyIdx = -1;
+    for (var i = 0; i < 3; i++) {
+      if (characterSlots[i] === null) {
+        emptyIdx = i;
+        break;
+      }
+    }
+    if (emptyIdx === -1) {
+      alert('Você já atingiu o limite de 3 personagens! Exclua um slot abaixo para criar outro.');
+      return;
+    }
+    var nameInput = document.getElementById('player-name-input').value.trim();
+    var newHero = createNewPlayer(nameInput, selectedClassKey);
+    characterSlots[emptyIdx] = newHero;
+    activeSlotIndex = emptyIdx;
+    player = newHero;
+    saveAllSlots();
+    enterWorld();
+  }
+
+  var RARITIES = {
     comum: { label: 'Comum', color: '#ced6e0', mult: 1.0, price: 15 },
     raro: { label: 'Raro', color: '#1e90ff', mult: 1.45, price: 45 },
     epico: { label: 'Épico', color: '#a55eea', mult: 2.0, price: 120 },
     lendario: { label: 'Lendário', color: '#ffa502', mult: 2.8, price: 300 }
   };
 
-  const EQUIP_SLOTS = {
+  var EQUIP_SLOTS = {
     weapon: { label: 'Arma', icon: '⚔️', baseAtk: 10, baseDef: 0, baseHp: 0 },
     armor:  { label: 'Armadura', icon: '👕', baseAtk: 0, baseDef: 7, baseHp: 45 },
     helm:   { label: 'Elmo', icon: '🪖', baseAtk: 2, baseDef: 5, baseHp: 30 },
@@ -539,18 +574,12 @@
     ring:   { label: 'Anel', icon: '💍', baseAtk: 7, baseDef: 2, baseHp: 20 }
   };
 
-  function pickClass(classKey, cardEl) {
-    selectedClassKey = classKey;
-    document.querySelectorAll('.class-card').forEach(el => el.classList.remove('selected'));
-    if (cardEl) cardEl.classList.add('selected');
-  }
-
   function generateRandomItem(playerLvl, forceRare) {
-    const slotKeys = Object.keys(EQUIP_SLOTS);
-    const slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
-    const slotInfo = EQUIP_SLOTS[slot];
-    const roll = Math.random();
-    let rarityKey = 'comum';
+    var slotKeys = Object.keys(EQUIP_SLOTS);
+    var slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
+    var slotInfo = EQUIP_SLOTS[slot];
+    var roll = Math.random();
+    var rarityKey = 'comum';
     if (forceRare) {
       rarityKey = roll > 0.85 ? 'lendario' : (roll > 0.45 ? 'epico' : 'raro');
     } else {
@@ -558,8 +587,8 @@
       else if (roll > 0.84) rarityKey = 'epico';
       else if (roll > 0.55) rarityKey = 'raro';
     }
-    const r = RARITIES[rarityKey];
-    const scale = 1 + (playerLvl - 1) * 0.22;
+    var r = RARITIES[rarityKey];
+    var scale = 1 + (playerLvl - 1) * 0.22;
     return {
       id: 'item_' + Math.random().toString(36).slice(2, 10),
       name: slotInfo.label + ' ' + r.label,
@@ -576,7 +605,7 @@
 
   function getItemEffectiveStats(item) {
     if (!item) return { atk: 0, def: 0, hp: 0 };
-    const forgeMult = 1 + (item.plus || 0) * 0.18;
+    var forgeMult = 1 + (item.plus || 0) * 0.18;
     return {
       atk: Math.round((item.atk || 0) * forgeMult),
       def: Math.round((item.def || 0) * forgeMult),
@@ -609,9 +638,9 @@
 
   function loadAllSlots() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY_SLOTS);
+      var raw = localStorage.getItem(STORAGE_KEY_SLOTS);
       if (raw) {
-        const parsed = JSON.parse(raw);
+        var parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
           characterSlots = [
             normalizePlayerObject(parsed[0]),
@@ -621,9 +650,9 @@
           return;
         }
       }
-      const oldSave = localStorage.getItem('asaDeCristal_save_v1');
+      var oldSave = localStorage.getItem('asaDeCristal_save_v1');
       if (oldSave) {
-        const oldP = normalizePlayerObject(JSON.parse(oldSave));
+        var oldP = normalizePlayerObject(JSON.parse(oldSave));
         if (oldP) {
           characterSlots[0] = oldP;
           saveAllSlots();
@@ -635,7 +664,7 @@
   }
 
   function createNewPlayer(name, classKey) {
-    const cls = CLASSES[classKey];
+    var cls = CLASSES[classKey];
     return {
       name: name || 'Herói',
       classKey: classKey,
@@ -663,45 +692,45 @@
   }
 
   function getTotalStats() {
-    const baseHp = player.baseMaxHp || player.maxHp;
-    const baseAtk = player.baseAtk || player.atk;
-    const baseDef = player.baseDef || player.def;
-    let bonusHp = 0, bonusAtk = 0, bonusDef = 0;
-    Object.values(player.equipped).forEach(item => {
+    var baseHp = player.baseMaxHp || player.maxHp;
+    var baseAtk = player.baseAtk || player.atk;
+    var baseDef = player.baseDef || player.def;
+    var bonusHp = 0, bonusAtk = 0, bonusDef = 0;
+    Object.values(player.equipped).forEach(function(item) {
       if (item) {
-        const st = getItemEffectiveStats(item);
+        var st = getItemEffectiveStats(item);
         bonusHp += st.hp;
         bonusAtk += st.atk;
         bonusDef += st.def;
       }
     });
-    const totalMaxHp = baseHp + bonusHp;
-    const totalAtk = baseAtk + bonusAtk;
-    const totalDef = baseDef + bonusDef;
-    const br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + player.level * 25);
-    return { totalMaxHp, totalAtk, totalDef, br };
+    var totalMaxHp = baseHp + bonusHp;
+    var totalAtk = baseAtk + bonusAtk;
+    var totalDef = baseDef + bonusDef;
+    var br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + player.level * 25);
+    return { totalMaxHp: totalMaxHp, totalAtk: totalAtk, totalDef: totalDef, br: br };
   }
 
   function renderCharScreen() {
-    let hasFreeSlot = false;
-    for (let idx = 0; idx < 3; idx++) {
-      const card = document.getElementById('slot-box-' + idx);
+    var hasFreeSlot = false;
+    for (var idx = 0; idx < 3; idx++) {
+      var card = document.getElementById('slot-box-' + idx);
       if (!card) continue;
-      const slotData = characterSlots[idx];
+      var slotData = characterSlots[idx];
 
       if (slotData) {
-        const p = normalizePlayerObject(slotData);
-        const cls = CLASSES[p.classKey];
-        let bHp = 0, bAtk = 0, bDef = 0;
-        Object.values(p.equipped).forEach(it => {
-          if (it) { const s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; }
+        var p = normalizePlayerObject(slotData);
+        var cls = CLASSES[p.classKey];
+        var bHp = 0, bAtk = 0, bDef = 0;
+        Object.values(p.equipped).forEach(function(it) {
+          if (it) { var s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; }
         });
-        const br = Math.round((p.baseMaxHp + bHp) * 0.5 + (p.baseAtk + bAtk) * 4 + (p.baseDef + bDef) * 3 + p.level * 25);
+        var br = Math.round((p.baseMaxHp + bHp) * 0.5 + (p.baseAtk + bAtk) * 4 + (p.baseDef + bDef) * 3 + p.level * 25);
 
         card.className = 'char-slot-card occupied';
         card.innerHTML =
           '<span class="slot-badge">SLOT ' + (idx + 1) + '</span>' +
-          '<button class="btn-del-slot" onclick="deleteSlot(' + idx + ')">Excluir</button>' +
+          '<button type="button" class="btn-del-slot" onclick="deleteSlot(' + idx + ')">Excluir</button>' +
           '<div class="slot-avatar" style="background:' + cls.color + '22; border:3px solid ' + cls.color + '; color:' + cls.color + '">' + cls.icon + '</div>' +
           '<div style="font-weight:bold; font-size:1.15rem; color:#fff;">' + p.name + '</div>' +
           '<div style="font-size:0.85rem; color:' + cls.color + '; font-weight:bold; margin-top:2px;">' + cls.name + '</div>' +
@@ -709,7 +738,7 @@
             '<span class="pill-lvl">Nv. ' + p.level + '</span>' +
             '<span class="pill-br">🔥 BR: ' + br + '</span>' +
           '</div>' +
-          '<button class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Jogar</button>';
+          '<button type="button" class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Jogar</button>';
       } else {
         hasFreeSlot = true;
         card.className = 'char-slot-card empty';
@@ -721,26 +750,11 @@
       }
     }
 
-    const createBtn = document.getElementById('btn-create-char');
+    var createBtn = document.getElementById('btn-create-char');
     if (createBtn) {
       createBtn.disabled = !hasFreeSlot;
       createBtn.textContent = hasFreeSlot ? 'Criar e Entrar' : 'Limite de 3 Atingido';
     }
-  }
-
-  function createCharacterInSlot() {
-    const emptyIdx = characterSlots.findIndex(s => s === null);
-    if (emptyIdx === -1) {
-      alert('Você já atingiu o limite de 3 personagens! Exclua um slot abaixo para criar outro.');
-      return;
-    }
-    const nameInput = document.getElementById('player-name-input').value.trim();
-    const newHero = createNewPlayer(nameInput, selectedClassKey);
-    characterSlots[emptyIdx] = newHero;
-    activeSlotIndex = emptyIdx;
-    player = newHero;
-    saveAllSlots();
-    enterWorld();
   }
 
   function selectSlotToPlay(idx) {
@@ -793,8 +807,8 @@
 
   // ================= MODAIS: MOCHILA & FORJA =================
   function toggleModal(modalId) {
-    const el = document.getElementById(modalId);
-    const isOpen = el.style.display === 'flex';
+    var el = document.getElementById(modalId);
+    var isOpen = el.style.display === 'flex';
     closeAllModals();
     if (!isOpen) {
       el.style.display = 'flex';
@@ -804,23 +818,23 @@
   }
 
   function closeAllModals() {
-    document.querySelectorAll('.modal-window').forEach(m => m.style.display = 'none');
+    document.querySelectorAll('.modal-window').forEach(function(m) { m.style.display = 'none'; });
   }
 
   function renderBagModal() {
-    const eqList = document.getElementById('equipped-list');
+    var eqList = document.getElementById('equipped-list');
     eqList.innerHTML = '';
 
-    Object.keys(EQUIP_SLOTS).forEach(slotKey => {
-      const slotInfo = EQUIP_SLOTS[slotKey];
-      const item = player.equipped[slotKey];
-      const row = document.createElement('div');
+    Object.keys(EQUIP_SLOTS).forEach(function(slotKey) {
+      var slotInfo = EQUIP_SLOTS[slotKey];
+      var item = player.equipped[slotKey];
+      var row = document.createElement('div');
       row.className = 'equip-slot-row';
 
       if (item) {
-        const r = RARITIES[item.rarity];
-        const st = getItemEffectiveStats(item);
-        const plusTxt = item.plus > 0 ? ' +' + item.plus : '';
+        var r = RARITIES[item.rarity];
+        var st = getItemEffectiveStats(item);
+        var plusTxt = item.plus > 0 ? ' +' + item.plus : '';
         row.style.borderColor = r.color;
         row.innerHTML =
           '<div><span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + plusTxt + '</span><br>' +
@@ -833,7 +847,7 @@
       eqList.appendChild(row);
     });
 
-    const stats = getTotalStats();
+    var stats = getTotalStats();
     document.getElementById('stat-summary').innerHTML =
       '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + '<br>' +
       '<b>⚔️ Ataque Total:</b> ' + stats.totalAtk + '<br>' +
@@ -841,14 +855,14 @@
       '<b style="color:#ffa502;">🔥 Poder de Batalha (BR): ' + stats.br + '</b>';
 
     document.getElementById('bag-count').textContent = player.inventory.length;
-    const bagGrid = document.getElementById('bag-grid');
+    var bagGrid = document.getElementById('bag-grid');
     bagGrid.innerHTML = '';
 
-    player.inventory.forEach((item, idx) => {
-      const r = RARITIES[item.rarity];
-      const st = getItemEffectiveStats(item);
-      const plusTxt = item.plus > 0 ? ' +' + item.plus : '';
-      const card = document.createElement('div');
+    player.inventory.forEach(function(item, idx) {
+      var r = RARITIES[item.rarity];
+      var st = getItemEffectiveStats(item);
+      var plusTxt = item.plus > 0 ? ' +' + item.plus : '';
+      var card = document.createElement('div');
       card.className = 'bag-item';
       card.style.borderColor = r.color;
       card.innerHTML =
@@ -857,16 +871,16 @@
         (st.atk ? 'ATK +' + st.atk + '<br>' : '') + (st.def ? 'DEF +' + st.def + '<br>' : '') + (st.hp ? 'HP +' + st.hp : '') +
         '</div></div>' +
         '<div class="bag-item-actions">' +
-        '<button class="btn-mini btn-equip" onclick="equipItem(' + idx + ')">Equipar</button>' +
-        '<button class="btn-mini btn-sell" onclick="sellItem(' + idx + ')">+$' + item.sellPrice + '</button></div>';
+        '<button type="button" class="btn-mini btn-equip" onclick="equipItem(' + idx + ')">Equipar</button>' +
+        '<button type="button" class="btn-mini btn-sell" onclick="sellItem(' + idx + ')">+$' + item.sellPrice + '</button></div>';
       bagGrid.appendChild(card);
     });
   }
 
   function equipItem(bagIdx) {
-    const item = player.inventory[bagIdx];
+    var item = player.inventory[bagIdx];
     if (!item) return;
-    const currentEquipped = player.equipped[item.slot];
+    var currentEquipped = player.equipped[item.slot];
     player.equipped[item.slot] = item;
     player.inventory.splice(bagIdx, 1);
     if (currentEquipped) player.inventory.push(currentEquipped);
@@ -876,7 +890,7 @@
   }
 
   function sellItem(bagIdx) {
-    const item = player.inventory[bagIdx];
+    var item = player.inventory[bagIdx];
     if (!item) return;
     player.gold += item.sellPrice;
     player.inventory.splice(bagIdx, 1);
@@ -886,8 +900,8 @@
   }
 
   function sellAllCommon() {
-    let earned = 0;
-    player.inventory = player.inventory.filter(item => {
+    var earned = 0;
+    player.inventory = player.inventory.filter(function(item) {
       if (item.rarity === 'comum') { earned += item.sellPrice; return false; }
       return true;
     });
@@ -908,40 +922,41 @@
   }
 
   function renderForgeModal() {
-    const list = document.getElementById('forge-slot-list');
+    var list = document.getElementById('forge-slot-list');
     list.innerHTML = '';
 
-    Object.keys(EQUIP_SLOTS).forEach(slotKey => {
-      const slotInfo = EQUIP_SLOTS[slotKey];
-      const item = player.equipped[slotKey];
-      const btn = document.createElement('button');
+    Object.keys(EQUIP_SLOTS).forEach(function(slotKey) {
+      var slotInfo = EQUIP_SLOTS[slotKey];
+      var item = player.equipped[slotKey];
+      var btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'forge-item-btn' + (selectedForgeSlot === slotKey ? ' active' : '');
       if (item) {
-        const r = RARITIES[item.rarity];
+        var r = RARITIES[item.rarity];
         btn.innerHTML = '<span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + ' (+' + item.plus + ')</span>';
       } else {
         btn.innerHTML = '<span style="color:#57606f;">' + slotInfo.icon + ' ' + slotInfo.label + ' (Não equipado)</span>';
       }
-      btn.onclick = () => { selectedForgeSlot = slotKey; renderForgeModal(); };
+      btn.onclick = function() { selectedForgeSlot = slotKey; renderForgeModal(); };
       list.appendChild(btn);
     });
 
-    const anvil = document.getElementById('forge-anvil');
-    const item = player.equipped[selectedForgeSlot];
+    var anvil = document.getElementById('forge-anvil');
+    var item = player.equipped[selectedForgeSlot];
     if (!item) {
       anvil.innerHTML = '<p style="color:#747d8c;">Equipe um item neste slot pela Mochila (B) para forjar.</p>';
       return;
     }
 
-    const r = RARITIES[item.rarity];
-    const currStats = getItemEffectiveStats(item);
+    var r = RARITIES[item.rarity];
+    var currStats = getItemEffectiveStats(item);
     if (item.plus >= 12) {
       anvil.innerHTML = '<div style="font-size:2.5rem; margin-bottom:8px;">' + item.icon + '</div><h3 style="color:' + r.color + ';">' + item.name + ' +12 (MÁXIMO!)</h3>';
       return;
     }
 
-    const cfg = getForgeCostAndChance(item.plus);
-    const canAfford = player.stones >= cfg.stonesCost && player.gold >= cfg.goldCost;
+    var cfg = getForgeCostAndChance(item.plus);
+    var canAfford = player.stones >= cfg.stonesCost && player.gold >= cfg.goldCost;
 
     anvil.innerHTML =
       '<div style="font-size:2.4rem; margin-bottom:6px;">' + item.icon + '</div>' +
@@ -953,4 +968,422 @@
       '<div>🎲 Chance: <b style="color:#ffa502;">' + cfg.chance + '%</b></div>' +
       '<div>💎 Pedras: <b style="color:' + (player.stones >= cfg.stonesCost ? '#2ed573' : '#ff4757') + ';">' + player.stones + ' / ' + cfg.stonesCost + '</b></div>' +
       '<div>💰 Ouro: <b style="color:' + (player.gold >= cfg.goldCost ? '#f1c40f' : '#ff4757') + ';">' + cfg.goldCost + '</b></div></div>' +
-      '<button class="btn-forge-do" ' + (canAfford ? '' : 'disabled')
+      '<button type="button" class="btn-forge-do" ' + (canAfford ? '' : 'disabled') + ' onclick="doForgeUpgrade()">🔨 Aprimorar para +' + (item.plus + 1) + '</button>';
+  }
+
+  function doForgeUpgrade() {
+    var item = player.equipped[selectedForgeSlot];
+    if (!item || item.plus >= 12) return;
+    var cfg = getForgeCostAndChance(item.plus);
+    if (player.stones < cfg.stonesCost || player.gold < cfg.goldCost) return;
+
+    player.stones -= cfg.stonesCost;
+    player.gold -= cfg.goldCost;
+
+    if (Math.random() * 100 <= cfg.chance) {
+      item.plus += 1;
+      addFloatingText(player.x, player.y - 60, '🔨 SUCESSO! ' + item.name + ' +' + item.plus + '!', '#2ed573');
+      effects.push({ x: player.x, y: player.y, radius: 95, color: '#ffa502', timer: 0.6 });
+    } else {
+      addFloatingText(player.x, player.y - 60, '💥 Falha na Forja!', '#ff4757');
+    }
+
+    saveAllSlots();
+    updateHUD();
+    renderForgeModal();
+  }
+
+  // ================= BARRA DE SKILLS =================
+  function setupSkillBar() {
+    var bar = document.getElementById('skill-bar');
+    bar.innerHTML = '';
+    var cls = CLASSES[player.classKey];
+
+    cls.skills.forEach(function(sk, idx) {
+      var slot = document.createElement('div');
+      slot.className = 'skill-slot';
+      slot.title = sk.name + ' (MP: ' + sk.mp + ')';
+      slot.innerHTML = '<span class="key">' + (idx + 1) + '</span><span class="icon">' + sk.icon + '</span><div class="cd-overlay" id="cd-' + idx + '"></div>';
+      slot.onclick = function() { useSkill(idx); };
+      bar.appendChild(slot);
+    });
+
+    var potSlot = document.createElement('div');
+    potSlot.className = 'skill-slot';
+    potSlot.innerHTML = '<span class="key">5</span><span class="icon">🧪</span><div class="cd-overlay" id="cd-4"></div>';
+    potSlot.onclick = function() { usePotion(); };
+    bar.appendChild(potSlot);
+
+    var autoBtn = document.createElement('button');
+    autoBtn.type = 'button';
+    autoBtn.className = 'btn-auto';
+    autoBtn.id = 'btn-auto';
+    autoBtn.innerHTML = '<span>🤖</span><span>AUTO</span>';
+    autoBtn.onclick = toggleAuto;
+    bar.appendChild(autoBtn);
+  }
+
+  function toggleAuto() {
+    autoCombat = !autoCombat;
+    var btn = document.getElementById('btn-auto');
+    if (autoCombat) {
+      btn.classList.add('active');
+      addFloatingText(player.x, player.y - 45, 'AUTO ATIVADO', '#2ed573');
+    } else {
+      btn.classList.remove('active');
+      addFloatingText(player.x, player.y - 45, 'AUTO DESLIGADO', '#ff6b81');
+    }
+  }
+
+  // ================= MONSTROS & COMBATE =================
+  var MONSTER_TYPES = [
+    { name: 'Slime da Floresta', icon: '🟢', hp: 70, atk: 8, xp: 25, gold: 12, color: '#2ed573', scale: 1, elite: false },
+    { name: 'Lobo Cinzento', icon: '🐺', hp: 110, atk: 14, xp: 40, gold: 20, color: '#a4b0be', scale: 1.1, elite: false },
+    { name: 'Goblin Saqueador', icon: '👺', hp: 150, atk: 19, xp: 60, gold: 32, color: '#ffa502', scale: 1.15, elite: false },
+    { name: 'Guardião Tronco (Elite)', icon: '🌳', hp: 320, atk: 28, xp: 140, gold: 85, color: '#ff4757', scale: 1.45, elite: true }
+  ];
+
+  function spawnEnemy() {
+    var roll = Math.random();
+    var typeIdx = 0;
+    if (roll > 0.88) typeIdx = 3;
+    else if (roll > 0.60) typeIdx = 2;
+    else if (roll > 0.30) typeIdx = 1;
+    var t = MONSTER_TYPES[typeIdx];
+    var angle = Math.random() * Math.PI * 2;
+    var dist = 180 + Math.random() * (WORLD_SIZE / 2 - 200);
+    enemies.push({
+      id: Math.random(), name: t.name, icon: t.icon,
+      x: Math.cos(angle) * dist, y: Math.sin(angle) * dist,
+      hp: t.hp, maxHp: t.hp, atk: t.atk, xp: t.xp, gold: t.gold,
+      color: t.color, scale: t.scale, elite: t.elite, atkTimer: 0
+    });
+  }
+
+  function spawnInitialEnemies() {
+    enemies = [];
+    for (var i = 0; i < 16; i++) spawnEnemy();
+  }
+
+  var canvas = document.getElementById('gameCanvas');
+  var ctx = canvas.getContext('2d');
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function worldToIso(wx, wy) {
+    var rx = wx - player.x;
+    var ry = wy - player.y;
+    return { x: (rx - ry) * 0.85 + canvas.width / 2, y: (rx + ry) * 0.45 + canvas.height / 2 };
+  }
+
+  function isoToWorld(sx, sy) {
+    var dx = (sx - canvas.width / 2) / 0.85;
+    var dy = (sy - canvas.height / 2) / 0.45;
+    return { x: player.x + (dx + dy) / 2, y: player.y + (dy - dx) / 2 };
+  }
+
+  canvas.addEventListener('mousedown', function(e) {
+    if (!gameRunning) return;
+    var worldPos = isoToWorld(e.clientX, e.clientY);
+    player.targetX = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.x));
+    player.targetY = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.y));
+    clickMarker = { x: player.targetX, y: player.targetY, timer: 0.5 };
+    var nearest = getNearestEnemy(worldPos.x, worldPos.y, 70);
+    if (nearest && getDist(player, nearest) <= CLASSES[player.classKey].skills[0].range) useSkill(0);
+  });
+
+  window.addEventListener('keydown', function(e) {
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    var k = e.key.toLowerCase();
+    keysPressed[k] = true;
+    if (!gameRunning) return;
+    if (e.key === '1') useSkill(0);
+    if (e.key === '2') useSkill(1);
+    if (e.key === '3') useSkill(2);
+    if (e.key === '4') useSkill(3);
+    if (e.key === '5') usePotion();
+    if (k === 'a') toggleAuto();
+    if (k === 'b') toggleModal('bag-modal');
+    if (k === 'f') toggleModal('forge-modal');
+    if (e.key === 'Escape') closeAllModals();
+  });
+
+  window.addEventListener('keyup', function(e) { keysPressed[e.key.toLowerCase()] = false; });
+
+  function getDist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+
+  function getNearestEnemy(x, y, maxRange) {
+    if (typeof maxRange === 'undefined') maxRange = Infinity;
+    var best = null, bestDist = maxRange;
+    enemies.forEach(function(en) {
+      var d = Math.hypot(en.x - x, en.y - y);
+      if (d < bestDist) { bestDist = d; best = en; }
+    });
+    return best;
+  }
+
+  function usePotion() {
+    var stats = getTotalStats();
+    if (player.cooldowns[4] > 0 || player.hp >= stats.totalMaxHp) return;
+    var healAmt = Math.round(stats.totalMaxHp * 0.5);
+    player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
+    player.cooldowns[4] = 4.0;
+    addFloatingText(player.x, player.y - 40, '+' + healAmt + ' HP', '#2ed573');
+    effects.push({ x: player.x, y: player.y, radius: 45, color: '#2ed573', timer: 0.4 });
+    updateHUD();
+  }
+
+  function useSkill(idx) {
+    var cls = CLASSES[player.classKey];
+    var sk = cls.skills[idx];
+    var stats = getTotalStats();
+    if (!sk || player.cooldowns[idx] > 0) return;
+    if (player.mp < sk.mp) { addFloatingText(player.x, player.y - 40, 'Sem Mana!', '#70a1ff'); return; }
+
+    if (sk.heal) {
+      player.mp -= sk.mp;
+      player.cooldowns[idx] = sk.cd;
+      var healAmt = Math.round(stats.totalMaxHp * sk.heal);
+      player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
+      addFloatingText(player.x, player.y - 45, '+' + healAmt + ' HP', '#2ed573');
+      effects.push({ x: player.x, y: player.y, radius: 60, color: sk.color, timer: 0.5 });
+      updateHUD();
+      return;
+    }
+
+    var target = getNearestEnemy(player.x, player.y, sk.range + 30);
+    if (!target) {
+      if (!autoCombat) addFloatingText(player.x, player.y - 40, 'Fora de alcance!', '#ffa502');
+      return;
+    }
+
+    player.mp -= sk.mp;
+    player.cooldowns[idx] = sk.cd;
+    if (sk.dash) { player.x = target.x - 25; player.y = target.y; player.targetX = player.x; player.targetY = player.y; }
+
+    var hitList = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 110; }) : [target];
+    effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 105 : 45, color: sk.color, timer: 0.35 });
+
+    hitList.forEach(function(en) {
+      var isCrit = Math.random() < (player.classKey === 'arqueiro' || player.classKey === 'assassino' ? 0.3 : 0.15);
+      var dmg = Math.round(stats.totalAtk * sk.mult * (0.9 + Math.random() * 0.2));
+      if (isCrit) dmg = Math.round(dmg * 1.6);
+      en.hp -= dmg;
+      addFloatingText(en.x, en.y - 35, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#ffa502' : '#ffffff');
+      if (en.hp <= 0) killEnemy(en);
+    });
+    updateHUD();
+  }
+
+  function killEnemy(en) {
+    enemies = enemies.filter(function(e) { return e.id !== en.id; });
+    player.xp += en.xp;
+    player.gold += en.gold;
+    player.kills += 1;
+    addFloatingText(en.x, en.y - 50, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#f1c40f');
+
+    if (en.elite || Math.random() < 0.45) {
+      var stonesWon = en.elite ? 2 : 1;
+      player.stones += stonesWon;
+      addFloatingText(en.x, en.y - 68, '💎 +' + stonesWon + ' Pedra de Forja!', '#70a1ff');
+    }
+
+    if (player.inventory.length < 24 && (en.elite || Math.random() < 0.35)) {
+      var droppedItem = generateRandomItem(player.level, en.elite);
+      player.inventory.push(droppedItem);
+      addFloatingText(en.x, en.y - 86, '🎁 Drop: ' + droppedItem.name + '!', RARITIES[droppedItem.rarity].color);
+    }
+
+    while (player.xp >= player.maxXp) {
+      player.xp -= player.maxXp;
+      player.level += 1;
+      player.maxXp = Math.round(player.maxXp * 1.35);
+      player.baseMaxHp = (player.baseMaxHp || player.maxHp) + 35;
+      player.maxMp += 20;
+      player.baseAtk = (player.baseAtk || player.atk) + 6;
+      player.baseDef = (player.baseDef || player.def) + 3;
+      var stats = getTotalStats();
+      player.hp = stats.totalMaxHp;
+      player.mp = player.maxMp;
+      addFloatingText(player.x, player.y - 70, '🎉 LEVEL UP! Nv. ' + player.level, '#ffa502');
+    }
+
+    saveAllSlots();
+    setTimeout(spawnEnemy, 2500);
+  }
+
+  function addFloatingText(x, y, text, color) {
+    floatingTexts.push({ x: x, y: y, text: text, color: color, timer: 1.25 });
+  }
+
+  function gameLoop(now) {
+    var dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    if (gameRunning) { update(dt); render(); }
+    requestAnimationFrame(gameLoop);
+  }
+
+  function update(dt) {
+    var stats = getTotalStats();
+    player.hp = Math.min(stats.totalMaxHp, player.hp + stats.totalMaxHp * 0.02 * dt);
+    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.06 * dt);
+
+    for (var i = 0; i < player.cooldowns.length; i++) {
+      if (player.cooldowns[i] > 0) {
+        player.cooldowns[i] = Math.max(0, player.cooldowns[i] - dt);
+        var overlay = document.getElementById('cd-' + i);
+        if (overlay) {
+          overlay.style.display = player.cooldowns[i] > 0 ? 'flex' : 'none';
+          if (player.cooldowns[i] > 0) overlay.textContent = player.cooldowns[i].toFixed(1);
+        }
+      }
+    }
+
+    var moveX = 0, moveY = 0;
+    if (keysPressed['w']) { moveX -= 1; moveY -= 1; }
+    if (keysPressed['s']) { moveX += 1; moveY += 1; }
+    if (keysPressed['a']) { moveX -= 1; moveY += 1; }
+    if (keysPressed['d']) { moveX += 1; moveY -= 1; }
+
+    if (moveX !== 0 || moveY !== 0) {
+      var len = Math.hypot(moveX, moveY);
+      player.x += (moveX / len) * player.speed * dt;
+      player.y += (moveY / len) * player.speed * dt;
+      player.targetX = player.x;
+      player.targetY = player.y;
+    } else {
+      if (autoCombat) {
+        if (player.hp < stats.totalMaxHp * 0.45) usePotion();
+        var target = getNearestEnemy(player.x, player.y);
+        if (target) {
+          var dist = getDist(player, target);
+          if (dist > CLASSES[player.classKey].range * 0.85) {
+            player.targetX = target.x; player.targetY = target.y;
+          } else {
+            player.targetX = player.x; player.targetY = player.y;
+            for (var s = 3; s >= 0; s--) {
+              if (player.cooldowns[s] <= 0 && player.mp >= CLASSES[player.classKey].skills[s].mp) { useSkill(s); break; }
+            }
+          }
+        }
+      }
+      var dx = player.targetX - player.x, dy = player.targetY - player.y, dist2 = Math.hypot(dx, dy);
+      if (dist2 > 4) { player.x += (dx / dist2) * player.speed * dt; player.y += (dy / dist2) * player.speed * dt; }
+    }
+
+    player.x = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.x));
+    player.y = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.y));
+
+    enemies.forEach(function(en) {
+      var dist = getDist(player, en);
+      if (dist < 240 && dist > 48) {
+        en.x += ((player.x - en.x) / dist) * 75 * dt;
+        en.y += ((player.y - en.y) / dist) * 75 * dt;
+      } else if (dist <= 52) {
+        en.atkTimer += dt;
+        if (en.atkTimer >= 1.6) {
+          en.atkTimer = 0;
+          var dmg = Math.max(2, en.atk - Math.round(stats.totalDef * 0.5));
+          player.hp -= dmg;
+          addFloatingText(player.x, player.y - 35, '-' + dmg, '#ff4757');
+          if (player.hp <= 0) { player.hp = stats.totalMaxHp; player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0; }
+        }
+      }
+    });
+
+    effects.forEach(function(ef) { ef.timer -= dt; });
+    effects = effects.filter(function(ef) { return ef.timer > 0; });
+    floatingTexts.forEach(function(ft) { ft.y -= 35 * dt; ft.timer -= dt; });
+    floatingTexts = floatingTexts.filter(function(ft) { return ft.timer > 0; });
+    if (clickMarker) { clickMarker.timer -= dt; if (clickMarker.timer <= 0) clickMarker = null; }
+    updateHUD();
+  }
+
+  function updateHUD() {
+    var cls = CLASSES[player.classKey];
+    var stats = getTotalStats();
+    document.getElementById('hud-avatar').childNodes[0].textContent = cls.icon;
+    document.getElementById('hud-lvl').textContent = 'Nv. ' + player.level;
+    document.getElementById('hud-name').textContent = player.name + ' (' + cls.name + ')';
+    document.getElementById('hud-br').textContent = 'BR: ' + stats.br;
+    document.getElementById('hud-hp-bar').style.width = Math.min(100, (player.hp / stats.totalMaxHp) * 100) + '%';
+    document.getElementById('hud-hp-text').textContent = Math.ceil(player.hp) + ' / ' + stats.totalMaxHp;
+    document.getElementById('hud-mp-bar').style.width = Math.min(100, (player.mp / player.maxMp) * 100) + '%';
+    document.getElementById('hud-mp-text').textContent = Math.ceil(player.mp) + ' / ' + player.maxMp;
+    document.getElementById('hud-gold').textContent = player.gold;
+    document.getElementById('hud-stones').textContent = player.stones;
+    var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
+    document.getElementById('hud-xp-bar').style.width = xpPct + '%';
+    document.getElementById('hud-xp-text').textContent = 'XP: ' + player.xp + ' / ' + player.maxXp + ' (' + xpPct.toFixed(0) + '%)';
+  }
+
+  function render() {
+    ctx.fillStyle = '#0d131a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    var half = WORLD_SIZE / 2;
+    var c1 = worldToIso(-half, -half), c2 = worldToIso(half, -half), c3 = worldToIso(half, half), c4 = worldToIso(-half, half);
+
+    ctx.beginPath(); ctx.moveTo(c1.x, c1.y); ctx.lineTo(c2.x, c2.y); ctx.lineTo(c3.x, c3.y); ctx.lineTo(c4.x, c4.y); ctx.closePath();
+    ctx.fillStyle = '#14221b'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = '#2ed57355'; ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'; ctx.lineWidth = 1;
+    for (var x = -half; x <= half; x += 100) {
+      var p1 = worldToIso(x, -half), p2 = worldToIso(x, half);
+      ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    }
+    for (var y = -half; y <= half; y += 100) {
+      var p1y = worldToIso(-half, y), p2y = worldToIso(half, y);
+      ctx.beginPath(); ctx.moveTo(p1y.x, p1y.y); ctx.lineTo(p2y.x, p2y.y); ctx.stroke();
+    }
+
+    if (clickMarker) {
+      var pos = worldToIso(clickMarker.x, clickMarker.y);
+      ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 18 * clickMarker.timer * 2, 9 * clickMarker.timer * 2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = '#2ed573'; ctx.lineWidth = 2; ctx.stroke();
+    }
+
+    var renderList = [{ type: 'player', y: player.y, obj: player }].concat(enemies.map(function(en) { return { type: 'enemy', y: en.y, obj: en }; })).sort(function(a, b) { return a.y - b.y; });
+    renderList.forEach(function(item) { if (item.type === 'player') drawPlayer(); else drawEnemy(item.obj); });
+
+    effects.forEach(function(ef) {
+      var pos = worldToIso(ef.x, ef.y);
+      ctx.beginPath(); ctx.ellipse(pos.x, pos.y, ef.radius * 0.85, ef.radius * 0.45, 0, 0, Math.PI * 2);
+      ctx.fillStyle = ef.color + '44'; ctx.fill(); ctx.strokeStyle = ef.color; ctx.lineWidth = 2; ctx.stroke();
+    });
+
+    floatingTexts.forEach(function(ft) {
+      var pos = worldToIso(ft.x, ft.y);
+      ctx.font = 'bold 14px Segoe UI'; ctx.textAlign = 'center';
+      ctx.fillStyle = '#000'; ctx.fillText(ft.text, pos.x + 1, pos.y + 1);
+      ctx.fillStyle = ft.color; ctx.fillText(ft.text, pos.x, pos.y);
+    });
+  }
+
+  function drawPlayer() {
+    var pos = worldToIso(player.x, player.y);
+    var cls = CLASSES[player.classKey];
+    ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 22, 11, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fill();
+    ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 26, 13, 0, 0, Math.PI * 2); ctx.strokeStyle = cls.color; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = cls.color; ctx.fillRect(pos.x - 14, pos.y - 44, 28, 42);
+    ctx.font = '22px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(cls.icon, pos.x, pos.y - 16);
+    ctx.font = 'bold 12px Segoe UI'; ctx.fillStyle = '#fff'; ctx.fillText('[Nv.' + player.level + '] ' + player.name, pos.x, pos.y - 52);
+  }
+
+  function drawEnemy(en) {
+    var pos = worldToIso(en.x, en.y);
+    var s = en.scale;
+    ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 20 * s, 10 * s, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fill();
+    ctx.fillStyle = en.color + 'cc'; ctx.fillRect(pos.x - 15 * s, pos.y - 38 * s, 30 * s, 36 * s);
+    ctx.font = Math.round(22 * s) + 'px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(en.icon, pos.x, pos.y - 12 * s);
+    ctx.font = 'bold 11px Segoe UI'; ctx.fillStyle = '#ff6b81'; ctx.fillText(en.name, pos.x, pos.y - 48 * s);
+    var barW = 46 * s;
+    ctx.fillStyle = '#2f3542'; ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW, 5);
+    ctx.fillStyle = '#ff4757'; ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW * Math.max(0, en.hp / en.maxHp), 5);
+  }
+
+  loadAllSlots();
+  renderCharScreen();
+</script>
+</body>
+</html>
