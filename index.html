@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Fase 5 (Terreno 2.5D, Cenário Vivo & Minimapa)</title>
+  <title>Aethelgard - MMORPG 3D</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
-      background-color: #0b0d13;
+      background-color: #070b12;
       color: #fff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow: hidden;
@@ -19,7 +20,7 @@
     #char-screen {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at center, #1b2030 0%, #090b10 100%);
+      background: radial-gradient(circle at center, #132238 0%, #060911 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -29,16 +30,16 @@
       overflow-y: auto;
     }
     #char-screen h1 {
-      font-size: 2.2rem;
-      color: #ffa502;
-      text-shadow: 0 0 20px rgba(255, 165, 2, 0.5);
+      font-size: 2.4rem;
+      color: #38bdf8;
+      text-shadow: 0 0 24px rgba(56, 189, 248, 0.55);
       margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 4px;
       text-align: center;
     }
     #char-screen p.subtitle {
-      color: #a4b0be;
+      color: #94a3b8;
       margin-bottom: 20px;
       text-align: center;
     }
@@ -46,20 +47,21 @@
     .section-box {
       width: 100%;
       max-width: 1080px;
-      background: rgba(20, 24, 36, 0.85);
-      border: 1px solid #2f3542;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid #1e293b;
       border-radius: 16px;
       padding: 18px;
       margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5);
     }
     .section-box h2 {
-      font-size: 1.05rem;
-      color: #ffa502;
+      font-size: 1.02rem;
+      color: #38bdf8;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.2px;
       margin-bottom: 14px;
     }
 
@@ -72,20 +74,20 @@
       margin-bottom: 18px;
     }
     .class-card {
-      background: #161a26;
-      border: 2px solid #2f3542;
+      background: #0f172a;
+      border: 2px solid #1e293b;
       border-radius: 12px;
-      width: 185px;
+      width: 188px;
       padding: 14px;
       text-align: center;
       cursor: pointer;
       transition: 0.2s;
     }
-    .class-card:hover { transform: translateY(-4px); border-color: #70a1ff; }
+    .class-card:hover { transform: translateY(-4px); border-color: #38bdf8; }
     .class-card.selected {
-      border-color: #ffa502;
-      background: #212638;
-      box-shadow: 0 0 18px rgba(255, 165, 2, 0.35);
+      border-color: #f59e0b;
+      background: #17233c;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
     }
     .class-icon {
       width: 54px;
@@ -100,33 +102,34 @@
     }
     .class-card h3, .class-card .role, .class-card .desc { pointer-events: none; }
     .class-card h3 { margin-bottom: 4px; font-size: 1.05rem; }
-    .class-card .role { font-size: 0.72rem; color: #ffa502; margin-bottom: 6px; font-weight: bold; }
-    .class-card .desc { font-size: 0.75rem; color: #ced6e0; line-height: 1.28; }
+    .class-card .role { font-size: 0.72rem; color: #f59e0b; margin-bottom: 6px; font-weight: bold; }
+    .class-card .desc { font-size: 0.74rem; color: #cbd5e1; line-height: 1.28; }
 
     .start-box { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
     .start-box input {
       padding: 11px 16px;
       border-radius: 8px;
-      border: 2px solid #2f3542;
-      background: #0f121b;
+      border: 2px solid #1e293b;
+      background: #090d16;
       color: #fff;
       font-size: 1rem;
       outline: none;
     }
-    .start-box input:focus { border-color: #ffa502; }
+    .start-box input:focus { border-color: #38bdf8; }
     .btn-play {
-      padding: 11px 26px;
-      background: linear-gradient(135deg, #ffa502, #ff6348);
+      padding: 11px 28px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
       border: none;
       border-radius: 8px;
-      color: #fff;
+      color: #060911;
       font-weight: bold;
       font-size: 0.95rem;
       cursor: pointer;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .btn-play:hover { filter: brightness(1.15); }
-    .btn-play:disabled { background: #57606f; cursor: not-allowed; filter: none; }
+    .btn-play:hover { filter: brightness(1.12); }
+    .btn-play:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; filter: none; }
 
     /* SLOTS DE PERSONAGENS SALVOS */
     .slots-container {
@@ -138,8 +141,8 @@
     }
     .char-slot-card {
       width: 280px;
-      background: #161a26;
-      border: 2px solid #2f3542;
+      background: #0f172a;
+      border: 2px solid #1e293b;
       border-radius: 14px;
       padding: 18px;
       text-align: center;
@@ -150,22 +153,22 @@
       align-items: center;
       justify-content: center;
     }
-    .char-slot-card.occupied { border-color: #3742fa; }
-    .char-slot-card.empty { border-style: dashed; color: #747d8c; }
-    .slot-badge { position: absolute; top: 10px; left: 12px; font-size: 0.72rem; color: #747d8c; font-weight: bold; }
+    .char-slot-card.occupied { border-color: #0284c7; }
+    .char-slot-card.empty { border-style: dashed; color: #64748b; }
+    .slot-badge { position: absolute; top: 10px; left: 12px; font-size: 0.72rem; color: #64748b; font-weight: bold; }
     .btn-del-slot {
       position: absolute;
       top: 9px;
       right: 10px;
-      background: rgba(255, 71, 87, 0.15);
-      border: 1px solid #ff4757;
-      color: #ff6b81;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid #f43f5e;
+      color: #fda4af;
       border-radius: 6px;
       padding: 3px 8px;
       font-size: 0.72rem;
       cursor: pointer;
     }
-    .btn-del-slot:hover { background: #ff4757; color: #fff; }
+    .btn-del-slot:hover { background: #f43f5e; color: #fff; }
     .slot-avatar {
       width: 60px;
       height: 60px;
@@ -177,30 +180,44 @@
       font-size: 1.9rem;
     }
     .slot-stats-pills { display: flex; justify-content: center; gap: 8px; margin: 8px 0 12px; }
-    .pill-lvl { background: #2f3542; color: #70a1ff; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
-    .pill-br { background: rgba(255, 165, 2, 0.15); border: 1px solid #ffa502; color: #ffa502; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+    .pill-lvl { background: #1e293b; color: #38bdf8; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+    .pill-br { background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; color: #fbbf24; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
     .btn-enter-slot {
       width: 100%;
       padding: 9px;
       border: none;
       border-radius: 8px;
-      background: linear-gradient(135deg, #2ed573, #1eae60);
-      color: #0b0d13;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      color: #060911;
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
       font-size: 0.88rem;
     }
 
-    /* ================= CANVAS & HUD DO JOGO ================= */
-    canvas#gameCanvas { display: block; }
+    /* ================= VIEWPORT 3D & OVERLAY DE LABELS ================= */
+    #viewport3d {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+    }
+    #overlay2d {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 5;
+    }
 
     #hud-top-left {
       position: fixed;
       top: 15px;
       left: 15px;
-      background: rgba(18, 22, 33, 0.92);
-      border: 1px solid #3742fa;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #0284c7;
       border-radius: 12px;
       padding: 12px 16px;
       display: none;
@@ -208,24 +225,24 @@
       gap: 14px;
       min-width: 295px;
       z-index: 10;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
     }
     .avatar-circle {
       width: 54px;
       height: 54px;
       border-radius: 50%;
-      border: 2px solid #ffa502;
+      border: 2px solid #f59e0b;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.6rem;
       position: relative;
-      background: #1e2436;
+      background: #1e293b;
     }
     .lvl-badge {
       position: absolute;
       bottom: -5px;
-      background: #ffa502;
+      background: #f59e0b;
       color: #000;
       font-weight: bold;
       font-size: 0.75rem;
@@ -234,10 +251,10 @@
     }
     .stats-bars { flex: 1; }
     .player-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
-    .br-tag { color: #ffa502; font-size: 0.85rem; }
-    .bar-bg { width: 100%; height: 12px; background: #2f3542; border-radius: 6px; overflow: hidden; margin-bottom: 5px; position: relative; }
-    .bar-fill-hp { height: 100%; background: linear-gradient(90deg, #ff4757, #ff6b81); width: 100%; }
-    .bar-fill-mp { height: 100%; background: linear-gradient(90deg, #1e90ff, #70a1ff); width: 100%; }
+    .br-tag { color: #fbbf24; font-size: 0.85rem; }
+    .bar-bg { width: 100%; height: 12px; background: #1e293b; border-radius: 6px; overflow: hidden; margin-bottom: 5px; position: relative; }
+    .bar-fill-hp { height: 100%; background: linear-gradient(90deg, #e11d48, #fb7185); width: 100%; }
+    .bar-fill-mp { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); width: 100%; }
     .bar-text { position: absolute; inset: 0; font-size: 0.68rem; text-align: center; line-height: 12px; font-weight: bold; text-shadow: 1px 1px 2px #000; }
 
     #hud-top-right {
@@ -256,21 +273,20 @@
       gap: 10px;
     }
     .map-info {
-      background: rgba(18, 22, 33, 0.92);
-      border: 1px solid #2f3542;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #1e293b;
       padding: 8px 14px;
       border-radius: 10px;
       text-align: right;
       box-shadow: 0 6px 20px rgba(0,0,0,0.45);
     }
-    .map-name { color: #2ed573; font-weight: bold; font-size: 0.95rem; }
-    .currency-row { font-size: 0.84rem; color: #f1c40f; margin-top: 3px; }
+    .map-name { color: #34d399; font-weight: bold; font-size: 0.95rem; }
+    .currency-row { font-size: 0.84rem; color: #fbbf24; margin-top: 3px; }
     .coords-row { font-size: 0.72rem; color: #94a3b8; margin-top: 3px; }
 
-    /* MINIMAPA TÁTICO */
     .minimap-frame {
-      background: rgba(13, 17, 26, 0.95);
-      border: 2px solid #2ed57388;
+      background: rgba(9, 13, 22, 0.94);
+      border: 2px solid #38bdf877;
       border-radius: 12px;
       padding: 5px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.65);
@@ -281,20 +297,19 @@
     #minimapCanvas {
       border-radius: 8px;
       display: block;
-      background: #0f1b15;
+      background: #0b1918;
     }
     .minimap-legend {
       font-size: 0.62rem;
       color: #94a3b8;
       margin-top: 3px;
-      letter-spacing: 0.3px;
     }
 
     .top-menu-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-    .btn-hud { background: #1e2436; border: 1px solid #57606f; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.35); }
-    .btn-hud:hover { border-color: #ffa502; color: #ffa502; }
-    .btn-hud.lapis-btn { border-color: #00f2fe; color: #00f2fe; }
-    .btn-hud.switch-char { border-color: #70a1ff; color: #70a1ff; }
+    .btn-hud { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.35); }
+    .btn-hud:hover { border-color: #f59e0b; color: #fbbf24; }
+    .btn-hud.lapis-btn { border-color: #38bdf8; color: #38bdf8; }
+    .btn-hud.switch-char { border-color: #a78bfa; color: #c4b5fd; }
 
     #hud-bottom {
       position: fixed;
@@ -307,79 +322,79 @@
       gap: 8px;
       z-index: 10;
     }
-    .skill-bar { display: flex; gap: 10px; background: rgba(18, 22, 33, 0.92); border: 2px solid #2f3542; padding: 10px 14px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); }
+    .skill-bar { display: flex; gap: 10px; background: rgba(15, 23, 42, 0.92); border: 2px solid #1e293b; padding: 10px 14px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
     .skill-slot {
-      width: 54px; height: 54px; background: #1e2436; border: 2px solid #57606f; border-radius: 10px;
+      width: 54px; height: 54px; background: #1e293b; border: 2px solid #475569; border-radius: 10px;
       position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
     }
-    .skill-slot .key { position: absolute; top: 2px; left: 5px; font-size: 0.7rem; color: #a4b0be; font-weight: bold; }
+    .skill-slot:hover { border-color: #38bdf8; }
+    .skill-slot .key { position: absolute; top: 2px; left: 5px; font-size: 0.7rem; color: #94a3b8; font-weight: bold; }
     .skill-slot .icon { font-size: 1.5rem; }
     .skill-slot .cd-overlay {
-      position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); border-radius: 8px;
+      position: absolute; inset: 0; background: rgba(0, 0, 0, 0.78); border-radius: 8px;
       display: none; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; color: #fff;
     }
     .btn-auto {
-      width: 64px; height: 54px; border-radius: 10px; border: 2px solid #2ed573; background: #162b22;
-      color: #2ed573; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem;
+      width: 64px; height: 54px; border-radius: 10px; border: 2px solid #10b981; background: #064e3b;
+      color: #34d399; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem;
     }
-    .btn-auto.active { background: #2ed573; color: #0b0d13; }
-    .xp-bar-container { width: 440px; height: 10px; background: #1e2436; border: 1px solid #2f3542; border-radius: 5px; overflow: hidden; position: relative; }
-    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #9b59b6, #e056fd); width: 0%; }
+    .btn-auto.active { background: #10b981; color: #060911; }
+    .xp-bar-container { width: 440px; height: 10px; background: #1e293b; border: 1px solid #334155; border-radius: 5px; overflow: hidden; position: relative; }
+    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); width: 0%; }
     .xp-text { position: absolute; inset: 0; font-size: 0.65rem; text-align: center; line-height: 9px; color: #fff; font-weight: bold; }
 
     #controls-hint {
-      position: fixed; bottom: 15px; left: 15px; background: rgba(18, 22, 33, 0.85);
-      padding: 8px 12px; border-radius: 8px; font-size: 0.76rem; color: #a4b0be; line-height: 1.5; display: none; z-index: 10;
+      position: fixed; bottom: 15px; left: 15px; background: rgba(15, 23, 42, 0.88);
+      border: 1px solid #1e293b;
+      padding: 8px 12px; border-radius: 8px; font-size: 0.74rem; color: #94a3b8; line-height: 1.55; display: none; z-index: 10;
     }
 
-    /* ================= INVENTÁRIO DINÂMICO, LÁPIS & FORJA ================= */
+    /* ================= INVENTÁRIO, GEMAS DE ÉTER & FORJA ================= */
     .modal-window {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background: #121622; border: 2px solid #ffa502; border-radius: 16px;
+      background: #0f172a; border: 2px solid #38bdf8; border-radius: 16px;
       width: 1100px; max-width: 97vw; max-height: 92vh; display: none; flex-direction: column; z-index: 100;
       box-shadow: 0 20px 60px rgba(0,0,0,0.9);
     }
     .modal-header {
-      padding: 13px 20px; background: #1a2030; border-bottom: 1px solid #2f3542;
+      padding: 13px 20px; background: #1e293b; border-bottom: 1px solid #334155;
       border-radius: 14px 14px 0 0; display: flex; justify-content: space-between; align-items: center;
     }
-    .modal-header h3 { color: #ffa502; font-size: 1.1rem; letter-spacing: 0.5px; }
-    .btn-close-modal { background: #ff4757; border: none; color: #fff; width: 30px; height: 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .modal-header h3 { color: #38bdf8; font-size: 1.1rem; letter-spacing: 0.5px; }
+    .btn-close-modal { background: #e11d48; border: none; color: #fff; width: 30px; height: 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     .modal-body { padding: 14px; overflow-y: auto; display: flex; gap: 13px; flex-wrap: wrap; }
 
-    /* Coluna 1: Equipados */
     .equip-column {
-      flex: 1.02; min-width: 250px; background: #0d1018; padding: 12px;
-      border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
+      flex: 1.02; min-width: 250px; background: #090d16; padding: 12px;
+      border-radius: 12px; border: 1px solid #1e293b; display: flex; flex-direction: column;
     }
     .equip-column h4, .inspect-column h4, .bag-column h4 {
-      font-size: 0.8rem; color: #a4b0be; margin-bottom: 9px; text-transform: uppercase; letter-spacing: 0.8px;
+      font-size: 0.8rem; color: #94a3b8; margin-bottom: 9px; text-transform: uppercase; letter-spacing: 0.8px;
     }
     .equip-slot-row {
       display: flex; align-items: center; justify-content: space-between;
-      background: #161b29; border: 1.5px solid #2f3542; padding: 7px 10px;
+      background: #131c31; border: 1.5px solid #1e293b; padding: 7px 10px;
       border-radius: 10px; margin-bottom: 7px; font-size: 0.78rem; cursor: pointer; transition: 0.15s;
     }
-    .equip-slot-row:hover { transform: translateX(3px); background: #1d2436; }
+    .equip-slot-row:hover { transform: translateX(3px); background: #1a2642; }
     .stat-summary {
-      margin-top: auto; padding-top: 9px; border-top: 1px solid #2f3542;
-      font-size: 0.77rem; color: #ced6e0; line-height: 1.55;
-      background: #131724; padding: 9px; border-radius: 8px;
+      margin-top: auto; padding-top: 9px; border-top: 1px solid #1e293b;
+      font-size: 0.77rem; color: #cbd5e1; line-height: 1.55;
+      background: #0f172a; padding: 9px; border-radius: 8px;
     }
 
-    /* Coluna 2: Inspeção de Item + Comparação + Extração de Lápis */
     .inspect-column {
-      flex: 1.25; min-width: 295px; background: #0d1018; padding: 12px;
-      border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
+      flex: 1.25; min-width: 295px; background: #090d16; padding: 12px;
+      border-radius: 12px; border: 1px solid #1e293b; display: flex; flex-direction: column;
     }
     .inspect-card {
-      flex: 1; background: #141926; border: 1.5px solid #2f3542; border-radius: 12px;
+      flex: 1; background: #11192c; border: 1.5px solid #1e293b; border-radius: 12px;
       padding: 12px; display: flex; flex-direction: column; justify-content: space-between;
     }
-    .inspect-header { text-align: center; padding-bottom: 8px; border-bottom: 1px solid #252c3d; }
+    .inspect-header { text-align: center; padding-bottom: 8px; border-bottom: 1px solid #1e293b; }
     .inspect-icon-box {
       width: 46px; height: 46px; border-radius: 12px; margin: 0 auto 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.75rem; background: #0d1018;
+      display: flex; align-items: center; justify-content: center; font-size: 1.75rem; background: #090d16;
     }
     .rarity-badge {
       display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.69rem;
@@ -389,11 +404,11 @@
       display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.69rem;
       font-weight: bold; margin-top: 4px;
     }
-    .class-req-ok { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid #2ed57355; }
-    .class-req-no { background: rgba(255, 71, 87, 0.18); color: #ff6b81; border: 1px solid #ff475777; }
+    .class-req-ok { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b98155; }
+    .class-req-no { background: rgba(244, 63, 94, 0.18); color: #fda4af; border: 1px solid #f43f5e77; }
     .weapon-cat-pill {
       display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.67rem;
-      font-weight: bold; margin-top: 4px; background: rgba(112, 161, 255, 0.14); color: #70a1ff; border: 1px solid #70a1ff44;
+      font-weight: bold; margin-top: 4px; background: rgba(56, 189, 248, 0.14); color: #38bdf8; border: 1px solid #38bdf844;
     }
 
     .inspect-stats { margin: 8px 0; font-size: 0.78rem; color: #e2e8f0; }
@@ -401,19 +416,18 @@
       display: flex; justify-content: space-between; align-items: center;
       padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .arrow-up { color: #2ed573; font-weight: bold; font-size: 0.76rem; }
-    .arrow-down { color: #ff4757; font-weight: bold; font-size: 0.76rem; }
+    .arrow-up { color: #34d399; font-weight: bold; font-size: 0.76rem; }
+    .arrow-down { color: #fb7185; font-weight: bold; font-size: 0.76rem; }
     .arrow-eq { color: #64748b; font-size: 0.72rem; }
 
-    /* Engastes / Slots de Lápis + Extração Individual */
     .lapis-section {
-      background: #0b0e15; border: 1px dashed #334155; border-radius: 10px; padding: 9px; margin-top: 6px;
+      background: #080c14; border: 1px dashed #334155; border-radius: 10px; padding: 9px; margin-top: 6px;
     }
     .lapis-title { font-size: 0.7rem; color: #94a3b8; margin-bottom: 7px; font-weight: bold; text-transform: uppercase; text-align: center; }
     .lapis-sockets-row { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
     .lapis-socket {
       width: 30px; height: 30px; border-radius: 50%; border: 2px dashed #475569;
-      background: #161c2c; display: flex; align-items: center; justify-content: center;
+      background: #131c31; display: flex; align-items: center; justify-content: center;
       font-size: 0.7rem; color: #64748b; font-weight: bold; position: relative;
     }
     .lapis-socket.unlocked { border-style: solid; box-shadow: inset 0 0 8px rgba(255,255,255,0.08); }
@@ -421,20 +435,20 @@
       border-style: solid;
       box-shadow: 0 0 10px currentColor;
       color: #fff;
-      font-size: 0.63rem;
+      font-size: 0.61rem;
     }
     .linked-lapis-list {
       margin-top: 8px; display: flex; flex-direction: column; gap: 5px;
     }
     .linked-lapis-item {
       display: flex; align-items: center; justify-content: space-between;
-      background: #141926; border: 1px solid #262e40; border-radius: 7px;
+      background: #11192c; border: 1px solid #1e293b; border-radius: 7px;
       padding: 4px 7px; font-size: 0.68rem;
     }
     .btn-extract-lapis {
-      background: rgba(255, 165, 2, 0.16);
-      border: 1px solid #ffa502;
-      color: #ffa502;
+      background: rgba(245, 158, 11, 0.16);
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
       border-radius: 5px;
       padding: 3px 7px;
       font-size: 0.64rem;
@@ -443,8 +457,8 @@
       white-space: nowrap;
     }
     .btn-extract-lapis:hover:not(:disabled) {
-      background: #ffa502;
-      color: #0b0d13;
+      background: #f59e0b;
+      color: #060911;
     }
     .btn-extract-lapis:disabled {
       border-color: #475569;
@@ -453,102 +467,99 @@
       cursor: not-allowed;
     }
 
-    /* Coluna 3: Mochila com Abas (Equipamentos / Lápis) */
     .bag-column {
-      flex: 1.45; min-width: 330px; background: #0d1018; padding: 12px;
-      border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
+      flex: 1.45; min-width: 330px; background: #090d16; padding: 12px;
+      border-radius: 12px; border: 1px solid #1e293b; display: flex; flex-direction: column;
     }
     .bag-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
     .bag-tab-btn {
-      flex: 1; padding: 7px; border-radius: 8px; border: 1.5px solid #2f3542;
-      background: #161b29; color: #94a3b8; font-weight: bold; font-size: 0.78rem; cursor: pointer;
+      flex: 1; padding: 7px; border-radius: 8px; border: 1.5px solid #1e293b;
+      background: #131c31; color: #94a3b8; font-weight: bold; font-size: 0.78rem; cursor: pointer;
     }
     .bag-tab-btn.active {
-      border-color: #ffa502; color: #ffa502; background: #1e2538;
+      border-color: #38bdf8; color: #38bdf8; background: #172540;
     }
     .bag-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
       gap: 8px; max-height: 390px; overflow-y: auto; padding-right: 2px;
     }
     .bag-item {
-      background: #161b29; border: 1.5px solid #2f3542; border-radius: 10px;
+      background: #131c31; border: 1.5px solid #1e293b; border-radius: 10px;
       padding: 8px; font-size: 0.75rem; display: flex; flex-direction: column;
       justify-content: space-between; cursor: pointer; transition: 0.15s;
     }
-    .bag-item:hover { transform: translateY(-2px); background: #1d2436; }
+    .bag-item:hover { transform: translateY(-2px); background: #1a2642; }
     .bag-item.wrong-class { opacity: 0.85; }
     .mini-sockets { display: flex; gap: 3px; margin: 4px 0; flex-wrap: wrap; }
-    .mini-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #64748b; background: #0b0e15; }
+    .mini-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #64748b; background: #080c14; }
     .bag-item-actions { display: flex; gap: 4px; margin-top: 6px; }
     .btn-mini { flex: 1; padding: 5px 4px; border: none; border-radius: 5px; font-size: 0.67rem; font-weight: bold; cursor: pointer; }
-    .btn-equip { background: #2ed573; color: #000; }
+    .btn-equip { background: #10b981; color: #000; }
     .btn-equip:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
-    .btn-link { background: #00f2fe; color: #000; }
+    .btn-link { background: #38bdf8; color: #000; }
     .btn-link:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
-    .btn-sell { background: #ffa502; color: #000; }
-    .btn-sell-all { background: #ff4757; color: #fff; }
+    .btn-sell { background: #f59e0b; color: #000; }
+    .btn-sell-all { background: #e11d48; color: #fff; }
     .btn-unequip { background: #475569; color: #fff; padding: 3px 7px; border: none; border-radius: 5px; font-size: 0.65rem; cursor: pointer; }
 
-    /* Feedback visual de Linkagem e Extração */
     #link-feedback-banner {
       display: none; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;
       font-size: 0.77rem; font-weight: bold; text-align: center;
     }
 
-    /* Forja */
     .forge-list { flex: 1; min-width: 240px; }
-    .forge-item-btn { width: 100%; text-align: left; background: #161b29; border: 1.5px solid #2f3542; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.85rem; }
-    .forge-item-btn.active { background: #22293d; box-shadow: 0 0 10px rgba(255,165,2,0.3); }
-    .forge-anvil { flex: 1.3; min-width: 270px; background: #0d1018; border: 1px solid #2f3542; border-radius: 10px; padding: 18px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-    .btn-forge-do { margin-top: 14px; padding: 11px 24px; background: linear-gradient(135deg, #ff6348, #ffa502); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
-    .btn-forge-do:disabled { background: #57606f; cursor: not-allowed; }
+    .forge-item-btn { width: 100%; text-align: left; background: #131c31; border: 1.5px solid #1e293b; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.85rem; }
+    .forge-item-btn.active { background: #1c2947; box-shadow: 0 0 12px rgba(56,189,248,0.3); }
+    .forge-anvil { flex: 1.3; min-width: 270px; background: #090d16; border: 1px solid #1e293b; border-radius: 10px; padding: 18px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .btn-forge-do { margin-top: 14px; padding: 11px 24px; background: linear-gradient(135deg, #0284c7, #38bdf8); border: none; border-radius: 8px; color: #060911; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
+    .btn-forge-do:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
   <!-- TELA PRINCIPAL -->
   <div id="char-screen">
-    <h1>⚔️ Asa de Cristal 2.5D ⚔️</h1>
-    <p class="subtitle">Crie um novo Herói ou selecione um dos seus personagens salvos abaixo</p>
+    <h1>⚔️ Aethelgard ⚔️</h1>
+    <p class="subtitle">Forje sua lenda em 3D • Crie um Herói ou selecione um personagem salvo</p>
 
     <div class="section-box">
       <h2>✨ Criar Novo Personagem</h2>
       <div class="class-grid" id="class-grid">
-        <div class="class-card selected" id="card-cavaleiro" onclick="selecionarClasse('cavaleiro')">
-          <div class="class-icon" style="background:#eccc6822; border:2px solid #eccc68; color:#eccc68">🛡️</div>
-          <h3 style="color:#eccc68">Cavaleiro</h3>
-          <div class="role">Corpo a Corpo • Espada/Machado</div>
-          <div class="desc">Tanque corpo a corpo. Usa armas de curta distância e armadura pesada.</div>
+        <div class="class-card selected" id="card-templario" onclick="selecionarClasse('templario')">
+          <div class="class-icon" style="background:#f59e0b22; border:2px solid #f59e0b; color:#fbbf24">🛡️</div>
+          <h3 style="color:#fbbf24">Templário</h3>
+          <div class="role">Corpo a Corpo • Lâmina Solar</div>
+          <div class="desc">Guardião blindado com escudo rúnico e espada de curto alcance.</div>
         </div>
-        <div class="class-card" id="card-mago" onclick="selecionarClasse('mago')">
-          <div class="class-icon" style="background:#70a1ff22; border:2px solid #70a1ff; color:#70a1ff">🔮</div>
-          <h3 style="color:#70a1ff">Mago</h3>
-          <div class="role">ATQ Mágico • Cajado/Orbe</div>
-          <div class="desc">Conjura magias à distância com cajados arcanos e alta defesa mágica.</div>
+        <div class="class-card" id="card-arcanista" onclick="selecionarClasse('arcanista')">
+          <div class="class-icon" style="background:#a855f722; border:2px solid #a855f7; color:#c084fc">🔮</div>
+          <h3 style="color:#c084fc">Arcanista</h3>
+          <div class="role">ATQ Mágico • Cajado Vórtice</div>
+          <div class="desc">Mestre do éter astral que conjura tempestades e meteoros à distância.</div>
         </div>
-        <div class="class-card" id="card-arqueiro" onclick="selecionarClasse('arqueiro')">
-          <div class="class-icon" style="background:#2ed57322; border:2px solid #2ed573; color:#2ed573">🏹</div>
-          <h3 style="color:#2ed573">Arqueiro</h3>
-          <div class="role">À Distância • Arco/Besta</div>
-          <div class="desc">Especialista em longo alcance com arcos e bestas de alto crítico.</div>
+        <div class="class-card" id="card-patrulheiro" onclick="selecionarClasse('patrulheiro')">
+          <div class="class-icon" style="background:#10b98122; border:2px solid #10b981; color:#34d399">🏹</div>
+          <h3 style="color:#34d399">Patrulheiro</h3>
+          <div class="role">À Distância • Arco de Vento</div>
+          <div class="desc">Atirador ágil dos bosques com flechas luminosas de alto crítico.</div>
         </div>
-        <div class="class-card" id="card-sacerdote" onclick="selecionarClasse('sacerdote')">
-          <div class="class-icon" style="background:#f1f2f622; border:2px solid #f1f2f6; color:#f1f2f6">✨</div>
-          <h3 style="color:#f1f2f6">Sacerdote</h3>
-          <div class="role">ATQ Mágico • Cetro/Livro</div>
-          <div class="desc">Usa cetros sagrados à distância para cura divina e luz celestial.</div>
+        <div class="class-card" id="card-clerigo" onclick="selecionarClasse('clerigo')">
+          <div class="class-icon" style="background:#38bdf822; border:2px solid #38bdf8; color:#7dd3fc">✨</div>
+          <h3 style="color:#7dd3fc">Clérigo Solar</h3>
+          <div class="role">ATQ Mágico • Cetro Aurora</div>
+          <div class="desc">Canaliza a luz celestial para curar feridas e punir inimigos.</div>
         </div>
-        <div class="class-card" id="card-assassino" onclick="selecionarClasse('assassino')">
-          <div class="class-icon" style="background:#ff475722; border:2px solid #ff4757; color:#ff4757">🗡️</div>
-          <h3 style="color:#ff4757">Assassino</h3>
-          <div class="role">Corpo a Corpo • Adagas/Garras</div>
-          <div class="desc">Combate corpo a corpo letal com adagas gêmeas, crítico e esquiva.</div>
+        <div class="class-card" id="card-sombra" onclick="selecionarClasse('sombra')">
+          <div class="class-icon" style="background:#f43f5e22; border:2px solid #f43f5e; color:#fb7185">🗡️</div>
+          <h3 style="color:#fb7185">Sombra</h3>
+          <div class="role">Corpo a Corpo • Adagas Éter</div>
+          <div class="desc">Duelista furtivo com adagas gêmeas, velocidade e esquiva extrema.</div>
         </div>
       </div>
 
       <div class="start-box">
-        <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="HeroiLuz">
-        <button type="button" class="btn-play" id="btn-create-char" onclick="criarPersonagem()">Criar e Entrar</button>
+        <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="Kaelen">
+        <button type="button" class="btn-play" id="btn-create-char" onclick="criarPersonagem()">Entrar em Aethelgard</button>
       </div>
     </div>
 
@@ -562,8 +573,9 @@
     </div>
   </div>
 
-  <!-- CANVAS PRINCIPAL E HUD -->
-  <canvas id="gameCanvas"></canvas>
+  <!-- VIEWPORT 3D & OVERLAY DE LABELS -->
+  <div id="viewport3d"></div>
+  <canvas id="overlay2d"></canvas>
 
   <div id="hud-top-left">
     <div class="avatar-circle" id="hud-avatar">⚔️<span class="lvl-badge" id="hud-lvl">Nv. 1</span></div>
@@ -580,26 +592,26 @@
   <div id="hud-top-right">
     <div class="map-and-radar-row">
       <div class="map-info">
-        <div class="map-name">🌲 Floresta de Vidalia (Nv. 1-10)</div>
-        <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span></div>
-        <div class="coords-row" id="hud-coords">Posição: (0, 0)</div>
+        <div class="map-name">🌲 Vale de Valenwood (Nv. 1-10)</div>
+        <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💠 Cristais Forja: <span id="hud-stones">0</span></div>
+        <div class="coords-row" id="hud-coords">Coords 3D: (0, 0)</div>
       </div>
-      <div class="minimap-frame" title="Minimapa Tático da Floresta de Vidalia">
+      <div class="minimap-frame" title="Minimapa Tático 3D">
         <canvas id="minimapCanvas" width="128" height="128"></canvas>
         <div class="minimap-legend">⚪Você 🔴Mob ⭐Mini 🐉Boss</div>
       </div>
     </div>
     <div class="top-menu-buttons">
       <button type="button" class="btn-hud" onclick="openBagWithTab('equip')">🎒 Mochila (B)</button>
-      <button type="button" class="btn-hud lapis-btn" onclick="openBagWithTab('lapis')">💎 Lápis (L)</button>
+      <button type="button" class="btn-hud lapis-btn" onclick="openBagWithTab('lapis')">💎 Gemas Éter (L)</button>
       <button type="button" class="btn-hud" onclick="toggleModal('forge-modal')">🔨 Forja (F)</button>
       <button type="button" class="btn-hud switch-char" onclick="returnToCharSelect()">👥 Personagens</button>
     </div>
   </div>
 
   <div id="controls-hint">
-    🖱️ <b>Clique:</b> Mover/Atacar | <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção<br>
-    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Mochila | <b>L:</b> Linkar/Tirar Lápis | <b>F:</b> Forja
+    🖱️ <b>Clique Esq.:</b> Mover/Atacar | <b>Botão Dir. + Arrastar:</b> Girar Câmera 360° | <b>Scroll:</b> Zoom<br>
+    ⌨️ <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção | <b>A:</b> Auto | <b>B:</b> Mochila | <b>L:</b> Gemas | <b>F:</b> Forja
   </div>
 
   <div id="hud-bottom">
@@ -610,10 +622,10 @@
     </div>
   </div>
 
-  <!-- MODAL INVENTÁRIO DINÂMICO, LINKAGEM & EXTRAÇÃO DE LÁPIS -->
+  <!-- MODAL INVENTÁRIO, LINKAGEM & EXTRAÇÃO DE GEMAS DE ÉTER -->
   <div class="modal-window" id="bag-modal">
     <div class="modal-header">
-      <h3>🎒 Inventário Dinâmico, Linkagem & Extração de Lápis (💰 Ouro)</h3>
+      <h3>🎒 Inventário 3D, Linkagem & Extração de Gemas de Éter (💰 Ouro)</h3>
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
@@ -627,7 +639,7 @@
         <h4>🔍 Item Selecionado & Engastes</h4>
         <div class="inspect-card" id="inspect-panel">
           <div style="text-align:center; color:#64748b; margin:auto;">
-            Selecione um equipamento para inspecionar, linkar Lápis nos slots livres ou extrair Lápis já encaixados.
+            Selecione um equipamento para inspecionar, linkar Gemas nos slots livres ou extrair Gemas já encaixadas.
           </div>
         </div>
       </div>
@@ -635,14 +647,14 @@
       <div class="bag-column">
         <div class="bag-tabs">
           <button type="button" class="bag-tab-btn active" id="tab-btn-equip" onclick="switchBagTab('equip')">📦 Equipamentos (<span id="bag-count">0</span>/24)</button>
-          <button type="button" class="bag-tab-btn" id="tab-btn-lapis" onclick="switchBagTab('lapis')">💎 Bolsa de Lápis (<span id="lapis-count">0</span>/30)</button>
+          <button type="button" class="bag-tab-btn" id="tab-btn-lapis" onclick="switchBagTab('lapis')">💎 Gemas de Éter (<span id="lapis-count">0</span>/30)</button>
         </div>
 
         <div id="link-feedback-banner"></div>
 
         <div id="bag-tab-equip">
           <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:8px;">
-            <button type="button" class="btn-mini btn-sell" style="flex:none; padding:5px 8px;" onclick="sellAllNormal()">Vender Normais</button>
+            <button type="button" class="btn-mini btn-sell" style="flex:none; padding:5px 8px;" onclick="sellAllNormal()">Vender Comuns</button>
             <button type="button" class="btn-mini btn-sell-all" style="flex:none; padding:5px 8px;" onclick="sellEverything()">Vender Tudo</button>
           </div>
           <div class="bag-grid" id="bag-grid"></div>
@@ -650,7 +662,7 @@
 
         <div id="bag-tab-lapis" style="display:none;">
           <div style="font-size:0.71rem; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
-            Selecione um equipamento com slot vazio e clique em <b style="color:#00f2fe;">Linkar</b> (custa Ouro). Para remover um Lápis, clique em <b style="color:#ffa502;">Extrair</b> no painel central!
+            Selecione um equipamento com slot vazio e clique em <b style="color:#38bdf8;">Linkar</b> (custa Ouro). Para remover uma Gema, clique em <b style="color:#fbbf24;">Tirar</b> no painel central!
           </div>
           <div class="bag-grid" id="lapis-grid"></div>
         </div>
@@ -661,35 +673,35 @@
   <!-- MODAL FORJA -->
   <div class="modal-window" id="forge-modal">
     <div class="modal-header">
-      <h3>🔨 Forja & Aprimoramento (+1 até +12)</h3>
+      <h3>🔨 Bigorna de Aethelgard (+1 até +12)</h3>
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
       <div class="forge-list">
-        <h4 style="font-size:0.85rem; color:#a4b0be; margin-bottom:8px;">ESCOLHA UM ITEM EQUIPADO:</h4>
+        <h4 style="font-size:0.85rem; color:#94a3b8; margin-bottom:8px;">ESCOLHA UM ITEM EQUIPADO:</h4>
         <div id="forge-slot-list"></div>
       </div>
       <div class="forge-anvil" id="forge-anvil">
-        <p style="color:#a4b0be;">Selecione um equipamento ao lado para aprimorar.</p>
+        <p style="color:#94a3b8;">Selecione um equipamento ao lado para aprimorar.</p>
       </div>
     </div>
   </div>
 
 <script>
-  var STORAGE_KEY_SLOTS = 'asaDeCristal_slots_v2';
-  var WORLD_SIZE = 1600;
+  var STORAGE_KEY_SLOTS = 'aethelgard_slots_3d_v1';
+  var WORLD_SIZE = 160; // Unidades 3D (-80 a +80)
   var keysPressed = {};
 
   var characterSlots = [null, null, null];
   var activeSlotIndex = -1;
-  var selectedClassKey = 'cavaleiro';
+  var selectedClassKey = 'templario';
   var player = null;
   var enemies = [];
   var worldProps = [];
-  var worldGroundDecals = [];
   var floatingTexts = [];
-  var effects = [];
-  var clickMarker = null;
+  var effects3D = [];
+  var projectiles3D = [];
+  var clickMarker3D = null;
   var autoCombat = false;
   var gameRunning = false;
   var loopStarted = false;
@@ -700,101 +712,24 @@
   var lastTime = performance.now();
   var worldAnimTime = 0;
 
-  // ================= GERADOR DETERMINÍSTICO DO CENÁRIO 2.5D =================
-  function seededNoise(x, y) {
-    var s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
-    return s - Math.floor(s);
-  }
+  // ================= CÂMERA ORBITAL 3D DE MMORPG =================
+  var camYaw = 0.75;      // Ângulo horizontal ao redor do herói
+  var camPitch = 0.62;    // Inclinação vertical
+  var camDistance = 24;   // Zoom (8 a 48)
+  var isDraggingCam = false;
+  var lastMouseX = 0;
+  var lastMouseY = 0;
 
-  function isPointInLake(wx, wy) {
-    // Lago cristalino no setor Sudoeste (-430, 390)
-    var dx = (wx - (-430)) / 210;
-    var dy = (wy - 390) / 145;
-    return (dx * dx + dy * dy) <= 1.0;
-  }
-
-  function isPointOnRoad(wx, wy) {
-    // Praça central rúnica
-    if (Math.hypot(wx, wy) < 130) return true;
-    // Estrada principal diagonal NW -> SE
-    if (Math.abs(wy - wx * 0.25) < 42 && Math.abs(wx) < 760) return true;
-    // Trilha secundária para o Nordeste (Santuário dos Cristais)
-    if (Math.abs(wx - 220) < 34 && wy > -650 && wy < 80) return true;
-    return false;
-  }
-
-  function initWorldEnvironment() {
-    worldProps = [];
-    worldGroundDecals = [];
-    var half = WORLD_SIZE / 2;
-
-    // 1. Detalhes planos do chão (flores, tufos de erva, pedrinhas)
-    for (var gx = -half + 60; gx <= half - 60; gx += 95) {
-      for (var gy = -half + 60; gy <= half - 60; gy += 95) {
-        var r = seededNoise(gx, gy);
-        var px = gx + (seededNoise(gy, gx) - 0.5) * 65;
-        var py = gy + (seededNoise(gx + 19, gy - 11) - 0.5) * 65;
-        if (isPointInLake(px, py) || isPointOnRoad(px, py)) continue;
-
-        if (r > 0.72) {
-          worldGroundDecals.push({ type: 'flowers', x: px, y: py, color: r > 0.86 ? '#facc15' : '#ff6b81' });
-        } else if (r > 0.35) {
-          worldGroundDecals.push({ type: 'grass', x: px, y: py });
-        } else {
-          worldGroundDecals.push({ type: 'pebbles', x: px, y: py });
-        }
-      }
-    }
-
-    // 2. Bordas naturais de floresta densa ao redor de todo o perímetro
-    for (var b = -half; b <= half; b += 85) {
-      var jitter1 = (seededNoise(b, 11) - 0.5) * 26;
-      var jitter2 = (seededNoise(b, 29) - 0.5) * 26;
-      worldProps.push({ type: 'pine', x: b, y: -half + 18 + jitter1, scale: 1.15 + seededNoise(b, 3) * 0.35, radius: 22 });
-      worldProps.push({ type: 'pine', x: b, y: half - 18 + jitter2,  scale: 1.15 + seededNoise(b, 7) * 0.35, radius: 22 });
-      worldProps.push({ type: 'pine', x: -half + 18 + jitter2, y: b, scale: 1.15 + seededNoise(3, b) * 0.35, radius: 22 });
-      worldProps.push({ type: 'pine', x: half - 18 + jitter1,  y: b, scale: 1.15 + seededNoise(7, b) * 0.35, radius: 22 });
-    }
-
-    // 3. Árvores internas, Rochas com musgo, Ruínas e Cristais de Mana
-    var propCandidates = [
-      // Cristais de Mana Brilhantes (pontos de referência e energia)
-      { type: 'crystal', x: -240, y: -260, scale: 1.15, color: '#00f2fe', radius: 22 },
-      { type: 'crystal', x: 310,  y: -360, scale: 1.25, color: '#a855f7', radius: 24 },
-      { type: 'crystal', x: 460,  y: 280,  scale: 1.2,  color: '#00f2fe', radius: 22 },
-      { type: 'crystal', x: -520, y: 120,  scale: 1.1,  color: '#2ed573', radius: 20 },
-
-      // Pilares de Ruínas Antigas
-      { type: 'ruin', x: -165, y: -135, scale: 1.0, radius: 20 },
-      { type: 'ruin', x: 165,  y: -135, scale: 1.0, radius: 20 },
-      { type: 'ruin', x: 380,  y: -180, scale: 1.15, radius: 22 },
-
-      // Bosques e Rochas espalhados
-      { type: 'oak',  x: -340, y: -440, scale: 1.25, radius: 24 },
-      { type: 'pine', x: -450, y: -320, scale: 1.2,  radius: 22 },
-      { type: 'rock', x: -290, y: -390, scale: 1.1,  radius: 20 },
-
-      { type: 'pine', x: 120,  y: -480, scale: 1.3,  radius: 24 },
-      { type: 'oak',  x: 470,  y: -460, scale: 1.2,  radius: 24 },
-      { type: 'rock', x: 260,  y: -250, scale: 0.95, radius: 18 },
-
-      { type: 'oak',  x: 560,  y: -40,  scale: 1.3,  radius: 24 },
-      { type: 'pine', x: 610,  y: 160,  scale: 1.15, radius: 22 },
-      { type: 'rock', x: 340,  y: 440,  scale: 1.25, radius: 22 },
-      { type: 'pine', x: 190,  y: 540,  scale: 1.25, radius: 22 },
-
-      { type: 'oak',  x: -140, y: 340,  scale: 1.15, radius: 22 },
-      { type: 'rock', x: -240, y: 510,  scale: 1.15, radius: 20 },
-      { type: 'pine', x: -610, y: -150, scale: 1.3,  radius: 24 },
-      { type: 'oak',  x: -630, y: 540,  scale: 1.2,  radius: 24 }
-    ];
-
-    propCandidates.forEach(function(p) {
-      if (!isPointInLake(p.x, p.y)) {
-        worldProps.push(p);
-      }
-    });
-  }
+  // ================= VARIÁVEIS DO MOTOR 3D (THREE.JS) =================
+  var scene = null;
+  var camera = null;
+  var renderer = null;
+  var raycaster = new THREE.Raycaster();
+  var mouseNDC = new THREE.Vector2();
+  var groundPlaneMesh = null;
+  var playerMeshGroup = null;
+  var playerAnimParts = {};
+  var threeInitialized = false;
 
   // ================= SISTEMA DE ÁUDIO (WEB AUDIO API) =================
   var audioCtx = null;
@@ -836,7 +771,6 @@
       var ctxAudio = getAudioCtx();
       if (!ctxAudio) return;
       var now = ctxAudio.currentTime;
-
       var bufferSize = Math.floor(ctxAudio.sampleRate * 0.45);
       var buffer = ctxAudio.createBuffer(1, bufferSize, ctxAudio.sampleRate);
       var data = buffer.getChannelData(0);
@@ -847,79 +781,60 @@
       }
       var noise = ctxAudio.createBufferSource();
       noise.buffer = buffer;
-
       var filter = ctxAudio.createBiquadFilter();
       filter.type = 'highpass';
       filter.frequency.setValueAtTime(1800, now);
-
       var noiseGain = ctxAudio.createGain();
       noiseGain.gain.setValueAtTime(0.32, now);
       noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
       noise.connect(filter);
       filter.connect(noiseGain);
       noiseGain.connect(ctxAudio.destination);
       noise.start(now);
-
-      var shards = [2400, 3150, 1950, 2850, 3600];
-      shards.forEach(function(freq, idx) {
-        var osc = ctxAudio.createOscillator();
-        var g = ctxAudio.createGain();
-        var t = now + idx * 0.045;
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, t);
-        osc.frequency.exponentialRampToValueAtTime(freq * 0.55, t + 0.07);
-        g.gain.setValueAtTime(0.11, t);
-        g.gain.exponentialRampToValueAtTime(0.001, t + 0.075);
-        osc.connect(g);
-        g.connect(ctxAudio.destination);
-        osc.start(t);
-        osc.stop(t + 0.08);
-      });
     } catch (e) {}
   }
 
-  // ================= DEFINIÇÃO DOS 7 LÁPIS OFICIAIS (NV. 1 A 5) =================
+  // ================= 7 GEMAS DE ÉTER ORIGINAIS (NV. 1 A 5) =================
   var LAPIS_TYPES = {
-    STR: {
-      code: 'STR', name: 'Lápis STR', statLabel: 'Ataque Físico',
-      color: '#ff4757', bgTint: '#ff475722',
+    FOR: {
+      code: 'FOR', name: 'Rubi de Força', statLabel: 'Ataque Físico',
+      color: '#f43f5e', bgTint: '#f43f5e22',
       values: [0, 8, 18, 32, 52, 80],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + ' ATQ Físico'; }
     },
-    DEX: {
-      code: 'DEX', name: 'Lápis DEX', statLabel: 'Evasão',
-      color: '#facc15', bgTint: '#facc1522',
+    AGI: {
+      code: 'AGI', name: 'Topázio Ágil', statLabel: 'Evasão',
+      color: '#fbbf24', bgTint: '#fbbf2422',
       values: [0, 1.5, 3.0, 5.0, 7.5, 11.0],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + '% Evasão'; }
     },
-    REC: {
-      code: 'REC', name: 'Lápis REC', statLabel: 'Defesa Física',
+    VIG: {
+      code: 'VIG', name: 'Ametista Férrea', statLabel: 'Defesa Física',
       color: '#a855f7', bgTint: '#a855f724',
       values: [0, 6, 14, 25, 40, 62],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + ' DEF Física'; }
     },
     INT: {
-      code: 'INT', name: 'Lápis INT', statLabel: 'Ataque Mágico',
+      code: 'INT', name: 'Safira Arcana', statLabel: 'Ataque Mágico',
       color: '#3b82f6', bgTint: '#3b82f624',
       values: [0, 8, 18, 32, 52, 80],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + ' ATQ Mágico'; }
     },
-    WIS: {
-      code: 'WIS', name: 'Lápis WIS', statLabel: 'Defesa Mágica',
-      color: '#2ed573', bgTint: '#2ed57322',
+    ESP: {
+      code: 'ESP', name: 'Esmeralda Astral', statLabel: 'Defesa Mágica',
+      color: '#10b981', bgTint: '#10b98122',
       values: [0, 6, 14, 25, 40, 62],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + ' DEF Mágica'; }
     },
-    LUC: {
-      code: 'LUC', name: 'Lápis LUC', statLabel: 'Chance de Crítico',
-      color: '#00f2fe', bgTint: '#00f2fe22',
+    SOR: {
+      code: 'SOR', name: 'Diamante Fortuna', statLabel: 'Chance de Crítico',
+      color: '#38bdf8', bgTint: '#38bdf822',
       values: [0, 2.0, 4.0, 6.5, 9.5, 14.0],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + '% Crítico'; }
     },
     HP: {
-      code: 'HP', name: 'Lápis HP', statLabel: 'Vida Máxima',
-      color: '#ff6b81', bgTint: '#ff6b8124',
+      code: 'HP', name: 'Quartzo Vital', statLabel: 'Vida Máxima',
+      color: '#fb7185', bgTint: '#fb718524',
       values: [0, 45, 105, 190, 310, 480],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + ' HP Máx'; }
     }
@@ -928,199 +843,153 @@
   var LAPIS_LINK_CHANCE    = [0, 85, 70, 55, 40, 25];
   var LAPIS_EXTRACT_CHANCE = [0, 80, 65, 50, 35, 25];
 
-  function getLapisLinkGoldCost(lvl) {
-    return (lvl || 1) * 50;
-  }
-
-  function getLapisExtractGoldCost(lvl) {
-    return (lvl || 1) * 80;
-  }
+  function getLapisLinkGoldCost(lvl) { return (lvl || 1) * 50; }
+  function getLapisExtractGoldCost(lvl) { return (lvl || 1) * 80; }
 
   function generateRandomLapis(tierType) {
     var keys = Object.keys(LAPIS_TYPES);
     var typeKey = keys[Math.floor(Math.random() * keys.length)];
     var lvl = 1;
     var r = Math.random();
-
     if (tierType === 'boss') {
-      if (r > 0.78) lvl = 5;
-      else if (r > 0.45) lvl = 4;
-      else lvl = 3;
+      lvl = r > 0.78 ? 5 : (r > 0.45 ? 4 : 3);
     } else if (tierType === 'miniboss') {
-      if (r > 0.80) lvl = 4;
-      else if (r > 0.45) lvl = 3;
-      else lvl = 2;
+      lvl = r > 0.80 ? 4 : (r > 0.45 ? 3 : 2);
     } else {
-      if (r > 0.88) lvl = 3;
-      else if (r > 0.58) lvl = 2;
-      else lvl = 1;
+      lvl = r > 0.88 ? 3 : (r > 0.58 ? 2 : 1);
     }
-
     return {
-      id: 'lapis_' + Math.random().toString(36).slice(2, 10),
+      id: 'gema_' + Math.random().toString(36).slice(2, 10),
       type: typeKey,
       level: lvl,
       sellPrice: lvl * 35
     };
   }
 
-  // ================= CLASSES COM ALCANCE E TIPO DE ARMA EXCLUSIVO =================
+  // ================= 5 CLASSES ORIGINAIS DE AETHELGARD =================
   var CLASSES = {
-    cavaleiro: {
-      name: 'Cavaleiro', icon: '🛡️', color: '#eccc68',
+    templario: {
+      name: 'Templário', icon: '🛡️', color: '#fbbf24', hexColor: 0xfbbf24, armorHex: 0x1d4ed8,
       attackType: 'melee',
-      weaponCategoryLabel: '⚔️ Arma Corpo a Corpo (Perto)',
-      baseHp: 230, baseMp: 80,
-      baseMeleeAtk: 24, baseRangedAtk: 0, baseMagicAtk: 0,
-      basePhysDef: 16, baseMagDef: 8,
-      baseCrit: 8, baseEva: 4, range: 68,
+      weaponCategoryLabel: '⚔️ Lâmina Corpo a Corpo (Perto)',
+      baseHp: 235, baseMp: 85,
+      baseMeleeAtk: 25, baseRangedAtk: 0, baseMagicAtk: 0,
+      basePhysDef: 17, baseMagDef: 9,
+      baseCrit: 8, baseEva: 4, range: 6.5,
       skills: [
-        { name: 'Golpe Cruzado', icon: '⚔️', mult: 1.3, mp: 5, cd: 1.5, range: 70, color: '#ffa502' },
-        { name: 'Escudo Sagrado', icon: '🛡️', mult: 0, heal: 0.25, mp: 15, cd: 6, range: 0, color: '#70a1ff' },
-        { name: 'Impacto Sísmico', icon: '💥', mult: 2.0, mp: 20, cd: 5, range: 90, aoe: true, color: '#ff4757' },
-        { name: 'Fúria Real', icon: '🔥', mult: 2.8, mp: 30, cd: 9, range: 85, color: '#ff6348' }
+        { name: 'Corte Solar', icon: '⚔️', mult: 1.35, mp: 5, cd: 1.4, range: 6.8, color: '#fbbf24', hex: 0xfbbf24, proj: false },
+        { name: 'Égide Dourada', icon: '🛡️', mult: 0, heal: 0.28, mp: 15, cd: 6, range: 0, color: '#38bdf8', hex: 0x38bdf8, proj: false },
+        { name: 'Onda Sísmica', icon: '💥', mult: 2.05, mp: 20, cd: 5, range: 8.5, aoe: true, color: '#f59e0b', hex: 0xf59e0b, proj: false },
+        { name: 'Juízo do Sol', icon: '☀️', mult: 2.9, mp: 30, cd: 9, range: 8.0, color: '#f43f5e', hex: 0xf43f5e, proj: false }
       ]
     },
-    mago: {
-      name: 'Mago', icon: '🔮', color: '#70a1ff',
+    arcanista: {
+      name: 'Arcanista', icon: '🔮', color: '#c084fc', hexColor: 0xc084fc, armorHex: 0x581c87,
       attackType: 'magic',
-      weaponCategoryLabel: '🔮 Arma Mágica (Distância)',
-      baseHp: 135, baseMp: 190,
-      baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 36,
-      basePhysDef: 5, baseMagDef: 15,
-      baseCrit: 12, baseEva: 6, range: 215,
+      weaponCategoryLabel: '🔮 Cajado Astral (Distância)',
+      baseHp: 140, baseMp: 195,
+      baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 37,
+      basePhysDef: 5, baseMagDef: 16,
+      baseCrit: 12, baseEva: 6, range: 21.0,
       skills: [
-        { name: 'Bola de Fogo', icon: '🔥', mult: 1.4, mp: 8, cd: 1.4, range: 220, color: '#ff6348' },
-        { name: 'Lança de Gelo', icon: '❄️', mult: 1.8, mp: 16, cd: 4, range: 220, color: '#1e90ff' },
-        { name: 'Tempestade Arcana', icon: '⚡', mult: 2.3, mp: 28, cd: 6, range: 220, aoe: true, color: '#a29bfe' },
-        { name: 'Meteoro', icon: '☄️', mult: 3.4, mp: 45, cd: 10, range: 230, aoe: true, color: '#ff4757' }
+        { name: 'Orbe Etéreo', icon: '🔮', mult: 1.4, mp: 8, cd: 1.3, range: 22.0, color: '#c084fc', hex: 0xc084fc, proj: true },
+        { name: 'Estilhaço Glacial', icon: '❄️', mult: 1.85, mp: 16, cd: 4, range: 22.0, color: '#38bdf8', hex: 0x38bdf8, proj: true },
+        { name: 'Vórtice Astral', icon: '🌀', mult: 2.35, mp: 28, cd: 6, range: 22.0, aoe: true, color: '#818cf8', hex: 0x818cf8, proj: false },
+        { name: 'Cometa de Éter', icon: '☄️', mult: 3.5, mp: 45, cd: 10, range: 24.0, aoe: true, color: '#f43f5e', hex: 0xf43f5e, proj: true }
       ]
     },
-    arqueiro: {
-      name: 'Arqueiro', icon: '🏹', color: '#2ed573',
+    patrulheiro: {
+      name: 'Patrulheiro', icon: '🏹', color: '#34d399', hexColor: 0x34d399, armorHex: 0x065f46,
       attackType: 'ranged',
-      weaponCategoryLabel: '🏹 Arma à Distância (Longe)',
-      baseHp: 155, baseMp: 120,
-      baseMeleeAtk: 0, baseRangedAtk: 31, baseMagicAtk: 0,
+      weaponCategoryLabel: '🏹 Arco de Vento (Longe)',
+      baseHp: 160, baseMp: 125,
+      baseMeleeAtk: 0, baseRangedAtk: 32, baseMagicAtk: 0,
       basePhysDef: 9, baseMagDef: 9,
-      baseCrit: 18, baseEva: 13, range: 240,
+      baseCrit: 18, baseEva: 13, range: 24.0,
       skills: [
-        { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 245, color: '#2ed573' },
-        { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 245, color: '#7bed9f' },
-        { name: 'Chuva de Flechas', icon: '🌧️', mult: 2.1, mp: 24, cd: 6, range: 245, aoe: true, color: '#eccc68' },
-        { name: 'Disparo Mortal', icon: '🎯', mult: 3.2, mp: 35, cd: 9, range: 265, color: '#ff4757' }
+        { name: 'Flecha de Vento', icon: '🏹', mult: 1.35, mp: 6, cd: 1.15, range: 25.0, color: '#34d399', hex: 0x34d399, proj: true },
+        { name: 'Disparo Tóxico', icon: '🧪', mult: 1.8, mp: 14, cd: 4, range: 25.0, color: '#a3e635', hex: 0xa3e635, proj: true },
+        { name: 'Saraivada Esmeralda', icon: '🌧️', mult: 2.15, mp: 24, cd: 6, range: 25.0, aoe: true, color: '#fbbf24', hex: 0xfbbf24, proj: true },
+        { name: 'Tiro Perfura-Almas', icon: '🎯', mult: 3.25, mp: 35, cd: 9, range: 27.0, color: '#38bdf8', hex: 0x38bdf8, proj: true }
       ]
     },
-    sacerdote: {
-      name: 'Sacerdote', icon: '✨', color: '#f1f2f6',
+    clerigo: {
+      name: 'Clérigo Solar', icon: '✨', color: '#7dd3fc', hexColor: 0x7dd3fc, armorHex: 0x0369a1,
       attackType: 'magic',
-      weaponCategoryLabel: '✨ Arma Sagrada (Distância)',
-      baseHp: 165, baseMp: 210,
-      baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 27,
-      basePhysDef: 7, baseMagDef: 17,
-      baseCrit: 10, baseEva: 7, range: 205,
+      weaponCategoryLabel: '✨ Cetro da Aurora (Distância)',
+      baseHp: 170, baseMp: 215,
+      baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 28,
+      basePhysDef: 8, baseMagDef: 18,
+      baseCrit: 10, baseEva: 7, range: 20.5,
       skills: [
-        { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 205, color: '#f1c40f' },
-        { name: 'Cura Divina', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#2ed573' },
-        { name: 'Julgamento', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 205, aoe: true, color: '#ffa502' },
-        { name: 'Ira Celestial', icon: '👼', mult: 3.0, mp: 40, cd: 9, range: 215, color: '#70a1ff' }
+        { name: 'Centelha Aurora', icon: '✨', mult: 1.3, mp: 7, cd: 1.35, range: 21.0, color: '#7dd3fc', hex: 0x7dd3fc, proj: true },
+        { name: 'Graça Restauradora', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#34d399', hex: 0x34d399, proj: false },
+        { name: 'Pilar Sagrado', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 21.0, aoe: true, color: '#fbbf24', hex: 0xfbbf24, proj: false },
+        { name: 'Supernova Divina', icon: '🌟', mult: 3.05, mp: 40, cd: 9, range: 22.0, color: '#38bdf8', hex: 0x38bdf8, proj: true }
       ]
     },
-    assassino: {
-      name: 'Assassino', icon: '🗡️', color: '#ff4757',
+    sombra: {
+      name: 'Sombra', icon: '🗡️', color: '#fb7185', hexColor: 0xfb7185, armorHex: 0x881337,
       attackType: 'melee',
-      weaponCategoryLabel: '🗡️ Arma Corpo a Corpo (Perto)',
-      baseHp: 150, baseMp: 110,
-      baseMeleeAtk: 35, baseRangedAtk: 0, baseMagicAtk: 0,
+      weaponCategoryLabel: '🗡️ Adagas Gêmeas (Perto)',
+      baseHp: 155, baseMp: 115,
+      baseMeleeAtk: 36, baseRangedAtk: 0, baseMagicAtk: 0,
       basePhysDef: 8, baseMagDef: 7,
-      baseCrit: 21, baseEva: 17, range: 65,
+      baseCrit: 21, baseEva: 17, range: 6.2,
       skills: [
-        { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 68, color: '#ff4757' },
-        { name: 'Passo Sombrio', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 140, dash: true, color: '#a29bfe' },
-        { name: 'Lâminas Giratórias', icon: '🌀', mult: 2.2, mp: 22, cd: 5.5, range: 85, aoe: true, color: '#ff6b81' },
-        { name: 'Execução', icon: '💀', mult: 3.6, mp: 35, cd: 9, range: 72, color: '#ffa502' }
+        { name: 'Talho Carmesim', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 6.5, color: '#fb7185', hex: 0xfb7185, proj: false },
+        { name: 'Salto Etéreo', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 15.0, dash: true, color: '#c084fc', hex: 0xc084fc, proj: false },
+        { name: 'Dança das Lâminas', icon: '🌀', mult: 2.25, mp: 22, cd: 5.5, range: 8.0, aoe: true, color: '#f43f5e', hex: 0xf43f5e, proj: false },
+        { name: 'Colheita Sombria', icon: '💀', mult: 3.65, mp: 35, cd: 9, range: 7.0, color: '#fbbf24', hex: 0xfbbf24, proj: false }
       ]
     }
   };
 
-  // ================= ARMAS & EQUIPAMENTOS ESPECÍFICOS POR CLASSE E ALCANCE =================
+  // ================= EQUIPAMENTOS & RARIDADES =================
   var CLASS_WEAPON_VARIANTS = {
-    cavaleiro: [
-      { name: 'Espada Longa de Aço',   icon: '🗡️', weaponType: 'melee',  weaponRange: 68 },
-      { name: 'Machado de Guerra',     icon: '🪓', weaponType: 'melee',  weaponRange: 66 },
-      { name: 'Montante do Guardião',  icon: '⚔️', weaponType: 'melee',  weaponRange: 72 }
+    templario: [
+      { name: 'Lâmina Solar',      icon: '🗡️', weaponType: 'melee',  weaponRange: 6.8 },
+      { name: 'Martelo Rúnico',    icon: '🔨', weaponType: 'melee',  weaponRange: 6.6 },
+      { name: 'Montante Astral',   icon: '⚔️', weaponType: 'melee',  weaponRange: 7.2 }
     ],
-    assassino: [
-      { name: 'Adagas Sombrias',       icon: '🗡️', weaponType: 'melee',  weaponRange: 64 },
-      { name: 'Lâminas Gêmeas',        icon: '⚔️', weaponType: 'melee',  weaponRange: 66 },
-      { name: 'Garras da Noite',       icon: '🦂', weaponType: 'melee',  weaponRange: 62 }
+    sombra: [
+      { name: 'Adagas de Éter',    icon: '🗡️', weaponType: 'melee',  weaponRange: 6.2 },
+      { name: 'Lâminas Carmesim',  icon: '⚔️', weaponType: 'melee',  weaponRange: 6.4 },
+      { name: 'Garras do Crepúsculo', icon: '🦂', weaponType: 'melee', weaponRange: 6.0 }
     ],
-    arqueiro: [
-      { name: 'Arco Longo de Carvalho',icon: '🏹', weaponType: 'ranged', weaponRange: 245 },
-      { name: 'Besta de Precisão',     icon: '🎯', weaponType: 'ranged', weaponRange: 235 },
-      { name: 'Arco Composto Élfico',  icon: '🏹', weaponType: 'ranged', weaponRange: 260 }
+    patrulheiro: [
+      { name: 'Arco de Vento',     icon: '🏹', weaponType: 'ranged', weaponRange: 25.0 },
+      { name: 'Besta de Valenwood',icon: '🎯', weaponType: 'ranged', weaponRange: 23.5 },
+      { name: 'Arco Longo Élfico', icon: '🏹', weaponType: 'ranged', weaponRange: 26.5 }
     ],
-    mago: [
-      { name: 'Cajado Arcano',         icon: '🪄', weaponType: 'magic',  weaponRange: 220 },
-      { name: 'Orbe Elemental',        icon: '🔮', weaponType: 'magic',  weaponRange: 210 },
-      { name: 'Bastão das Estrelas',   icon: '🪄', weaponType: 'magic',  weaponRange: 230 }
+    arcanista: [
+      { name: 'Cajado do Vórtice', icon: '🪄', weaponType: 'magic',  weaponRange: 22.0 },
+      { name: 'Orbe Cósmico',      icon: '🔮', weaponType: 'magic',  weaponRange: 21.0 },
+      { name: 'Bastão Etéreo',     icon: '🪄', weaponType: 'magic',  weaponRange: 23.5 }
     ],
-    sacerdote: [
-      { name: 'Cetro Sagrado',         icon: '🦯', weaponType: 'magic',  weaponRange: 205 },
-      { name: 'Cajado da Luz Divina',  icon: '✨', weaponType: 'magic',  weaponRange: 215 },
-      { name: 'Relíquia Celestial',    icon: '🕯️', weaponType: 'magic',  weaponRange: 200 }
+    clerigo: [
+      { name: 'Cetro da Aurora',   icon: '🦯', weaponType: 'magic',  weaponRange: 21.0 },
+      { name: 'Relíquia Solar',    icon: '✨', weaponType: 'magic',  weaponRange: 22.0 },
+      { name: 'Cajado Celestial',  icon: '🕯️', weaponType: 'magic',  weaponRange: 20.5 }
     ]
   };
 
   var CLASS_GEAR_NAMES = {
-    cavaleiro: {
-      armor:  { name: 'Peitoral de Placas', icon: '🛡️' },
-      helm:   { name: 'Elmo de Aço', icon: '🪖' },
-      boots:  { name: 'Grevas Blindadas', icon: '👢' },
-      ring:   { name: 'Anel do Guardião', icon: '💍' }
-    },
-    mago: {
-      armor:  { name: 'Veste Mística', icon: '👘' },
-      helm:   { name: 'Chapéu do Feiticeiro', icon: '🎩' },
-      boots:  { name: 'Botas Etéreas', icon: '👢' },
-      ring:   { name: 'Anel de Safira', icon: '💍' }
-    },
-    arqueiro: {
-      armor:  { name: 'Túnica de Caçador', icon: '🦺' },
-      helm:   { name: 'Capuz da Floresta', icon: '🧢' },
-      boots:  { name: 'Botas do Vento', icon: '👢' },
-      ring:   { name: 'Anel Olho de Águia', icon: '💍' }
-    },
-    sacerdote: {
-      armor:  { name: 'Batina Celestial', icon: '🥼' },
-      helm:   { name: 'Tiara da Luz', icon: '👑' },
-      boots:  { name: 'Sandálias Divinas', icon: '🩴' },
-      ring:   { name: 'Anel da Bênção', icon: '💍' }
-    },
-    assassino: {
-      armor:  { name: 'Traje Furtivo', icon: '🥷' },
-      helm:   { name: 'Máscara das Sombras', icon: '🎭' },
-      boots:  { name: 'Botas Silenciosas', icon: '👢' },
-      ring:   { name: 'Anel do Crepúsculo', icon: '💍' }
-    }
+    templario:   { armor: { name: 'Couraça Solar', icon: '🛡️' }, helm: { name: 'Elmo Templário', icon: '🪖' }, boots: { name: 'Grevas Rúnicas', icon: '👢' }, ring: { name: 'Selo do Sol', icon: '💍' } },
+    arcanista:   { armor: { name: 'Manto Astral', icon: '👘' },  helm: { name: 'Chapéu Arcano', icon: '🎩' },  boots: { name: 'Botas Etéreas', icon: '👢' },  ring: { name: 'Anel do Vórtice', icon: '💍' } },
+    patrulheiro: { armor: { name: 'Gibão Silvestre', icon: '🦺' }, helm: { name: 'Capuz de Valenwood', icon: '🧢' }, boots: { name: 'Botas Ágeis', icon: '👢' }, ring: { name: 'Anel do Falcão', icon: '💍' } },
+    clerigo:     { armor: { name: 'Veste da Aurora', icon: '🥼' }, helm: { name: 'Diadema Celeste', icon: '👑' }, boots: { name: 'Sandálias Solares', icon: '🩴' }, ring: { name: 'Anel da Graça', icon: '💍' } },
+    sombra:      { armor: { name: 'Traje Obsidiana', icon: '🥷' }, helm: { name: 'Máscara Sombria', icon: '🎭' }, boots: { name: 'Botas Fantasma', icon: '👢' }, ring: { name: 'Anel da Penumbra', icon: '💍' } }
   };
 
-  function getWeaponTypeLabel(wType) {
-    if (wType === 'melee')  return '⚔️ Corpo a Corpo (Perto)';
-    if (wType === 'ranged') return '🏹 À Distância (Longe)';
-    if (wType === 'magic')  return '🔮 Mágica (Distância)';
-    return '';
-  }
-
-  // ================= 7 RARIDADES OFICIAIS + SLOTS DE LÁPIS =================
   var RARITIES = {
-    normal:     { label: 'Normal',     color: '#ffffff', bgTint: '#ffffff12', slots: 0, mult: 1.0,  price: 15 },
-    nobre:      { label: 'Nobre',      color: '#00f2fe', bgTint: '#00f2fe18', slots: 1, mult: 1.35, price: 45 },
-    heroico:    { label: 'Heroico',    color: '#3b82f6', bgTint: '#3b82f620', slots: 2, mult: 1.75, price: 110 },
-    atroz:      { label: 'Atroz',      color: '#4f46e5', bgTint: '#312e8144', slots: 3, mult: 2.25, price: 250 },
-    legendario: { label: 'Legendário', color: '#2ed573', bgTint: '#2ed5731a', slots: 4, mult: 2.85, price: 550 },
-    deusa:      { label: 'Deusa',      color: '#facc15', bgTint: '#facc151f', slots: 5, mult: 3.6,  price: 1200 },
-    supremo:    { label: 'Supremo',    color: '#ff7f11', bgTint: '#ff7f1124', slots: 6, mult: 4.5,  price: 2500 }
+    comum:      { label: 'Comum',      color: '#ffffff', bgTint: '#ffffff12', slots: 0, mult: 1.0,  price: 15 },
+    refinado:   { label: 'Refinado',   color: '#38bdf8', bgTint: '#38bdf818', slots: 1, mult: 1.35, price: 45 },
+    raro:       { label: 'Raro',       color: '#3b82f6', bgTint: '#3b82f620', slots: 2, mult: 1.75, price: 110 },
+    epico:      { label: 'Épico',      color: '#a855f7', bgTint: '#a855f724', slots: 3, mult: 2.25, price: 250 },
+    mitico:     { label: 'Mítico',     color: '#10b981', bgTint: '#10b9811a', slots: 4, mult: 2.85, price: 550 },
+    celestial:  { label: 'Celestial',  color: '#fbbf24', bgTint: '#fbbf241f', slots: 5, mult: 3.6,  price: 1200 },
+    etereo:     { label: 'Etéreo',     color: '#f97316', bgTint: '#f9731624', slots: 6, mult: 4.5,  price: 2500 }
   };
 
   var EQUIP_SLOTS = {
@@ -1131,69 +1000,47 @@
     ring:   { label: 'Anel',     icon: '💍', baseAtk: 7,  basePhysDef: 2, baseMagDef: 2, baseHp: 20, baseCrit: 3.5, baseEva: 2.0 }
   };
 
+  function getWeaponTypeLabel(wType) {
+    if (wType === 'melee')  return '⚔️ Corpo a Corpo (Perto)';
+    if (wType === 'ranged') return '🏹 À Distância (Longe)';
+    if (wType === 'magic')  return '🔮 Mágica (Distância)';
+    return '';
+  }
+
   function getRarityData(key) {
-    if (RARITIES[key]) return RARITIES[key];
-    var mapOld = { comum: 'normal', raro: 'nobre', epico: 'heroico', lendario: 'legendario' };
-    return RARITIES[mapOld[key] || 'normal'];
+    return RARITIES[key] || RARITIES.comum;
   }
 
   function normalizeItem(item) {
     if (!item) return null;
-    var mapOld = { comum: 'normal', raro: 'nobre', epico: 'heroico', lendario: 'legendario' };
-    if (mapOld[item.rarity]) item.rarity = mapOld[item.rarity];
-    if (!RARITIES[item.rarity]) item.rarity = 'normal';
+    if (!RARITIES[item.rarity]) item.rarity = 'comum';
     var r = RARITIES[item.rarity];
     if (!Array.isArray(item.sockets) || item.sockets.length !== r.slots) {
       var prev = Array.isArray(item.sockets) ? item.sockets : [];
       item.sockets = new Array(r.slots).fill(null);
-      for (var i = 0; i < Math.min(prev.length, r.slots); i++) {
-        item.sockets[i] = prev[i];
-      }
+      for (var i = 0; i < Math.min(prev.length, r.slots); i++) item.sockets[i] = prev[i];
     }
     if (!item.classReq) item.classReq = 'all';
-
     if (item.slot === 'weapon' && !item.weaponType) {
-      var targetCls = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'cavaleiro');
+      var targetCls = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'templario');
       item.weaponType = CLASSES[targetCls].attackType;
       item.weaponRange = CLASSES[targetCls].range;
-    }
-
-    if (typeof item.meleeAtk !== 'number' && typeof item.rangedAtk !== 'number' && typeof item.magicAtk !== 'number') {
-      var oldAtk = item.atk || 0;
-      var targetClass = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'cavaleiro');
-      var atkType = CLASSES[targetClass].attackType;
-      item.meleeAtk  = atkType === 'melee'  ? oldAtk : 0;
-      item.rangedAtk = atkType === 'ranged' ? oldAtk : 0;
-      item.magicAtk  = atkType === 'magic'  ? oldAtk : 0;
-    }
-    if (typeof item.physDef !== 'number' && typeof item.magDef !== 'number') {
-      var oldDef = item.def || 0;
-      var cReq = (item.classReq && CLASSES[item.classReq]) ? item.classReq : 'cavaleiro';
-      if (cReq === 'mago' || cReq === 'sacerdote') {
-        item.physDef = Math.round(oldDef * 0.45);
-        item.magDef  = Math.round(oldDef * 1.15);
-      } else {
-        item.physDef = Math.round(oldDef * 1.15);
-        item.magDef  = Math.round(oldDef * 0.55);
-      }
     }
     item.meleeAtk  = item.meleeAtk  || 0;
     item.rangedAtk = item.rangedAtk || 0;
     item.magicAtk  = item.magicAtk  || 0;
     item.physDef   = item.physDef   || 0;
     item.magDef    = item.magDef    || 0;
-
-    if (typeof item.crit !== 'number') item.crit = Math.round((EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].baseCrit : 1) * r.mult * 10) / 10;
-    if (typeof item.eva !== 'number') item.eva = Math.round((EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].baseEva : 1) * r.mult * 10) / 10;
+    item.hp        = item.hp        || 0;
+    if (typeof item.crit !== 'number') item.crit = 1;
+    if (typeof item.eva !== 'number') item.eva = 1;
     return item;
   }
 
   function canClassEquip(item) {
     if (!item) return false;
     var playerCls = CLASSES[player.classKey];
-    if (item.slot === 'weapon' && item.weaponType && item.weaponType !== playerCls.attackType) {
-      return false;
-    }
+    if (item.slot === 'weapon' && item.weaponType && item.weaponType !== playerCls.attackType) return false;
     if (!item.classReq || item.classReq === 'all') return true;
     return item.classReq === player.classKey;
   }
@@ -1212,81 +1059,49 @@
     var itemClass = Math.random() < 0.45 ? player.classKey : classKeys[Math.floor(Math.random() * classKeys.length)];
     var atkType = CLASSES[itemClass].attackType;
 
-    var gearName = '';
-    var gearIcon = '';
-    var weaponType = null;
-    var weaponRange = null;
-
+    var gearName = '', gearIcon = '', weaponType = null, weaponRange = null;
     if (slot === 'weapon') {
       var variants = CLASS_WEAPON_VARIANTS[itemClass];
       var chosenW = variants[Math.floor(Math.random() * variants.length)];
-      gearName = chosenW.name;
-      gearIcon = chosenW.icon;
-      weaponType = chosenW.weaponType;
-      weaponRange = chosenW.weaponRange;
+      gearName = chosenW.name; gearIcon = chosenW.icon;
+      weaponType = chosenW.weaponType; weaponRange = chosenW.weaponRange;
     } else {
       var gearMeta = CLASS_GEAR_NAMES[itemClass][slot];
-      gearName = gearMeta.name;
-      gearIcon = gearMeta.icon;
+      gearName = gearMeta.name; gearIcon = gearMeta.icon;
     }
 
     var roll = Math.random();
-    var rarityKey = 'normal';
-
+    var rarityKey = 'comum';
     if (tierType === 'boss') {
-      if (roll > 0.72) rarityKey = 'supremo';
-      else if (roll > 0.42) rarityKey = 'deusa';
-      else if (roll > 0.18) rarityKey = 'legendario';
-      else rarityKey = 'atroz';
+      rarityKey = roll > 0.72 ? 'etereo' : (roll > 0.42 ? 'celestial' : (roll > 0.18 ? 'mitico' : 'epico'));
     } else if (tierType === 'miniboss') {
-      if (roll > 0.72) rarityKey = 'deusa';
-      else if (roll > 0.40) rarityKey = 'legendario';
-      else if (roll > 0.15) rarityKey = 'atroz';
-      else rarityKey = 'heroico';
+      rarityKey = roll > 0.72 ? 'celestial' : (roll > 0.40 ? 'mitico' : (roll > 0.15 ? 'epico' : 'raro'));
     } else {
-      if (roll > 0.975) rarityKey = 'legendario';
-      else if (roll > 0.91) rarityKey = 'atroz';
-      else if (roll > 0.78) rarityKey = 'heroico';
-      else if (roll > 0.52) rarityKey = 'nobre';
-      else rarityKey = 'normal';
+      rarityKey = roll > 0.975 ? 'mitico' : (roll > 0.91 ? 'epico' : (roll > 0.78 ? 'raro' : (roll > 0.52 ? 'refinado' : 'comum')));
     }
 
     var r = RARITIES[rarityKey];
     var scale = 1 + (playerLvl - 1) * 0.22;
+    var rawAtk = Math.round(slotInfo.baseAtk * r.mult * scale * (itemClass === 'arcanista' || itemClass === 'sombra' ? 1.2 : 1.0));
 
-    var rawAtk = Math.round(slotInfo.baseAtk * r.mult * scale * (itemClass === 'mago' || itemClass === 'assassino' ? 1.2 : 1.0));
-    var meleeAtk  = atkType === 'melee'  ? rawAtk : 0;
-    var rangedAtk = atkType === 'ranged' ? rawAtk : 0;
-    var magicAtk  = atkType === 'magic'  ? rawAtk : 0;
-
-    var physMult = itemClass === 'cavaleiro' ? 1.45 : (itemClass === 'mago' || itemClass === 'sacerdote' ? 0.55 : 0.95);
-    var magMult  = (itemClass === 'mago' || itemClass === 'sacerdote') ? 1.45 : (itemClass === 'cavaleiro' ? 0.65 : 0.95);
-
-    var physDef = Math.round(slotInfo.basePhysDef * r.mult * scale * physMult);
-    var magDef  = Math.round(slotInfo.baseMagDef  * r.mult * scale * magMult);
-
-    var classCritBonus = (itemClass === 'arqueiro' || itemClass === 'assassino') ? 1.35 : 1.0;
-    var classEvaBonus  = (itemClass === 'assassino' || itemClass === 'arqueiro') ? 1.35 : 1.0;
+    var physMult = itemClass === 'templario' ? 1.45 : (itemClass === 'arcanista' || itemClass === 'clerigo' ? 0.55 : 0.95);
+    var magMult  = (itemClass === 'arcanista' || itemClass === 'clerigo') ? 1.45 : (itemClass === 'templario' ? 0.65 : 0.95);
 
     return {
       id: 'item_' + Math.random().toString(36).slice(2, 10),
       name: gearName + ' (' + r.label + ')',
-      slot: slot,
-      icon: gearIcon,
-      classReq: itemClass,
-      weaponType: weaponType,
-      weaponRange: weaponRange,
-      rarity: rarityKey,
-      plus: 0,
+      slot: slot, icon: gearIcon, classReq: itemClass,
+      weaponType: weaponType, weaponRange: weaponRange,
+      rarity: rarityKey, plus: 0,
       sockets: new Array(r.slots).fill(null),
-      meleeAtk: meleeAtk,
-      rangedAtk: rangedAtk,
-      magicAtk: magicAtk,
-      physDef: physDef,
-      magDef: magDef,
-      hp:   Math.round(slotInfo.baseHp * r.mult * scale * (itemClass === 'cavaleiro' ? 1.25 : 1.0)),
-      crit: Math.round(slotInfo.baseCrit * (1 + (r.mult - 1) * 0.65) * classCritBonus * 10) / 10,
-      eva:  Math.round(slotInfo.baseEva  * (1 + (r.mult - 1) * 0.65) * classEvaBonus  * 10) / 10,
+      meleeAtk:  atkType === 'melee'  ? rawAtk : 0,
+      rangedAtk: atkType === 'ranged' ? rawAtk : 0,
+      magicAtk:  atkType === 'magic'  ? rawAtk : 0,
+      physDef:   Math.round(slotInfo.basePhysDef * r.mult * scale * physMult),
+      magDef:    Math.round(slotInfo.baseMagDef  * r.mult * scale * magMult),
+      hp:        Math.round(slotInfo.baseHp * r.mult * scale * (itemClass === 'templario' ? 1.25 : 1.0)),
+      crit:      Math.round(slotInfo.baseCrit * (1 + (r.mult - 1) * 0.65) * 10) / 10,
+      eva:       Math.round(slotInfo.baseEva  * (1 + (r.mult - 1) * 0.65) * 10) / 10,
       sellPrice: Math.round(r.price * scale)
     };
   }
@@ -1313,22 +1128,13 @@
         if (sock && LAPIS_TYPES[sock.type]) {
           var meta = LAPIS_TYPES[sock.type];
           var val = meta.values[sock.level] || 0;
-          if (sock.type === 'STR') {
-            res.meleeAtk  += val;
-            res.rangedAtk += val;
-          } else if (sock.type === 'DEX') {
-            res.eva = Math.round((res.eva + val) * 10) / 10;
-          } else if (sock.type === 'REC') {
-            res.physDef += val;
-          } else if (sock.type === 'INT') {
-            res.magicAtk += val;
-          } else if (sock.type === 'WIS') {
-            res.magDef += val;
-          } else if (sock.type === 'LUC') {
-            res.crit = Math.round((res.crit + val) * 10) / 10;
-          } else if (sock.type === 'HP') {
-            res.hp += val;
-          }
+          if (sock.type === 'FOR') { res.meleeAtk += val; res.rangedAtk += val; }
+          else if (sock.type === 'AGI') { res.eva = Math.round((res.eva + val) * 10) / 10; }
+          else if (sock.type === 'VIG') { res.physDef += val; }
+          else if (sock.type === 'INT') { res.magicAtk += val; }
+          else if (sock.type === 'ESP') { res.magDef += val; }
+          else if (sock.type === 'SOR') { res.crit = Math.round((res.crit + val) * 10) / 10; }
+          else if (sock.type === 'HP')  { res.hp += val; }
         }
       });
     }
@@ -1338,18 +1144,14 @@
   function getPlayerEffectiveRange() {
     var cls = CLASSES[player.classKey];
     var eqW = player.equipped && player.equipped.weapon;
-    if (eqW && typeof eqW.weaponRange === 'number' && eqW.weaponRange > 0) {
-      return eqW.weaponRange;
-    }
+    if (eqW && typeof eqW.weaponRange === 'number' && eqW.weaponRange > 0) return eqW.weaponRange;
     return cls.range;
   }
 
+  // ================= PERSONAGENS & SLOTS =================
   function selecionarClasse(classe) {
     selectedClassKey = classe;
-    var todos = document.querySelectorAll('.class-card');
-    for (var i = 0; i < todos.length; i++) {
-      todos[i].classList.remove('selected');
-    }
+    document.querySelectorAll('.class-card').forEach(function(c) { c.classList.remove('selected'); });
     var escolhido = document.getElementById('card-' + classe);
     if (escolhido) escolhido.classList.add('selected');
   }
@@ -1374,16 +1176,16 @@
 
   function normalizePlayerObject(p) {
     if (!p || typeof p !== 'object') return null;
-    if (!CLASSES[p.classKey]) p.classKey = 'cavaleiro';
+    if (!CLASSES[p.classKey]) p.classKey = 'templario';
     var cls = CLASSES[p.classKey];
     if (typeof p.stones !== 'number') p.stones = 5;
     if (!Array.isArray(p.inventory)) p.inventory = [];
     p.inventory = p.inventory.map(normalizeItem);
     if (!Array.isArray(p.lapisBag)) {
       p.lapisBag = [
-        { id: 'lapis_init1', type: 'STR', level: 1, sellPrice: 35 },
-        { id: 'lapis_init2', type: 'INT', level: 1, sellPrice: 35 },
-        { id: 'lapis_init3', type: 'HP',  level: 1, sellPrice: 35 }
+        { id: 'gema_1', type: 'FOR', level: 1, sellPrice: 35 },
+        { id: 'gema_2', type: 'INT', level: 1, sellPrice: 35 },
+        { id: 'gema_3', type: 'HP',  level: 1, sellPrice: 35 }
       ];
     }
     if (!p.equipped || typeof p.equipped !== 'object') {
@@ -1393,26 +1195,12 @@
       if (p.equipped[k]) p.equipped[k] = normalizeItem(p.equipped[k]);
     });
     if (!p.baseMaxHp) p.baseMaxHp = p.maxHp || cls.baseHp;
-
-    if (typeof p.baseMeleeAtk !== 'number' && typeof p.baseRangedAtk !== 'number' && typeof p.baseMagicAtk !== 'number') {
-      var lvlBonus = Math.max(0, (p.level || 1) - 1) * 6;
-      p.baseMeleeAtk  = cls.attackType === 'melee'  ? cls.baseMeleeAtk  + lvlBonus : 0;
-      p.baseRangedAtk = cls.attackType === 'ranged' ? cls.baseRangedAtk + lvlBonus : 0;
-      p.baseMagicAtk  = cls.attackType === 'magic'  ? cls.baseMagicAtk  + lvlBonus : 0;
-    }
-    if (typeof p.basePhysDef !== 'number' && typeof p.baseMagDef !== 'number') {
-      var defLvlBonus = Math.max(0, (p.level || 1) - 1) * 3;
-      p.basePhysDef = cls.basePhysDef + defLvlBonus;
-      p.baseMagDef  = cls.baseMagDef  + defLvlBonus;
-    }
     return p;
   }
 
   function saveAllSlots() {
     try {
-      if (activeSlotIndex >= 0 && player) {
-        characterSlots[activeSlotIndex] = player;
-      }
+      if (activeSlotIndex >= 0 && player) characterSlots[activeSlotIndex] = player;
       localStorage.setItem(STORAGE_KEY_SLOTS, JSON.stringify(characterSlots));
     } catch (e) {}
   }
@@ -1428,15 +1216,6 @@
             normalizePlayerObject(parsed[1]),
             normalizePlayerObject(parsed[2])
           ];
-          return;
-        }
-      }
-      var oldSave = localStorage.getItem('asaDeCristal_save_v1');
-      if (oldSave) {
-        var oldP = normalizePlayerObject(JSON.parse(oldSave));
-        if (oldP) {
-          characterSlots[0] = oldP;
-          saveAllSlots();
         }
       }
     } catch (err) {
@@ -1446,37 +1225,29 @@
 
   function createNewPlayer(name, classKey) {
     var cls = CLASSES[classKey];
-    var mainLapis = cls.attackType === 'magic' ? 'INT' : 'STR';
+    var mainGema = cls.attackType === 'magic' ? 'INT' : 'FOR';
     return {
       name: name || 'Herói',
       classKey: classKey,
-      level: 1,
-      xp: 0,
-      maxXp: 100,
-      gold: 300,
-      stones: 5,
-      kills: 0,
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-      baseMaxHp: cls.baseHp,
-      hp: cls.baseHp,
-      mp: cls.baseMp,
-      maxMp: cls.baseMp,
+      level: 1, xp: 0, maxXp: 100,
+      gold: 350, stones: 5, kills: 0,
+      x: 0, z: 0, targetX: 0, targetZ: 0,
+      rotY: 0, attackAnimTimer: 0,
+      baseMaxHp: cls.baseHp, hp: cls.baseHp,
+      mp: cls.baseMp, maxMp: cls.baseMp,
       baseMeleeAtk: cls.baseMeleeAtk,
       baseRangedAtk: cls.baseRangedAtk,
       baseMagicAtk: cls.baseMagicAtk,
       basePhysDef: cls.basePhysDef,
       baseMagDef: cls.baseMagDef,
-      speed: classKey === 'assassino' ? 210 : 175,
+      speed: classKey === 'sombra' ? 16.5 : 13.5,
       cooldowns: [0, 0, 0, 0, 0],
       equipped: { weapon: null, armor: null, helm: null, boots: null, ring: null },
       inventory: [],
       lapisBag: [
-        { id: 'lapis_start1', type: mainLapis, level: 1, sellPrice: 35 },
-        { id: 'lapis_start2', type: 'HP',      level: 1, sellPrice: 35 },
-        { id: 'lapis_start3', type: 'LUC',     level: 1, sellPrice: 35 }
+        { id: 'gema_start1', type: mainGema, level: 1, sellPrice: 35 },
+        { id: 'gema_start2', type: 'HP',     level: 1, sellPrice: 35 },
+        { id: 'gema_start3', type: 'SOR',    level: 1, sellPrice: 35 }
       ]
     };
   }
@@ -1488,14 +1259,8 @@
     Object.values(p.equipped).forEach(function(item) {
       if (item) {
         var st = getItemEffectiveStats(item);
-        bonusHp  += st.hp;
-        bMelee   += st.meleeAtk;
-        bRanged  += st.rangedAtk;
-        bMagic   += st.magicAtk;
-        bPhysDef += st.physDef;
-        bMagDef  += st.magDef;
-        bCrit    += st.crit;
-        bEva     += st.eva;
+        bonusHp += st.hp; bMelee += st.meleeAtk; bRanged += st.rangedAtk; bMagic += st.magicAtk;
+        bPhysDef += st.physDef; bMagDef += st.magDef; bCrit += st.crit; bEva += st.eva;
       }
     });
 
@@ -1512,23 +1277,14 @@
     var br = Math.round(totalMaxHp * 0.5 + primaryAtk * 4 + (totalPhysDef + totalMagDef) * 2 + totalCrit * 8 + totalEva * 8 + p.level * 25);
 
     return {
-      totalMaxHp: totalMaxHp,
-      totalMeleeAtk: totalMeleeAtk,
-      totalRangedAtk: totalRangedAtk,
-      totalMagicAtk: totalMagicAtk,
-      primaryAtk: primaryAtk,
-      attackType: cls.attackType,
-      totalPhysDef: totalPhysDef,
-      totalMagDef: totalMagDef,
-      totalCrit: totalCrit,
-      totalEva: totalEva,
-      br: br
+      totalMaxHp: totalMaxHp, totalMeleeAtk: totalMeleeAtk, totalRangedAtk: totalRangedAtk, totalMagicAtk: totalMagicAtk,
+      primaryAtk: primaryAtk, attackType: cls.attackType,
+      totalPhysDef: totalPhysDef, totalMagDef: totalMagDef,
+      totalCrit: totalCrit, totalEva: totalEva, br: br
     };
   }
 
-  function getTotalStats() {
-    return computePlayerStats(player);
-  }
+  function getTotalStats() { return computePlayerStats(player); }
 
   function renderCharScreen() {
     var hasFreeSlot = false;
@@ -1553,22 +1309,21 @@
             '<span class="pill-lvl">Nv. ' + p.level + '</span>' +
             '<span class="pill-br">🔥 BR: ' + st.br + '</span>' +
           '</div>' +
-          '<button type="button" class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Jogar</button>';
+          '<button type="button" class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Entrar no Mundo 3D</button>';
       } else {
         hasFreeSlot = true;
         card.className = 'char-slot-card empty';
         card.innerHTML =
           '<span class="slot-badge">SLOT ' + (idx + 1) + '</span>' +
           '<div style="font-size:2rem; margin-bottom:8px;">➕</div>' +
-          '<div style="font-size:0.95rem; font-weight:bold; color:#a4b0be;">Espaço Livre</div>' +
+          '<div style="font-size:0.95rem; font-weight:bold; color:#94a3b8;">Espaço Livre</div>' +
           '<div style="font-size:0.78rem; margin-top:4px;">Escolha uma classe acima para criar</div>';
       }
     }
-
     var createBtn = document.getElementById('btn-create-char');
     if (createBtn) {
       createBtn.disabled = !hasFreeSlot;
-      createBtn.textContent = hasFreeSlot ? 'Criar e Entrar' : 'Limite de 3 Atingido';
+      createBtn.textContent = hasFreeSlot ? 'Entrar em Aethelgard' : 'Limite de 3 Atingido';
     }
   }
 
@@ -1577,6 +1332,10 @@
     activeSlotIndex = idx;
     player = normalizePlayerObject(characterSlots[idx]);
     player.cooldowns = [0, 0, 0, 0, 0];
+    player.x = player.x || 0;
+    player.z = player.z || 0;
+    player.targetX = player.x;
+    player.targetZ = player.z;
     enterWorld();
   }
 
@@ -1601,6 +1360,784 @@
     renderCharScreen();
   }
 
+  // ================= CONSTRUÇÃO DO MUNDO 3D (THREE.JS) =================
+  function initThreeEngine() {
+    if (threeInitialized) return;
+    threeInitialized = true;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0c192c);
+    scene.fog = new THREE.FogExp2(0x0c192c, 0.011);
+
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 280);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    var container = document.getElementById('viewport3d');
+    container.innerHTML = '';
+    container.appendChild(renderer.domElement);
+
+    // Iluminação Atmosférica (Luz Solar Dourada + Luz Ambiente Astral)
+    var hemiLight = new THREE.HemisphereLight(0x7dd3fc, 0x064e3b, 0.78);
+    scene.add(hemiLight);
+
+    var dirLight = new THREE.DirectionalLight(0xfef3c7, 1.05);
+    dirLight.position.set(45, 75, 40);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 2048;
+    dirLight.shadow.mapSize.height = 2048;
+    dirLight.shadow.camera.near = 10;
+    dirLight.shadow.camera.far = 200;
+    var d = 85;
+    dirLight.shadow.camera.left = -d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = -d;
+    scene.add(dirLight);
+
+    build3DTerrainAndProps();
+    setup3DInputHandlers();
+  }
+
+  function isPointInLake3D(wx, wz) {
+    var dx = (wx - (-42)) / 20;
+    var dz = (wz - 38) / 14;
+    return (dx * dx + dz * dz) <= 1.0;
+  }
+
+  function build3DTerrainAndProps() {
+    // 1. Plataforma Principal do Vale de Valenwood
+    var groundGeo = new THREE.BoxGeometry(WORLD_SIZE, 4, WORLD_SIZE);
+    var groundMat = new THREE.MeshStandardMaterial({ color: 0x133829, roughness: 0.9 });
+    groundPlaneMesh = new THREE.Mesh(groundGeo, groundMat);
+    groundPlaneMesh.position.y = -2;
+    groundPlaneMesh.receiveShadow = true;
+    scene.add(groundPlaneMesh);
+
+    // 2. Grade sutil de ladrilhos do vale
+    var gridHelper = new THREE.GridHelper(WORLD_SIZE, 16, 0x10b981, 0x0f2920);
+    gridHelper.position.y = 0.02;
+    gridHelper.material.opacity = 0.25;
+    gridHelper.material.transparent = true;
+    scene.add(gridHelper);
+
+    // 3. Praça Central Rúnica (Spawn)
+    var plazaGeo = new THREE.CylinderGeometry(12, 12.8, 0.16, 32);
+    var plazaMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7 });
+    var plaza = new THREE.Mesh(plazaGeo, plazaMat);
+    plaza.position.y = 0.08;
+    plaza.receiveShadow = true;
+    scene.add(plaza);
+
+    var runeRingGeo = new THREE.RingGeometry(6.5, 7.2, 32);
+    var runeRingMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide });
+    var runeRing = new THREE.Mesh(runeRingGeo, runeRingMat);
+    runeRing.rotation.x = -Math.PI / 2;
+    runeRing.position.y = 0.18;
+    scene.add(runeRing);
+
+    // 4. Estradas de Pedra 3D
+    var roadMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.85 });
+    var road1 = new THREE.Mesh(new THREE.BoxGeometry(140, 0.12, 6), roadMat);
+    road1.position.set(0, 0.06, 0);
+    road1.rotation.y = -0.25;
+    road1.receiveShadow = true;
+    scene.add(road1);
+
+    var road2 = new THREE.Mesh(new THREE.BoxGeometry(5, 0.12, 65), roadMat);
+    road2.position.set(22, 0.06, -32);
+    road2.receiveShadow = true;
+    scene.add(road2);
+
+    // 5. Lago Luminoso de Éter (Setor Sudoeste)
+    var lakeGeo = new THREE.CylinderGeometry(18, 18, 0.14, 32);
+    var lakeMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.35, roughness: 0.15, metalness: 0.6
+    });
+    var lakeMesh = new THREE.Mesh(lakeGeo, lakeMat);
+    lakeMesh.position.set(-42, 0.07, 38);
+    lakeMesh.scale.set(1.15, 1, 0.8);
+    scene.add(lakeMesh);
+
+    // 6. Árvores 3D, Cristais de Éter Flutuantes, Monolitos e Rochas
+    worldProps = [];
+    var half = WORLD_SIZE / 2;
+
+    // Borda de pinheiros ao redor do mapa
+    for (var b = -half + 4; b <= half - 4; b += 11) {
+      createTree3D('pine', b, -half + 3, 1.2);
+      createTree3D('pine', b, half - 3, 1.2);
+      createTree3D('pine', -half + 3, b, 1.2);
+      createTree3D('pine', half - 3, b, 1.2);
+    }
+
+    // Cristais de Éter gigantes com luz própria
+    var crystalCoords = [
+      { x: -24, z: -26, col: 0x38bdf8 },
+      { x: 31,  z: -36, col: 0xc084fc },
+      { x: 46,  z: 28,  col: 0x38bdf8 },
+      { x: -52, z: 12,  col: 0x34d399 }
+    ];
+    crystalCoords.forEach(function(c) {
+      createCrystal3D(c.x, c.z, c.col);
+    });
+
+    // Monolitos de Ruínas Antigas
+    createMonolith3D(-16, -14);
+    createMonolith3D(16, -14);
+    createMonolith3D(38, -18);
+
+    // Árvores e Rochas internas
+    var forestLayout = [
+      { t: 'oak',  x: -34, z: -44, s: 1.2 }, { t: 'pine', x: -45, z: -32, s: 1.1 }, { t: 'rock', x: -29, z: -39, s: 1.1 },
+      { t: 'pine', x: 12,  z: -48, s: 1.3 }, { t: 'oak',  x: 47,  z: -46, s: 1.2 }, { t: 'rock', x: 26,  z: -25, s: 0.9 },
+      { t: 'oak',  x: 56,  z: -4,  s: 1.3 }, { t: 'pine', x: 61,  z: 16,  s: 1.1 }, { t: 'rock', x: 34,  z: 44,  s: 1.2 },
+      { t: 'oak',  x: -14, z: 34,  s: 1.1 }, { t: 'rock', x: -24, z: 51,  s: 1.1 }, { t: 'pine', x: -61, z: -15, s: 1.3 }
+    ];
+    forestLayout.forEach(function(item) {
+      if (item.t === 'rock') createRock3D(item.x, item.z, item.s);
+      else createTree3D(item.t, item.x, item.z, item.s);
+    });
+
+    // 7. Marcador 3D de destino no chão
+    var markerGeo = new THREE.RingGeometry(0.6, 0.95, 24);
+    var markerMat = new THREE.MeshBasicMaterial({ color: 0x34d399, side: THREE.DoubleSide });
+    clickMarker3D = new THREE.Mesh(markerGeo, markerMat);
+    clickMarker3D.rotation.x = -Math.PI / 2;
+    clickMarker3D.position.y = 0.22;
+    clickMarker3D.visible = false;
+    scene.add(clickMarker3D);
+  }
+
+  function createTree3D(type, x, z, scale) {
+    var group = new THREE.Group();
+    var trunk = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.35 * scale, 0.55 * scale, 2.6 * scale, 8),
+      new THREE.MeshStandardMaterial({ color: 0x5c3d24, roughness: 0.9 })
+    );
+    trunk.position.y = 1.3 * scale;
+    trunk.castShadow = true;
+    group.add(trunk);
+
+    if (type === 'pine') {
+      var colors = [0x065f46, 0x047857, 0x10b981];
+      for (var i = 0; i < 3; i++) {
+        var cone = new THREE.Mesh(
+          new THREE.ConeGeometry((2.4 - i * 0.55) * scale, 2.8 * scale, 8),
+          new THREE.MeshStandardMaterial({ color: colors[i], roughness: 0.8 })
+        );
+        cone.position.y = (3.2 + i * 1.5) * scale;
+        cone.castShadow = true;
+        group.add(cone);
+      }
+    } else {
+      var crown = new THREE.Mesh(
+        new THREE.DodecahedronGeometry(2.5 * scale, 1),
+        new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85 })
+      );
+      crown.position.y = 4.2 * scale;
+      crown.castShadow = true;
+      group.add(crown);
+    }
+
+    group.position.set(x, 0, z);
+    scene.add(group);
+    worldProps.push({ type: 'tree', x: x, z: z, mesh: group });
+  }
+
+  function createRock3D(x, z, scale) {
+    var rock = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(1.6 * scale, 0),
+      new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.9 })
+    );
+    rock.position.set(x, 0.9 * scale, z);
+    rock.scale.set(1.2, 0.75, 1.0);
+    rock.castShadow = true;
+    rock.receiveShadow = true;
+    scene.add(rock);
+    worldProps.push({ type: 'rock', x: x, z: z, mesh: rock });
+  }
+
+  function createMonolith3D(x, z) {
+    var group = new THREE.Group();
+    var pillar = new THREE.Mesh(
+      new THREE.BoxGeometry(1.4, 5.2, 1.4),
+      new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7 })
+    );
+    pillar.position.y = 2.6;
+    pillar.castShadow = true;
+    group.add(pillar);
+
+    var runeCore = new THREE.Mesh(
+      new THREE.BoxGeometry(0.3, 2.2, 1.5),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+    );
+    runeCore.position.y = 2.8;
+    group.add(runeCore);
+
+    group.position.set(x, 0, z);
+    scene.add(group);
+    worldProps.push({ type: 'ruin', x: x, z: z, mesh: group });
+  }
+
+  function createCrystal3D(x, z, hexCol) {
+    var group = new THREE.Group();
+    var crystal = new THREE.Mesh(
+      new THREE.OctahedronGeometry(1.6, 0),
+      new THREE.MeshStandardMaterial({
+        color: hexCol, emissive: hexCol, emissiveIntensity: 0.65, roughness: 0.15, metalness: 0.8
+      })
+    );
+    crystal.scale.set(0.75, 1.9, 0.75);
+    crystal.position.y = 3.2;
+    crystal.castShadow = true;
+    group.add(crystal);
+
+    var baseRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.8, 2.3, 24),
+      new THREE.MeshBasicMaterial({ color: hexCol, side: THREE.DoubleSide })
+    );
+    baseRing.rotation.x = -Math.PI / 2;
+    baseRing.position.y = 0.15;
+    group.add(baseRing);
+
+    group.position.set(x, 0, z);
+    scene.add(group);
+    worldProps.push({ type: 'crystal', x: x, z: z, mesh: group, spinObj: crystal });
+  }
+
+  // ================= MODELO 3D ARTICULADO DO HERÓI (5 CLASSES + ARMAS) =================
+  function buildPlayer3DModel() {
+    if (playerMeshGroup) {
+      scene.remove(playerMeshGroup);
+    }
+    var cls = CLASSES[player.classKey];
+    var group = new THREE.Group();
+
+    var armorMat = new THREE.MeshStandardMaterial({ color: cls.armorHex, roughness: 0.45, metalness: 0.35 });
+    var accentMat = new THREE.MeshStandardMaterial({ color: cls.hexColor, emissive: cls.hexColor, emissiveIntensity: 0.25, roughness: 0.3 });
+    var skinMat = new THREE.MeshStandardMaterial({ color: 0xfde68a, roughness: 0.6 });
+    var darkMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 });
+
+    // Torso
+    var torso = new THREE.Mesh(new THREE.BoxGeometry(1.05, 1.35, 0.65), armorMat);
+    torso.position.y = 1.65;
+    torso.castShadow = true;
+    group.add(torso);
+
+    // Capa / Ombreiras de destaque
+    var cape = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.45, 0.12), accentMat);
+    cape.position.set(0, 1.55, -0.38);
+    group.add(cape);
+
+    // Cabeça
+    var head = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.72, 0.72), skinMat);
+    head.position.y = 2.72;
+    head.castShadow = true;
+    group.add(head);
+
+    // Capacete / Chapéu / Capuz / Auréola exclusivo da Classe
+    if (player.classKey === 'templario') {
+      var helm = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.45, 0.8), accentMat);
+      helm.position.y = 2.95;
+      group.add(helm);
+    } else if (player.classKey === 'arcanista') {
+      var hat = new THREE.Mesh(new THREE.ConeGeometry(0.65, 1.25, 12), accentMat);
+      hat.position.y = 3.55;
+      group.add(hat);
+    } else if (player.classKey === 'patrulheiro') {
+      var hood = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.82, 0.82), armorMat);
+      hood.position.set(0, 2.76, -0.05);
+      group.add(hood);
+    } else if (player.classKey === 'clerigo') {
+      var halo = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.06, 8, 24), accentMat);
+      halo.rotation.x = Math.PI / 2;
+      halo.position.y = 3.35;
+      group.add(halo);
+    } else if (player.classKey === 'sombra') {
+      var mask = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.35, 0.78), darkMat);
+      mask.position.y = 2.58;
+      group.add(mask);
+    }
+
+    // Pernas articuladas
+    var leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.95, 0.42), darkMat);
+    leftLeg.position.set(-0.28, 0.5, 0);
+    leftLeg.castShadow = true;
+    group.add(leftLeg);
+
+    var rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.95, 0.42), darkMat);
+    rightLeg.position.set(0.28, 0.5, 0);
+    rightLeg.castShadow = true;
+    group.add(rightLeg);
+
+    // Braço Esquerdo + Escudo (se Templário) ou Adaga Secundária (se Sombra)
+    var leftArm = new THREE.Group();
+    leftArm.position.set(-0.72, 2.15, 0);
+    var lArmMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.95, 0.32), armorMat);
+    lArmMesh.position.y = -0.35;
+    leftArm.add(lArmMesh);
+
+    if (player.classKey === 'templario') {
+      var shield = new THREE.Mesh(new THREE.BoxGeometry(0.16, 1.15, 0.85), accentMat);
+      shield.position.set(-0.22, -0.45, 0.25);
+      leftArm.add(shield);
+    } else if (player.classKey === 'sombra') {
+      var offDagger = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 1.1), accentMat);
+      offDagger.position.set(0, -0.75, 0.45);
+      leftArm.add(offDagger);
+    }
+    group.add(leftArm);
+
+    // Braço Direito + Arma 3D Principal na Mão
+    var rightArm = new THREE.Group();
+    rightArm.position.set(0.72, 2.15, 0);
+    var rArmMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.95, 0.32), armorMat);
+    rArmMesh.position.y = -0.35;
+    rightArm.add(rArmMesh);
+
+    if (player.classKey === 'templario') {
+      // Lâmina Solar 3D
+      var blade = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.22, 1.9), accentMat);
+      blade.position.set(0, -0.75, 0.85);
+      rightArm.add(blade);
+    } else if (player.classKey === 'arcanista' || player.classKey === 'clerigo') {
+      // Cajado / Cetro com Cristal Luminoso na Ponta
+      var staff = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 2.6, 8), darkMat);
+      staff.position.set(0, -0.3, 0.35);
+      staff.rotation.x = 0.25;
+      rightArm.add(staff);
+
+      var orb = new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0), accentMat);
+      orb.position.set(0, 0.98, 0.68);
+      rightArm.add(orb);
+    } else if (player.classKey === 'patrulheiro') {
+      // Arco de Vento 3D
+      var bow = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.06, 8, 16, Math.PI), accentMat);
+      bow.rotation.y = Math.PI / 2;
+      bow.position.set(0, -0.55, 0.55);
+      rightArm.add(bow);
+    } else if (player.classKey === 'sombra') {
+      // Adaga Principal
+      var dagger = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 1.15), accentMat);
+      dagger.position.set(0, -0.75, 0.45);
+      rightArm.add(dagger);
+    }
+    group.add(rightArm);
+
+    // Anel de seleção no chão sob o herói
+    var baseAura = new THREE.Mesh(
+      new THREE.RingGeometry(0.95, 1.2, 24),
+      new THREE.MeshBasicMaterial({ color: cls.hexColor, side: THREE.DoubleSide })
+    );
+    baseAura.rotation.x = -Math.PI / 2;
+    baseAura.position.y = 0.08;
+    group.add(baseAura);
+
+    group.position.set(player.x, 0, player.z);
+    scene.add(group);
+
+    playerMeshGroup = group;
+    playerAnimParts = { leftLeg: leftLeg, rightLeg: rightLeg, leftArm: leftArm, rightArm: rightArm, cape: cape };
+  }
+
+  // ================= MONSTROS, MINI-BOSS E BOSS 3D =================
+  var MONSTER_TYPES = [
+    { name: 'Slime de Musgo (Mágico)',     kind: 'slime',  hp: 70,  atk: 9,  dmgType: 'magic', xp: 25,  gold: 12,  color: '#34d399', hex: 0x34d399, scale: 1.0,  tier: 'normal' },
+    { name: 'Lobo Etéreo',                 kind: 'wolf',   hp: 110, atk: 14, dmgType: 'phys',  xp: 40,  gold: 20,  color: '#94a3b8', hex: 0x64748b, scale: 1.1,  tier: 'normal' },
+    { name: 'Saqueador Goblinoid',         kind: 'goblin', hp: 150, atk: 19, dmgType: 'phys',  xp: 60,  gold: 32,  color: '#38bdf8', hex: 0x0284c7, scale: 1.15, tier: 'normal' },
+    { name: 'Colosso Ancestral (Mini-Boss)', kind: 'golem', hp: 360, atk: 30, dmgType: 'phys', xp: 160, gold: 110, color: '#fbbf24', hex: 0xd97706, scale: 1.65, tier: 'miniboss' },
+    { name: 'Ignisdrake (BOSS)',           kind: 'dragon', hp: 750, atk: 46, dmgType: 'magic', xp: 420, gold: 320, color: '#f97316', hex: 0xea580c, scale: 2.2,  tier: 'boss' }
+  ];
+
+  function createEnemy3DMesh(t) {
+    var group = new THREE.Group();
+    var s = t.scale;
+    var matMain = new THREE.MeshStandardMaterial({ color: t.hex, roughness: 0.55 });
+    var matGlow = new THREE.MeshBasicMaterial({ color: t.tier === 'boss' ? 0xfbbf24 : (t.tier === 'miniboss' ? 0x38bdf8 : 0xf43f5e) });
+
+    if (t.kind === 'slime') {
+      var blob = new THREE.Mesh(new THREE.SphereGeometry(1.05 * s, 16, 12), new THREE.MeshStandardMaterial({ color: t.hex, transparent: true, opacity: 0.85, roughness: 0.2 }));
+      blob.scale.set(1.15, 0.85, 1.15);
+      blob.position.y = 0.85 * s;
+      blob.castShadow = true;
+      group.add(blob);
+    } else if (t.kind === 'wolf') {
+      var body = new THREE.Mesh(new THREE.BoxGeometry(0.85 * s, 0.8 * s, 1.7 * s), matMain);
+      body.position.y = 0.85 * s;
+      body.castShadow = true;
+      group.add(body);
+      var snout = new THREE.Mesh(new THREE.BoxGeometry(0.65 * s, 0.65 * s, 0.8 * s), matMain);
+      snout.position.set(0, 1.2 * s, 0.95 * s);
+      group.add(snout);
+    } else if (t.kind === 'goblin') {
+      var gBody = new THREE.Mesh(new THREE.BoxGeometry(0.95 * s, 1.2 * s, 0.65 * s), matMain);
+      gBody.position.y = 1.1 * s;
+      gBody.castShadow = true;
+      group.add(gBody);
+      var gHead = new THREE.Mesh(new THREE.BoxGeometry(0.85 * s, 0.75 * s, 0.75 * s), matMain);
+      gHead.position.y = 2.0 * s;
+      group.add(gHead);
+    } else if (t.kind === 'golem') {
+      var colTorso = new THREE.Mesh(new THREE.DodecahedronGeometry(1.4 * s, 0), new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.9 }));
+      colTorso.position.y = 1.9 * s;
+      colTorso.castShadow = true;
+      group.add(colTorso);
+      var core = new THREE.Mesh(new THREE.OctahedronGeometry(0.55 * s, 0), matGlow);
+      core.position.set(0, 1.9 * s, 1.1 * s);
+      group.add(core);
+    } else if (t.kind === 'dragon') {
+      // Dragão 3D Ignisdrake com Asas Articuladas!
+      var dBody = new THREE.Mesh(new THREE.ConeGeometry(1.25 * s, 3.2 * s, 10), matMain);
+      dBody.rotation.x = Math.PI / 2.3;
+      dBody.position.y = 2.2 * s;
+      dBody.castShadow = true;
+      group.add(dBody);
+
+      var dHead = new THREE.Mesh(new THREE.BoxGeometry(1.0 * s, 0.9 * s, 1.4 * s), matMain);
+      dHead.position.set(0, 3.3 * s, 1.5 * s);
+      group.add(dHead);
+
+      var wingGeo = new THREE.BoxGeometry(2.6 * s, 0.12 * s, 1.4 * s);
+      var leftWing = new THREE.Mesh(wingGeo, matGlow);
+      leftWing.position.set(-1.7 * s, 2.7 * s, 0.2 * s);
+      group.add(leftWing);
+
+      var rightWing = new THREE.Mesh(wingGeo, matGlow);
+      rightWing.position.set(1.7 * s, 2.7 * s, 0.2 * s);
+      group.add(rightWing);
+
+      group.userData.leftWing = leftWing;
+      group.userData.rightWing = rightWing;
+    }
+
+    // Olhos brilhantes
+    var eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.12 * s, 6, 6), matGlow);
+    eyeL.position.set(-0.22 * s, 1.8 * s, 0.55 * s);
+    group.add(eyeL);
+    var eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.12 * s, 6, 6), matGlow);
+    eyeR.position.set(0.22 * s, 1.8 * s, 0.55 * s);
+    group.add(eyeR);
+
+    if (t.tier === 'boss' || t.tier === 'miniboss') {
+      var aura = new THREE.Mesh(
+        new THREE.RingGeometry(1.4 * s, 1.75 * s, 24),
+        new THREE.MeshBasicMaterial({ color: t.hex, side: THREE.DoubleSide })
+      );
+      aura.rotation.x = -Math.PI / 2;
+      aura.position.y = 0.1;
+      group.add(aura);
+    }
+
+    return group;
+  }
+
+  function clearAllEnemies3D() {
+    enemies.forEach(function(en) {
+      if (en.mesh && scene) scene.remove(en.mesh);
+    });
+    enemies = [];
+  }
+
+  function spawnEnemy(forcedTypeIdx) {
+    var typeIdx = typeof forcedTypeIdx === 'number' ? forcedTypeIdx : 0;
+    if (typeof forcedTypeIdx !== 'number') {
+      var roll = Math.random();
+      if (roll > 0.94) typeIdx = 4;
+      else if (roll > 0.82) typeIdx = 3;
+      else if (roll > 0.55) typeIdx = 2;
+      else if (roll > 0.28) typeIdx = 1;
+    }
+
+    var t = MONSTER_TYPES[typeIdx];
+    var wx = 0, wz = 0, tries = 0;
+    do {
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 18 + Math.random() * (WORLD_SIZE / 2 - 24);
+      wx = Math.cos(angle) * dist;
+      wz = Math.sin(angle) * dist;
+      tries++;
+    } while (isPointInLake3D(wx, wz) && tries < 15);
+
+    var mesh = createEnemy3DMesh(t);
+    mesh.position.set(wx, 0, wz);
+    scene.add(mesh);
+
+    enemies.push({
+      id: Math.random(), name: t.name, kind: t.kind,
+      x: wx, z: wz, mesh: mesh,
+      hp: t.hp, maxHp: t.hp, atk: t.atk, dmgType: t.dmgType, xp: t.xp, gold: t.gold,
+      color: t.color, hex: t.hex, scale: t.scale, tier: t.tier, atkTimer: 0
+    });
+  }
+
+  function spawnInitialEnemies() {
+    clearAllEnemies3D();
+    for (var i = 0; i < 14; i++) spawnEnemy();
+    spawnEnemy(3);
+    spawnEnemy(4);
+  }
+
+  // ================= CONTROLES 3D (RAYCASTER + CÂMERA GIRATÓRIA) =================
+  function setup3DInputHandlers() {
+    var dom = renderer.domElement;
+
+    dom.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+    dom.addEventListener('mousedown', function(e) {
+      if (!gameRunning) return;
+      getAudioCtx();
+
+      if (e.button === 2) {
+        isDraggingCam = true;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+        return;
+      }
+
+      if (e.button === 0) {
+        mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouseNDC, camera);
+
+        var hits = raycaster.intersectObject(groundPlaneMesh);
+        if (hits.length > 0) {
+          var pt = hits[0].point;
+          var half = WORLD_SIZE / 2 - 5;
+          player.targetX = Math.max(-half, Math.min(half, pt.x));
+          player.targetZ = Math.max(-half, Math.min(half, pt.z));
+
+          if (clickMarker3D) {
+            clickMarker3D.position.set(player.targetX, 0.22, player.targetZ);
+            clickMarker3D.visible = true;
+            clickMarker3D.userData.timer = 0.6;
+          }
+
+          var nearest = getNearestEnemy(pt.x, pt.z, 7.5);
+          var effRange = Math.max(CLASSES[player.classKey].skills[0].range, getPlayerEffectiveRange());
+          if (nearest && getDist(player, nearest) <= effRange) {
+            useSkill(0);
+          }
+        }
+      }
+    });
+
+    window.addEventListener('mousemove', function(e) {
+      if (!isDraggingCam) return;
+      var dx = e.clientX - lastMouseX;
+      var dy = e.clientY - lastMouseY;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      camYaw -= dx * 0.007;
+      camPitch = Math.max(0.25, Math.min(1.25, camPitch + dy * 0.006));
+    });
+
+    window.addEventListener('mouseup', function(e) {
+      if (e.button === 2) isDraggingCam = false;
+    });
+
+    dom.addEventListener('wheel', function(e) {
+      if (!gameRunning) return;
+      camDistance = Math.max(9, Math.min(46, camDistance + e.deltaY * 0.015));
+    }, { passive: true });
+  }
+
+  window.addEventListener('keydown', function(e) {
+    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    var k = e.key.toLowerCase();
+    keysPressed[k] = true;
+    if (!gameRunning) return;
+    if (e.key === '1') useSkill(0);
+    if (e.key === '2') useSkill(1);
+    if (e.key === '3') useSkill(2);
+    if (e.key === '4') useSkill(3);
+    if (e.key === '5') usePotion();
+    if (k === 'a') toggleAuto();
+    if (k === 'b') openBagWithTab('equip');
+    if (k === 'l') openBagWithTab('lapis');
+    if (k === 'f') toggleModal('forge-modal');
+    if (e.key === 'Escape') closeAllModals();
+  });
+
+  window.addEventListener('keyup', function(e) { keysPressed[e.key.toLowerCase()] = false; });
+
+  function getDist(a, b) { return Math.hypot(a.x - b.x, a.z - b.z); }
+
+  function getNearestEnemy(x, z, maxRange) {
+    if (typeof maxRange === 'undefined') maxRange = Infinity;
+    var best = null, bestDist = maxRange;
+    enemies.forEach(function(en) {
+      var d = Math.hypot(en.x - x, en.z - z);
+      if (d < bestDist) { bestDist = d; best = en; }
+    });
+    return best;
+  }
+
+  // ================= EFEITOS 3D DE SKILLS & PROJÉTEIS =================
+  function spawnSkillEffect3D(x, z, radius, hexColor) {
+    var ring = new THREE.Mesh(
+      new THREE.RingGeometry(0.4, radius, 28),
+      new THREE.MeshBasicMaterial({ color: hexColor, side: THREE.DoubleSide, transparent: true, opacity: 0.75 })
+    );
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(x, 0.25, z);
+    scene.add(ring);
+    effects3D.push({ mesh: ring, timer: 0.4, maxTimer: 0.4 });
+  }
+
+  function spawnProjectile3D(startX, startZ, targetEn, hexColor, isArrow) {
+    var geo = isArrow
+      ? new THREE.CylinderGeometry(0.08, 0.08, 1.8, 6)
+      : new THREE.SphereGeometry(0.45, 10, 10);
+    var mat = new THREE.MeshBasicMaterial({ color: hexColor });
+    var mesh = new THREE.Mesh(geo, mat);
+    if (isArrow) mesh.rotation.x = Math.PI / 2;
+    mesh.position.set(startX, 1.8, startZ);
+    scene.add(mesh);
+    projectiles3D.push({
+      mesh: mesh,
+      x: startX, z: startZ,
+      tx: targetEn.x, tz: targetEn.z,
+      speed: 45, timer: 0.6
+    });
+  }
+
+  function usePotion() {
+    var stats = getTotalStats();
+    if (player.cooldowns[4] > 0 || player.hp >= stats.totalMaxHp) return;
+    var healAmt = Math.round(stats.totalMaxHp * 0.5);
+    player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
+    player.cooldowns[4] = 4.0;
+    addFloatingText(player.x, 3.6, player.z, '+' + healAmt + ' HP', '#34d399');
+    spawnSkillEffect3D(player.x, player.z, 3.2, 0x34d399);
+    updateHUD();
+  }
+
+  function useSkill(idx) {
+    var cls = CLASSES[player.classKey];
+    var sk = cls.skills[idx];
+    var stats = getTotalStats();
+    if (!sk || player.cooldowns[idx] > 0) return;
+    if (player.mp < sk.mp) { addFloatingText(player.x, 3.5, player.z, 'Sem Éter!', '#38bdf8'); return; }
+
+    player.attackAnimTimer = 0.35;
+
+    if (sk.heal) {
+      player.mp -= sk.mp;
+      player.cooldowns[idx] = sk.cd;
+      var healAmt = Math.round(stats.totalMaxHp * sk.heal);
+      player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
+      addFloatingText(player.x, 3.8, player.z, '+' + healAmt + ' HP', '#34d399');
+      spawnSkillEffect3D(player.x, player.z, 4.2, sk.hex);
+      updateHUD();
+      return;
+    }
+
+    var effRange = idx === 0 ? Math.max(sk.range, getPlayerEffectiveRange()) : sk.range;
+    var target = getNearestEnemy(player.x, player.z, effRange + 2.5);
+    if (!target) {
+      if (!autoCombat) addFloatingText(player.x, 3.5, player.z, 'Alvo fora de alcance!', '#fbbf24');
+      return;
+    }
+
+    player.rotY = Math.atan2(target.x - player.x, target.z - player.z);
+    player.mp -= sk.mp;
+    player.cooldowns[idx] = sk.cd;
+
+    if (sk.dash) {
+      player.x = target.x - 1.8;
+      player.z = target.z;
+      player.targetX = player.x;
+      player.targetZ = player.z;
+    }
+
+    if (sk.proj) {
+      spawnProjectile3D(player.x, player.z, target, sk.hex, player.classKey === 'patrulheiro');
+    }
+
+    var hitList = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 8.5; }) : [target];
+    spawnSkillEffect3D(target.x, target.z, sk.aoe ? 7.5 : 3.2, sk.hex);
+
+    var atkPower = stats.primaryAtk;
+    var normalColor = stats.attackType === 'magic' ? '#c084fc' : (stats.attackType === 'ranged' ? '#34d399' : '#ffffff');
+
+    hitList.forEach(function(en) {
+      var isCrit = (Math.random() * 100) < stats.totalCrit;
+      var dmg = Math.round(atkPower * sk.mult * (0.9 + Math.random() * 0.2));
+      if (isCrit) dmg = Math.round(dmg * 1.65);
+      en.hp -= dmg;
+      addFloatingText(en.x, 3.2 * en.scale, en.z, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#fbbf24' : normalColor);
+      if (en.hp <= 0) killEnemy(en);
+    });
+    updateHUD();
+  }
+
+  function killEnemy(en) {
+    if (en.mesh && scene) scene.remove(en.mesh);
+    enemies = enemies.filter(function(e) { return e.id !== en.id; });
+    player.xp += en.xp;
+    player.gold += en.gold;
+    player.kills += 1;
+    addFloatingText(en.x, 4.0, en.z, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#fbbf24');
+
+    var isSpecial = (en.tier === 'miniboss' || en.tier === 'boss');
+    if (isSpecial || Math.random() < 0.45) {
+      var stonesWon = en.tier === 'boss' ? 4 : (en.tier === 'miniboss' ? 2 : 1);
+      player.stones += stonesWon;
+      addFloatingText(en.x, 4.8, en.z, '💠 +' + stonesWon + ' Cristal Forja!', '#38bdf8');
+    }
+
+    var dropChance = en.tier === 'boss' ? 0.92 : (en.tier === 'miniboss' ? 0.68 : 0.38);
+    if (player.inventory.length < 24 && Math.random() < dropChance) {
+      var droppedItem = generateRandomItem(player.level, en.tier);
+      player.inventory.push(droppedItem);
+      var rData = getRarityData(droppedItem.rarity);
+      addFloatingText(en.x, 5.6, en.z, '🎁 ' + droppedItem.name + '!', rData.color);
+    }
+
+    var lapisChance = en.tier === 'boss' ? 0.85 : (en.tier === 'miniboss' ? 0.55 : 0.24);
+    if (player.lapisBag.length < 30 && Math.random() < lapisChance) {
+      var droppedLapis = generateRandomLapis(en.tier);
+      player.lapisBag.push(droppedLapis);
+      var lMeta = LAPIS_TYPES[droppedLapis.type];
+      addFloatingText(en.x, 6.4, en.z, '💎 ' + lMeta.name + ' Nv.' + droppedLapis.level + '!', lMeta.color);
+    }
+
+    while (player.xp >= player.maxXp) {
+      var cls = CLASSES[player.classKey];
+      player.xp -= player.maxXp;
+      player.level += 1;
+      player.maxXp = Math.round(player.maxXp * 1.35);
+      player.baseMaxHp = (player.baseMaxHp || cls.baseHp) + 35;
+      player.maxMp += 20;
+
+      if (cls.attackType === 'melee')  player.baseMeleeAtk  = (player.baseMeleeAtk  || 0) + 6;
+      if (cls.attackType === 'ranged') player.baseRangedAtk = (player.baseRangedAtk || 0) + 6;
+      if (cls.attackType === 'magic')  player.baseMagicAtk  = (player.baseMagicAtk  || 0) + 6;
+
+      player.basePhysDef = (player.basePhysDef || 0) + (cls.attackType === 'melee' ? 4 : 2);
+      player.baseMagDef  = (player.baseMagDef  || 0) + (cls.attackType === 'magic' ? 4 : 2);
+
+      var stats = getTotalStats();
+      player.hp = stats.totalMaxHp;
+      player.mp = player.maxMp;
+      addFloatingText(player.x, 5.0, player.z, '🎉 LEVEL UP! Nv. ' + player.level, '#fbbf24');
+      spawnSkillEffect3D(player.x, player.z, 6.0, 0xfbbf24);
+    }
+
+    saveAllSlots();
+    setTimeout(function() { if (gameRunning) spawnEnemy(); }, 2500);
+  }
+
+  function addFloatingText(x, y, z, text, color) {
+    floatingTexts.push({ x: x, y: y, z: z, text: text, color: color, timer: 1.4 });
+  }
+
+  // ================= LOOP PRINCIPAL 3D =================
   function enterWorld() {
     document.getElementById('char-screen').style.display = 'none';
     document.getElementById('hud-top-left').style.display = 'flex';
@@ -1608,7 +2145,8 @@
     document.getElementById('controls-hint').style.display = 'block';
     document.getElementById('hud-bottom').style.display = 'flex';
 
-    initWorldEnvironment();
+    initThreeEngine();
+    buildPlayer3DModel();
     setupSkillBar();
     spawnInitialEnemies();
     updateHUD();
@@ -1621,14 +2159,410 @@
     }
   }
 
-  // ================= INVENTÁRIO DINÂMICO, LINKAGEM & EXTRAÇÃO DE LÁPIS =================
+  function gameLoop(now) {
+    var dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    worldAnimTime += dt;
+
+    if (gameRunning && threeInitialized) {
+      update3D(dt);
+      renderer.render(scene, camera);
+      renderOverlayLabels2D();
+      renderMinimap();
+    }
+    requestAnimationFrame(gameLoop);
+  }
+
+  function update3D(dt) {
+    var stats = getTotalStats();
+    player.hp = Math.min(stats.totalMaxHp, player.hp + stats.totalMaxHp * 0.02 * dt);
+    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.06 * dt);
+
+    for (var i = 0; i < player.cooldowns.length; i++) {
+      if (player.cooldowns[i] > 0) {
+        player.cooldowns[i] = Math.max(0, player.cooldowns[i] - dt);
+        var overlay = document.getElementById('cd-' + i);
+        if (overlay) {
+          overlay.style.display = player.cooldowns[i] > 0 ? 'flex' : 'none';
+          if (player.cooldowns[i] > 0) overlay.textContent = player.cooldowns[i].toFixed(1);
+        }
+      }
+    }
+
+    // Movimento relativo ao ângulo da câmera 3D (WASD)
+    var forwardInput = 0, rightInput = 0;
+    if (keysPressed['w']) forwardInput += 1;
+    if (keysPressed['s']) forwardInput -= 1;
+    if (keysPressed['d']) rightInput += 1;
+    if (keysPressed['a']) rightInput -= 1;
+
+    var isMoving = false;
+    if (forwardInput !== 0 || rightInput !== 0) {
+      var camForwardX = -Math.sin(camYaw);
+      var camForwardZ = -Math.cos(camYaw);
+      var camRightX   = Math.cos(camYaw);
+      var camRightZ   = -Math.sin(camYaw);
+
+      var vx = camForwardX * forwardInput + camRightX * rightInput;
+      var vz = camForwardZ * forwardInput + camRightZ * rightInput;
+      var len = Math.hypot(vx, vz);
+      vx /= len; vz /= len;
+
+      player.x += vx * player.speed * dt;
+      player.z += vz * player.speed * dt;
+      player.targetX = player.x;
+      player.targetZ = player.z;
+      player.rotY = Math.atan2(vx, vz);
+      isMoving = true;
+    } else {
+      if (autoCombat) {
+        if (player.hp < stats.totalMaxHp * 0.45) usePotion();
+        var target = getNearestEnemy(player.x, player.z);
+        if (target) {
+          var dist = getDist(player, target);
+          var combatRange = getPlayerEffectiveRange();
+          if (dist > combatRange * 0.85) {
+            player.targetX = target.x; player.targetZ = target.z;
+          } else {
+            player.targetX = player.x; player.targetZ = player.z;
+            for (var s = 3; s >= 0; s--) {
+              if (player.cooldowns[s] <= 0 && player.mp >= CLASSES[player.classKey].skills[s].mp) { useSkill(s); break; }
+            }
+          }
+        }
+      }
+      var dx = player.targetX - player.x, dz = player.targetZ - player.z, dist2 = Math.hypot(dx, dz);
+      if (dist2 > 0.35) {
+        player.x += (dx / dist2) * player.speed * dt;
+        player.z += (dz / dist2) * player.speed * dt;
+        player.rotY = Math.atan2(dx, dz);
+        isMoving = true;
+      }
+    }
+
+    var boundHalf = WORLD_SIZE / 2 - 5;
+    player.x = Math.max(-boundHalf, Math.min(boundHalf, player.x));
+    player.z = Math.max(-boundHalf, Math.min(boundHalf, player.z));
+
+    // Atualiza posição e animação 3D do Herói
+    if (playerMeshGroup) {
+      playerMeshGroup.position.set(player.x, 0, player.z);
+      playerMeshGroup.rotation.y = player.rotY;
+
+      if (isMoving) {
+        var swing = Math.sin(worldAnimTime * 12) * 0.65;
+        playerAnimParts.leftLeg.rotation.x = swing;
+        playerAnimParts.rightLeg.rotation.x = -swing;
+        playerAnimParts.leftArm.rotation.x = -swing * 0.6;
+      } else {
+        playerAnimParts.leftLeg.rotation.x = 0;
+        playerAnimParts.rightLeg.rotation.x = 0;
+        playerAnimParts.leftArm.rotation.x = Math.sin(worldAnimTime * 2.5) * 0.08;
+      }
+
+      if (player.attackAnimTimer > 0) {
+        player.attackAnimTimer -= dt;
+        playerAnimParts.rightArm.rotation.x = -Math.PI * 0.65 * Math.sin((player.attackAnimTimer / 0.35) * Math.PI);
+      } else {
+        playerAnimParts.rightArm.rotation.x = isMoving ? Math.sin(worldAnimTime * 12) * 0.5 : 0;
+      }
+    }
+
+    // Câmera 3D em 3ª pessoa seguindo o Herói
+    var camX = player.x + Math.sin(camYaw) * Math.cos(camPitch) * camDistance;
+    var camY = 2.2 + Math.sin(camPitch) * camDistance;
+    var camZ = player.z + Math.cos(camYaw) * Math.cos(camPitch) * camDistance;
+    camera.position.set(camX, camY, camZ);
+    camera.lookAt(player.x, 2.0, player.z);
+
+    // Rotação dos Cristais de Éter no cenário
+    worldProps.forEach(function(pr) {
+      if (pr.spinObj) {
+        pr.spinObj.rotation.y += 1.4 * dt;
+        pr.spinObj.position.y = 3.2 + Math.sin(worldAnimTime * 2.5 + pr.x) * 0.35;
+      }
+    });
+
+    // Atualização dos Monstros 3D
+    enemies.forEach(function(en) {
+      var dist = getDist(player, en);
+      if (dist < 24 && dist > 4.2) {
+        var vx = (player.x - en.x) / dist;
+        var vz = (player.z - en.z) / dist;
+        en.x += vx * 6.5 * dt;
+        en.z += vz * 6.5 * dt;
+        if (en.mesh) en.mesh.rotation.y = Math.atan2(vx, vz);
+      } else if (dist <= 4.8) {
+        en.atkTimer += dt;
+        if (en.atkTimer >= 1.6) {
+          en.atkTimer = 0;
+          if ((Math.random() * 100) < stats.totalEva) {
+            addFloatingText(player.x, 3.6, player.z, '💨 DESVIOU!', '#38bdf8');
+          } else {
+            var relevantDef = en.dmgType === 'magic' ? stats.totalMagDef : stats.totalPhysDef;
+            var dmg = Math.max(2, en.atk - Math.round(relevantDef * 0.5));
+            player.hp -= dmg;
+            var dmgColor = en.dmgType === 'magic' ? '#c084fc' : '#fb7185';
+            addFloatingText(player.x, 3.4, player.z, (en.dmgType === 'magic' ? '🔮 -' : '-') + dmg, dmgColor);
+            if (player.hp <= 0) {
+              player.hp = stats.totalMaxHp;
+              player.x = 0; player.z = 0; player.targetX = 0; player.targetZ = 0;
+            }
+          }
+        }
+      }
+
+      if (en.mesh) {
+        en.mesh.position.set(en.x, 0, en.z);
+        if (en.kind === 'slime') {
+          en.mesh.position.y = Math.abs(Math.sin(worldAnimTime * 5 + en.id * 10)) * 0.55;
+        }
+        if (en.kind === 'dragon' && en.mesh.userData.leftWing) {
+          var flap = Math.sin(worldAnimTime * 7) * 0.45;
+          en.mesh.userData.leftWing.rotation.z = flap;
+          en.mesh.userData.rightWing.rotation.z = -flap;
+        }
+      }
+    });
+
+    // Projéteis 3D voando
+    projectiles3D.forEach(function(p) {
+      p.timer -= dt;
+      var dx = p.tx - p.x, dz = p.tz - p.z;
+      var d = Math.hypot(dx, dz);
+      if (d > 0.5) {
+        p.x += (dx / d) * p.speed * dt;
+        p.z += (dz / d) * p.speed * dt;
+        p.mesh.position.set(p.x, 1.8, p.z);
+        p.mesh.rotation.y = Math.atan2(dx, dz);
+      } else {
+        p.timer = 0;
+      }
+      if (p.timer <= 0) scene.remove(p.mesh);
+    });
+    projectiles3D = projectiles3D.filter(function(p) { return p.timer > 0; });
+
+    // Efeitos de ondas no chão 3D
+    effects3D.forEach(function(ef) {
+      ef.timer -= dt;
+      var prog = 1 - (ef.timer / ef.maxTimer);
+      ef.mesh.scale.set(0.4 + prog * 0.8, 0.4 + prog * 0.8, 1);
+      ef.mesh.material.opacity = Math.max(0, 1 - prog);
+      if (ef.timer <= 0) scene.remove(ef.mesh);
+    });
+    effects3D = effects3D.filter(function(ef) { return ef.timer > 0; });
+
+    // Marcador de clique
+    if (clickMarker3D && clickMarker3D.visible) {
+      clickMarker3D.userData.timer -= dt;
+      clickMarker3D.rotation.z += 4 * dt;
+      if (clickMarker3D.userData.timer <= 0) clickMarker3D.visible = false;
+    }
+
+    // Textos flutuantes
+    floatingTexts.forEach(function(ft) { ft.y += 2.2 * dt; ft.timer -= dt; });
+    floatingTexts = floatingTexts.filter(function(ft) { return ft.timer > 0; });
+
+    updateHUD();
+  }
+
+  // ================= PROJEÇÃO 3D -> 2D PARA NOMES, BARRAS DE VIDA E DANOS =================
+  var overlayCanvas = document.getElementById('overlay2d');
+  var oCtx = overlayCanvas.getContext('2d');
+
+  function resizeViewports() {
+    var w = window.innerWidth, h = window.innerHeight;
+    overlayCanvas.width = w;
+    overlayCanvas.height = h;
+    if (renderer && camera) {
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+  }
+  window.addEventListener('resize', resizeViewports);
+  resizeViewports();
+
+  function projectToScreen(wx, wy, wz) {
+    var vec = new THREE.Vector3(wx, wy, wz);
+    vec.project(camera);
+    if (vec.z > 1) return null; // Atrás da câmera
+    return {
+      x: (vec.x * 0.5 + 0.5) * overlayCanvas.width,
+      y: (-vec.y * 0.5 + 0.5) * overlayCanvas.height
+    };
+  }
+
+  function renderOverlayLabels2D() {
+    oCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+    // Nome e Nível do Jogador sobre a cabeça 3D
+    var pPos = projectToScreen(player.x, 3.85, player.z);
+    if (pPos) {
+      oCtx.font = 'bold 13px Segoe UI';
+      oCtx.textAlign = 'center';
+      oCtx.fillStyle = '#000';
+      oCtx.fillText('[Nv.' + player.level + '] ' + player.name, pPos.x + 1, pPos.y + 1);
+      oCtx.fillStyle = '#ffffff';
+      oCtx.fillText('[Nv.' + player.level + '] ' + player.name, pPos.x, pPos.y);
+    }
+
+    // Nomes e Barras de HP dos Monstros 3D
+    enemies.forEach(function(en) {
+      var ePos = projectToScreen(en.x, 2.9 * en.scale, en.z);
+      if (!ePos) return;
+      oCtx.font = 'bold 11px Segoe UI';
+      oCtx.textAlign = 'center';
+      oCtx.fillStyle = '#000';
+      oCtx.fillText(en.name, ePos.x + 1, ePos.y - 7);
+      oCtx.fillStyle = en.tier === 'boss' ? '#f97316' : (en.tier === 'miniboss' ? '#fbbf24' : '#fda4af');
+      oCtx.fillText(en.name, ePos.x, ePos.y - 8);
+
+      var barW = 48 * Math.min(1.5, en.scale);
+      oCtx.fillStyle = '#1e293b';
+      oCtx.fillRect(ePos.x - barW / 2, ePos.y - 3, barW, 5);
+      oCtx.fillStyle = '#e11d48';
+      oCtx.fillRect(ePos.x - barW / 2, ePos.y - 3, barW * Math.max(0, en.hp / en.maxHp), 5);
+    });
+
+    // Danos, Críticos, XP e Drops flutuantes
+    floatingTexts.forEach(function(ft) {
+      var fPos = projectToScreen(ft.x, ft.y, ft.z);
+      if (!fPos) return;
+      oCtx.font = 'bold 14px Segoe UI';
+      oCtx.textAlign = 'center';
+      oCtx.fillStyle = '#000';
+      oCtx.fillText(ft.text, fPos.x + 1, fPos.y + 1);
+      oCtx.fillStyle = ft.color;
+      oCtx.fillText(ft.text, fPos.x, fPos.y);
+    });
+  }
+
+  // ================= MINIMAPA TÁTICO 3D =================
+  var minimapCanvas = document.getElementById('minimapCanvas');
+  var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
+
+  function renderMinimap() {
+    if (!mCtx || !minimapCanvas) return;
+    var w = minimapCanvas.width, h = minimapCanvas.height;
+    var scale = w / WORLD_SIZE;
+    function toMiniX(wx) { return (wx + WORLD_SIZE / 2) * scale; }
+    function toMiniY(wz) { return (wz + WORLD_SIZE / 2) * scale; }
+
+    mCtx.fillStyle = '#0c241d';
+    mCtx.fillRect(0, 0, w, h);
+
+    // Lago
+    mCtx.fillStyle = '#0284c7';
+    mCtx.beginPath();
+    mCtx.ellipse(toMiniX(-42), toMiniY(38), 20 * scale, 14 * scale, 0, 0, Math.PI * 2);
+    mCtx.fill();
+
+    // Praça Central
+    mCtx.fillStyle = '#475569';
+    mCtx.beginPath();
+    mCtx.arc(toMiniX(0), toMiniY(0), 6, 0, Math.PI * 2);
+    mCtx.fill();
+
+    // Cristais
+    worldProps.forEach(function(pr) {
+      if (pr.type === 'crystal') {
+        mCtx.fillStyle = '#38bdf8';
+        mCtx.fillRect(toMiniX(pr.x) - 1.5, toMiniY(pr.z) - 1.5, 3, 3);
+      }
+    });
+
+    // Monstros
+    enemies.forEach(function(en) {
+      var mx = toMiniX(en.x), my = toMiniY(en.z);
+      if (en.tier === 'boss') {
+        mCtx.fillStyle = '#f97316';
+        mCtx.beginPath(); mCtx.arc(mx, my, 4.2, 0, Math.PI * 2); mCtx.fill();
+        mCtx.strokeStyle = '#fff'; mCtx.lineWidth = 1; mCtx.stroke();
+      } else if (en.tier === 'miniboss') {
+        mCtx.fillStyle = '#fbbf24';
+        mCtx.beginPath(); mCtx.arc(mx, my, 3.2, 0, Math.PI * 2); mCtx.fill();
+      } else {
+        mCtx.fillStyle = '#f43f5e';
+        mCtx.beginPath(); mCtx.arc(mx, my, 2, 0, Math.PI * 2); mCtx.fill();
+      }
+    });
+
+    // Jogador
+    var px = toMiniX(player.x), py = toMiniY(player.z);
+    mCtx.fillStyle = '#ffffff';
+    mCtx.beginPath(); mCtx.arc(px, py, 3.2, 0, Math.PI * 2); mCtx.fill();
+    mCtx.strokeStyle = '#38bdf8'; mCtx.lineWidth = 1.5; mCtx.stroke();
+  }
+
+  function updateHUD() {
+    var cls = CLASSES[player.classKey];
+    var stats = getTotalStats();
+    document.getElementById('hud-avatar').childNodes[0].textContent = cls.icon;
+    document.getElementById('hud-lvl').textContent = 'Nv. ' + player.level;
+    document.getElementById('hud-name').textContent = player.name + ' (' + cls.name + ')';
+    document.getElementById('hud-br').textContent = 'BR: ' + stats.br;
+    document.getElementById('hud-hp-bar').style.width = Math.min(100, (player.hp / stats.totalMaxHp) * 100) + '%';
+    document.getElementById('hud-hp-text').textContent = Math.ceil(player.hp) + ' / ' + stats.totalMaxHp;
+    document.getElementById('hud-mp-bar').style.width = Math.min(100, (player.mp / player.maxMp) * 100) + '%';
+    document.getElementById('hud-mp-text').textContent = Math.ceil(player.mp) + ' / ' + player.maxMp;
+    document.getElementById('hud-gold').textContent = player.gold;
+    document.getElementById('hud-stones').textContent = player.stones;
+    var coordsEl = document.getElementById('hud-coords');
+    if (coordsEl) coordsEl.textContent = 'Coords 3D: (' + Math.round(player.x) + ', ' + Math.round(player.z) + ')';
+    var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
+    document.getElementById('hud-xp-bar').style.width = xpPct + '%';
+    document.getElementById('hud-xp-text').textContent = 'XP: ' + player.xp + ' / ' + player.maxXp + ' (' + xpPct.toFixed(0) + '%)';
+  }
+
+  // ================= BARRA DE SKILLS =================
+  function setupSkillBar() {
+    var bar = document.getElementById('skill-bar');
+    bar.innerHTML = '';
+    var cls = CLASSES[player.classKey];
+
+    cls.skills.forEach(function(sk, idx) {
+      var slot = document.createElement('div');
+      slot.className = 'skill-slot';
+      slot.title = sk.name + ' (Éter: ' + sk.mp + ')';
+      slot.innerHTML = '<span class="key">' + (idx + 1) + '</span><span class="icon">' + sk.icon + '</span><div class="cd-overlay" id="cd-' + idx + '"></div>';
+      slot.onclick = function() { useSkill(idx); };
+      bar.appendChild(slot);
+    });
+
+    var potSlot = document.createElement('div');
+    potSlot.className = 'skill-slot';
+    potSlot.title = 'Elixir Vital (50% HP)';
+    potSlot.innerHTML = '<span class="key">5</span><span class="icon">🧪</span><div class="cd-overlay" id="cd-4"></div>';
+    potSlot.onclick = function() { usePotion(); };
+    bar.appendChild(potSlot);
+
+    var autoBtn = document.createElement('button');
+    autoBtn.type = 'button';
+    autoBtn.className = 'btn-auto';
+    autoBtn.id = 'btn-auto';
+    autoBtn.innerHTML = '<span>🤖</span><span>AUTO</span>';
+    autoBtn.onclick = toggleAuto;
+    bar.appendChild(autoBtn);
+  }
+
+  function toggleAuto() {
+    autoCombat = !autoCombat;
+    var btn = document.getElementById('btn-auto');
+    if (autoCombat) {
+      btn.classList.add('active');
+      addFloatingText(player.x, 3.8, player.z, 'AUTO ATIVADO', '#34d399');
+    } else {
+      btn.classList.remove('active');
+      addFloatingText(player.x, 3.8, player.z, 'AUTO DESLIGADO', '#fb7185');
+    }
+  }
+
+  // ================= INVENTÁRIO, LINKAGEM & EXTRAÇÃO DE GEMAS =================
   function openBagWithTab(tabName) {
     var el = document.getElementById('bag-modal');
     var isOpen = el.style.display === 'flex';
-    if (isOpen && currentBagTab === tabName) {
-      closeAllModals();
-      return;
-    }
+    if (isOpen && currentBagTab === tabName) { closeAllModals(); return; }
     closeAllModals();
     el.style.display = 'flex';
     if (!inspectedItem) {
@@ -1648,10 +2582,7 @@
   }
 
   function toggleModal(modalId) {
-    if (modalId === 'bag-modal') {
-      openBagWithTab('equip');
-      return;
-    }
+    if (modalId === 'bag-modal') { openBagWithTab('equip'); return; }
     var el = document.getElementById(modalId);
     var isOpen = el.style.display === 'flex';
     closeAllModals();
@@ -1669,9 +2600,7 @@
     inspectedItem = item;
     inspectedFromBag = !!fromBag;
     renderInspectPanel();
-    if (currentBagTab === 'lapis') {
-      renderLapisBag();
-    }
+    if (currentBagTab === 'lapis') renderLapisBag();
   }
 
   function formatCompactItemStats(st) {
@@ -1691,27 +2620,19 @@
     var arrowHtml = '';
     if (compareEnabled) {
       var diff = Math.round((newVal - eqVal) * 10) / 10;
-      if (diff > 0) {
-        arrowHtml = '<span class="arrow-up">▲ +' + diff + suffix + '</span>';
-      } else if (diff < 0) {
-        arrowHtml = '<span class="arrow-down">▼ ' + diff + suffix + '</span>';
-      } else {
-        arrowHtml = '<span class="arrow-eq">▬ Igual</span>';
-      }
+      if (diff > 0) arrowHtml = '<span class="arrow-up">▲ +' + diff + suffix + '</span>';
+      else if (diff < 0) arrowHtml = '<span class="arrow-down">▼ ' + diff + suffix + '</span>';
+      else arrowHtml = '<span class="arrow-eq">▬ Igual</span>';
     }
-    return '<div class="stat-comp-row">' +
-      '<span>' + icon + ' <b>' + label + ':</b> +' + newVal + suffix + '</span>' +
-      arrowHtml +
-    '</div>';
+    return '<div class="stat-comp-row"><span>' + icon + ' <b>' + label + ':</b> +' + newVal + suffix + '</span>' + arrowHtml + '</div>';
   }
 
   function renderInspectPanel() {
     var panel = document.getElementById('inspect-panel');
     if (!panel) return;
-
     if (!inspectedItem) {
-      panel.style.borderColor = '#2f3542';
-      panel.innerHTML = '<div style="text-align:center; color:#64748b; margin:auto;">Clique sobre um equipamento para ver seus atributos, comparar com setas (<span style="color:#2ed573;">▲</span>/<span style="color:#ff4757;">▼</span>), linkar ou extrair Lápis.</div>';
+      panel.style.borderColor = '#1e293b';
+      panel.innerHTML = '<div style="text-align:center; color:#64748b; margin:auto;">Selecione um equipamento para ver seus atributos, linkar ou extrair Gemas de Éter.</div>';
       return;
     }
 
@@ -1725,19 +2646,12 @@
 
     var weaponTypeBadge = '';
     if (item.slot === 'weapon' && item.weaponType) {
-      weaponTypeBadge = '<div><span class="weapon-cat-pill">' + getWeaponTypeLabel(item.weaponType) + ' • Alcance ' + (item.weaponRange || 70) + '</span></div>';
+      weaponTypeBadge = '<div><span class="weapon-cat-pill">' + getWeaponTypeLabel(item.weaponType) + '</span></div>';
     }
 
     var currentlyEquipped = player.equipped[item.slot];
     var compareEnabled = inspectedFromBag && (!currentlyEquipped || currentlyEquipped.id !== item.id);
     var eqStats = currentlyEquipped ? getItemEffectiveStats(currentlyEquipped) : { meleeAtk: 0, rangedAtk: 0, magicAtk: 0, physDef: 0, magDef: 0, hp: 0, crit: 0, eva: 0 };
-
-    var compareHeaderNote = '';
-    if (compareEnabled) {
-      compareHeaderNote = currentlyEquipped
-        ? '<div style="font-size:0.68rem; color:#94a3b8; margin-top:4px;">Comparando com: <b style="color:#e2e8f0;">' + currentlyEquipped.name + '</b></div>'
-        : '<div style="font-size:0.68rem; color:#2ed573; margin-top:4px;">▲ Slot vazio (melhoria direta!)</div>';
-    }
 
     var statRowsHtml = '';
     if (st.hp > 0 || eqStats.hp > 0)               statRowsHtml += buildStatCompareLine('❤️', 'Vida Máx', st.hp, eqStats.hp, '', compareEnabled);
@@ -1752,7 +2666,7 @@
     var socketsHtml = '';
     var linkedDescList = [];
     if (r.slots === 0) {
-      socketsHtml = '<div style="font-size:0.72rem; color:#64748b; text-align:center;">Item Normal: 0 engastes de Lápis.</div>';
+      socketsHtml = '<div style="font-size:0.72rem; color:#64748b; text-align:center;">Item Comum: 0 engastes de Gema.</div>';
     } else {
       socketsHtml = '<div class="lapis-sockets-row">';
       for (var i = 0; i < r.slots; i++) {
@@ -1763,27 +2677,24 @@
           var extChance = LAPIS_EXTRACT_CHANCE[sock.level] || 50;
           var canPayExtract = player.gold >= extCost;
 
-          socketsHtml += '<div class="lapis-socket filled" style="border-color:' + lMeta.color + '; background:' + lMeta.bgTint + '; color:' + lMeta.color + ';" title="' + lMeta.name + ' Nv.' + sock.level + ' (' + lMeta.formatBonus(sock.level) + ')">' + sock.type + sock.level + '</div>';
-
+          socketsHtml += '<div class="lapis-socket filled" style="border-color:' + lMeta.color + '; background:' + lMeta.bgTint + '; color:' + lMeta.color + ';">' + sock.type + sock.level + '</div>';
           linkedDescList.push(
             '<div class="linked-lapis-item" style="border-left:3px solid ' + lMeta.color + ';">' +
               '<div style="text-align:left;">' +
                 '<div style="color:' + lMeta.color + '; font-weight:bold;">' + lMeta.name + ' Nv.' + sock.level + ' (' + lMeta.formatBonus(sock.level) + ')</div>' +
-                '<div style="font-size:0.62rem; color:#94a3b8;">Chance Extrair: <b style="color:#e2e8f0;">' + extChance + '%</b></div>' +
+                '<div style="font-size:0.62rem; color:#94a3b8;">Chance Tirar: <b style="color:#e2e8f0;">' + extChance + '%</b></div>' +
               '</div>' +
-              '<button type="button" class="btn-extract-lapis" ' + (canPayExtract ? '' : 'disabled title="Ouro insuficiente"') + ' onclick="extractLapisFromInspected(' + i + ')">Tirar ($' + extCost + ')</button>' +
+              '<button type="button" class="btn-extract-lapis" ' + (canPayExtract ? '' : 'disabled') + ' onclick="extractLapisFromInspected(' + i + ')">Tirar ($' + extCost + ')</button>' +
             '</div>'
           );
         } else {
-          socketsHtml += '<div class="lapis-socket unlocked" style="border-color:' + r.color + ';" title="Slot #' + (i + 1) + ' Livre">➕</div>';
+          socketsHtml += '<div class="lapis-socket unlocked" style="border-color:' + r.color + ';">➕</div>';
         }
       }
       socketsHtml += '</div>';
     }
 
-    var linkedListHtml = linkedDescList.length > 0
-      ? '<div class="linked-lapis-list">' + linkedDescList.join('') + '</div>'
-      : '';
+    var linkedListHtml = linkedDescList.length > 0 ? '<div class="linked-lapis-list">' + linkedDescList.join('') + '</div>' : '';
 
     panel.style.borderColor = r.color;
     panel.innerHTML =
@@ -1796,15 +2707,14 @@
           '<div><span class="class-req-pill ' + (allowed ? 'class-req-ok' : 'class-req-no') + '">' +
             (allowed ? '✔ Classe: ' + reqText : '🔒 Exclusivo: ' + reqText) +
           '</span></div>' +
-          compareHeaderNote +
         '</div>' +
         '<div class="inspect-stats">' +
           statRowsHtml +
-          '<div style="margin-top:6px; font-size:0.74rem; color:#facc15;">💰 Venda: <b>' + item.sellPrice + ' Ouro</b></div>' +
+          '<div style="margin-top:6px; font-size:0.74rem; color:#fbbf24;">💰 Venda: <b>' + item.sellPrice + ' Ouro</b></div>' +
         '</div>' +
       '</div>' +
       '<div class="lapis-section">' +
-        '<div class="lapis-title">💎 Engastes de Lápis (' + getUsedSocketsCount(item) + '/' + r.slots + ' Linkados)</div>' +
+        '<div class="lapis-title">💎 Engastes de Éter (' + getUsedSocketsCount(item) + '/' + r.slots + ')</div>' +
         socketsHtml +
         linkedListHtml +
       '</div>';
@@ -1813,9 +2723,7 @@
   function getUsedSocketsCount(item) {
     if (!item || !Array.isArray(item.sockets)) return 0;
     var count = 0;
-    for (var i = 0; i < item.sockets.length; i++) {
-      if (item.sockets[i]) count++;
-    }
+    for (var i = 0; i < item.sockets.length; i++) if (item.sockets[i]) count++;
     return count;
   }
 
@@ -1827,27 +2735,13 @@
       var sock = item.sockets && item.sockets[i];
       if (sock && LAPIS_TYPES[sock.type]) {
         var c = LAPIS_TYPES[sock.type].color;
-        html += '<span class="mini-dot" style="border-color:' + c + '; background:' + c + '; box-shadow:0 0 4px ' + c + ';"></span>';
+        html += '<span class="mini-dot" style="border-color:' + c + '; background:' + c + ';"></span>';
       } else {
         html += '<span class="mini-dot" style="border-color:' + fallbackColor + ';"></span>';
       }
     }
     html += '</div>';
     return html;
-  }
-
-  function calcItemPowerScore(st) {
-    return st.hp * 0.5 + (st.meleeAtk + st.rangedAtk + st.magicAtk) * 4 + (st.physDef + st.magDef) * 2 + st.crit * 8 + st.eva * 8;
-  }
-
-  function getOverallCompareArrow(item) {
-    var eq = player.equipped[item.slot];
-    if (!eq) return '<span class="arrow-up" title="Slot vazio">▲</span>';
-    var scoreNew = calcItemPowerScore(getItemEffectiveStats(item));
-    var scoreEq  = calcItemPowerScore(getItemEffectiveStats(eq));
-    if (scoreNew > scoreEq) return '<span class="arrow-up" title="Melhor que o equipado">▲</span>';
-    if (scoreNew < scoreEq) return '<span class="arrow-down" title="Inferior ao equipado">▼</span>';
-    return '';
   }
 
   function renderBagModal() {
@@ -1885,14 +2779,13 @@
     });
 
     var stats = getTotalStats();
-    var effRange = getPlayerEffectiveRange();
     document.getElementById('stat-summary').innerHTML =
-      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + ' &nbsp;|&nbsp; <b>🎯 Alcance:</b> ' + effRange + 'px<br>' +
+      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + '<br>' +
       '<b>⚔️ ATQ Perto:</b> ' + stats.totalMeleeAtk + ' &nbsp;|&nbsp; <b>🏹 ATQ Dist.:</b> ' + stats.totalRangedAtk + '<br>' +
       '<b>🔮 ATQ Mágico:</b> ' + stats.totalMagicAtk + '<br>' +
       '<b>🛡️ DEF Física:</b> ' + stats.totalPhysDef + ' &nbsp;|&nbsp; <b>💠 DEF Mágica:</b> ' + stats.totalMagDef + '<br>' +
       '<b>💥 Crítico:</b> ' + stats.totalCrit + '% &nbsp;|&nbsp; <b>💨 Evasão:</b> ' + stats.totalEva + '%<br>' +
-      '<b style="color:#ffa502;">🔥 Poder de Batalha (BR): ' + stats.br + '</b>';
+      '<b style="color:#fbbf24;">🔥 Poder de Batalha (BR): ' + stats.br + '</b>';
 
     document.getElementById('bag-count').textContent = player.inventory.length;
     document.getElementById('lapis-count').textContent = player.lapisBag.length;
@@ -1907,7 +2800,6 @@
       var plusTxt = item.plus > 0 ? ' +' + item.plus : '';
       var allowed = canClassEquip(item);
       var reqLabel = getClassReqLabel(item.classReq);
-      var arrowBadge = allowed ? getOverallCompareArrow(item) : '';
 
       var card = document.createElement('div');
       card.className = 'bag-item' + (allowed ? '' : ' wrong-class');
@@ -1916,20 +2808,15 @@
       card.onclick = function() { inspectItem(item, true); };
       card.innerHTML =
         '<div>' +
-          '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:3px;">' +
-            '<span style="color:' + r.color + '; font-weight:bold; margin-bottom:2px;">' + item.icon + ' ' + item.name + plusTxt + '</span>' +
-            arrowBadge +
-          '</div>' +
-          '<div style="font-size:0.64rem; font-weight:bold; color:' + (allowed ? '#2ed573' : '#ff6b81') + '; margin-bottom:3px;">' +
+          '<div style="color:' + r.color + '; font-weight:bold; margin-bottom:2px;">' + item.icon + ' ' + item.name + plusTxt + '</div>' +
+          '<div style="font-size:0.64rem; font-weight:bold; color:' + (allowed ? '#34d399' : '#fda4af') + '; margin-bottom:3px;">' +
             (allowed ? '✔ ' + reqLabel : '🔒 ' + reqLabel) +
           '</div>' +
-          '<div style="color:#cbd5e1; font-size:0.65rem; line-height:1.35;">' +
-            formatCompactItemStats(st) +
-          '</div>' +
+          '<div style="color:#cbd5e1; font-size:0.65rem; line-height:1.35;">' + formatCompactItemStats(st) + '</div>' +
           renderMiniSockets(item, r.color) +
         '</div>' +
         '<div class="bag-item-actions">' +
-          '<button type="button" class="btn-mini btn-equip" ' + (allowed ? '' : 'disabled title="Arma ou classe incompatível"') + ' onclick="event.stopPropagation(); equipItem(' + idx + ')">' + (allowed ? 'Equipar' : 'Bloq.') + '</button>' +
+          '<button type="button" class="btn-mini btn-equip" ' + (allowed ? '' : 'disabled') + ' onclick="event.stopPropagation(); equipItem(' + idx + ')">' + (allowed ? 'Equipar' : 'Bloq.') + '</button>' +
           '<button type="button" class="btn-mini btn-sell" onclick="event.stopPropagation(); sellItem(' + idx + ')">+$' + item.sellPrice + '</button>' +
         '</div>';
       bagGrid.appendChild(card);
@@ -1953,7 +2840,7 @@
     }
 
     if (player.lapisBag.length === 0) {
-      lapisGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#64748b; padding:24px 10px; font-size:0.8rem;">Sua bolsa de Lápis está vazia. Derrote monstros e chefes para dropar Lápis!</div>';
+      lapisGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center; color:#64748b; padding:24px 10px; font-size:0.8rem;">Sua bolsa de Gemas de Éter está vazia.</div>';
       return;
     }
 
@@ -1964,10 +2851,6 @@
       var goldCost = getLapisLinkGoldCost(lapis.level);
       var canLink = hasEmptySocket && player.gold >= goldCost;
 
-      var btnTitle = !hasEmptySocket
-        ? 'Selecione um equipamento com slot vazio'
-        : (player.gold < goldCost ? 'Ouro insuficiente ($' + goldCost + ')' : 'Custa ' + goldCost + ' Ouro');
-
       var card = document.createElement('div');
       card.className = 'bag-item';
       card.style.borderColor = meta.color;
@@ -1976,10 +2859,10 @@
         '<div>' +
           '<div style="color:' + meta.color + '; font-weight:bold; font-size:0.82rem; margin-bottom:2px;">💎 ' + meta.name + ' <span style="background:#00000055; padding:1px 5px; border-radius:6px;">Nv.' + lapis.level + '</span></div>' +
           '<div style="color:#fff; font-weight:bold; font-size:0.72rem; margin:4px 0;">' + meta.formatBonus(lapis.level) + '</div>' +
-          '<div style="font-size:0.66rem; color:#cbd5e1;">🎲 Chance: <b style="color:' + (chance >= 70 ? '#2ed573' : (chance >= 50 ? '#facc15' : '#ff6b81')) + ';">' + chance + '%</b> • 💰 <b style="color:#facc15;">$' + goldCost + '</b></div>' +
+          '<div style="font-size:0.66rem; color:#cbd5e1;">🎲 Chance: <b style="color:' + (chance >= 70 ? '#34d399' : (chance >= 50 ? '#fbbf24' : '#fda4af')) + ';">' + chance + '%</b> • 💰 <b style="color:#fbbf24;">$' + goldCost + '</b></div>' +
         '</div>' +
         '<div class="bag-item-actions">' +
-          '<button type="button" class="btn-mini btn-link" ' + (canLink ? '' : 'disabled title="' + btnTitle + '"') + ' onclick="linkLapisToInspected(' + idx + ')">Linkar ($' + goldCost + ')</button>' +
+          '<button type="button" class="btn-mini btn-link" ' + (canLink ? '' : 'disabled') + ' onclick="linkLapisToInspected(' + idx + ')">Linkar ($' + goldCost + ')</button>' +
           '<button type="button" class="btn-mini btn-sell" onclick="sellLapis(' + idx + ')">+$' + lapis.sellPrice + '</button>' +
         '</div>';
       lapisGrid.appendChild(card);
@@ -1990,39 +2873,27 @@
     var banner = document.getElementById('link-feedback-banner');
     if (!banner) return;
     banner.style.display = 'block';
-    banner.style.background = isSuccess ? 'rgba(46, 213, 115, 0.18)' : 'rgba(255, 71, 87, 0.22)';
-    banner.style.border = isSuccess ? '1px solid #2ed573' : '1px solid #ff4757';
-    banner.style.color = isSuccess ? '#2ed573' : '#ff6b81';
+    banner.style.background = isSuccess ? 'rgba(16, 185, 129, 0.18)' : 'rgba(244, 63, 94, 0.22)';
+    banner.style.border = isSuccess ? '1px solid #10b981' : '1px solid #f43f5e';
+    banner.style.color = isSuccess ? '#34d399' : '#fda4af';
     banner.textContent = msg;
   }
 
   function linkLapisToInspected(lapisIdx) {
     getAudioCtx();
-    if (!inspectedItem) {
-      alert('Clique primeiro no equipamento (equipado ou na mochila) onde deseja linkar o Lápis!');
-      return;
-    }
+    if (!inspectedItem) return;
     normalizeItem(inspectedItem);
 
     var freeSocketIdx = -1;
     for (var i = 0; i < inspectedItem.sockets.length; i++) {
-      if (inspectedItem.sockets[i] === null) {
-        freeSocketIdx = i;
-        break;
-      }
+      if (inspectedItem.sockets[i] === null) { freeSocketIdx = i; break; }
     }
-    if (freeSocketIdx === -1) {
-      alert('Este equipamento não possui mais slots de Lápis disponíveis!');
-      return;
-    }
+    if (freeSocketIdx === -1) return;
 
     var lapis = player.lapisBag[lapisIdx];
     if (!lapis) return;
     var goldCost = getLapisLinkGoldCost(lapis.level);
-    if (player.gold < goldCost) {
-      alert('Ouro insuficiente! Você precisa de ' + goldCost + ' Ouro para linkar este Lápis.');
-      return;
-    }
+    if (player.gold < goldCost) return;
 
     var meta = LAPIS_TYPES[lapis.type];
     var chance = LAPIS_LINK_CHANCE[lapis.level] || 50;
@@ -2030,17 +2901,15 @@
     player.gold -= goldCost;
     player.lapisBag.splice(lapisIdx, 1);
 
-    var roll = Math.random() * 100;
-    if (roll <= chance) {
+    if (Math.random() * 100 <= chance) {
       inspectedItem.sockets[freeSocketIdx] = { type: lapis.type, level: lapis.level };
       playLinkSuccessSound();
-      showLinkFeedback('✨ SUCESSO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + lapis.level + ' linkado em ' + inspectedItem.name + '!', true);
-      addFloatingText(player.x, player.y - 60, '💎 LINK SUCESSO! ' + meta.name + ' Nv.' + lapis.level, meta.color);
-      effects.push({ x: player.x, y: player.y, radius: 85, color: meta.color, timer: 0.55 });
+      showLinkFeedback('✨ SUCESSO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + lapis.level + ' linkado!', true);
+      addFloatingText(player.x, 4.5, player.z, '💎 LINK SUCESSO!', meta.color);
     } else {
       playGlassBreakSound();
-      showLinkFeedback('💥 FALHOU (-$' + goldCost + ')! O ' + meta.name + ' Nv.' + lapis.level + ' quebrou em pedaços!', false);
-      addFloatingText(player.x, player.y - 60, '💔 Lápis Quebrou!', '#ff4757');
+      showLinkFeedback('💥 FALHOU (-$' + goldCost + ')! ' + meta.name + ' Nv.' + lapis.level + ' estilhaçou!', false);
+      addFloatingText(player.x, 4.5, player.z, '💔 Gema Quebrou!', '#fb7185');
     }
 
     saveAllSlots();
@@ -2057,14 +2926,7 @@
     if (!sock || !LAPIS_TYPES[sock.type]) return;
 
     var goldCost = getLapisExtractGoldCost(sock.level);
-    if (player.gold < goldCost) {
-      alert('Ouro insuficiente! Você precisa de ' + goldCost + ' Ouro para tentar extrair este Lápis.');
-      return;
-    }
-    if (player.lapisBag.length >= 30) {
-      alert('Sua Bolsa de Lápis está cheia (30/30)! Libere espaço antes de extrair.');
-      return;
-    }
+    if (player.gold < goldCost || player.lapisBag.length >= 30) return;
 
     var meta = LAPIS_TYPES[sock.type];
     var chance = LAPIS_EXTRACT_CHANCE[sock.level] || 50;
@@ -2072,21 +2934,16 @@
     player.gold -= goldCost;
     inspectedItem.sockets[socketIdx] = null;
 
-    var roll = Math.random() * 100;
-    if (roll <= chance) {
+    if (Math.random() * 100 <= chance) {
       player.lapisBag.push({
-        id: 'lapis_' + Math.random().toString(36).slice(2, 10),
-        type: sock.type,
-        level: sock.level,
-        sellPrice: sock.level * 35
+        id: 'gema_' + Math.random().toString(36).slice(2, 10),
+        type: sock.type, level: sock.level, sellPrice: sock.level * 35
       });
       playLinkSuccessSound();
-      showLinkFeedback('✨ EXTRAÍDO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + sock.level + ' voltou intacto para a Bolsa de Lápis!', true);
-      addFloatingText(player.x, player.y - 60, '💎 Extraído: ' + meta.name + ' Nv.' + sock.level, meta.color);
+      showLinkFeedback('✨ EXTRAÍDO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + sock.level + ' voltou para a bolsa!', true);
     } else {
       playGlassBreakSound();
-      showLinkFeedback('💥 QUEBROU NA EXTRAÇÃO (-$' + goldCost + ')! O ' + meta.name + ' Nv.' + sock.level + ' estilhaçou ao ser removido!', false);
-      addFloatingText(player.x, player.y - 60, '💔 Lápis Quebrou ao Tirar!', '#ff4757');
+      showLinkFeedback('💥 QUEBROU NA EXTRAÇÃO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + sock.level + ' quebrou!', false);
     }
 
     saveAllSlots();
@@ -2106,11 +2963,7 @@
 
   function unequipSlot(slotKey) {
     var item = player.equipped[slotKey];
-    if (!item) return;
-    if (player.inventory.length >= 24) {
-      alert('Sua mochila está cheia (24/24)!');
-      return;
-    }
+    if (!item || player.inventory.length >= 24) return;
     player.inventory.push(item);
     player.equipped[slotKey] = null;
     saveAllSlots();
@@ -2120,12 +2973,7 @@
 
   function equipItem(bagIdx) {
     var item = player.inventory[bagIdx];
-    if (!item) return;
-    if (!canClassEquip(item)) {
-      var cls = CLASSES[player.classKey];
-      alert('Incompatível! ' + cls.name + ' utiliza apenas: ' + cls.weaponCategoryLabel + '.');
-      return;
-    }
+    if (!item || !canClassEquip(item)) return;
     var currentEquipped = player.equipped[item.slot];
     player.equipped[item.slot] = item;
     player.inventory.splice(bagIdx, 1);
@@ -2151,28 +2999,21 @@
   function sellAllNormal() {
     var earned = 0;
     player.inventory = player.inventory.filter(function(item) {
-      if (item.rarity === 'normal' || item.rarity === 'comum') {
+      if (item.rarity === 'comum') {
         earned += item.sellPrice;
         if (inspectedItem && inspectedItem.id === item.id) inspectedItem = null;
         return false;
       }
       return true;
     });
-    if (earned > 0) {
-      player.gold += earned;
-      saveAllSlots();
-      updateHUD();
-      renderBagModal();
-    }
+    if (earned > 0) { player.gold += earned; saveAllSlots(); updateHUD(); renderBagModal(); }
   }
 
   function sellEverything() {
     if (!player.inventory || player.inventory.length === 0) return;
     var totalGold = 0;
-    for (var i = 0; i < player.inventory.length; i++) {
-      totalGold += player.inventory[i].sellPrice;
-    }
-    if (confirm('Deseja vender TODOS os ' + player.inventory.length + ' itens da mochila por +' + totalGold + ' Ouro?')) {
+    for (var i = 0; i < player.inventory.length; i++) totalGold += player.inventory[i].sellPrice;
+    if (confirm('Vender TODOS os ' + player.inventory.length + ' itens da mochila por +' + totalGold + ' Ouro?')) {
       player.gold += totalGold;
       player.inventory = [];
       inspectedItem = null;
@@ -2184,11 +3025,7 @@
 
   // ================= FORJA (+1 A +12) =================
   function getForgeCostAndChance(plus) {
-    return {
-      stonesCost: plus + 1,
-      goldCost: (plus + 1) * 40,
-      chance: Math.max(20, 100 - plus * 7)
-    };
+    return { stonesCost: plus + 1, goldCost: (plus + 1) * 40, chance: Math.max(20, 100 - plus * 7) };
   }
 
   function renderForgeModal() {
@@ -2203,10 +3040,10 @@
       btn.className = 'forge-item-btn' + (selectedForgeSlot === slotKey ? ' active' : '');
       if (item) {
         var r = getRarityData(item.rarity);
-        btn.style.borderColor = selectedForgeSlot === slotKey ? '#ffa502' : r.color;
+        btn.style.borderColor = selectedForgeSlot === slotKey ? '#38bdf8' : r.color;
         btn.innerHTML = '<span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + ' (+' + item.plus + ')</span>';
       } else {
-        btn.innerHTML = '<span style="color:#57606f;">' + slotInfo.icon + ' ' + slotInfo.label + ' (Não equipado)</span>';
+        btn.innerHTML = '<span style="color:#64748b;">' + slotInfo.icon + ' ' + slotInfo.label + ' (Vazio)</span>';
       }
       btn.onclick = function() { selectedForgeSlot = slotKey; renderForgeModal(); };
       list.appendChild(btn);
@@ -2215,7 +3052,7 @@
     var anvil = document.getElementById('forge-anvil');
     var item = player.equipped[selectedForgeSlot];
     if (!item) {
-      anvil.innerHTML = '<p style="color:#747d8c;">Equipe um item neste slot pela Mochila (B) para forjar.</p>';
+      anvil.innerHTML = '<p style="color:#64748b;">Equipe um item pela Mochila (B) para aprimorar na Bigorna.</p>';
       return;
     }
 
@@ -2232,12 +3069,12 @@
     anvil.innerHTML =
       '<div style="font-size:2.4rem; margin-bottom:6px;">' + item.icon + '</div>' +
       '<h3 style="color:' + r.color + ';">' + item.name + ' (+' + item.plus + ' ➔ +' + (item.plus + 1) + ')</h3>' +
-      '<div style="font-size:0.8rem; color:#ced6e0; margin:10px 0;">Atributos: ' + formatCompactItemStats(currStats) +
-      '<br><span style="color:#2ed573;">Próximo Nível: +18% de bônus!</span></div>' +
-      '<div style="background:#181d2c; padding:10px 16px; border-radius:8px; width:100%; font-size:0.84rem; line-height:1.6;">' +
-      '<div>🎲 Chance: <b style="color:#ffa502;">' + cfg.chance + '%</b></div>' +
-      '<div>💎 Pedras: <b style="color:' + (player.stones >= cfg.stonesCost ? '#2ed573' : '#ff4757') + ';">' + player.stones + ' / ' + cfg.stonesCost + '</b></div>' +
-      '<div>💰 Ouro: <b style="color:' + (player.gold >= cfg.goldCost ? '#f1c40f' : '#ff4757') + ';">' + cfg.goldCost + '</b></div></div>' +
+      '<div style="font-size:0.8rem; color:#cbd5e1; margin:10px 0;">Atributos: ' + formatCompactItemStats(currStats) +
+      '<br><span style="color:#34d399;">Próximo Nível: +18% de bônus!</span></div>' +
+      '<div style="background:#131c31; padding:10px 16px; border-radius:8px; width:100%; font-size:0.84rem; line-height:1.6;">' +
+      '<div>🎲 Chance: <b style="color:#fbbf24;">' + cfg.chance + '%</b></div>' +
+      '<div>💠 Cristais: <b style="color:' + (player.stones >= cfg.stonesCost ? '#34d399' : '#fb7185') + ';">' + player.stones + ' / ' + cfg.stonesCost + '</b></div>' +
+      '<div>💰 Ouro: <b style="color:' + (player.gold >= cfg.goldCost ? '#fbbf24' : '#fb7185') + ';">' + cfg.goldCost + '</b></div></div>' +
       '<button type="button" class="btn-forge-do" ' + (canAfford ? '' : 'disabled') + ' onclick="doForgeUpgrade()">🔨 Aprimorar para +' + (item.plus + 1) + '</button>';
   }
 
@@ -2252,896 +3089,16 @@
 
     if (Math.random() * 100 <= cfg.chance) {
       item.plus += 1;
-      addFloatingText(player.x, player.y - 60, '🔨 SUCESSO! ' + item.name + ' +' + item.plus + '!', '#2ed573');
-      effects.push({ x: player.x, y: player.y, radius: 95, color: '#ffa502', timer: 0.6 });
+      playLinkSuccessSound();
+      addFloatingText(player.x, 4.5, player.z, '🔨 SUCESSO! ' + item.name + ' +' + item.plus + '!', '#34d399');
+      spawnSkillEffect3D(player.x, player.z, 5.0, 0xfbbf24);
     } else {
-      addFloatingText(player.x, player.y - 60, '💥 Falha na Forja!', '#ff4757');
+      addFloatingText(player.x, 4.5, player.z, '💥 Falha na Forja!', '#fb7185');
     }
 
     saveAllSlots();
     updateHUD();
     renderForgeModal();
-  }
-
-  // ================= BARRA DE SKILLS =================
-  function setupSkillBar() {
-    var bar = document.getElementById('skill-bar');
-    bar.innerHTML = '';
-    var cls = CLASSES[player.classKey];
-
-    cls.skills.forEach(function(sk, idx) {
-      var slot = document.createElement('div');
-      slot.className = 'skill-slot';
-      slot.title = sk.name + ' (MP: ' + sk.mp + ')';
-      slot.innerHTML = '<span class="key">' + (idx + 1) + '</span><span class="icon">' + sk.icon + '</span><div class="cd-overlay" id="cd-' + idx + '"></div>';
-      slot.onclick = function() { useSkill(idx); };
-      bar.appendChild(slot);
-    });
-
-    var potSlot = document.createElement('div');
-    potSlot.className = 'skill-slot';
-    potSlot.innerHTML = '<span class="key">5</span><span class="icon">🧪</span><div class="cd-overlay" id="cd-4"></div>';
-    potSlot.onclick = function() { usePotion(); };
-    bar.appendChild(potSlot);
-
-    var autoBtn = document.createElement('button');
-    autoBtn.type = 'button';
-    autoBtn.className = 'btn-auto';
-    autoBtn.id = 'btn-auto';
-    autoBtn.innerHTML = '<span>🤖</span><span>AUTO</span>';
-    autoBtn.onclick = toggleAuto;
-    bar.appendChild(autoBtn);
-  }
-
-  function toggleAuto() {
-    autoCombat = !autoCombat;
-    var btn = document.getElementById('btn-auto');
-    if (autoCombat) {
-      btn.classList.add('active');
-      addFloatingText(player.x, player.y - 45, 'AUTO ATIVADO', '#2ed573');
-    } else {
-      btn.classList.remove('active');
-      addFloatingText(player.x, player.y - 45, 'AUTO DESLIGADO', '#ff6b81');
-    }
-  }
-
-  // ================= MONSTROS, MINI-BOSS E BOSS =================
-  var MONSTER_TYPES = [
-    { name: 'Slime Ácido (Mágico)',        icon: '🟢', hp: 70,  atk: 9,  dmgType: 'magic', xp: 25,  gold: 12,  color: '#2ed573', scale: 1,    tier: 'normal' },
-    { name: 'Lobo Cinzento',               icon: '🐺', hp: 110, atk: 14, dmgType: 'phys',  xp: 40,  gold: 20,  color: '#a4b0be', scale: 1.1,  tier: 'normal' },
-    { name: 'Goblin Saqueador',            icon: '👺', hp: 150, atk: 19, dmgType: 'phys',  xp: 60,  gold: 32,  color: '#3b82f6', scale: 1.15, tier: 'normal' },
-    { name: 'Guardião Tronco (Mini-Boss)', icon: '🌳', hp: 360, atk: 30, dmgType: 'phys',  xp: 160, gold: 110, color: '#facc15', scale: 1.45, tier: 'miniboss' },
-    { name: 'Dragão Ignis (BOSS)',         icon: '🐉', hp: 750, atk: 46, dmgType: 'magic', xp: 420, gold: 320, color: '#ff7f11', scale: 1.85, tier: 'boss' }
-  ];
-
-  function spawnEnemy(forcedTypeIdx) {
-    var typeIdx = typeof forcedTypeIdx === 'number' ? forcedTypeIdx : 0;
-    if (typeof forcedTypeIdx !== 'number') {
-      var roll = Math.random();
-      if (roll > 0.94) typeIdx = 4;
-      else if (roll > 0.82) typeIdx = 3;
-      else if (roll > 0.55) typeIdx = 2;
-      else if (roll > 0.28) typeIdx = 1;
-    }
-
-    var t = MONSTER_TYPES[typeIdx];
-    var wx = 0, wy = 0, tries = 0;
-    do {
-      var angle = Math.random() * Math.PI * 2;
-      var dist = 190 + Math.random() * (WORLD_SIZE / 2 - 250);
-      wx = Math.cos(angle) * dist;
-      wy = Math.sin(angle) * dist;
-      tries++;
-    } while (isPointInLake(wx, wy) && tries < 15);
-
-    enemies.push({
-      id: Math.random(), name: t.name, icon: t.icon,
-      x: wx, y: wy,
-      hp: t.hp, maxHp: t.hp, atk: t.atk, dmgType: t.dmgType, xp: t.xp, gold: t.gold,
-      color: t.color, scale: t.scale, tier: t.tier, atkTimer: 0
-    });
-  }
-
-  function spawnInitialEnemies() {
-    enemies = [];
-    for (var i = 0; i < 14; i++) spawnEnemy();
-    spawnEnemy(3);
-    spawnEnemy(4);
-  }
-
-  var canvas = document.getElementById('gameCanvas');
-  var ctx = canvas.getContext('2d');
-  var minimapCanvas = document.getElementById('minimapCanvas');
-  var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
-
-  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  function worldToIso(wx, wy) {
-    var rx = wx - player.x;
-    var ry = wy - player.y;
-    return { x: (rx - ry) * 0.85 + canvas.width / 2, y: (rx + ry) * 0.45 + canvas.height / 2 };
-  }
-
-  function isoToWorld(sx, sy) {
-    var dx = (sx - canvas.width / 2) / 0.85;
-    var dy = (sy - canvas.height / 2) / 0.45;
-    return { x: player.x + (dx + dy) / 2, y: player.y + (dy - dx) / 2 };
-  }
-
-  canvas.addEventListener('mousedown', function(e) {
-    if (!gameRunning) return;
-    getAudioCtx();
-    var worldPos = isoToWorld(e.clientX, e.clientY);
-    var half = WORLD_SIZE / 2 - 45;
-    player.targetX = Math.max(-half, Math.min(half, worldPos.x));
-    player.targetY = Math.max(-half, Math.min(half, worldPos.y));
-    clickMarker = { x: player.targetX, y: player.targetY, timer: 0.5 };
-    var nearest = getNearestEnemy(worldPos.x, worldPos.y, 85);
-    var effRange = Math.max(CLASSES[player.classKey].skills[0].range, getPlayerEffectiveRange());
-    if (nearest && getDist(player, nearest) <= effRange) useSkill(0);
-  });
-
-  window.addEventListener('keydown', function(e) {
-    if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
-    var k = e.key.toLowerCase();
-    keysPressed[k] = true;
-    if (!gameRunning) return;
-    if (e.key === '1') useSkill(0);
-    if (e.key === '2') useSkill(1);
-    if (e.key === '3') useSkill(2);
-    if (e.key === '4') useSkill(3);
-    if (e.key === '5') usePotion();
-    if (k === 'a') toggleAuto();
-    if (k === 'b') openBagWithTab('equip');
-    if (k === 'l') openBagWithTab('lapis');
-    if (k === 'f') toggleModal('forge-modal');
-    if (e.key === 'Escape') closeAllModals();
-  });
-
-  window.addEventListener('keyup', function(e) { keysPressed[e.key.toLowerCase()] = false; });
-
-  function getDist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-
-  function getNearestEnemy(x, y, maxRange) {
-    if (typeof maxRange === 'undefined') maxRange = Infinity;
-    var best = null, bestDist = maxRange;
-    enemies.forEach(function(en) {
-      var d = Math.hypot(en.x - x, en.y - y);
-      if (d < bestDist) { bestDist = d; best = en; }
-    });
-    return best;
-  }
-
-  function usePotion() {
-    var stats = getTotalStats();
-    if (player.cooldowns[4] > 0 || player.hp >= stats.totalMaxHp) return;
-    var healAmt = Math.round(stats.totalMaxHp * 0.5);
-    player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
-    player.cooldowns[4] = 4.0;
-    addFloatingText(player.x, player.y - 40, '+' + healAmt + ' HP', '#2ed573');
-    effects.push({ x: player.x, y: player.y, radius: 45, color: '#2ed573', timer: 0.4 });
-    updateHUD();
-  }
-
-  function useSkill(idx) {
-    var cls = CLASSES[player.classKey];
-    var sk = cls.skills[idx];
-    var stats = getTotalStats();
-    if (!sk || player.cooldowns[idx] > 0) return;
-    if (player.mp < sk.mp) { addFloatingText(player.x, player.y - 40, 'Sem Mana!', '#70a1ff'); return; }
-
-    if (sk.heal) {
-      player.mp -= sk.mp;
-      player.cooldowns[idx] = sk.cd;
-      var healAmt = Math.round(stats.totalMaxHp * sk.heal);
-      player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
-      addFloatingText(player.x, player.y - 45, '+' + healAmt + ' HP', '#2ed573');
-      effects.push({ x: player.x, y: player.y, radius: 60, color: sk.color, timer: 0.5 });
-      updateHUD();
-      return;
-    }
-
-    var effRange = idx === 0 ? Math.max(sk.range, getPlayerEffectiveRange()) : sk.range;
-    var target = getNearestEnemy(player.x, player.y, effRange + 25);
-    if (!target) {
-      if (!autoCombat) addFloatingText(player.x, player.y - 40, 'Fora de alcance!', '#ffa502');
-      return;
-    }
-
-    player.mp -= sk.mp;
-    player.cooldowns[idx] = sk.cd;
-    if (sk.dash) { player.x = target.x - 25; player.y = target.y; player.targetX = player.x; player.targetY = player.y; }
-
-    var hitList = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 110; }) : [target];
-    effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 105 : 45, color: sk.color, timer: 0.35 });
-
-    var atkPower = stats.primaryAtk;
-    var normalColor = stats.attackType === 'magic' ? '#70a1ff' : (stats.attackType === 'ranged' ? '#7bed9f' : '#ffffff');
-
-    hitList.forEach(function(en) {
-      var isCrit = (Math.random() * 100) < stats.totalCrit;
-      var dmg = Math.round(atkPower * sk.mult * (0.9 + Math.random() * 0.2));
-      if (isCrit) dmg = Math.round(dmg * 1.65);
-      en.hp -= dmg;
-      addFloatingText(en.x, en.y - 35, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#ffa502' : normalColor);
-      if (en.hp <= 0) killEnemy(en);
-    });
-    updateHUD();
-  }
-
-  function killEnemy(en) {
-    enemies = enemies.filter(function(e) { return e.id !== en.id; });
-    player.xp += en.xp;
-    player.gold += en.gold;
-    player.kills += 1;
-    addFloatingText(en.x, en.y - 50, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#f1c40f');
-
-    var isSpecial = (en.tier === 'miniboss' || en.tier === 'boss');
-    if (isSpecial || Math.random() < 0.45) {
-      var stonesWon = en.tier === 'boss' ? 4 : (en.tier === 'miniboss' ? 2 : 1);
-      player.stones += stonesWon;
-      addFloatingText(en.x, en.y - 68, '💎 +' + stonesWon + ' Pedra de Forja!', '#00f2fe');
-    }
-
-    var dropChance = en.tier === 'boss' ? 0.92 : (en.tier === 'miniboss' ? 0.68 : 0.38);
-    if (player.inventory.length < 24 && Math.random() < dropChance) {
-      var droppedItem = generateRandomItem(player.level, en.tier);
-      player.inventory.push(droppedItem);
-      var rData = getRarityData(droppedItem.rarity);
-      var reqName = getClassReqLabel(droppedItem.classReq);
-      addFloatingText(en.x, en.y - 88, '🎁 ' + droppedItem.name + ' [' + reqName + ']!', rData.color);
-    }
-
-    var lapisChance = en.tier === 'boss' ? 0.85 : (en.tier === 'miniboss' ? 0.55 : 0.24);
-    if (player.lapisBag.length < 30 && Math.random() < lapisChance) {
-      var droppedLapis = generateRandomLapis(en.tier);
-      player.lapisBag.push(droppedLapis);
-      var lMeta = LAPIS_TYPES[droppedLapis.type];
-      addFloatingText(en.x, en.y - 108, '💎 Drop: ' + lMeta.name + ' Nv.' + droppedLapis.level + '!', lMeta.color);
-    }
-
-    while (player.xp >= player.maxXp) {
-      var cls = CLASSES[player.classKey];
-      player.xp -= player.maxXp;
-      player.level += 1;
-      player.maxXp = Math.round(player.maxXp * 1.35);
-      player.baseMaxHp = (player.baseMaxHp || cls.baseHp) + 35;
-      player.maxMp += 20;
-
-      if (cls.attackType === 'melee')  player.baseMeleeAtk  = (player.baseMeleeAtk  || 0) + 6;
-      if (cls.attackType === 'ranged') player.baseRangedAtk = (player.baseRangedAtk || 0) + 6;
-      if (cls.attackType === 'magic')  player.baseMagicAtk  = (player.baseMagicAtk  || 0) + 6;
-
-      player.basePhysDef = (player.basePhysDef || 0) + (cls.attackType === 'melee' ? 4 : 2);
-      player.baseMagDef  = (player.baseMagDef  || 0) + (cls.attackType === 'magic' ? 4 : 2);
-
-      var stats = getTotalStats();
-      player.hp = stats.totalMaxHp;
-      player.mp = player.maxMp;
-      addFloatingText(player.x, player.y - 70, '🎉 LEVEL UP! Nv. ' + player.level, '#ffa502');
-    }
-
-    saveAllSlots();
-    setTimeout(function() { spawnEnemy(); }, 2500);
-  }
-
-  function addFloatingText(x, y, text, color) {
-    floatingTexts.push({ x: x, y: y, text: text, color: color, timer: 1.35 });
-  }
-
-  function gameLoop(now) {
-    var dt = Math.min(0.05, (now - lastTime) / 1000);
-    lastTime = now;
-    worldAnimTime += dt;
-    if (gameRunning) {
-      update(dt);
-      render();
-      renderMinimap();
-    }
-    requestAnimationFrame(gameLoop);
-  }
-
-  function update(dt) {
-    var stats = getTotalStats();
-    player.hp = Math.min(stats.totalMaxHp, player.hp + stats.totalMaxHp * 0.02 * dt);
-    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.06 * dt);
-
-    for (var i = 0; i < player.cooldowns.length; i++) {
-      if (player.cooldowns[i] > 0) {
-        player.cooldowns[i] = Math.max(0, player.cooldowns[i] - dt);
-        var overlay = document.getElementById('cd-' + i);
-        if (overlay) {
-          overlay.style.display = player.cooldowns[i] > 0 ? 'flex' : 'none';
-          if (player.cooldowns[i] > 0) overlay.textContent = player.cooldowns[i].toFixed(1);
-        }
-      }
-    }
-
-    var moveX = 0, moveY = 0;
-    if (keysPressed['w']) { moveX -= 1; moveY -= 1; }
-    if (keysPressed['s']) { moveX += 1; moveY += 1; }
-    if (keysPressed['a']) { moveX -= 1; moveY += 1; }
-    if (keysPressed['d']) { moveX += 1; moveY -= 1; }
-
-    if (moveX !== 0 || moveY !== 0) {
-      var len = Math.hypot(moveX, moveY);
-      player.x += (moveX / len) * player.speed * dt;
-      player.y += (moveY / len) * player.speed * dt;
-      player.targetX = player.x;
-      player.targetY = player.y;
-    } else {
-      if (autoCombat) {
-        if (player.hp < stats.totalMaxHp * 0.45) usePotion();
-        var target = getNearestEnemy(player.x, player.y);
-        if (target) {
-          var dist = getDist(player, target);
-          var combatRange = getPlayerEffectiveRange();
-          if (dist > combatRange * 0.85) {
-            player.targetX = target.x; player.targetY = target.y;
-          } else {
-            player.targetX = player.x; player.targetY = player.y;
-            for (var s = 3; s >= 0; s--) {
-              if (player.cooldowns[s] <= 0 && player.mp >= CLASSES[player.classKey].skills[s].mp) { useSkill(s); break; }
-            }
-          }
-        }
-      }
-      var dx = player.targetX - player.x, dy = player.targetY - player.y, dist2 = Math.hypot(dx, dy);
-      if (dist2 > 4) { player.x += (dx / dist2) * player.speed * dt; player.y += (dy / dist2) * player.speed * dt; }
-    }
-
-    var boundHalf = WORLD_SIZE / 2 - 45;
-    player.x = Math.max(-boundHalf, Math.min(boundHalf, player.x));
-    player.y = Math.max(-boundHalf, Math.min(boundHalf, player.y));
-
-    enemies.forEach(function(en) {
-      var dist = getDist(player, en);
-      if (dist < 240 && dist > 48) {
-        en.x += ((player.x - en.x) / dist) * 75 * dt;
-        en.y += ((player.y - en.y) / dist) * 75 * dt;
-      } else if (dist <= 56) {
-        en.atkTimer += dt;
-        if (en.atkTimer >= 1.6) {
-          en.atkTimer = 0;
-          if ((Math.random() * 100) < stats.totalEva) {
-            addFloatingText(player.x, player.y - 38, '💨 DESVIOU!', '#00f2fe');
-          } else {
-            var relevantDef = en.dmgType === 'magic' ? stats.totalMagDef : stats.totalPhysDef;
-            var dmg = Math.max(2, en.atk - Math.round(relevantDef * 0.5));
-            player.hp -= dmg;
-            var dmgColor = en.dmgType === 'magic' ? '#a29bfe' : '#ff4757';
-            addFloatingText(player.x, player.y - 35, (en.dmgType === 'magic' ? '🔮 -' : '-') + dmg, dmgColor);
-            if (player.hp <= 0) { player.hp = stats.totalMaxHp; player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0; }
-          }
-        }
-      }
-    });
-
-    effects.forEach(function(ef) { ef.timer -= dt; });
-    effects = effects.filter(function(ef) { return ef.timer > 0; });
-    floatingTexts.forEach(function(ft) { ft.y -= 35 * dt; ft.timer -= dt; });
-    floatingTexts = floatingTexts.filter(function(ft) { return ft.timer > 0; });
-    if (clickMarker) { clickMarker.timer -= dt; if (clickMarker.timer <= 0) clickMarker = null; }
-    updateHUD();
-  }
-
-  function updateHUD() {
-    var cls = CLASSES[player.classKey];
-    var stats = getTotalStats();
-    document.getElementById('hud-avatar').childNodes[0].textContent = cls.icon;
-    document.getElementById('hud-lvl').textContent = 'Nv. ' + player.level;
-    document.getElementById('hud-name').textContent = player.name + ' (' + cls.name + ')';
-    document.getElementById('hud-br').textContent = 'BR: ' + stats.br;
-    document.getElementById('hud-hp-bar').style.width = Math.min(100, (player.hp / stats.totalMaxHp) * 100) + '%';
-    document.getElementById('hud-hp-text').textContent = Math.ceil(player.hp) + ' / ' + stats.totalMaxHp;
-    document.getElementById('hud-mp-bar').style.width = Math.min(100, (player.mp / player.maxMp) * 100) + '%';
-    document.getElementById('hud-mp-text').textContent = Math.ceil(player.mp) + ' / ' + player.maxMp;
-    document.getElementById('hud-gold').textContent = player.gold;
-    document.getElementById('hud-stones').textContent = player.stones;
-    var coordsEl = document.getElementById('hud-coords');
-    if (coordsEl) {
-      coordsEl.textContent = 'Coords: (' + Math.round(player.x) + ', ' + Math.round(player.y) + ')';
-    }
-    var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
-    document.getElementById('hud-xp-bar').style.width = xpPct + '%';
-    document.getElementById('hud-xp-text').textContent = 'XP: ' + player.xp + ' / ' + player.maxXp + ' (' + xpPct.toFixed(0) + '%)';
-  }
-
-  // ================= RENDERIZAÇÃO DO TERRENO 2.5D TEXTURIZADO =================
-  function renderTerrain() {
-    var half = WORLD_SIZE / 2;
-    var c1 = worldToIso(-half, -half), c2 = worldToIso(half, -half), c3 = worldToIso(half, half), c4 = worldToIso(-half, half);
-
-    // Base da ilha / plataforma florestal com borda de terra 3D
-    ctx.beginPath();
-    ctx.moveTo(c4.x, c4.y);
-    ctx.lineTo(c3.x, c3.y);
-    ctx.lineTo(c3.x, c3.y + 34);
-    ctx.lineTo(c4.x, c4.y + 34);
-    ctx.closePath();
-    ctx.fillStyle = '#1c1917';
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.moveTo(c3.x, c3.y);
-    ctx.lineTo(c2.x, c2.y);
-    ctx.lineTo(c2.x, c2.y + 34);
-    ctx.lineTo(c3.x, c3.y + 34);
-    ctx.closePath();
-    ctx.fillStyle = '#292524';
-    ctx.fill();
-
-    // Superfície principal do terreno
-    ctx.beginPath();
-    ctx.moveTo(c1.x, c1.y);
-    ctx.lineTo(c2.x, c2.y);
-    ctx.lineTo(c3.x, c3.y);
-    ctx.lineTo(c4.x, c4.y);
-    ctx.closePath();
-    ctx.fillStyle = '#15291e';
-    ctx.fill();
-
-    // Ladrilhos texturizados de grama (apenas os visíveis na câmera para 60 FPS)
-    var tileSize = 100;
-    for (var tx = -half; tx < half; tx += tileSize) {
-      for (var ty = -half; ty < half; ty += tileSize) {
-        if (Math.abs(tx - player.x) > 1050 || Math.abs(ty - player.y) > 1050) continue;
-
-        var pA = worldToIso(tx, ty);
-        var pB = worldToIso(tx + tileSize, ty);
-        var pC = worldToIso(tx + tileSize, ty + tileSize);
-        var pD = worldToIso(tx, ty + tileSize);
-
-        var n = seededNoise(tx / tileSize, ty / tileSize);
-        ctx.beginPath();
-        ctx.moveTo(pA.x, pA.y);
-        ctx.lineTo(pB.x, pB.y);
-        ctx.lineTo(pC.x, pC.y);
-        ctx.lineTo(pD.x, pD.y);
-        ctx.closePath();
-
-        if (n > 0.66) ctx.fillStyle = '#183123';
-        else if (n > 0.33) ctx.fillStyle = '#14291d';
-        else ctx.fillStyle = '#1a3626';
-        ctx.fill();
-
-        ctx.strokeStyle = 'rgba(46, 213, 115, 0.045)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-    }
-
-    // Estrada de Terra & Pedras até o Santuário
-    drawWorldRoads();
-
-    // Lago Cristalino no Setor Sudoeste
-    drawCrystalLake();
-
-    // Praça Central Rúnica (Ponto de Spawn)
-    drawCentralPlaza();
-
-    // Decorações planas do solo (flores, tufos de erva, seixos)
-    worldGroundDecals.forEach(function(dec) {
-      if (Math.abs(dec.x - player.x) > 950 || Math.abs(dec.y - player.y) > 950) return;
-      var pos = worldToIso(dec.x, dec.y);
-      if (dec.type === 'flowers') {
-        ctx.fillStyle = '#2ed57366';
-        ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 7, 3.5, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = dec.color;
-        ctx.beginPath(); ctx.arc(pos.x - 3, pos.y - 2, 2, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(pos.x + 3, pos.y - 1, 2, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(pos.x, pos.y + 1.5, 1.8, 0, Math.PI * 2); ctx.fill();
-      } else if (dec.type === 'grass') {
-        ctx.strokeStyle = '#2ed57355';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(pos.x - 4, pos.y); ctx.lineTo(pos.x - 6, pos.y - 6);
-        ctx.moveTo(pos.x, pos.y);     ctx.lineTo(pos.x, pos.y - 8);
-        ctx.moveTo(pos.x + 4, pos.y); ctx.lineTo(pos.x + 6, pos.y - 6);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = '#64748b55';
-        ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 4, 2, 0, 0, Math.PI * 2); ctx.fill();
-      }
-    });
-
-    // Borda luminosa perimetral
-    ctx.beginPath();
-    ctx.moveTo(c1.x, c1.y);
-    ctx.lineTo(c2.x, c2.y);
-    ctx.lineTo(c3.x, c3.y);
-    ctx.lineTo(c4.x, c4.y);
-    ctx.closePath();
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#2ed57366';
-    ctx.stroke();
-  }
-
-  function drawWorldRoads() {
-    // Estrada principal diagonal NW -> SE
-    var r1 = worldToIso(-740, -185), r2 = worldToIso(740, 185);
-    ctx.save();
-    ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(r1.x, r1.y); ctx.lineTo(r2.x, r2.y);
-    ctx.strokeStyle = '#3f362c'; ctx.lineWidth = 54; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(r1.x, r1.y); ctx.lineTo(r2.x, r2.y);
-    ctx.strokeStyle = '#574b3e'; ctx.lineWidth = 38; ctx.stroke();
-
-    // Trilha Norte para o Santuário dos Cristais
-    var n1 = worldToIso(220, 55), n2 = worldToIso(220, -640);
-    ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y);
-    ctx.strokeStyle = '#3f362c'; ctx.lineWidth = 42; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y);
-    ctx.strokeStyle = '#574b3e'; ctx.lineWidth = 28; ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawCrystalLake() {
-    var lakeCenter = worldToIso(-430, 390);
-    if (Math.abs(-430 - player.x) > 1150 || Math.abs(390 - player.y) > 1150) return;
-
-    ctx.save();
-    // Margem arenosa
-    ctx.beginPath();
-    ctx.ellipse(lakeCenter.x, lakeCenter.y, 245, 118, -0.18, 0, Math.PI * 2);
-    ctx.fillStyle = '#4a4236';
-    ctx.fill();
-
-    // Água profunda
-    ctx.beginPath();
-    ctx.ellipse(lakeCenter.x, lakeCenter.y, 228, 108, -0.18, 0, Math.PI * 2);
-    var grad = ctx.createRadialGradient(lakeCenter.x - 30, lakeCenter.y - 15, 15, lakeCenter.x, lakeCenter.y, 225);
-    grad.addColorStop(0, '#0ea5e9');
-    grad.addColorStop(0.65, '#0369a1');
-    grad.addColorStop(1, '#0c4a6e');
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // Ondulações animadas na superfície da água
-    var wave = Math.sin(worldAnimTime * 2.2) * 8;
-    ctx.strokeStyle = 'rgba(186, 230, 253, 0.32)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.ellipse(lakeCenter.x - 15, lakeCenter.y - 8, 120 + wave, 45 + wave * 0.4, -0.18, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawCentralPlaza() {
-    var center = worldToIso(0, 0);
-    if (Math.abs(player.x) > 1000 || Math.abs(player.y) > 1000) return;
-
-    ctx.save();
-    // Círculo externo de pedra
-    ctx.beginPath();
-    ctx.ellipse(center.x, center.y, 145, 76, 0, 0, Math.PI * 2);
-    ctx.fillStyle = '#334155';
-    ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#64748b';
-    ctx.stroke();
-
-    // Anel rúnico interno
-    ctx.beginPath();
-    ctx.ellipse(center.x, center.y, 112, 58, 0, 0, Math.PI * 2);
-    ctx.fillStyle = '#1e293b';
-    ctx.fill();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#00f2fe66';
-    ctx.stroke();
-
-    // Runas brilhantes pulsantes
-    var pulse = 0.45 + Math.sin(worldAnimTime * 3) * 0.25;
-    ctx.beginPath();
-    ctx.ellipse(center.x, center.y, 58, 30, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(255, 165, 2, ' + pulse + ')';
-    ctx.lineWidth = 2.5;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // ================= DESENHO DOS OBJETOS 2.5D DO CENÁRIO =================
-  function drawWorldProp(prop) {
-    if (Math.abs(prop.x - player.x) > 950 || Math.abs(prop.y - player.y) > 950) return;
-    var pos = worldToIso(prop.x, prop.y);
-    var s = prop.scale || 1;
-
-    ctx.save();
-    if (prop.type === 'pine') {
-      // Sombra no chão
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, 26 * s, 13 * s, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
-      ctx.fill();
-
-      // Tronco
-      ctx.fillStyle = '#4a3219';
-      ctx.fillRect(pos.x - 5 * s, pos.y - 24 * s, 10 * s, 24 * s);
-
-      // 3 camadas de copa de pinheiro 2.5D
-      var layers = [
-        { yOff: 18, w: 32, h: 34, col: '#0f3d24' },
-        { yOff: 38, w: 25, h: 30, col: '#165b33' },
-        { yOff: 56, w: 17, h: 26, col: '#1f7a44' }
-      ];
-      layers.forEach(function(ly) {
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y - (ly.yOff + ly.h) * s);
-        ctx.lineTo(pos.x - ly.w * s, pos.y - ly.yOff * s);
-        ctx.lineTo(pos.x + ly.w * s, pos.y - ly.yOff * s);
-        ctx.closePath();
-        ctx.fillStyle = ly.col;
-        ctx.fill();
-      });
-    } else if (prop.type === 'oak') {
-      // Sombra
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, 30 * s, 15 * s, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
-      ctx.fill();
-
-      // Tronco robusto
-      ctx.fillStyle = '#5c3d24';
-      ctx.fillRect(pos.x - 6 * s, pos.y - 28 * s, 12 * s, 28 * s);
-
-      // Copa frondosa em camadas
-      ctx.fillStyle = '#14532d';
-      ctx.beginPath(); ctx.arc(pos.x - 14 * s, pos.y - 38 * s, 20 * s, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(pos.x + 14 * s, pos.y - 38 * s, 20 * s, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#166534';
-      ctx.beginPath(); ctx.arc(pos.x, pos.y - 50 * s, 24 * s, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#22c55e33';
-      ctx.beginPath(); ctx.arc(pos.x - 5 * s, pos.y - 56 * s, 12 * s, 0, Math.PI * 2); ctx.fill();
-    } else if (prop.type === 'rock') {
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, 24 * s, 12 * s, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.4)';
-      ctx.fill();
-
-      // Pedra multifacetada com musgo no topo
-      ctx.beginPath();
-      ctx.moveTo(pos.x - 22 * s, pos.y);
-      ctx.lineTo(pos.x - 16 * s, pos.y - 20 * s);
-      ctx.lineTo(pos.x + 2 * s,  pos.y - 26 * s);
-      ctx.lineTo(pos.x + 20 * s, pos.y - 16 * s);
-      ctx.lineTo(pos.x + 22 * s, pos.y);
-      ctx.closePath();
-      ctx.fillStyle = '#475569';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(pos.x - 15 * s, pos.y - 19 * s);
-      ctx.lineTo(pos.x + 2 * s,  pos.y - 26 * s);
-      ctx.lineTo(pos.x + 16 * s, pos.y - 17 * s);
-      ctx.lineTo(pos.x, pos.y - 13 * s);
-      ctx.closePath();
-      ctx.fillStyle = '#2ed57366';
-      ctx.fill();
-    } else if (prop.type === 'ruin') {
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, 20 * s, 10 * s, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.45)';
-      ctx.fill();
-
-      // Base do pilar
-      ctx.fillStyle = '#64748b';
-      ctx.fillRect(pos.x - 14 * s, pos.y - 8 * s, 28 * s, 8 * s);
-      // Coluna quebrada
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillRect(pos.x - 10 * s, pos.y - 46 * s, 20 * s, 38 * s);
-      // Sombra lateral 2.5D
-      ctx.fillStyle = '#475569';
-      ctx.fillRect(pos.x + 2 * s, pos.y - 46 * s, 8 * s, 38 * s);
-      // Detalhe rúnico
-      ctx.fillStyle = '#00f2fe88';
-      ctx.fillRect(pos.x - 4 * s, pos.y - 32 * s, 4 * s, 14 * s);
-    } else if (prop.type === 'crystal') {
-      var glow = 0.6 + Math.sin(worldAnimTime * 3.5 + prop.x) * 0.3;
-      var cCol = prop.color || '#00f2fe';
-
-      // Aura luminosa no chão
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, 32 * s, 16 * s, 0, 0, Math.PI * 2);
-      ctx.fillStyle = cCol + '33';
-      ctx.fill();
-
-      // Cristal principal
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y - 52 * s);
-      ctx.lineTo(pos.x - 14 * s, pos.y - 14 * s);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.lineTo(pos.x + 14 * s, pos.y - 14 * s);
-      ctx.closePath();
-      ctx.fillStyle = cCol;
-      ctx.globalAlpha = glow;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-
-      // Cristal menor lateral
-      ctx.beginPath();
-      ctx.moveTo(pos.x + 13 * s, pos.y - 32 * s);
-      ctx.lineTo(pos.x + 5 * s,  pos.y - 8 * s);
-      ctx.lineTo(pos.x + 13 * s, pos.y);
-      ctx.lineTo(pos.x + 21 * s, pos.y - 8 * s);
-      ctx.closePath();
-      ctx.fillStyle = '#ffffffaa';
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  // ================= RENDERIZAÇÃO GERAL + Y-SORTING 2.5D =================
-  function render() {
-    ctx.fillStyle = '#090d14';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // 1. Camada de solo isométrico texturizado
-    renderTerrain();
-
-    // 2. Marcador de clique no solo
-    if (clickMarker) {
-      var pos = worldToIso(clickMarker.x, clickMarker.y);
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, 18 * clickMarker.timer * 2, 9 * clickMarker.timer * 2, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = '#2ed573';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    }
-
-    // 3. Ordenação por profundidade isométrica (wx + wy) para herói, monstros e árvores/cristais
-    var renderList = [
-      { type: 'player', depth: player.x + player.y, obj: player }
-    ];
-
-    enemies.forEach(function(en) {
-      renderList.push({ type: 'enemy', depth: en.x + en.y, obj: en });
-    });
-
-    worldProps.forEach(function(pr) {
-      renderList.push({ type: 'prop', depth: pr.x + pr.y, obj: pr });
-    });
-
-    renderList.sort(function(a, b) { return a.depth - b.depth; });
-
-    renderList.forEach(function(item) {
-      if (item.type === 'player') drawPlayer();
-      else if (item.type === 'enemy') drawEnemy(item.obj);
-      else if (item.type === 'prop') drawWorldProp(item.obj);
-    });
-
-    // 4. Efeitos de habilidades
-    effects.forEach(function(ef) {
-      var pos = worldToIso(ef.x, ef.y);
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, ef.radius * 0.85, ef.radius * 0.45, 0, 0, Math.PI * 2);
-      ctx.fillStyle = ef.color + '44';
-      ctx.fill();
-      ctx.strokeStyle = ef.color;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    });
-
-    // 5. Textos flutuantes de dano, XP e drops
-    floatingTexts.forEach(function(ft) {
-      var pos = worldToIso(ft.x, ft.y);
-      ctx.font = 'bold 14px Segoe UI';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#000';
-      ctx.fillText(ft.text, pos.x + 1, pos.y + 1);
-      ctx.fillStyle = ft.color;
-      ctx.fillText(ft.text, pos.x, pos.y);
-    });
-  }
-
-  // ================= MINIMAPA TÁTICO EM TEMPO REAL =================
-  function renderMinimap() {
-    if (!mCtx || !minimapCanvas) return;
-    var w = minimapCanvas.width;
-    var h = minimapCanvas.height;
-    var scale = w / WORLD_SIZE;
-
-    function toMiniX(wx) { return (wx + WORLD_SIZE / 2) * scale; }
-    function toMiniY(wy) { return (wy + WORLD_SIZE / 2) * scale; }
-
-    // Fundo florestal
-    mCtx.fillStyle = '#112219';
-    mCtx.fillRect(0, 0, w, h);
-
-    // Estradas no minimapa
-    mCtx.strokeStyle = '#574b3e';
-    mCtx.lineWidth = 3;
-    mCtx.beginPath();
-    mCtx.moveTo(toMiniX(-740), toMiniY(-185));
-    mCtx.lineTo(toMiniX(740), toMiniY(185));
-    mCtx.moveTo(toMiniX(220), toMiniY(55));
-    mCtx.lineTo(toMiniX(220), toMiniY(-640));
-    mCtx.stroke();
-
-    // Lago no minimapa
-    mCtx.fillStyle = '#0284c7';
-    mCtx.beginPath();
-    mCtx.ellipse(toMiniX(-430), toMiniY(390), 210 * scale, 145 * scale, 0, 0, Math.PI * 2);
-    mCtx.fill();
-
-    // Praça central
-    mCtx.fillStyle = '#475569';
-    mCtx.beginPath();
-    mCtx.arc(toMiniX(0), toMiniY(0), 6, 0, Math.PI * 2);
-    mCtx.fill();
-
-    // Cristais de Mana
-    worldProps.forEach(function(pr) {
-      if (pr.type === 'crystal') {
-        mCtx.fillStyle = '#00f2fe';
-        mCtx.fillRect(toMiniX(pr.x) - 1.5, toMiniY(pr.y) - 1.5, 3, 3);
-      }
-    });
-
-    // Monstros, Mini-Bosses e Boss
-    enemies.forEach(function(en) {
-      var mx = toMiniX(en.x);
-      var my = toMiniY(en.y);
-      if (en.tier === 'boss') {
-        mCtx.fillStyle = '#ff7f11';
-        mCtx.beginPath(); mCtx.arc(mx, my, 4.2, 0, Math.PI * 2); mCtx.fill();
-        mCtx.strokeStyle = '#fff'; mCtx.lineWidth = 1; mCtx.stroke();
-      } else if (en.tier === 'miniboss') {
-        mCtx.fillStyle = '#facc15';
-        mCtx.beginPath(); mCtx.arc(mx, my, 3.2, 0, Math.PI * 2); mCtx.fill();
-      } else {
-        mCtx.fillStyle = '#ff4757';
-        mCtx.beginPath(); mCtx.arc(mx, my, 2, 0, Math.PI * 2); mCtx.fill();
-      }
-    });
-
-    // Destino do clique
-    if (clickMarker) {
-      mCtx.strokeStyle = '#2ed573';
-      mCtx.lineWidth = 1;
-      mCtx.beginPath();
-      mCtx.arc(toMiniX(clickMarker.x), toMiniY(clickMarker.y), 3, 0, Math.PI * 2);
-      mCtx.stroke();
-    }
-
-    // Posição do Jogador (Ponto Branco com Aura)
-    var px = toMiniX(player.x);
-    var py = toMiniY(player.y);
-    mCtx.fillStyle = '#ffffff';
-    mCtx.beginPath();
-    mCtx.arc(px, py, 3.2, 0, Math.PI * 2);
-    mCtx.fill();
-    mCtx.strokeStyle = '#2ed573';
-    mCtx.lineWidth = 1.5;
-    mCtx.stroke();
-  }
-
-  function drawPlayer() {
-    var pos = worldToIso(player.x, player.y);
-    var cls = CLASSES[player.classKey];
-    ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 22, 11, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fill();
-    ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 26, 13, 0, 0, Math.PI * 2); ctx.strokeStyle = cls.color; ctx.lineWidth = 2; ctx.stroke();
-    ctx.fillStyle = cls.color; ctx.fillRect(pos.x - 14, pos.y - 44, 28, 42);
-    ctx.font = '22px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(cls.icon, pos.x, pos.y - 16);
-    ctx.font = 'bold 12px Segoe UI'; ctx.fillStyle = '#fff'; ctx.fillText('[Nv.' + player.level + '] ' + player.name, pos.x, pos.y - 52);
-  }
-
-  function drawEnemy(en) {
-    var pos = worldToIso(en.x, en.y);
-    var s = en.scale;
-    ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 20 * s, 10 * s, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fill();
-    if (en.tier === 'boss' || en.tier === 'miniboss') {
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 25 * s, 12.5 * s, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = en.color; ctx.lineWidth = 2.5; ctx.stroke();
-    }
-    ctx.fillStyle = en.color + 'cc'; ctx.fillRect(pos.x - 15 * s, pos.y - 38 * s, 30 * s, 36 * s);
-    ctx.font = Math.round(22 * s) + 'px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(en.icon, pos.x, pos.y - 12 * s);
-    ctx.font = 'bold 11px Segoe UI'; ctx.fillStyle = en.tier === 'boss' ? '#ff7f11' : (en.tier === 'miniboss' ? '#facc15' : '#ff6b81');
-    ctx.fillText(en.name, pos.x, pos.y - 48 * s);
-    var barW = 46 * s;
-    ctx.fillStyle = '#2f3542'; ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW, 5);
-    ctx.fillStyle = '#ff4757'; ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW * Math.max(0, en.hp / en.maxHp), 5);
   }
 
   loadAllSlots();
