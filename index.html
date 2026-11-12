@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Fase 4.2 (Extração & Linkagem de Lápis)</title>
+  <title>Asa de Cristal 2.5D - Fase 5 (Terreno 2.5D, Cenário Vivo & Minimapa)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -193,7 +193,7 @@
     }
 
     /* ================= CANVAS & HUD DO JOGO ================= */
-    canvas { display: block; }
+    canvas#gameCanvas { display: block; }
 
     #hud-top-left {
       position: fixed;
@@ -208,6 +208,7 @@
       gap: 14px;
       min-width: 295px;
       z-index: 10;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
     }
     .avatar-circle {
       width: 54px;
@@ -249,11 +250,48 @@
       gap: 8px;
       z-index: 10;
     }
-    .map-info { background: rgba(18, 22, 33, 0.92); border: 1px solid #2f3542; padding: 8px 14px; border-radius: 10px; text-align: right; }
+    .map-and-radar-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .map-info {
+      background: rgba(18, 22, 33, 0.92);
+      border: 1px solid #2f3542;
+      padding: 8px 14px;
+      border-radius: 10px;
+      text-align: right;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+    }
     .map-name { color: #2ed573; font-weight: bold; font-size: 0.95rem; }
-    .currency-row { font-size: 0.85rem; color: #f1c40f; margin-top: 3px; }
+    .currency-row { font-size: 0.84rem; color: #f1c40f; margin-top: 3px; }
+    .coords-row { font-size: 0.72rem; color: #94a3b8; margin-top: 3px; }
+
+    /* MINIMAPA TÁTICO */
+    .minimap-frame {
+      background: rgba(13, 17, 26, 0.95);
+      border: 2px solid #2ed57388;
+      border-radius: 12px;
+      padding: 5px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.65);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #minimapCanvas {
+      border-radius: 8px;
+      display: block;
+      background: #0f1b15;
+    }
+    .minimap-legend {
+      font-size: 0.62rem;
+      color: #94a3b8;
+      margin-top: 3px;
+      letter-spacing: 0.3px;
+    }
+
     .top-menu-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
-    .btn-hud { background: #1e2436; border: 1px solid #57606f; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; cursor: pointer; }
+    .btn-hud { background: #1e2436; border: 1px solid #57606f; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.35); }
     .btn-hud:hover { border-color: #ffa502; color: #ffa502; }
     .btn-hud.lapis-btn { border-color: #00f2fe; color: #00f2fe; }
     .btn-hud.switch-char { border-color: #70a1ff; color: #70a1ff; }
@@ -269,7 +307,7 @@
       gap: 8px;
       z-index: 10;
     }
-    .skill-bar { display: flex; gap: 10px; background: rgba(18, 22, 33, 0.92); border: 2px solid #2f3542; padding: 10px 14px; border-radius: 14px; }
+    .skill-bar { display: flex; gap: 10px; background: rgba(18, 22, 33, 0.92); border: 2px solid #2f3542; padding: 10px 14px; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); }
     .skill-slot {
       width: 54px; height: 54px; background: #1e2436; border: 2px solid #57606f; border-radius: 10px;
       position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
@@ -290,7 +328,7 @@
     .xp-text { position: absolute; inset: 0; font-size: 0.65rem; text-align: center; line-height: 9px; color: #fff; font-weight: bold; }
 
     #controls-hint {
-      position: fixed; bottom: 15px; left: 15px; background: rgba(18, 22, 33, 0.8);
+      position: fixed; bottom: 15px; left: 15px; background: rgba(18, 22, 33, 0.85);
       padding: 8px 12px; border-radius: 8px; font-size: 0.76rem; color: #a4b0be; line-height: 1.5; display: none; z-index: 10;
     }
 
@@ -524,7 +562,7 @@
     </div>
   </div>
 
-  <!-- CANVAS E HUD -->
+  <!-- CANVAS PRINCIPAL E HUD -->
   <canvas id="gameCanvas"></canvas>
 
   <div id="hud-top-left">
@@ -540,9 +578,16 @@
   </div>
 
   <div id="hud-top-right">
-    <div class="map-info">
-      <div class="map-name">🌲 Floresta de Vidalia (Nv. 1-10)</div>
-      <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span></div>
+    <div class="map-and-radar-row">
+      <div class="map-info">
+        <div class="map-name">🌲 Floresta de Vidalia (Nv. 1-10)</div>
+        <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span></div>
+        <div class="coords-row" id="hud-coords">Posição: (0, 0)</div>
+      </div>
+      <div class="minimap-frame" title="Minimapa Tático da Floresta de Vidalia">
+        <canvas id="minimapCanvas" width="128" height="128"></canvas>
+        <div class="minimap-legend">⚪Você 🔴Mob ⭐Mini 🐉Boss</div>
+      </div>
     </div>
     <div class="top-menu-buttons">
       <button type="button" class="btn-hud" onclick="openBagWithTab('equip')">🎒 Mochila (B)</button>
@@ -572,14 +617,12 @@
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
-      <!-- COLUNA 1: EQUIPADOS -->
       <div class="equip-column">
         <h4>🛡️ Equipamentos Atuais</h4>
         <div id="equipped-list"></div>
         <div class="stat-summary" id="stat-summary"></div>
       </div>
 
-      <!-- COLUNA 2: INSPEÇÃO, COMPARADOR & ENGASTES (LINK / EXTRAIR) -->
       <div class="inspect-column">
         <h4>🔍 Item Selecionado & Engastes</h4>
         <div class="inspect-card" id="inspect-panel">
@@ -589,7 +632,6 @@
         </div>
       </div>
 
-      <!-- COLUNA 3: MOCHILA (EQUIPAMENTOS / LÁPIS) -->
       <div class="bag-column">
         <div class="bag-tabs">
           <button type="button" class="bag-tab-btn active" id="tab-btn-equip" onclick="switchBagTab('equip')">📦 Equipamentos (<span id="bag-count">0</span>/24)</button>
@@ -598,7 +640,6 @@
 
         <div id="link-feedback-banner"></div>
 
-        <!-- ABA EQUIPAMENTOS -->
         <div id="bag-tab-equip">
           <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:8px;">
             <button type="button" class="btn-mini btn-sell" style="flex:none; padding:5px 8px;" onclick="sellAllNormal()">Vender Normais</button>
@@ -607,7 +648,6 @@
           <div class="bag-grid" id="bag-grid"></div>
         </div>
 
-        <!-- ABA LÁPIS -->
         <div id="bag-tab-lapis" style="display:none;">
           <div style="font-size:0.71rem; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
             Selecione um equipamento com slot vazio e clique em <b style="color:#00f2fe;">Linkar</b> (custa Ouro). Para remover um Lápis, clique em <b style="color:#ffa502;">Extrair</b> no painel central!
@@ -637,7 +677,7 @@
 
 <script>
   var STORAGE_KEY_SLOTS = 'asaDeCristal_slots_v2';
-  var WORLD_SIZE = 1400;
+  var WORLD_SIZE = 1600;
   var keysPressed = {};
 
   var characterSlots = [null, null, null];
@@ -645,6 +685,8 @@
   var selectedClassKey = 'cavaleiro';
   var player = null;
   var enemies = [];
+  var worldProps = [];
+  var worldGroundDecals = [];
   var floatingTexts = [];
   var effects = [];
   var clickMarker = null;
@@ -656,6 +698,103 @@
   var inspectedFromBag = false;
   var currentBagTab = 'equip';
   var lastTime = performance.now();
+  var worldAnimTime = 0;
+
+  // ================= GERADOR DETERMINÍSTICO DO CENÁRIO 2.5D =================
+  function seededNoise(x, y) {
+    var s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
+    return s - Math.floor(s);
+  }
+
+  function isPointInLake(wx, wy) {
+    // Lago cristalino no setor Sudoeste (-430, 390)
+    var dx = (wx - (-430)) / 210;
+    var dy = (wy - 390) / 145;
+    return (dx * dx + dy * dy) <= 1.0;
+  }
+
+  function isPointOnRoad(wx, wy) {
+    // Praça central rúnica
+    if (Math.hypot(wx, wy) < 130) return true;
+    // Estrada principal diagonal NW -> SE
+    if (Math.abs(wy - wx * 0.25) < 42 && Math.abs(wx) < 760) return true;
+    // Trilha secundária para o Nordeste (Santuário dos Cristais)
+    if (Math.abs(wx - 220) < 34 && wy > -650 && wy < 80) return true;
+    return false;
+  }
+
+  function initWorldEnvironment() {
+    worldProps = [];
+    worldGroundDecals = [];
+    var half = WORLD_SIZE / 2;
+
+    // 1. Detalhes planos do chão (flores, tufos de erva, pedrinhas)
+    for (var gx = -half + 60; gx <= half - 60; gx += 95) {
+      for (var gy = -half + 60; gy <= half - 60; gy += 95) {
+        var r = seededNoise(gx, gy);
+        var px = gx + (seededNoise(gy, gx) - 0.5) * 65;
+        var py = gy + (seededNoise(gx + 19, gy - 11) - 0.5) * 65;
+        if (isPointInLake(px, py) || isPointOnRoad(px, py)) continue;
+
+        if (r > 0.72) {
+          worldGroundDecals.push({ type: 'flowers', x: px, y: py, color: r > 0.86 ? '#facc15' : '#ff6b81' });
+        } else if (r > 0.35) {
+          worldGroundDecals.push({ type: 'grass', x: px, y: py });
+        } else {
+          worldGroundDecals.push({ type: 'pebbles', x: px, y: py });
+        }
+      }
+    }
+
+    // 2. Bordas naturais de floresta densa ao redor de todo o perímetro
+    for (var b = -half; b <= half; b += 85) {
+      var jitter1 = (seededNoise(b, 11) - 0.5) * 26;
+      var jitter2 = (seededNoise(b, 29) - 0.5) * 26;
+      worldProps.push({ type: 'pine', x: b, y: -half + 18 + jitter1, scale: 1.15 + seededNoise(b, 3) * 0.35, radius: 22 });
+      worldProps.push({ type: 'pine', x: b, y: half - 18 + jitter2,  scale: 1.15 + seededNoise(b, 7) * 0.35, radius: 22 });
+      worldProps.push({ type: 'pine', x: -half + 18 + jitter2, y: b, scale: 1.15 + seededNoise(3, b) * 0.35, radius: 22 });
+      worldProps.push({ type: 'pine', x: half - 18 + jitter1,  y: b, scale: 1.15 + seededNoise(7, b) * 0.35, radius: 22 });
+    }
+
+    // 3. Árvores internas, Rochas com musgo, Ruínas e Cristais de Mana
+    var propCandidates = [
+      // Cristais de Mana Brilhantes (pontos de referência e energia)
+      { type: 'crystal', x: -240, y: -260, scale: 1.15, color: '#00f2fe', radius: 22 },
+      { type: 'crystal', x: 310,  y: -360, scale: 1.25, color: '#a855f7', radius: 24 },
+      { type: 'crystal', x: 460,  y: 280,  scale: 1.2,  color: '#00f2fe', radius: 22 },
+      { type: 'crystal', x: -520, y: 120,  scale: 1.1,  color: '#2ed573', radius: 20 },
+
+      // Pilares de Ruínas Antigas
+      { type: 'ruin', x: -165, y: -135, scale: 1.0, radius: 20 },
+      { type: 'ruin', x: 165,  y: -135, scale: 1.0, radius: 20 },
+      { type: 'ruin', x: 380,  y: -180, scale: 1.15, radius: 22 },
+
+      // Bosques e Rochas espalhados
+      { type: 'oak',  x: -340, y: -440, scale: 1.25, radius: 24 },
+      { type: 'pine', x: -450, y: -320, scale: 1.2,  radius: 22 },
+      { type: 'rock', x: -290, y: -390, scale: 1.1,  radius: 20 },
+
+      { type: 'pine', x: 120,  y: -480, scale: 1.3,  radius: 24 },
+      { type: 'oak',  x: 470,  y: -460, scale: 1.2,  radius: 24 },
+      { type: 'rock', x: 260,  y: -250, scale: 0.95, radius: 18 },
+
+      { type: 'oak',  x: 560,  y: -40,  scale: 1.3,  radius: 24 },
+      { type: 'pine', x: 610,  y: 160,  scale: 1.15, radius: 22 },
+      { type: 'rock', x: 340,  y: 440,  scale: 1.25, radius: 22 },
+      { type: 'pine', x: 190,  y: 540,  scale: 1.25, radius: 22 },
+
+      { type: 'oak',  x: -140, y: 340,  scale: 1.15, radius: 22 },
+      { type: 'rock', x: -240, y: 510,  scale: 1.15, radius: 20 },
+      { type: 'pine', x: -610, y: -150, scale: 1.3,  radius: 24 },
+      { type: 'oak',  x: -630, y: 540,  scale: 1.2,  radius: 24 }
+    ];
+
+    propCandidates.forEach(function(p) {
+      if (!isPointInLake(p.x, p.y)) {
+        worldProps.push(p);
+      }
+    });
+  }
 
   // ================= SISTEMA DE ÁUDIO (WEB AUDIO API) =================
   var audioCtx = null;
@@ -786,8 +925,8 @@
     }
   };
 
-  var LAPIS_LINK_CHANCE    = [0, 85, 70, 55, 40, 25]; // % sucesso para linkar (Nv 1..5)
-  var LAPIS_EXTRACT_CHANCE = [0, 80, 65, 50, 35, 25]; // % sucesso para tirar sem quebrar (Nv 1..5)
+  var LAPIS_LINK_CHANCE    = [0, 85, 70, 55, 40, 25];
+  var LAPIS_EXTRACT_CHANCE = [0, 80, 65, 50, 35, 25];
 
   function getLapisLinkGoldCost(lvl) {
     return (lvl || 1) * 50;
@@ -1469,6 +1608,7 @@
     document.getElementById('controls-hint').style.display = 'block';
     document.getElementById('hud-bottom').style.display = 'flex';
 
+    initWorldEnvironment();
     setupSkillBar();
     spawnInitialEnemies();
     updateHUD();
@@ -1887,7 +2027,6 @@
     var meta = LAPIS_TYPES[lapis.type];
     var chance = LAPIS_LINK_CHANCE[lapis.level] || 50;
 
-    // Cobra o Ouro e consome o Lápis da bolsa
     player.gold -= goldCost;
     player.lapisBag.splice(lapisIdx, 1);
 
@@ -1909,7 +2048,6 @@
     renderBagModal();
   }
 
-  // Extrair / Tirar um Lápis específico de um slot do equipamento (cobra Gold + chance de sucesso ou quebra)
   function extractLapisFromInspected(socketIdx) {
     getAudioCtx();
     if (!inspectedItem) return;
@@ -1931,13 +2069,11 @@
     var meta = LAPIS_TYPES[sock.type];
     var chance = LAPIS_EXTRACT_CHANCE[sock.level] || 50;
 
-    // Cobra o Ouro e libera o engaste do equipamento
     player.gold -= goldCost;
     inspectedItem.sockets[socketIdx] = null;
 
     var roll = Math.random() * 100;
     if (roll <= chance) {
-      // Sucesso: Lápis recuperado intacto para a Bolsa de Lápis!
       player.lapisBag.push({
         id: 'lapis_' + Math.random().toString(36).slice(2, 10),
         type: sock.type,
@@ -1948,7 +2084,6 @@
       showLinkFeedback('✨ EXTRAÍDO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + sock.level + ' voltou intacto para a Bolsa de Lápis!', true);
       addFloatingText(player.x, player.y - 60, '💎 Extraído: ' + meta.name + ' Nv.' + sock.level, meta.color);
     } else {
-      // Falha: Lápis quebra na extração (som de vidro quebrando)
       playGlassBreakSound();
       showLinkFeedback('💥 QUEBROU NA EXTRAÇÃO (-$' + goldCost + ')! O ' + meta.name + ' Nv.' + sock.level + ' estilhaçou ao ser removido!', false);
       addFloatingText(player.x, player.y - 60, '💔 Lápis Quebrou ao Tirar!', '#ff4757');
@@ -2190,11 +2325,18 @@
     }
 
     var t = MONSTER_TYPES[typeIdx];
-    var angle = Math.random() * Math.PI * 2;
-    var dist = 180 + Math.random() * (WORLD_SIZE / 2 - 200);
+    var wx = 0, wy = 0, tries = 0;
+    do {
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 190 + Math.random() * (WORLD_SIZE / 2 - 250);
+      wx = Math.cos(angle) * dist;
+      wy = Math.sin(angle) * dist;
+      tries++;
+    } while (isPointInLake(wx, wy) && tries < 15);
+
     enemies.push({
       id: Math.random(), name: t.name, icon: t.icon,
-      x: Math.cos(angle) * dist, y: Math.sin(angle) * dist,
+      x: wx, y: wy,
       hp: t.hp, maxHp: t.hp, atk: t.atk, dmgType: t.dmgType, xp: t.xp, gold: t.gold,
       color: t.color, scale: t.scale, tier: t.tier, atkTimer: 0
     });
@@ -2209,6 +2351,9 @@
 
   var canvas = document.getElementById('gameCanvas');
   var ctx = canvas.getContext('2d');
+  var minimapCanvas = document.getElementById('minimapCanvas');
+  var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
+
   function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
@@ -2229,8 +2374,9 @@
     if (!gameRunning) return;
     getAudioCtx();
     var worldPos = isoToWorld(e.clientX, e.clientY);
-    player.targetX = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.x));
-    player.targetY = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.y));
+    var half = WORLD_SIZE / 2 - 45;
+    player.targetX = Math.max(-half, Math.min(half, worldPos.x));
+    player.targetY = Math.max(-half, Math.min(half, worldPos.y));
     clickMarker = { x: player.targetX, y: player.targetY, timer: 0.5 };
     var nearest = getNearestEnemy(worldPos.x, worldPos.y, 85);
     var effRange = Math.max(CLASSES[player.classKey].skills[0].range, getPlayerEffectiveRange());
@@ -2388,7 +2534,12 @@
   function gameLoop(now) {
     var dt = Math.min(0.05, (now - lastTime) / 1000);
     lastTime = now;
-    if (gameRunning) { update(dt); render(); }
+    worldAnimTime += dt;
+    if (gameRunning) {
+      update(dt);
+      render();
+      renderMinimap();
+    }
     requestAnimationFrame(gameLoop);
   }
 
@@ -2441,8 +2592,9 @@
       if (dist2 > 4) { player.x += (dx / dist2) * player.speed * dt; player.y += (dy / dist2) * player.speed * dt; }
     }
 
-    player.x = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.x));
-    player.y = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.y));
+    var boundHalf = WORLD_SIZE / 2 - 45;
+    player.x = Math.max(-boundHalf, Math.min(boundHalf, player.x));
+    player.y = Math.max(-boundHalf, Math.min(boundHalf, player.y));
 
     enemies.forEach(function(en) {
       var dist = getDist(player, en);
@@ -2488,51 +2640,481 @@
     document.getElementById('hud-mp-text').textContent = Math.ceil(player.mp) + ' / ' + player.maxMp;
     document.getElementById('hud-gold').textContent = player.gold;
     document.getElementById('hud-stones').textContent = player.stones;
+    var coordsEl = document.getElementById('hud-coords');
+    if (coordsEl) {
+      coordsEl.textContent = 'Coords: (' + Math.round(player.x) + ', ' + Math.round(player.y) + ')';
+    }
     var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
     document.getElementById('hud-xp-bar').style.width = xpPct + '%';
     document.getElementById('hud-xp-text').textContent = 'XP: ' + player.xp + ' / ' + player.maxXp + ' (' + xpPct.toFixed(0) + '%)';
   }
 
-  function render() {
-    ctx.fillStyle = '#0d131a';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // ================= RENDERIZAÇÃO DO TERRENO 2.5D TEXTURIZADO =================
+  function renderTerrain() {
     var half = WORLD_SIZE / 2;
     var c1 = worldToIso(-half, -half), c2 = worldToIso(half, -half), c3 = worldToIso(half, half), c4 = worldToIso(-half, half);
 
-    ctx.beginPath(); ctx.moveTo(c1.x, c1.y); ctx.lineTo(c2.x, c2.y); ctx.lineTo(c3.x, c3.y); ctx.lineTo(c4.x, c4.y); ctx.closePath();
-    ctx.fillStyle = '#14221b'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = '#2ed57355'; ctx.stroke();
+    // Base da ilha / plataforma florestal com borda de terra 3D
+    ctx.beginPath();
+    ctx.moveTo(c4.x, c4.y);
+    ctx.lineTo(c3.x, c3.y);
+    ctx.lineTo(c3.x, c3.y + 34);
+    ctx.lineTo(c4.x, c4.y + 34);
+    ctx.closePath();
+    ctx.fillStyle = '#1c1917';
+    ctx.fill();
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)'; ctx.lineWidth = 1;
-    for (var x = -half; x <= half; x += 100) {
-      var p1 = worldToIso(x, -half), p2 = worldToIso(x, half);
-      ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
-    }
-    for (var y = -half; y <= half; y += 100) {
-      var p1y = worldToIso(-half, y), p2y = worldToIso(half, y);
-      ctx.beginPath(); ctx.moveTo(p1y.x, p1y.y); ctx.lineTo(p2y.x, p2y.y); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(c3.x, c3.y);
+    ctx.lineTo(c2.x, c2.y);
+    ctx.lineTo(c2.x, c2.y + 34);
+    ctx.lineTo(c3.x, c3.y + 34);
+    ctx.closePath();
+    ctx.fillStyle = '#292524';
+    ctx.fill();
+
+    // Superfície principal do terreno
+    ctx.beginPath();
+    ctx.moveTo(c1.x, c1.y);
+    ctx.lineTo(c2.x, c2.y);
+    ctx.lineTo(c3.x, c3.y);
+    ctx.lineTo(c4.x, c4.y);
+    ctx.closePath();
+    ctx.fillStyle = '#15291e';
+    ctx.fill();
+
+    // Ladrilhos texturizados de grama (apenas os visíveis na câmera para 60 FPS)
+    var tileSize = 100;
+    for (var tx = -half; tx < half; tx += tileSize) {
+      for (var ty = -half; ty < half; ty += tileSize) {
+        if (Math.abs(tx - player.x) > 1050 || Math.abs(ty - player.y) > 1050) continue;
+
+        var pA = worldToIso(tx, ty);
+        var pB = worldToIso(tx + tileSize, ty);
+        var pC = worldToIso(tx + tileSize, ty + tileSize);
+        var pD = worldToIso(tx, ty + tileSize);
+
+        var n = seededNoise(tx / tileSize, ty / tileSize);
+        ctx.beginPath();
+        ctx.moveTo(pA.x, pA.y);
+        ctx.lineTo(pB.x, pB.y);
+        ctx.lineTo(pC.x, pC.y);
+        ctx.lineTo(pD.x, pD.y);
+        ctx.closePath();
+
+        if (n > 0.66) ctx.fillStyle = '#183123';
+        else if (n > 0.33) ctx.fillStyle = '#14291d';
+        else ctx.fillStyle = '#1a3626';
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(46, 213, 115, 0.045)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
     }
 
+    // Estrada de Terra & Pedras até o Santuário
+    drawWorldRoads();
+
+    // Lago Cristalino no Setor Sudoeste
+    drawCrystalLake();
+
+    // Praça Central Rúnica (Ponto de Spawn)
+    drawCentralPlaza();
+
+    // Decorações planas do solo (flores, tufos de erva, seixos)
+    worldGroundDecals.forEach(function(dec) {
+      if (Math.abs(dec.x - player.x) > 950 || Math.abs(dec.y - player.y) > 950) return;
+      var pos = worldToIso(dec.x, dec.y);
+      if (dec.type === 'flowers') {
+        ctx.fillStyle = '#2ed57366';
+        ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 7, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = dec.color;
+        ctx.beginPath(); ctx.arc(pos.x - 3, pos.y - 2, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(pos.x + 3, pos.y - 1, 2, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(pos.x, pos.y + 1.5, 1.8, 0, Math.PI * 2); ctx.fill();
+      } else if (dec.type === 'grass') {
+        ctx.strokeStyle = '#2ed57355';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(pos.x - 4, pos.y); ctx.lineTo(pos.x - 6, pos.y - 6);
+        ctx.moveTo(pos.x, pos.y);     ctx.lineTo(pos.x, pos.y - 8);
+        ctx.moveTo(pos.x + 4, pos.y); ctx.lineTo(pos.x + 6, pos.y - 6);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#64748b55';
+        ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 4, 2, 0, 0, Math.PI * 2); ctx.fill();
+      }
+    });
+
+    // Borda luminosa perimetral
+    ctx.beginPath();
+    ctx.moveTo(c1.x, c1.y);
+    ctx.lineTo(c2.x, c2.y);
+    ctx.lineTo(c3.x, c3.y);
+    ctx.lineTo(c4.x, c4.y);
+    ctx.closePath();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#2ed57366';
+    ctx.stroke();
+  }
+
+  function drawWorldRoads() {
+    // Estrada principal diagonal NW -> SE
+    var r1 = worldToIso(-740, -185), r2 = worldToIso(740, 185);
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(r1.x, r1.y); ctx.lineTo(r2.x, r2.y);
+    ctx.strokeStyle = '#3f362c'; ctx.lineWidth = 54; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(r1.x, r1.y); ctx.lineTo(r2.x, r2.y);
+    ctx.strokeStyle = '#574b3e'; ctx.lineWidth = 38; ctx.stroke();
+
+    // Trilha Norte para o Santuário dos Cristais
+    var n1 = worldToIso(220, 55), n2 = worldToIso(220, -640);
+    ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y);
+    ctx.strokeStyle = '#3f362c'; ctx.lineWidth = 42; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y);
+    ctx.strokeStyle = '#574b3e'; ctx.lineWidth = 28; ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawCrystalLake() {
+    var lakeCenter = worldToIso(-430, 390);
+    if (Math.abs(-430 - player.x) > 1150 || Math.abs(390 - player.y) > 1150) return;
+
+    ctx.save();
+    // Margem arenosa
+    ctx.beginPath();
+    ctx.ellipse(lakeCenter.x, lakeCenter.y, 245, 118, -0.18, 0, Math.PI * 2);
+    ctx.fillStyle = '#4a4236';
+    ctx.fill();
+
+    // Água profunda
+    ctx.beginPath();
+    ctx.ellipse(lakeCenter.x, lakeCenter.y, 228, 108, -0.18, 0, Math.PI * 2);
+    var grad = ctx.createRadialGradient(lakeCenter.x - 30, lakeCenter.y - 15, 15, lakeCenter.x, lakeCenter.y, 225);
+    grad.addColorStop(0, '#0ea5e9');
+    grad.addColorStop(0.65, '#0369a1');
+    grad.addColorStop(1, '#0c4a6e');
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Ondulações animadas na superfície da água
+    var wave = Math.sin(worldAnimTime * 2.2) * 8;
+    ctx.strokeStyle = 'rgba(186, 230, 253, 0.32)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(lakeCenter.x - 15, lakeCenter.y - 8, 120 + wave, 45 + wave * 0.4, -0.18, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawCentralPlaza() {
+    var center = worldToIso(0, 0);
+    if (Math.abs(player.x) > 1000 || Math.abs(player.y) > 1000) return;
+
+    ctx.save();
+    // Círculo externo de pedra
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y, 145, 76, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#334155';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#64748b';
+    ctx.stroke();
+
+    // Anel rúnico interno
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y, 112, 58, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#1e293b';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#00f2fe66';
+    ctx.stroke();
+
+    // Runas brilhantes pulsantes
+    var pulse = 0.45 + Math.sin(worldAnimTime * 3) * 0.25;
+    ctx.beginPath();
+    ctx.ellipse(center.x, center.y, 58, 30, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255, 165, 2, ' + pulse + ')';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // ================= DESENHO DOS OBJETOS 2.5D DO CENÁRIO =================
+  function drawWorldProp(prop) {
+    if (Math.abs(prop.x - player.x) > 950 || Math.abs(prop.y - player.y) > 950) return;
+    var pos = worldToIso(prop.x, prop.y);
+    var s = prop.scale || 1;
+
+    ctx.save();
+    if (prop.type === 'pine') {
+      // Sombra no chão
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 26 * s, 13 * s, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+      ctx.fill();
+
+      // Tronco
+      ctx.fillStyle = '#4a3219';
+      ctx.fillRect(pos.x - 5 * s, pos.y - 24 * s, 10 * s, 24 * s);
+
+      // 3 camadas de copa de pinheiro 2.5D
+      var layers = [
+        { yOff: 18, w: 32, h: 34, col: '#0f3d24' },
+        { yOff: 38, w: 25, h: 30, col: '#165b33' },
+        { yOff: 56, w: 17, h: 26, col: '#1f7a44' }
+      ];
+      layers.forEach(function(ly) {
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y - (ly.yOff + ly.h) * s);
+        ctx.lineTo(pos.x - ly.w * s, pos.y - ly.yOff * s);
+        ctx.lineTo(pos.x + ly.w * s, pos.y - ly.yOff * s);
+        ctx.closePath();
+        ctx.fillStyle = ly.col;
+        ctx.fill();
+      });
+    } else if (prop.type === 'oak') {
+      // Sombra
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 30 * s, 15 * s, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.42)';
+      ctx.fill();
+
+      // Tronco robusto
+      ctx.fillStyle = '#5c3d24';
+      ctx.fillRect(pos.x - 6 * s, pos.y - 28 * s, 12 * s, 28 * s);
+
+      // Copa frondosa em camadas
+      ctx.fillStyle = '#14532d';
+      ctx.beginPath(); ctx.arc(pos.x - 14 * s, pos.y - 38 * s, 20 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(pos.x + 14 * s, pos.y - 38 * s, 20 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#166534';
+      ctx.beginPath(); ctx.arc(pos.x, pos.y - 50 * s, 24 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#22c55e33';
+      ctx.beginPath(); ctx.arc(pos.x - 5 * s, pos.y - 56 * s, 12 * s, 0, Math.PI * 2); ctx.fill();
+    } else if (prop.type === 'rock') {
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 24 * s, 12 * s, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fill();
+
+      // Pedra multifacetada com musgo no topo
+      ctx.beginPath();
+      ctx.moveTo(pos.x - 22 * s, pos.y);
+      ctx.lineTo(pos.x - 16 * s, pos.y - 20 * s);
+      ctx.lineTo(pos.x + 2 * s,  pos.y - 26 * s);
+      ctx.lineTo(pos.x + 20 * s, pos.y - 16 * s);
+      ctx.lineTo(pos.x + 22 * s, pos.y);
+      ctx.closePath();
+      ctx.fillStyle = '#475569';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(pos.x - 15 * s, pos.y - 19 * s);
+      ctx.lineTo(pos.x + 2 * s,  pos.y - 26 * s);
+      ctx.lineTo(pos.x + 16 * s, pos.y - 17 * s);
+      ctx.lineTo(pos.x, pos.y - 13 * s);
+      ctx.closePath();
+      ctx.fillStyle = '#2ed57366';
+      ctx.fill();
+    } else if (prop.type === 'ruin') {
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 20 * s, 10 * s, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.fill();
+
+      // Base do pilar
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(pos.x - 14 * s, pos.y - 8 * s, 28 * s, 8 * s);
+      // Coluna quebrada
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(pos.x - 10 * s, pos.y - 46 * s, 20 * s, 38 * s);
+      // Sombra lateral 2.5D
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(pos.x + 2 * s, pos.y - 46 * s, 8 * s, 38 * s);
+      // Detalhe rúnico
+      ctx.fillStyle = '#00f2fe88';
+      ctx.fillRect(pos.x - 4 * s, pos.y - 32 * s, 4 * s, 14 * s);
+    } else if (prop.type === 'crystal') {
+      var glow = 0.6 + Math.sin(worldAnimTime * 3.5 + prop.x) * 0.3;
+      var cCol = prop.color || '#00f2fe';
+
+      // Aura luminosa no chão
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 32 * s, 16 * s, 0, 0, Math.PI * 2);
+      ctx.fillStyle = cCol + '33';
+      ctx.fill();
+
+      // Cristal principal
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y - 52 * s);
+      ctx.lineTo(pos.x - 14 * s, pos.y - 14 * s);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.lineTo(pos.x + 14 * s, pos.y - 14 * s);
+      ctx.closePath();
+      ctx.fillStyle = cCol;
+      ctx.globalAlpha = glow;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Cristal menor lateral
+      ctx.beginPath();
+      ctx.moveTo(pos.x + 13 * s, pos.y - 32 * s);
+      ctx.lineTo(pos.x + 5 * s,  pos.y - 8 * s);
+      ctx.lineTo(pos.x + 13 * s, pos.y);
+      ctx.lineTo(pos.x + 21 * s, pos.y - 8 * s);
+      ctx.closePath();
+      ctx.fillStyle = '#ffffffaa';
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // ================= RENDERIZAÇÃO GERAL + Y-SORTING 2.5D =================
+  function render() {
+    ctx.fillStyle = '#090d14';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Camada de solo isométrico texturizado
+    renderTerrain();
+
+    // 2. Marcador de clique no solo
     if (clickMarker) {
       var pos = worldToIso(clickMarker.x, clickMarker.y);
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y, 18 * clickMarker.timer * 2, 9 * clickMarker.timer * 2, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = '#2ed573'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 18 * clickMarker.timer * 2, 9 * clickMarker.timer * 2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = '#2ed573';
+      ctx.lineWidth = 2;
+      ctx.stroke();
     }
 
-    var renderList = [{ type: 'player', y: player.y, obj: player }].concat(enemies.map(function(en) { return { type: 'enemy', y: en.y, obj: en }; })).sort(function(a, b) { return a.y - b.y; });
-    renderList.forEach(function(item) { if (item.type === 'player') drawPlayer(); else drawEnemy(item.obj); });
+    // 3. Ordenação por profundidade isométrica (wx + wy) para herói, monstros e árvores/cristais
+    var renderList = [
+      { type: 'player', depth: player.x + player.y, obj: player }
+    ];
 
+    enemies.forEach(function(en) {
+      renderList.push({ type: 'enemy', depth: en.x + en.y, obj: en });
+    });
+
+    worldProps.forEach(function(pr) {
+      renderList.push({ type: 'prop', depth: pr.x + pr.y, obj: pr });
+    });
+
+    renderList.sort(function(a, b) { return a.depth - b.depth; });
+
+    renderList.forEach(function(item) {
+      if (item.type === 'player') drawPlayer();
+      else if (item.type === 'enemy') drawEnemy(item.obj);
+      else if (item.type === 'prop') drawWorldProp(item.obj);
+    });
+
+    // 4. Efeitos de habilidades
     effects.forEach(function(ef) {
       var pos = worldToIso(ef.x, ef.y);
-      ctx.beginPath(); ctx.ellipse(pos.x, pos.y, ef.radius * 0.85, ef.radius * 0.45, 0, 0, Math.PI * 2);
-      ctx.fillStyle = ef.color + '44'; ctx.fill(); ctx.strokeStyle = ef.color; ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, ef.radius * 0.85, ef.radius * 0.45, 0, 0, Math.PI * 2);
+      ctx.fillStyle = ef.color + '44';
+      ctx.fill();
+      ctx.strokeStyle = ef.color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
     });
 
+    // 5. Textos flutuantes de dano, XP e drops
     floatingTexts.forEach(function(ft) {
       var pos = worldToIso(ft.x, ft.y);
-      ctx.font = 'bold 14px Segoe UI'; ctx.textAlign = 'center';
-      ctx.fillStyle = '#000'; ctx.fillText(ft.text, pos.x + 1, pos.y + 1);
-      ctx.fillStyle = ft.color; ctx.fillText(ft.text, pos.x, pos.y);
+      ctx.font = 'bold 14px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000';
+      ctx.fillText(ft.text, pos.x + 1, pos.y + 1);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, pos.x, pos.y);
     });
+  }
+
+  // ================= MINIMAPA TÁTICO EM TEMPO REAL =================
+  function renderMinimap() {
+    if (!mCtx || !minimapCanvas) return;
+    var w = minimapCanvas.width;
+    var h = minimapCanvas.height;
+    var scale = w / WORLD_SIZE;
+
+    function toMiniX(wx) { return (wx + WORLD_SIZE / 2) * scale; }
+    function toMiniY(wy) { return (wy + WORLD_SIZE / 2) * scale; }
+
+    // Fundo florestal
+    mCtx.fillStyle = '#112219';
+    mCtx.fillRect(0, 0, w, h);
+
+    // Estradas no minimapa
+    mCtx.strokeStyle = '#574b3e';
+    mCtx.lineWidth = 3;
+    mCtx.beginPath();
+    mCtx.moveTo(toMiniX(-740), toMiniY(-185));
+    mCtx.lineTo(toMiniX(740), toMiniY(185));
+    mCtx.moveTo(toMiniX(220), toMiniY(55));
+    mCtx.lineTo(toMiniX(220), toMiniY(-640));
+    mCtx.stroke();
+
+    // Lago no minimapa
+    mCtx.fillStyle = '#0284c7';
+    mCtx.beginPath();
+    mCtx.ellipse(toMiniX(-430), toMiniY(390), 210 * scale, 145 * scale, 0, 0, Math.PI * 2);
+    mCtx.fill();
+
+    // Praça central
+    mCtx.fillStyle = '#475569';
+    mCtx.beginPath();
+    mCtx.arc(toMiniX(0), toMiniY(0), 6, 0, Math.PI * 2);
+    mCtx.fill();
+
+    // Cristais de Mana
+    worldProps.forEach(function(pr) {
+      if (pr.type === 'crystal') {
+        mCtx.fillStyle = '#00f2fe';
+        mCtx.fillRect(toMiniX(pr.x) - 1.5, toMiniY(pr.y) - 1.5, 3, 3);
+      }
+    });
+
+    // Monstros, Mini-Bosses e Boss
+    enemies.forEach(function(en) {
+      var mx = toMiniX(en.x);
+      var my = toMiniY(en.y);
+      if (en.tier === 'boss') {
+        mCtx.fillStyle = '#ff7f11';
+        mCtx.beginPath(); mCtx.arc(mx, my, 4.2, 0, Math.PI * 2); mCtx.fill();
+        mCtx.strokeStyle = '#fff'; mCtx.lineWidth = 1; mCtx.stroke();
+      } else if (en.tier === 'miniboss') {
+        mCtx.fillStyle = '#facc15';
+        mCtx.beginPath(); mCtx.arc(mx, my, 3.2, 0, Math.PI * 2); mCtx.fill();
+      } else {
+        mCtx.fillStyle = '#ff4757';
+        mCtx.beginPath(); mCtx.arc(mx, my, 2, 0, Math.PI * 2); mCtx.fill();
+      }
+    });
+
+    // Destino do clique
+    if (clickMarker) {
+      mCtx.strokeStyle = '#2ed573';
+      mCtx.lineWidth = 1;
+      mCtx.beginPath();
+      mCtx.arc(toMiniX(clickMarker.x), toMiniY(clickMarker.y), 3, 0, Math.PI * 2);
+      mCtx.stroke();
+    }
+
+    // Posição do Jogador (Ponto Branco com Aura)
+    var px = toMiniX(player.x);
+    var py = toMiniY(player.y);
+    mCtx.fillStyle = '#ffffff';
+    mCtx.beginPath();
+    mCtx.arc(px, py, 3.2, 0, Math.PI * 2);
+    mCtx.fill();
+    mCtx.strokeStyle = '#2ed573';
+    mCtx.lineWidth = 1.5;
+    mCtx.stroke();
   }
 
   function drawPlayer() {
