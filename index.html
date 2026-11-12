@@ -3,198 +3,1166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wiki & Guia Oficial - MMORPG</title>
+  <title>Asa de Cristal 2.5D - Protótipo Fase 1</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
+      background-color: #0b0d13;
+      color: #fff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #0f1117;
-      color: #ffffff;
-      padding-bottom: 50px;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
     }
-    header {
-      background: linear-gradient(180deg, #1f2430 0%, #0f1117 100%);
-      border-bottom: 3px solid #ff4757;
-      padding: 60px 20px;
-      text-align: center;
+
+    /* TELA DE CRIAÇÃO DE PERSONAGEM */
+    #char-creation {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #1b2030 0%, #090b10 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
     }
-    header h1 {
-      font-size: 2.8rem;
-      color: #ff4757;
+    #char-creation h1 {
+      font-size: 2.5rem;
+      color: #ffa502;
+      text-shadow: 0 0 20px rgba(255, 165, 2, 0.5);
+      margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      text-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
     }
-    header p {
-      font-size: 1.2rem;
+    #char-creation p.subtitle {
       color: #a4b0be;
-      margin-top: 10px;
+      margin-bottom: 30px;
     }
-    .nav-buttons {
+    .class-grid {
       display: flex;
-      justify-content: center;
       gap: 15px;
-      margin-top: 25px;
       flex-wrap: wrap;
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: 0.2s;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-    }
-    .btn-discord { background-color: #5865F2; color: #fff; }
-    .btn-roblox { background-color: #e84118; color: #fff; }
-    .btn-whatsapp { background-color: #2ed573; color: #fff; }
-    .btn:hover { transform: translateY(-3px); filter: brightness(1.2); }
-
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .section-title {
-      font-size: 1.8rem;
-      border-left: 5px solid #ff4757;
-      padding-left: 12px;
+      justify-content: center;
+      max-width: 1100px;
       margin-bottom: 25px;
-      color: #ffffff;
     }
-    .grid-bosses {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    .boss-card {
-      background: #181b26;
-      border: 1px solid #2f3542;
+    .class-card {
+      background: #161a26;
+      border: 2px solid #2f3542;
       border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      transition: 0.3s;
+      width: 195px;
+      padding: 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
     }
-    .boss-card:hover {
-      border-color: #ff4757;
-      transform: translateY(-5px);
+    .class-card:hover { transform: translateY(-5px); border-color: #70a1ff; }
+    .class-card.selected {
+      border-color: #ffa502;
+      background: #212638;
+      box-shadow: 0 0 20px rgba(255, 165, 2, 0.3);
     }
-    .boss-img {
-      width: 100%;
-      height: 180px;
-      background-color: #2f3542;
+    .class-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #747d8c;
-      font-size: 1.1rem;
+      font-size: 1.8rem;
       font-weight: bold;
-      text-transform: uppercase;
     }
-    .boss-info {
-      padding: 20px;
+    .class-card h3 { margin-bottom: 6px; font-size: 1.15rem; }
+    .class-card .role { font-size: 0.8rem; color: #ffa502; margin-bottom: 10px; font-weight: bold; }
+    .class-card .desc { font-size: 0.8rem; color: #ced6e0; line-height: 1.3; }
+
+    .start-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
-    .boss-name {
-      font-size: 1.4rem;
-      color: #ffa502;
-      margin-bottom: 8px;
-    }
-    .boss-detail {
-      font-size: 0.95rem;
-      color: #ced6e0;
-      margin-bottom: 6px;
-    }
-    .tag-spawn {
-      display: inline-block;
-      background-color: #3742fa;
+    .start-box input {
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: 2px solid #2f3542;
+      background: #161a26;
       color: #fff;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      margin-top: 8px;
+      font-size: 1rem;
+      outline: none;
+    }
+    .start-box input:focus { border-color: #ffa502; }
+    .btn-play {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #ffa502, #ff6348);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: 0.2s;
+    }
+    .btn-play:hover { filter: brightness(1.15); transform: scale(1.03); }
+
+    /* CANVAS DO JOGO */
+    canvas { display: block; }
+
+    /* HUD SUPERIOR ESQUERDO (STATUS DO JOGADOR) */
+    #hud-top-left {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: rgba(18, 22, 33, 0.9);
+      border: 1px solid #3742fa;
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      min-width: 290px;
+    }
+    .avatar-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 2px solid #ffa502;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      position: relative;
+      background: #1e2436;
+    }
+    .lvl-badge {
+      position: absolute;
+      bottom: -5px;
+      background: #ffa502;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 1px 7px;
+      border-radius: 10px;
+    }
+    .stats-bars { flex: 1; }
+    .player-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .br-tag { color: #ffa502; font-size: 0.85rem; }
+    .bar-bg {
+      width: 100%;
+      height: 12px;
+      background: #2f3542;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 5px;
+      position: relative;
+    }
+    .bar-fill-hp { height: 100%; background: linear-gradient(90deg, #ff4757, #ff6b81); width: 100%; transition: width 0.15s; }
+    .bar-fill-mp { height: 100%; background: linear-gradient(90deg, #1e90ff, #70a1ff); width: 100%; transition: width 0.15s; }
+    .bar-text {
+      position: absolute;
+      inset: 0;
+      font-size: 0.68rem;
+      text-align: center;
+      line-height: 12px;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    /* HUD SUPERIOR DIREITO (MAPA, OURO E OPÇÕES) */
+    #hud-top-right {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .map-info {
+      background: rgba(18, 22, 33, 0.9);
+      border: 1px solid #2f3542;
+      padding: 8px 14px;
+      border-radius: 10px;
+      text-align: right;
+    }
+    .map-name { color: #2ed573; font-weight: bold; font-size: 0.95rem; }
+    .currency-row { font-size: 0.85rem; color: #f1c40f; margin-top: 3px; }
+    .btn-reset {
+      background: rgba(255, 71, 87, 0.2);
+      border: 1px solid #ff4757;
+      color: #ff6b81;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .btn-reset:hover { background: #ff4757; color: #fff; }
+
+    /* BARRA INFERIOR DE SKILLS E XP */
+    #hud-bottom {
+      position: fixed;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .skill-bar {
+      display: flex;
+      gap: 10px;
+      background: rgba(18, 22, 33, 0.92);
+      border: 2px solid #2f3542;
+      padding: 10px 14px;
+      border-radius: 14px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    }
+    .skill-slot {
+      width: 54px;
+      height: 54px;
+      background: #1e2436;
+      border: 2px solid #57606f;
+      border-radius: 10px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .skill-slot:hover { border-color: #ffa502; transform: translateY(-2px); }
+    .skill-slot .key {
+      position: absolute;
+      top: 2px;
+      left: 5px;
+      font-size: 0.7rem;
+      color: #a4b0be;
       font-weight: bold;
     }
-    .drop-list {
-      background: #10121a;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
-      font-size: 0.85rem;
+    .skill-slot .icon { font-size: 1.5rem; }
+    .skill-slot .cd-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 8px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      color: #fff;
     }
-    .drop-item {
-      color: #70a1ff;
-      margin-left: 15px;
+    .btn-auto {
+      width: 64px;
+      height: 54px;
+      border-radius: 10px;
+      border: 2px solid #2ed573;
+      background: #162b22;
+      color: #2ed573;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    .btn-auto.active {
+      background: #2ed573;
+      color: #0b0d13;
+      box-shadow: 0 0 15px rgba(46, 213, 115, 0.6);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
+
+    .xp-bar-container {
+      width: 440px;
+      height: 10px;
+      background: #1e2436;
+      border: 1px solid #2f3542;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+    }
+    .xp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #9b59b6, #e056fd);
+      width: 0%;
+      transition: width 0.2s;
+    }
+    .xp-text {
+      position: absolute;
+      inset: 0;
+      font-size: 0.65rem;
+      text-align: center;
+      line-height: 9px;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* LOG DE COMBATE / CONTROLES */
+    #controls-hint {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background: rgba(18, 22, 33, 0.75);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: #a4b0be;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>🔥 NOME DO SEU JOGO MMORPG 🔥</h1>
-    <p>Wiki Oficial, Horários de Bosses, Drops e Informações de Servidor</p>
-    
-    <div class="nav-buttons">
-      <a href="https://roblox.com" target="_blank" class="btn btn-roblox">🎮 Jogar no Roblox</a>
-      <a href="https://discord.com" target="_blank" class="btn btn-discord">💬 Servidor Discord</a>
-      <a href="https://wa.me/5500999999999" target="_blank" class="btn btn-whatsapp">📱 Grupo WhatsApp</a>
-    </div>
-  </header>
+  <!-- TELA DE ESCOLHA DE CLASSE -->
+  <div id="char-creation">
+    <h1>⚔️ Asa de Cristal 2.5D ⚔️</h1>
+    <p class="subtitle">Escolha sua classe inicial para entrar em Vidalia</p>
 
-  <div class="container">
-    <h2 class="section-title">👾 Bosses Principais & Mobs</h2>
+    <div class="class-grid" id="class-grid"></div>
 
-    <div class="grid-bosses">
-      
-      <!-- CARD 1 -->
-      <div class="boss-card">
-        <div class="boss-img">
-          [ FOTO DO BOSS 1 ]
-        </div>
-        <div class="boss-info">
-          <h3 class="boss-name">King Demon Slayer</h3>
-          <p class="boss-detail"><strong>Localização:</strong> Vulcano (Zona 3)</p>
-          <span class="tag-spawn">⏱️ Respawn: A cada 2 horas</span>
-          
-          <div class="drop-list">
-            <strong>🎁 Drops Principais:</strong>
-            <ul>
-              <li class="drop-item">Espada Lendária (5% chance)</li>
-              <li class="drop-item">Gema de Fogo (50% chance)</li>
-              <li class="drop-item">10,000 Moedas (100% chance)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- CARD 2 -->
-      <div class="boss-card">
-        <div class="boss-img">
-          [ FOTO DO BOSS 2 ]
-        </div>
-        <div class="boss-info">
-          <h3 class="boss-name">Lord Dragão de Gelo</h3>
-          <p class="boss-detail"><strong>Localização:</strong> Pico Gelado (Zona 5)</p>
-          <span class="tag-spawn">⏱️ Respawn: A cada 4 horas</span>
-          
-          <div class="drop-list">
-            <strong>🎁 Drops Principais:</strong>
-            <ul>
-              <li class="drop-item">Asas Congeladas (2% chance)</li>
-              <li class="drop-item">Armadura de Gelo (15% chance)</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
+    <div class="start-box">
+      <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="GuerreiroLuz">
+      <button class="btn-play" onclick="startGame()">Entrar no Mundo</button>
     </div>
   </div>
 
+  <!-- CANVAS ISOMÉTRICO -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- HUD SUPERIOR ESQUERDO -->
+  <div id="hud-top-left" style="display:none;">
+    <div class="avatar-circle" id="hud-avatar">
+      ⚔️
+      <span class="lvl-badge" id="hud-lvl">Nv. 1</span>
+    </div>
+    <div class="stats-bars">
+      <div class="player-header">
+        <span id="hud-name">Herói</span>
+        <span class="br-tag" id="hud-br">BR: 120</span>
+      </div>
+      <div class="bar-bg">
+        <div class="bar-fill-hp" id="hud-hp-bar"></div>
+        <div class="bar-text" id="hud-hp-text">100 / 100</div>
+      </div>
+      <div class="bar-bg">
+        <div class="bar-fill-mp" id="hud-mp-bar"></div>
+        <div class="bar-text" id="hud-mp-text">50 / 50</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD SUPERIOR DIREITO -->
+  <div id="hud-top-right" style="display:none;">
+    <div class="map-info">
+      <div class="map-name">🌲 Floresta de Vidalia (Nv. 1-10)</div>
+      <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 👾 Abates: <span id="hud-kills">0</span></div>
+    </div>
+    <button class="btn-reset" onclick="resetSave()">🔄 Resetar Personagem</button>
+  </div>
+
+  <!-- DICA DE CONTROLES -->
+  <div id="controls-hint" style="display:none;">
+    🖱️ <b>Clique no chão/monstro:</b> Mover e Atacar<br>
+    ⌨️ <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção HP | <b>A:</b> Auto
+  </div>
+
+  <!-- HUD INFERIOR -->
+  <div id="hud-bottom" style="display:none;">
+    <div class="skill-bar" id="skill-bar"></div>
+    <div class="xp-bar-container">
+      <div class="xp-bar-fill" id="hud-xp-bar"></div>
+      <div class="xp-text" id="hud-xp-text">XP: 0 / 100 (0%)</div>
+    </div>
+  </div>
+
+<script>
+  // ================= CONFIGURAÇÃO DAS 5 CLASSES =================
+  const CLASSES = {
+    cavaleiro: {
+      name: 'Cavaleiro',
+      role: 'Tanque / Corpo a Corpo',
+      icon: '🛡️',
+      color: '#eccc68',
+      desc: 'Alta defesa e vida. Protege aliados e resiste a grandes chefes.',
+      baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, range: 65,
+      skills: [
+        { name: 'Golpe Cruzado', icon: '⚔️', mult: 1.3, mp: 5, cd: 1.5, range: 70, color: '#ffa502' },
+        { name: 'Escudo Sagrado', icon: '🛡️', mult: 0, heal: 0.25, mp: 15, cd: 6, range: 0, color: '#70a1ff' },
+        { name: 'Impacto Sísmico', icon: '💥', mult: 2.0, mp: 20, cd: 5, range: 90, aoe: true, color: '#ff4757' },
+        { name: 'Fúria Real', icon: '🔥', mult: 2.8, mp: 30, cd: 9, range: 85, color: '#ff6348' }
+      ]
+    },
+    mago: {
+      name: 'Mago',
+      role: 'Dano Mágico / Área',
+      icon: '🔮',
+      color: '#70a1ff',
+      desc: 'Domina fogo e gelo para destruir vários inimigos à distância.',
+      baseHp: 130, baseMp: 180, baseAtk: 34, baseDef: 6, range: 210,
+      skills: [
+        { name: 'Bola de Fogo', icon: '🔥', mult: 1.4, mp: 8, cd: 1.4, range: 220, color: '#ff6348' },
+        { name: 'Lança de Gelo', icon: '❄️', mult: 1.8, mp: 16, cd: 4, range: 220, color: '#1e90ff' },
+        { name: 'Tempestade Arcana', icon: '⚡', mult: 2.3, mp: 28, cd: 6, range: 220, aoe: true, color: '#a29bfe' },
+        { name: 'Meteoro', icon: '☄️', mult: 3.4, mp: 45, cd: 10, range: 230, aoe: true, color: '#ff4757' }
+      ]
+    },
+    arqueiro: {
+      name: 'Arqueiro',
+      role: 'Dano Físico / Crítico',
+      icon: '🏹',
+      color: '#2ed573',
+      desc: 'Ataques rápidos à distância com alta chance de acerto crítico.',
+      baseHp: 155, baseMp: 120, baseAtk: 30, baseDef: 8, range: 230,
+      skills: [
+        { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 240, color: '#2ed573' },
+        { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 240, color: '#7bed9f' },
+        { name: 'Chuva de Flechas', icon: '🌧️', mult: 2.1, mp: 24, cd: 6, range: 240, aoe: true, color: '#eccc68' },
+        { name: 'Disparo Mortal', icon: '🎯', mult: 3.2, mp: 35, cd: 9, range: 260, color: '#ff4757' }
+      ]
+    },
+    sacerdote: {
+      name: 'Sacerdote',
+      role: 'Suporte / Luz Sagrada',
+      icon: '✨',
+      color: '#f1f2f6',
+      desc: 'Canaliza a luz para curar ferimentos e punir criaturas das trevas.',
+      baseHp: 160, baseMp: 200, baseAtk: 25, baseDef: 9, range: 195,
+      skills: [
+        { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 200, color: '#f1c40f' },
+        { name: 'Cura Divina', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#2ed573' },
+        { name: 'Julgamento', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 200, aoe: true, color: '#ffa502' },
+        { name: 'Ira Celestial', icon: '👼', mult: 3.0, mp: 40, cd: 9, range: 210, color: '#70a1ff' }
+      ]
+    },
+    assassino: {
+      name: 'Assassino',
+      role: 'Furtivo / Explosão',
+      icon: '🗡️',
+      color: '#ff4757',
+      desc: 'Velocidade extrema e golpes letais nas sombras.',
+      baseHp: 150, baseMp: 110, baseAtk: 35, baseDef: 7, range: 65,
+      skills: [
+        { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 70, color: '#ff4757' },
+        { name: 'Passo Sombrio', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 140, dash: true, color: '#a29bfe' },
+        { name: 'Lâminas Giratórias', icon: '🌀', mult: 2.2, mp: 22, cd: 5.5, range: 85, aoe: true, color: '#ff6b81' },
+        { name: 'Execução', icon: '💀', mult: 3.6, mp: 35, cd: 9, range: 75, color: '#ffa502' }
+      ]
+    }
+  };
+
+  let selectedClassKey = 'cavaleiro';
+
+  // Renderiza cards na tela inicial
+  const classGrid = document.getElementById('class-grid');
+  Object.keys(CLASSES).forEach(key => {
+    const c = CLASSES[key];
+    const card = document.createElement('div');
+    card.className = 'class-card' + (key === selectedClassKey ? ' selected' : '');
+    card.innerHTML = `
+      <div class="class-icon" style="background:${c.color}22; border:2px solid ${c.color}; color:${c.color}">${c.icon}</div>
+      <h3 style="color:${c.color}">${c.name}</h3>
+      <div class="role">${c.role}</div>
+      <div class="desc">${c.desc}</div>
+    `;
+    card.onclick = () => {
+      document.querySelectorAll('.class-card').forEach(el => el.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedClassKey = key;
+    };
+    classGrid.appendChild(card);
+  });
+
+  // ================= ESTADO DO JOGO & SAVE LOCAL =================
+  let player = null;
+  let enemies = [];
+  let floatingTexts = [];
+  let effects = [];
+  let clickMarker = null;
+  let autoCombat = false;
+  let gameRunning = false;
+
+  const WORLD_SIZE = 1400; // Tamanho lógico do mapa
+  const keysPressed = {};
+
+  function createNewPlayer(name, classKey) {
+    const cls = CLASSES[classKey];
+    return {
+      name: name || 'Herói',
+      classKey: classKey,
+      level: 1,
+      xp: 0,
+      maxXp: 100,
+      gold: 50,
+      kills: 0,
+      x: 0,
+      y: 0,
+      targetX: 0,
+      targetY: 0,
+      hp: cls.baseHp,
+      maxHp: cls.baseHp,
+      mp: cls.baseMp,
+      maxMp: cls.baseMp,
+      atk: cls.baseAtk,
+      def: cls.baseDef,
+      speed: classKey === 'assassino' ? 210 : 175,
+      cooldowns: [0, 0, 0, 0, 0] // 4 skills + 1 poção
+    };
+  }
+
+  function saveGame() {
+    if (player) {
+      localStorage.setItem('asaDeCristal_save_v1', JSON.stringify(player));
+    }
+  }
+
+  function loadGame() {
+    const saved = localStorage.getItem('asaDeCristal_save_v1');
+    if (saved) {
+      player = JSON.parse(saved);
+      player.cooldowns = [0, 0, 0, 0, 0];
+      enterWorld();
+    }
+  }
+
+  function resetSave() {
+    if (confirm('Deseja apagar seu personagem atual e criar um novo?')) {
+      localStorage.removeItem('asaDeCristal_save_v1');
+      location.reload();
+    }
+  }
+
+  function startGame() {
+    const nameInput = document.getElementById('player-name-input').value.trim();
+    player = createNewPlayer(nameInput, selectedClassKey);
+    saveGame();
+    enterWorld();
+  }
+
+  function enterWorld() {
+    document.getElementById('char-creation').style.display = 'none';
+    document.getElementById('hud-top-left').style.display = 'flex';
+    document.getElementById('hud-top-right').style.display = 'flex';
+    document.getElementById('controls-hint').style.display = 'block';
+    document.getElementById('hud-bottom').style.display = 'flex';
+
+    setupSkillBar();
+    spawnInitialEnemies();
+    updateHUD();
+    gameRunning = true;
+    requestAnimationFrame(gameLoop);
+  }
+
+  // ================= BARRA DE SKILLS =================
+  function setupSkillBar() {
+    const bar = document.getElementById('skill-bar');
+    bar.innerHTML = '';
+    const cls = CLASSES[player.classKey];
+
+    cls.skills.forEach((sk, idx) => {
+      const slot = document.createElement('div');
+      slot.className = 'skill-slot';
+      slot.title = `${sk.name} (MP: ${sk.mp})`;
+      slot.innerHTML = `
+        <span class="key">${idx + 1}</span>
+        <span class="icon">${sk.icon}</span>
+        <div class="cd-overlay" id="cd-${idx}"></div>
+      `;
+      slot.onclick = () => useSkill(idx);
+      bar.appendChild(slot);
+    });
+
+    // Slot 5: Poção de Vida
+    const potSlot = document.createElement('div');
+    potSlot.className = 'skill-slot';
+    potSlot.title = 'Poção de Vida (Recupera 50% HP)';
+    potSlot.innerHTML = `
+      <span class="key">5</span>
+      <span class="icon">🧪</span>
+      <div class="cd-overlay" id="cd-4"></div>
+    `;
+    potSlot.onclick = () => usePotion();
+    bar.appendChild(potSlot);
+
+    // Botão AUTO
+    const autoBtn = document.createElement('button');
+    autoBtn.className = 'btn-auto';
+    autoBtn.id = 'btn-auto';
+    autoBtn.innerHTML = `<span>🤖</span><span>AUTO</span>`;
+    autoBtn.onclick = toggleAuto;
+    bar.appendChild(autoBtn);
+  }
+
+  function toggleAuto() {
+    autoCombat = !autoCombat;
+    const btn = document.getElementById('btn-auto');
+    if (autoCombat) {
+      btn.classList.add('active');
+      addFloatingText(player.x, player.y - 45, 'AUTO ATIVADO', '#2ed573');
+    } else {
+      btn.classList.remove('active');
+      addFloatingText(player.x, player.y - 45, 'AUTO DESLIGADO', '#ff6b81');
+    }
+  }
+
+  // ================= MONSTROS DO MAPA =================
+  const MONSTER_TYPES = [
+    { name: 'Slime da Floresta', icon: '🟢', hp: 70, atk: 8, xp: 25, gold: 12, color: '#2ed573', scale: 1 },
+    { name: 'Lobo Cinzento', icon: '🐺', hp: 110, atk: 14, xp: 40, gold: 20, color: '#a4b0be', scale: 1.1 },
+    { name: 'Goblin Saqueador', icon: '👺', hp: 150, atk: 19, xp: 60, gold: 32, color: '#ffa502', scale: 1.15 },
+    { name: 'Guardião Tronco (Elite)', icon: '🌳', hp: 320, atk: 28, xp: 140, gold: 85, color: '#ff4757', scale: 1.45 }
+  ];
+
+  function spawnEnemy() {
+    const roll = Math.random();
+    let typeIdx = 0;
+    if (roll > 0.88) typeIdx = 3; // Elite
+    else if (roll > 0.60) typeIdx = 2;
+    else if (roll > 0.30) typeIdx = 1;
+
+    const t = MONSTER_TYPES[typeIdx];
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 180 + Math.random() * (WORLD_SIZE / 2 - 200);
+
+    enemies.push({
+      id: Math.random(),
+      name: t.name,
+      icon: t.icon,
+      x: Math.cos(angle) * dist,
+      y: Math.sin(angle) * dist,
+      hp: t.hp,
+      maxHp: t.hp,
+      atk: t.atk,
+      xp: t.xp,
+      gold: t.gold,
+      color: t.color,
+      scale: t.scale,
+      atkTimer: 0
+    });
+  }
+
+  function spawnInitialEnemies() {
+    enemies = [];
+    for (let i = 0; i < 16; i++) spawnEnemy();
+  }
+
+  // ================= PROJEÇÃO 2.5D ISOMÉTRICA =================
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  // Converte coordenadas do mundo (x, y) para tela isométrica 2.5D
+  function worldToIso(wx, wy) {
+    const rx = wx - player.x;
+    const ry = wy - player.y;
+    const isoX = (rx - ry) * 0.85 + canvas.width / 2;
+    const isoY = (rx + ry) * 0.45 + canvas.height / 2;
+    return { x: isoX, y: isoY };
+  }
+
+  // Converte clique na tela de volta para coordenadas do mundo
+  function isoToWorld(sx, sy) {
+    const dx = (sx - canvas.width / 2) / 0.85;
+    const dy = (sy - canvas.height / 2) / 0.45;
+    const rx = (dx + dy) / 2;
+    const ry = (dy - dx) / 2;
+    return { x: player.x + rx, y: player.y + ry };
+  }
+
+  // ================= CONTROLES (MOUSE E TECLADO) =================
+  canvas.addEventListener('mousedown', (e) => {
+    if (!gameRunning) return;
+    const worldPos = isoToWorld(e.clientX, e.clientY);
+    player.targetX = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.x));
+    player.targetY = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.y));
+    clickMarker = { x: player.targetX, y: player.targetY, timer: 0.5 };
+
+    // Se clicou perto de um monstro e está no alcance, já usa skill 1
+    const nearest = getNearestEnemy(worldPos.x, worldPos.y, 70);
+    if (nearest && getDist(player, nearest) <= CLASSES[player.classKey].skills[0].range) {
+      useSkill(0);
+    }
+  });
+
+  window.addEventListener('keydown', (e) => {
+    keysPressed[e.key.toLowerCase()] = true;
+    if (!gameRunning) return;
+    if (e.key === '1') useSkill(0);
+    if (e.key === '2') useSkill(1);
+    if (e.key === '3') useSkill(2);
+    if (e.key === '4') useSkill(3);
+    if (e.key === '5') usePotion();
+    if (e.key.toLowerCase() === 'a') toggleAuto();
+  });
+
+  window.addEventListener('keyup', (e) => {
+    keysPressed[e.key.toLowerCase()] = false;
+  });
+
+  // ================= COMBATE E HABILIDADES =================
+  function getDist(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function getNearestEnemy(x, y, maxRange = Infinity) {
+    let best = null;
+    let bestDist = maxRange;
+    enemies.forEach(en => {
+      const d = Math.hypot(en.x - x, en.y - y);
+      if (d < bestDist) {
+        bestDist = d;
+        best = en;
+      }
+    });
+    return best;
+  }
+
+  function usePotion() {
+    if (player.cooldowns[4] > 0 || player.hp >= player.maxHp) return;
+    const healAmt = Math.round(player.maxHp * 0.5);
+    player.hp = Math.min(player.maxHp, player.hp + healAmt);
+    player.cooldowns[4] = 4.0;
+    addFloatingText(player.x, player.y - 40, `+${healAmt} HP`, '#2ed573');
+    effects.push({ x: player.x, y: player.y, radius: 45, color: '#2ed573', timer: 0.4 });
+    updateHUD();
+  }
+
+  function useSkill(idx) {
+    const cls = CLASSES[player.classKey];
+    const sk = cls.skills[idx];
+    if (!sk || player.cooldowns[idx] > 0) return;
+
+    if (player.mp < sk.mp) {
+      addFloatingText(player.x, player.y - 40, 'Sem Mana!', '#70a1ff');
+      return;
+    }
+
+    // Skill de cura própria
+    if (sk.heal) {
+      player.mp -= sk.mp;
+      player.cooldowns[idx] = sk.cd;
+      const healAmt = Math.round(player.maxHp * sk.heal);
+      player.hp = Math.min(player.maxHp, player.hp + healAmt);
+      addFloatingText(player.x, player.y - 45, `+${healAmt} HP`, '#2ed573');
+      effects.push({ x: player.x, y: player.y, radius: 60, color: sk.color, timer: 0.5 });
+      updateHUD();
+      return;
+    }
+
+    const target = getNearestEnemy(player.x, player.y, sk.range + 30);
+    if (!target) {
+      if (!autoCombat) addFloatingText(player.x, player.y - 40, 'Fora de alcance!', '#ffa502');
+      return;
+    }
+
+    player.mp -= sk.mp;
+    player.cooldowns[idx] = sk.cd;
+
+    if (sk.dash) {
+      player.x = target.x - 25;
+      player.y = target.y;
+      player.targetX = player.x;
+      player.targetY = player.y;
+    }
+
+    // Aplica dano (Área ou Alvo Único)
+    const hitList = sk.aoe
+      ? enemies.filter(en => getDist(target, en) <= 110)
+      : [target];
+
+    effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 105 : 45, color: sk.color, timer: 0.35 });
+
+    hitList.forEach(en => {
+      const isCrit = Math.random() < (player.classKey === 'arqueiro' || player.classKey === 'assassino' ? 0.3 : 0.15);
+      let dmg = Math.round(player.atk * sk.mult * (0.9 + Math.random() * 0.2));
+      if (isCrit) dmg = Math.round(dmg * 1.6);
+
+      en.hp -= dmg;
+      addFloatingText(
+        en.x,
+        en.y - 35,
+        isCrit ? `💥 ${dmg}!` : `-${dmg}`,
+        isCrit ? '#ffa502' : '#ffffff'
+      );
+
+      if (en.hp <= 0) {
+        killEnemy(en);
+      }
+    });
+
+    updateHUD();
+  }
+
+  function killEnemy(en) {
+    enemies = enemies.filter(e => e.id !== en.id);
+    player.xp += en.xp;
+    player.gold += en.gold;
+    player.kills += 1;
+
+    addFloatingText(en.x, en.y - 50, `+${en.xp} XP  +${en.gold} Ouro`, '#f1c40f');
+
+    // Level Up!
+    while (player.xp >= player.maxXp) {
+      player.xp -= player.maxXp;
+      player.level += 1;
+      player.maxXp = Math.round(player.maxXp * 1.35);
+      player.maxHp += 35;
+      player.maxMp += 20;
+      player.atk += 6;
+      player.def += 3;
+      player.hp = player.maxHp;
+      player.mp = player.maxMp;
+      addFloatingText(player.x, player.y - 70, `🎉 LEVEL UP! Nv. ${player.level}`, '#ffa502');
+      effects.push({ x: player.x, y: player.y, radius: 120, color: '#ffa502', timer: 0.8 });
+    }
+
+    saveGame();
+    setTimeout(spawnEnemy, 2500);
+  }
+
+  function addFloatingText(x, y, text, color) {
+    floatingTexts.push({ x, y, text, color, timer: 1.1 });
+  }
+
+  // ================= LOOP PRINCIPAL DO JOGO =================
+  let lastTime = performance.now();
+
+  function gameLoop(now) {
+    const dt = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+
+    update(dt);
+    render();
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  function update(dt) {
+    // Regeneração natural de HP e MP
+    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.02 * dt);
+    player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.06 * dt);
+
+    // Atualiza cooldowns
+    for (let i = 0; i < player.cooldowns.length; i++) {
+      if (player.cooldowns[i] > 0) {
+        player.cooldowns[i] = Math.max(0, player.cooldowns[i] - dt);
+        const overlay = document.getElementById(`cd-${i}`);
+        if (overlay) {
+          if (player.cooldowns[i] > 0) {
+            overlay.style.display = 'flex';
+            overlay.textContent = player.cooldowns[i].toFixed(1);
+          } else {
+            overlay.style.display = 'none';
+          }
+        }
+      }
+    }
+
+    // Movimento por teclado WASD
+    let moveX = 0, moveY = 0;
+    if (keysPressed['w']) { moveX -= 1; moveY -= 1; }
+    if (keysPressed['s']) { moveX += 1; moveY += 1; }
+    if (keysPressed['a']) { moveX -= 1; moveY += 1; }
+    if (keysPressed['d']) { moveX += 1; moveY -= 1; }
+
+    if (moveX !== 0 || moveY !== 0) {
+      const len = Math.hypot(moveX, moveY);
+      player.x += (moveX / len) * player.speed * dt;
+      player.y += (moveY / len) * player.speed * dt;
+      player.targetX = player.x;
+      player.targetY = player.y;
+    } else {
+      // Lógica do modo AUTO (AFK)
+      if (autoCombat) {
+        if (player.hp < player.maxHp * 0.45) usePotion();
+        const target = getNearestEnemy(player.x, player.y);
+        if (target) {
+          const baseRange = CLASSES[player.classKey].range;
+          const dist = getDist(player, target);
+          if (dist > baseRange * 0.85) {
+            player.targetX = target.x;
+            player.targetY = target.y;
+          } else {
+            player.targetX = player.x;
+            player.targetY = player.y;
+            // Tenta usar da skill mais forte para a mais fraca
+            for (let s = 3; s >= 0; s--) {
+              if (player.cooldowns[s] <= 0 && player.mp >= CLASSES[player.classKey].skills[s].mp) {
+                useSkill(s);
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      // Move em direção ao ponto clicado / alvo
+      const dx = player.targetX - player.x;
+      const dy = player.targetY - player.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 4) {
+        player.x += (dx / dist) * player.speed * dt;
+        player.y += (dy / dist) * player.speed * dt;
+      }
+    }
+
+    // Limites do mapa
+    player.x = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.x));
+    player.y = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.y));
+
+    // IA simples dos monstros
+    enemies.forEach(en => {
+      const dist = getDist(player, en);
+      if (dist < 240 && dist > 48) {
+        const dx = player.x - en.x;
+        const dy = player.y - en.y;
+        en.x += (dx / dist) * 75 * dt;
+        en.y += (dy / dist) * 75 * dt;
+      } else if (dist <= 52) {
+        en.atkTimer += dt;
+        if (en.atkTimer >= 1.6) {
+          en.atkTimer = 0;
+          const dmg = Math.max(2, en.atk - Math.round(player.def * 0.5));
+          player.hp -= dmg;
+          addFloatingText(player.x, player.y - 35, `-${dmg}`, '#ff4757');
+          if (player.hp <= 0) {
+            player.hp = player.maxHp;
+            player.x = 0;
+            player.y = 0;
+            player.targetX = 0;
+            player.targetY = 0;
+            addFloatingText(0, -40, 'Você renasceu no centro!', '#ffa502');
+          }
+        }
+      }
+    });
+
+    // Atualiza efeitos e textos flutuantes
+    effects.forEach(ef => ef.timer -= dt);
+    effects = effects.filter(ef => ef.timer > 0);
+
+    floatingTexts.forEach(ft => {
+      ft.y -= 35 * dt;
+      ft.timer -= dt;
+    });
+    floatingTexts = floatingTexts.filter(ft => ft.timer > 0);
+
+    if (clickMarker) {
+      clickMarker.timer -= dt;
+      if (clickMarker.timer <= 0) clickMarker = null;
+    }
+
+    updateHUD();
+  }
+
+  function updateHUD() {
+    const cls = CLASSES[player.classKey];
+    const br = Math.round(player.maxHp * 0.5 + player.atk * 4 + player.def * 3 + player.level * 25);
+
+    document.getElementById('hud-avatar').childNodes[0].textContent = cls.icon;
+    document.getElementById('hud-lvl').textContent = `Nv. ${player.level}`;
+    document.getElementById('hud-name').textContent = `${player.name} (${cls.name})`;
+    document.getElementById('hud-br').textContent = `BR: ${br}`;
+
+    document.getElementById('hud-hp-bar').style.width = `${(player.hp / player.maxHp) * 100}%`;
+    document.getElementById('hud-hp-text').textContent = `${Math.ceil(player.hp)} / ${player.maxHp}`;
+
+    document.getElementById('hud-mp-bar').style.width = `${(player.mp / player.maxMp) * 100}%`;
+    document.getElementById('hud-mp-text').textContent = `${Math.ceil(player.mp)} / ${player.maxMp}`;
+
+    document.getElementById('hud-gold').textContent = player.gold;
+    document.getElementById('hud-kills').textContent = player.kills;
+
+    const xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
+    document.getElementById('hud-xp-bar').style.width = `${xpPct}%`;
+    document.getElementById('hud-xp-text').textContent = `XP: ${player.xp} / ${player.maxXp} (${xpPct.toFixed(0)}%)`;
+  }
+
+  // ================= RENDERIZAÇÃO 2.5D =================
+  function render() {
+    ctx.fillStyle = '#0d131a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Desenha o chão isométrico (Losango do mapa + Grade)
+    const tileStep = 100;
+    const half = WORLD_SIZE / 2;
+
+    // Fundo do terreno
+    const c1 = worldToIso(-half, -half);
+    const c2 = worldToIso(half, -half);
+    const c3 = worldToIso(half, half);
+    const c4 = worldToIso(-half, half);
+
+    ctx.beginPath();
+    ctx.moveTo(c1.x, c1.y);
+    ctx.lineTo(c2.x, c2.y);
+    ctx.lineTo(c3.x, c3.y);
+    ctx.lineTo(c4.x, c4.y);
+    ctx.closePath();
+    ctx.fillStyle = '#14221b';
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#2ed57355';
+    ctx.stroke();
+
+    // Grade isométrica
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    for (let x = -half; x <= half; x += tileStep) {
+      const p1 = worldToIso(x, -half);
+      const p2 = worldToIso(x, half);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+    for (let y = -half; y <= half; y += tileStep) {
+      const p1 = worldToIso(-half, y);
+      const p2 = worldToIso(half, y);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+    }
+
+    // Marcador de clique no chão
+    if (clickMarker) {
+      const pos = worldToIso(clickMarker.x, clickMarker.y);
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, 18 * clickMarker.timer * 2, 9 * clickMarker.timer * 2, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = '#2ed573';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Ordena entidades por profundidade Y para efeito 2.5D real
+    const renderList = [
+      { type: 'player', y: player.y, obj: player },
+      ...enemies.map(en => ({ type: 'enemy', y: en.y, obj: en }))
+    ].sort((a, b) => a.y - b.y);
+
+    renderList.forEach(item => {
+      if (item.type === 'player') drawPlayer();
+      else drawEnemy(item.obj);
+    });
+
+    // Efeitos visuais de skills
+    effects.forEach(ef => {
+      const pos = worldToIso(ef.x, ef.y);
+      ctx.beginPath();
+      ctx.ellipse(pos.x, pos.y, ef.radius * 0.85, ef.radius * 0.45, 0, 0, Math.PI * 2);
+      ctx.fillStyle = ef.color + '44';
+      ctx.fill();
+      ctx.strokeStyle = ef.color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    // Números de dano e XP flutuantes
+    floatingTexts.forEach(ft => {
+      const pos = worldToIso(ft.x, ft.y);
+      ctx.font = 'bold 15px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000';
+      ctx.fillText(ft.text, pos.x + 1, pos.y + 1);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, pos.x, pos.y);
+    });
+  }
+
+  function drawPlayer() {
+    const pos = worldToIso(player.x, player.y);
+    const cls = CLASSES[player.classKey];
+
+    // Sombra no chão
+    ctx.beginPath();
+    ctx.ellipse(pos.x, pos.y, 22, 11, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fill();
+
+    // Aura da classe
+    ctx.beginPath();
+    ctx.ellipse(pos.x, pos.y, 26, 13, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = cls.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Corpo 2.5D do personagem
+    ctx.fillStyle = cls.color;
+    ctx.beginPath();
+    ctx.roundRect(pos.x - 14, pos.y - 44, 28, 42, 10);
+    ctx.fill();
+
+    // Ícone da classe
+    ctx.font = '22px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(cls.icon, pos.x, pos.y - 16);
+
+    // Nome acima da cabeça
+    ctx.font = 'bold 12px Segoe UI';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(`[Nv.${player.level}] ${player.name}`, pos.x, pos.y - 52);
+  }
+
+  function drawEnemy(en) {
+    const pos = worldToIso(en.x, en.y);
+    const s = en.scale;
+
+    // Sombra
+    ctx.beginPath();
+    ctx.ellipse(pos.x, pos.y, 20 * s, 10 * s, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fill();
+
+    // Corpo do monstro
+    ctx.fillStyle = en.color + 'cc';
+    ctx.beginPath();
+    ctx.roundRect(pos.x - 15 * s, pos.y - 38 * s, 30 * s, 36 * s, 8);
+    ctx.fill();
+
+    // Ícone
+    ctx.font = `${Math.round(22 * s)}px Segoe UI`;
+    ctx.textAlign = 'center';
+    ctx.fillText(en.icon, pos.x, pos.y - 12 * s);
+
+    // Nome e Barra de HP do monstro
+    ctx.font = 'bold 11px Segoe UI';
+    ctx.fillStyle = '#ff6b81';
+    ctx.fillText(en.name, pos.x, pos.y - 48 * s);
+
+    const barW = 46 * s;
+    ctx.fillStyle = '#2f3542';
+    ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW, 5);
+    ctx.fillStyle = '#ff4757';
+    ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW * Math.max(0, en.hp / en.maxHp), 5);
+  }
+
+  // Inicia verificando se já existe personagem salvo
+  loadGame();
+</script>
 </body>
 </html>
