@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Fase 4.1 (Armas por Alcance & Lápis)</title>
+  <title>Asa de Cristal 2.5D - Fase 4.2 (Extração & Linkagem de Lápis)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -298,7 +298,7 @@
     .modal-window {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
       background: #121622; border: 2px solid #ffa502; border-radius: 16px;
-      width: 1080px; max-width: 97vw; max-height: 92vh; display: none; flex-direction: column; z-index: 100;
+      width: 1100px; max-width: 97vw; max-height: 92vh; display: none; flex-direction: column; z-index: 100;
       box-shadow: 0 20px 60px rgba(0,0,0,0.9);
     }
     .modal-header {
@@ -311,7 +311,7 @@
 
     /* Coluna 1: Equipados */
     .equip-column {
-      flex: 1.05; min-width: 255px; background: #0d1018; padding: 12px;
+      flex: 1.02; min-width: 250px; background: #0d1018; padding: 12px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .equip-column h4, .inspect-column h4, .bag-column h4 {
@@ -329,9 +329,9 @@
       background: #131724; padding: 9px; border-radius: 8px;
     }
 
-    /* Coluna 2: Inspeção de Item + Comparação com Setas + Slots de Lápis */
+    /* Coluna 2: Inspeção de Item + Comparação + Extração de Lápis */
     .inspect-column {
-      flex: 1.15; min-width: 280px; background: #0d1018; padding: 12px;
+      flex: 1.25; min-width: 295px; background: #0d1018; padding: 12px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .inspect-card {
@@ -340,8 +340,8 @@
     }
     .inspect-header { text-align: center; padding-bottom: 8px; border-bottom: 1px solid #252c3d; }
     .inspect-icon-box {
-      width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: #0d1018;
+      width: 46px; height: 46px; border-radius: 12px; margin: 0 auto 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.75rem; background: #0d1018;
     }
     .rarity-badge {
       display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.69rem;
@@ -358,7 +358,7 @@
       font-weight: bold; margin-top: 4px; background: rgba(112, 161, 255, 0.14); color: #70a1ff; border: 1px solid #70a1ff44;
     }
 
-    .inspect-stats { margin: 8px 0; font-size: 0.79rem; color: #e2e8f0; }
+    .inspect-stats { margin: 8px 0; font-size: 0.78rem; color: #e2e8f0; }
     .stat-comp-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -367,31 +367,57 @@
     .arrow-down { color: #ff4757; font-weight: bold; font-size: 0.76rem; }
     .arrow-eq { color: #64748b; font-size: 0.72rem; }
 
-    /* Engastes / Slots de Lápis */
+    /* Engastes / Slots de Lápis + Extração Individual */
     .lapis-section {
       background: #0b0e15; border: 1px dashed #334155; border-radius: 10px; padding: 9px; margin-top: 6px;
     }
     .lapis-title { font-size: 0.7rem; color: #94a3b8; margin-bottom: 7px; font-weight: bold; text-transform: uppercase; text-align: center; }
     .lapis-sockets-row { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
     .lapis-socket {
-      width: 32px; height: 32px; border-radius: 50%; border: 2px dashed #475569;
+      width: 30px; height: 30px; border-radius: 50%; border: 2px dashed #475569;
       background: #161c2c; display: flex; align-items: center; justify-content: center;
-      font-size: 0.72rem; color: #64748b; font-weight: bold; position: relative;
+      font-size: 0.7rem; color: #64748b; font-weight: bold; position: relative;
     }
     .lapis-socket.unlocked { border-style: solid; box-shadow: inset 0 0 8px rgba(255,255,255,0.08); }
     .lapis-socket.filled {
       border-style: solid;
       box-shadow: 0 0 10px currentColor;
       color: #fff;
-      font-size: 0.65rem;
+      font-size: 0.63rem;
     }
     .linked-lapis-list {
-      margin-top: 7px; font-size: 0.69rem; color: #cbd5e1; line-height: 1.45; text-align: center;
+      margin-top: 8px; display: flex; flex-direction: column; gap: 5px;
+    }
+    .linked-lapis-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #141926; border: 1px solid #262e40; border-radius: 7px;
+      padding: 4px 7px; font-size: 0.68rem;
+    }
+    .btn-extract-lapis {
+      background: rgba(255, 165, 2, 0.16);
+      border: 1px solid #ffa502;
+      color: #ffa502;
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-size: 0.64rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-extract-lapis:hover:not(:disabled) {
+      background: #ffa502;
+      color: #0b0d13;
+    }
+    .btn-extract-lapis:disabled {
+      border-color: #475569;
+      color: #64748b;
+      background: transparent;
+      cursor: not-allowed;
     }
 
     /* Coluna 3: Mochila com Abas (Equipamentos / Lápis) */
     .bag-column {
-      flex: 1.5; min-width: 330px; background: #0d1018; padding: 12px;
+      flex: 1.45; min-width: 330px; background: #0d1018; padding: 12px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .bag-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
@@ -416,7 +442,7 @@
     .mini-sockets { display: flex; gap: 3px; margin: 4px 0; flex-wrap: wrap; }
     .mini-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #64748b; background: #0b0e15; }
     .bag-item-actions { display: flex; gap: 4px; margin-top: 6px; }
-    .btn-mini { flex: 1; padding: 5px 4px; border: none; border-radius: 5px; font-size: 0.69rem; font-weight: bold; cursor: pointer; }
+    .btn-mini { flex: 1; padding: 5px 4px; border: none; border-radius: 5px; font-size: 0.67rem; font-weight: bold; cursor: pointer; }
     .btn-equip { background: #2ed573; color: #000; }
     .btn-equip:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
     .btn-link { background: #00f2fe; color: #000; }
@@ -425,10 +451,10 @@
     .btn-sell-all { background: #ff4757; color: #fff; }
     .btn-unequip { background: #475569; color: #fff; padding: 3px 7px; border: none; border-radius: 5px; font-size: 0.65rem; cursor: pointer; }
 
-    /* Feedback visual de Linkagem */
+    /* Feedback visual de Linkagem e Extração */
     #link-feedback-banner {
       display: none; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;
-      font-size: 0.78rem; font-weight: bold; text-align: center;
+      font-size: 0.77rem; font-weight: bold; text-align: center;
     }
 
     /* Forja */
@@ -520,7 +546,7 @@
     </div>
     <div class="top-menu-buttons">
       <button type="button" class="btn-hud" onclick="openBagWithTab('equip')">🎒 Mochila (B)</button>
-      <button type="button" class="btn-hud lapis-btn" onclick="openBagWithTab('lapis')">💎 Linkar Lápis (L)</button>
+      <button type="button" class="btn-hud lapis-btn" onclick="openBagWithTab('lapis')">💎 Lápis (L)</button>
       <button type="button" class="btn-hud" onclick="toggleModal('forge-modal')">🔨 Forja (F)</button>
       <button type="button" class="btn-hud switch-char" onclick="returnToCharSelect()">👥 Personagens</button>
     </div>
@@ -528,7 +554,7 @@
 
   <div id="controls-hint">
     🖱️ <b>Clique:</b> Mover/Atacar | <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção<br>
-    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Mochila | <b>L:</b> Linkar Lápis | <b>F:</b> Forja
+    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Mochila | <b>L:</b> Linkar/Tirar Lápis | <b>F:</b> Forja
   </div>
 
   <div id="hud-bottom">
@@ -539,10 +565,10 @@
     </div>
   </div>
 
-  <!-- MODAL INVENTÁRIO DINÂMICO & LINKAGEM DE LÁPIS -->
+  <!-- MODAL INVENTÁRIO DINÂMICO, LINKAGEM & EXTRAÇÃO DE LÁPIS -->
   <div class="modal-window" id="bag-modal">
     <div class="modal-header">
-      <h3>🎒 Inventário Dinâmico & Linkagem de Lápis (Nv. 1 a 5)</h3>
+      <h3>🎒 Inventário Dinâmico, Linkagem & Extração de Lápis (💰 Ouro)</h3>
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
@@ -553,12 +579,12 @@
         <div class="stat-summary" id="stat-summary"></div>
       </div>
 
-      <!-- COLUNA 2: INSPEÇÃO, COMPARADOR & ENGASTES DE LÁPIS -->
+      <!-- COLUNA 2: INSPEÇÃO, COMPARADOR & ENGASTES (LINK / EXTRAIR) -->
       <div class="inspect-column">
         <h4>🔍 Item Selecionado & Engastes</h4>
         <div class="inspect-card" id="inspect-panel">
           <div style="text-align:center; color:#64748b; margin:auto;">
-            Selecione um equipamento (equipado ou na mochila) para inspecionar e linkar Lápis nos slots livres.
+            Selecione um equipamento para inspecionar, linkar Lápis nos slots livres ou extrair Lápis já encaixados.
           </div>
         </div>
       </div>
@@ -583,8 +609,8 @@
 
         <!-- ABA LÁPIS -->
         <div id="bag-tab-lapis" style="display:none;">
-          <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
-            Selecione um equipamento à esquerda com slot vazio e clique em <b style="color:#00f2fe;">Linkar</b>. Atenção: se falhar, o Lápis quebra!
+          <div style="font-size:0.71rem; color:#94a3b8; margin-bottom:8px; line-height:1.4;">
+            Selecione um equipamento com slot vazio e clique em <b style="color:#00f2fe;">Linkar</b> (custa Ouro). Para remover um Lápis, clique em <b style="color:#ffa502;">Extrair</b> no painel central!
           </div>
           <div class="bag-grid" id="lapis-grid"></div>
         </div>
@@ -760,7 +786,16 @@
     }
   };
 
-  var LAPIS_LINK_CHANCE = [0, 85, 70, 55, 40, 25];
+  var LAPIS_LINK_CHANCE    = [0, 85, 70, 55, 40, 25]; // % sucesso para linkar (Nv 1..5)
+  var LAPIS_EXTRACT_CHANCE = [0, 80, 65, 50, 35, 25]; // % sucesso para tirar sem quebrar (Nv 1..5)
+
+  function getLapisLinkGoldCost(lvl) {
+    return (lvl || 1) * 50;
+  }
+
+  function getLapisExtractGoldCost(lvl) {
+    return (lvl || 1) * 80;
+  }
 
   function generateRandomLapis(tierType) {
     var keys = Object.keys(LAPIS_TYPES);
@@ -791,7 +826,6 @@
   }
 
   // ================= CLASSES COM ALCANCE E TIPO DE ARMA EXCLUSIVO =================
-  // attackType: 'melee' (Corpo a Corpo) | 'ranged' (À Distância) | 'magic' (Mágico à Distância)
   var CLASSES = {
     cavaleiro: {
       name: 'Cavaleiro', icon: '🛡️', color: '#eccc68',
@@ -890,7 +924,7 @@
     mago: [
       { name: 'Cajado Arcano',         icon: '🪄', weaponType: 'magic',  weaponRange: 220 },
       { name: 'Orbe Elemental',        icon: '🔮', weaponType: 'magic',  weaponRange: 210 },
-      { name: 'Bastão das Estrelas',   icon: ' Staff'.trim() ? '🪄' : '🪄', weaponType: 'magic', weaponRange: 230 }
+      { name: 'Bastão das Estrelas',   icon: '🪄', weaponType: 'magic',  weaponRange: 230 }
     ],
     sacerdote: [
       { name: 'Cetro Sagrado',         icon: '🦯', weaponType: 'magic',  weaponRange: 205 },
@@ -979,7 +1013,6 @@
     }
     if (!item.classReq) item.classReq = 'all';
 
-    // Garante que toda arma possua weaponType ('melee' | 'ranged' | 'magic') e alcance coerente
     if (item.slot === 'weapon' && !item.weaponType) {
       var targetCls = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'cavaleiro');
       item.weaponType = CLASSES[targetCls].attackType;
@@ -1016,7 +1049,6 @@
     return item;
   }
 
-  // Validação rígida: classe + compatibilidade de arma corpo a corpo vs distância vs mágica
   function canClassEquip(item) {
     if (!item) return false;
     var playerCls = CLASSES[player.classKey];
@@ -1164,7 +1196,6 @@
     return res;
   }
 
-  // Retorna o alcance efetivo do personagem baseado na arma equipada (ou alcance padrão da classe)
   function getPlayerEffectiveRange() {
     var cls = CLASSES[player.classKey];
     var eqW = player.equipped && player.equipped.weapon;
@@ -1283,7 +1314,7 @@
       level: 1,
       xp: 0,
       maxXp: 100,
-      gold: 100,
+      gold: 300,
       stones: 5,
       kills: 0,
       x: 0,
@@ -1450,7 +1481,7 @@
     }
   }
 
-  // ================= INVENTÁRIO DINÂMICO, COMPARADOR & LINKAGEM DE LÁPIS =================
+  // ================= INVENTÁRIO DINÂMICO, LINKAGEM & EXTRAÇÃO DE LÁPIS =================
   function openBagWithTab(tabName) {
     var el = document.getElementById('bag-modal');
     var isOpen = el.style.display === 'flex';
@@ -1540,7 +1571,7 @@
 
     if (!inspectedItem) {
       panel.style.borderColor = '#2f3542';
-      panel.innerHTML = '<div style="text-align:center; color:#64748b; margin:auto;">Clique sobre um equipamento para ver seus atributos, comparar com setas (<span style="color:#2ed573;">▲</span>/<span style="color:#ff4757;">▼</span>) ou linkar Lápis nos slots.</div>';
+      panel.innerHTML = '<div style="text-align:center; color:#64748b; margin:auto;">Clique sobre um equipamento para ver seus atributos, comparar com setas (<span style="color:#2ed573;">▲</span>/<span style="color:#ff4757;">▼</span>), linkar ou extrair Lápis.</div>';
       return;
     }
 
@@ -1588,8 +1619,21 @@
         var sock = item.sockets[i];
         if (sock && LAPIS_TYPES[sock.type]) {
           var lMeta = LAPIS_TYPES[sock.type];
+          var extCost = getLapisExtractGoldCost(sock.level);
+          var extChance = LAPIS_EXTRACT_CHANCE[sock.level] || 50;
+          var canPayExtract = player.gold >= extCost;
+
           socketsHtml += '<div class="lapis-socket filled" style="border-color:' + lMeta.color + '; background:' + lMeta.bgTint + '; color:' + lMeta.color + ';" title="' + lMeta.name + ' Nv.' + sock.level + ' (' + lMeta.formatBonus(sock.level) + ')">' + sock.type + sock.level + '</div>';
-          linkedDescList.push('<span style="color:' + lMeta.color + '; font-weight:bold;">● ' + lMeta.name + ' Nv.' + sock.level + ':</span> ' + lMeta.formatBonus(sock.level));
+
+          linkedDescList.push(
+            '<div class="linked-lapis-item" style="border-left:3px solid ' + lMeta.color + ';">' +
+              '<div style="text-align:left;">' +
+                '<div style="color:' + lMeta.color + '; font-weight:bold;">' + lMeta.name + ' Nv.' + sock.level + ' (' + lMeta.formatBonus(sock.level) + ')</div>' +
+                '<div style="font-size:0.62rem; color:#94a3b8;">Chance Extrair: <b style="color:#e2e8f0;">' + extChance + '%</b></div>' +
+              '</div>' +
+              '<button type="button" class="btn-extract-lapis" ' + (canPayExtract ? '' : 'disabled title="Ouro insuficiente"') + ' onclick="extractLapisFromInspected(' + i + ')">Tirar ($' + extCost + ')</button>' +
+            '</div>'
+          );
         } else {
           socketsHtml += '<div class="lapis-socket unlocked" style="border-color:' + r.color + ';" title="Slot #' + (i + 1) + ' Livre">➕</div>';
         }
@@ -1598,7 +1642,7 @@
     }
 
     var linkedListHtml = linkedDescList.length > 0
-      ? '<div class="linked-lapis-list">' + linkedDescList.join('<br>') + '</div>'
+      ? '<div class="linked-lapis-list">' + linkedDescList.join('') + '</div>'
       : '';
 
     panel.style.borderColor = r.color;
@@ -1606,7 +1650,7 @@
       '<div>' +
         '<div class="inspect-header">' +
           '<div class="inspect-icon-box" style="border:2px solid ' + r.color + '; box-shadow:0 0 12px ' + r.color + '44;">' + item.icon + '</div>' +
-          '<div style="color:' + r.color + '; font-weight:bold; font-size:0.96rem;">' + item.name + plusTxt + '</div>' +
+          '<div style="color:' + r.color + '; font-weight:bold; font-size:0.95rem;">' + item.name + plusTxt + '</div>' +
           '<div><span class="rarity-badge" style="background:' + r.bgTint + '; color:' + r.color + '; border:1px solid ' + r.color + ';">' + r.label + ' • ' + slotLabel + '</span></div>' +
           weaponTypeBadge +
           '<div><span class="class-req-pill ' + (allowed ? 'class-req-ok' : 'class-req-no') + '">' +
@@ -1777,6 +1821,12 @@
       var meta = LAPIS_TYPES[lapis.type];
       if (!meta) return;
       var chance = LAPIS_LINK_CHANCE[lapis.level] || 50;
+      var goldCost = getLapisLinkGoldCost(lapis.level);
+      var canLink = hasEmptySocket && player.gold >= goldCost;
+
+      var btnTitle = !hasEmptySocket
+        ? 'Selecione um equipamento com slot vazio'
+        : (player.gold < goldCost ? 'Ouro insuficiente ($' + goldCost + ')' : 'Custa ' + goldCost + ' Ouro');
 
       var card = document.createElement('div');
       card.className = 'bag-item';
@@ -1786,10 +1836,10 @@
         '<div>' +
           '<div style="color:' + meta.color + '; font-weight:bold; font-size:0.82rem; margin-bottom:2px;">💎 ' + meta.name + ' <span style="background:#00000055; padding:1px 5px; border-radius:6px;">Nv.' + lapis.level + '</span></div>' +
           '<div style="color:#fff; font-weight:bold; font-size:0.72rem; margin:4px 0;">' + meta.formatBonus(lapis.level) + '</div>' +
-          '<div style="font-size:0.67rem; color:#cbd5e1;">🎲 Chance Link: <b style="color:' + (chance >= 70 ? '#2ed573' : (chance >= 50 ? '#facc15' : '#ff6b81')) + ';">' + chance + '%</b></div>' +
+          '<div style="font-size:0.66rem; color:#cbd5e1;">🎲 Chance: <b style="color:' + (chance >= 70 ? '#2ed573' : (chance >= 50 ? '#facc15' : '#ff6b81')) + ';">' + chance + '%</b> • 💰 <b style="color:#facc15;">$' + goldCost + '</b></div>' +
         '</div>' +
         '<div class="bag-item-actions">' +
-          '<button type="button" class="btn-mini btn-link" ' + (hasEmptySocket ? '' : 'disabled title="Selecione um equipamento com slot vazio"') + ' onclick="linkLapisToInspected(' + idx + ')">Linkar</button>' +
+          '<button type="button" class="btn-mini btn-link" ' + (canLink ? '' : 'disabled title="' + btnTitle + '"') + ' onclick="linkLapisToInspected(' + idx + ')">Linkar ($' + goldCost + ')</button>' +
           '<button type="button" class="btn-mini btn-sell" onclick="sellLapis(' + idx + ')">+$' + lapis.sellPrice + '</button>' +
         '</div>';
       lapisGrid.appendChild(card);
@@ -1807,6 +1857,7 @@
   }
 
   function linkLapisToInspected(lapisIdx) {
+    getAudioCtx();
     if (!inspectedItem) {
       alert('Clique primeiro no equipamento (equipado ou na mochila) onde deseja linkar o Lápis!');
       return;
@@ -1827,22 +1878,80 @@
 
     var lapis = player.lapisBag[lapisIdx];
     if (!lapis) return;
+    var goldCost = getLapisLinkGoldCost(lapis.level);
+    if (player.gold < goldCost) {
+      alert('Ouro insuficiente! Você precisa de ' + goldCost + ' Ouro para linkar este Lápis.');
+      return;
+    }
+
     var meta = LAPIS_TYPES[lapis.type];
     var chance = LAPIS_LINK_CHANCE[lapis.level] || 50;
 
+    // Cobra o Ouro e consome o Lápis da bolsa
+    player.gold -= goldCost;
     player.lapisBag.splice(lapisIdx, 1);
 
     var roll = Math.random() * 100;
     if (roll <= chance) {
       inspectedItem.sockets[freeSocketIdx] = { type: lapis.type, level: lapis.level };
       playLinkSuccessSound();
-      showLinkFeedback('✨ SUCESSO! ' + meta.name + ' Nv.' + lapis.level + ' (' + meta.formatBonus(lapis.level) + ') linkado em ' + inspectedItem.name + '!', true);
+      showLinkFeedback('✨ SUCESSO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + lapis.level + ' linkado em ' + inspectedItem.name + '!', true);
       addFloatingText(player.x, player.y - 60, '💎 LINK SUCESSO! ' + meta.name + ' Nv.' + lapis.level, meta.color);
       effects.push({ x: player.x, y: player.y, radius: 85, color: meta.color, timer: 0.55 });
     } else {
       playGlassBreakSound();
-      showLinkFeedback('💥 FALHOU! O ' + meta.name + ' Nv.' + lapis.level + ' quebrou em pedaços durante a linkagem!', false);
+      showLinkFeedback('💥 FALHOU (-$' + goldCost + ')! O ' + meta.name + ' Nv.' + lapis.level + ' quebrou em pedaços!', false);
       addFloatingText(player.x, player.y - 60, '💔 Lápis Quebrou!', '#ff4757');
+    }
+
+    saveAllSlots();
+    updateHUD();
+    renderBagModal();
+  }
+
+  // Extrair / Tirar um Lápis específico de um slot do equipamento (cobra Gold + chance de sucesso ou quebra)
+  function extractLapisFromInspected(socketIdx) {
+    getAudioCtx();
+    if (!inspectedItem) return;
+    normalizeItem(inspectedItem);
+
+    var sock = inspectedItem.sockets[socketIdx];
+    if (!sock || !LAPIS_TYPES[sock.type]) return;
+
+    var goldCost = getLapisExtractGoldCost(sock.level);
+    if (player.gold < goldCost) {
+      alert('Ouro insuficiente! Você precisa de ' + goldCost + ' Ouro para tentar extrair este Lápis.');
+      return;
+    }
+    if (player.lapisBag.length >= 30) {
+      alert('Sua Bolsa de Lápis está cheia (30/30)! Libere espaço antes de extrair.');
+      return;
+    }
+
+    var meta = LAPIS_TYPES[sock.type];
+    var chance = LAPIS_EXTRACT_CHANCE[sock.level] || 50;
+
+    // Cobra o Ouro e libera o engaste do equipamento
+    player.gold -= goldCost;
+    inspectedItem.sockets[socketIdx] = null;
+
+    var roll = Math.random() * 100;
+    if (roll <= chance) {
+      // Sucesso: Lápis recuperado intacto para a Bolsa de Lápis!
+      player.lapisBag.push({
+        id: 'lapis_' + Math.random().toString(36).slice(2, 10),
+        type: sock.type,
+        level: sock.level,
+        sellPrice: sock.level * 35
+      });
+      playLinkSuccessSound();
+      showLinkFeedback('✨ EXTRAÍDO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + sock.level + ' voltou intacto para a Bolsa de Lápis!', true);
+      addFloatingText(player.x, player.y - 60, '💎 Extraído: ' + meta.name + ' Nv.' + sock.level, meta.color);
+    } else {
+      // Falha: Lápis quebra na extração (som de vidro quebrando)
+      playGlassBreakSound();
+      showLinkFeedback('💥 QUEBROU NA EXTRAÇÃO (-$' + goldCost + ')! O ' + meta.name + ' Nv.' + sock.level + ' estilhaçou ao ser removido!', false);
+      addFloatingText(player.x, player.y - 60, '💔 Lápis Quebrou ao Tirar!', '#ff4757');
     }
 
     saveAllSlots();
@@ -2188,7 +2297,6 @@
       return;
     }
 
-    // Respeita o alcance real da arma (corpo a corpo = curto; arco/cajado = longo)
     var effRange = idx === 0 ? Math.max(sk.range, getPlayerEffectiveRange()) : sk.range;
     var target = getNearestEnemy(player.x, player.y, effRange + 25);
     if (!target) {
