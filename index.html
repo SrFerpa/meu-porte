@@ -15,7 +15,7 @@
       height: 100vh;
     }
 
-    /* ================= TELA PRINCIPAL (CRIAÇÃO EM CIMA + SLOTS EMBAIXO) ================= */
+    /* ================= TELA PRINCIPAL ================= */
     #char-screen {
       position: fixed;
       inset: 0;
@@ -25,11 +25,11 @@
       align-items: center;
       justify-content: flex-start;
       z-index: 200;
-      padding: 25px 20px 40px;
+      padding: 22px 16px 40px;
       overflow-y: auto;
     }
     #char-screen h1 {
-      font-size: 2.3rem;
+      font-size: 2.2rem;
       color: #ffa502;
       text-shadow: 0 0 20px rgba(255, 165, 2, 0.5);
       margin-bottom: 6px;
@@ -39,19 +39,18 @@
     }
     #char-screen p.subtitle {
       color: #a4b0be;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       text-align: center;
     }
 
-    /* SEÇÃO 1: CRIAR NOVO PERSONAGEM (ESTILO FASE 1) */
     .section-box {
       width: 100%;
       max-width: 1080px;
-      background: rgba(20, 24, 36, 0.75);
+      background: rgba(20, 24, 36, 0.85);
       border: 1px solid #2f3542;
       border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 22px;
+      padding: 18px;
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -61,23 +60,23 @@
       color: #ffa502;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .class-grid {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .class-card {
       background: #161a26;
       border: 2px solid #2f3542;
       border-radius: 12px;
-      width: 190px;
-      padding: 16px;
+      width: 185px;
+      padding: 14px;
       text-align: center;
       cursor: pointer;
       transition: 0.2s;
@@ -86,21 +85,21 @@
     .class-card.selected {
       border-color: #ffa502;
       background: #212638;
-      box-shadow: 0 0 20px rgba(255, 165, 2, 0.35);
+      box-shadow: 0 0 18px rgba(255, 165, 2, 0.35);
     }
     .class-icon {
-      width: 58px;
-      height: 58px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
-      margin: 0 auto 10px;
+      margin: 0 auto 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.75rem;
+      font-size: 1.65rem;
     }
-    .class-card h3 { margin-bottom: 5px; font-size: 1.1rem; }
-    .class-card .role { font-size: 0.76rem; color: #ffa502; margin-bottom: 8px; font-weight: bold; }
-    .class-card .desc { font-size: 0.78rem; color: #ced6e0; line-height: 1.3; }
+    .class-card h3 { margin-bottom: 4px; font-size: 1.05rem; }
+    .class-card .role { font-size: 0.74rem; color: #ffa502; margin-bottom: 6px; font-weight: bold; }
+    .class-card .desc { font-size: 0.76rem; color: #ced6e0; line-height: 1.28; }
 
     .start-box { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
     .start-box input {
@@ -123,15 +122,14 @@
       font-size: 0.95rem;
       cursor: pointer;
       text-transform: uppercase;
-      transition: 0.2s;
     }
-    .btn-play:hover { filter: brightness(1.15); transform: scale(1.02); }
-    .btn-play:disabled { background: #57606f; cursor: not-allowed; transform: none; filter: none; }
+    .btn-play:hover { filter: brightness(1.15); }
+    .btn-play:disabled { background: #57606f; cursor: not-allowed; filter: none; }
 
-    /* SEÇÃO 2: PERSONAGENS SALVOS EMBAIXO (ATÉ 3 SLOTS) */
+    /* SLOTS DE PERSONAGENS SALVOS */
     .slots-container {
       display: flex;
-      gap: 18px;
+      gap: 16px;
       flex-wrap: wrap;
       justify-content: center;
       width: 100%;
@@ -144,33 +142,15 @@
       padding: 18px;
       text-align: center;
       position: relative;
-      transition: 0.2s;
-    }
-    .char-slot-card.occupied {
-      border-color: #3742fa;
-      box-shadow: 0 5px 18px rgba(0, 0, 0, 0.45);
-    }
-    .char-slot-card.occupied:hover {
-      border-color: #ffa502;
-      transform: translateY(-4px);
-    }
-    .char-slot-card.empty {
-      border-style: dashed;
+      min-height: 205px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 210px;
-      color: #747d8c;
     }
-    .slot-badge {
-      position: absolute;
-      top: 10px;
-      left: 12px;
-      font-size: 0.72rem;
-      color: #747d8c;
-      font-weight: bold;
-    }
+    .char-slot-card.occupied { border-color: #3742fa; }
+    .char-slot-card.empty { border-style: dashed; color: #747d8c; }
+    .slot-badge { position: absolute; top: 10px; left: 12px; font-size: 0.72rem; color: #747d8c; font-weight: bold; }
     .btn-del-slot {
       position: absolute;
       top: 9px;
@@ -185,41 +165,21 @@
     }
     .btn-del-slot:hover { background: #ff4757; color: #fff; }
     .slot-avatar {
-      width: 64px;
-      height: 64px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      margin: 10px auto 12px;
+      margin: 6px auto 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
+      font-size: 1.9rem;
     }
-    .slot-stats-pills {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 10px 0 14px;
-    }
-    .pill-lvl {
-      background: #2f3542;
-      color: #70a1ff;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-    .pill-br {
-      background: rgba(255, 165, 2, 0.15);
-      border: 1px solid #ffa502;
-      color: #ffa502;
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
+    .slot-stats-pills { display: flex; justify-content: center; gap: 8px; margin: 8px 0 12px; }
+    .pill-lvl { background: #2f3542; color: #70a1ff; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
+    .pill-br { background: rgba(255, 165, 2, 0.15); border: 1px solid #ffa502; color: #ffa502; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; }
     .btn-enter-slot {
       width: 100%;
-      padding: 10px;
+      padding: 9px;
       border: none;
       border-radius: 8px;
       background: linear-gradient(135deg, #2ed573, #1eae60);
@@ -227,10 +187,8 @@
       font-weight: bold;
       cursor: pointer;
       text-transform: uppercase;
-      font-size: 0.9rem;
-      transition: 0.15s;
+      font-size: 0.88rem;
     }
-    .btn-enter-slot:hover { filter: brightness(1.1); }
 
     /* ================= CANVAS & HUD DO JOGO ================= */
     canvas { display: block; }
@@ -246,7 +204,6 @@
       display: none;
       align-items: center;
       gap: 14px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
       min-width: 295px;
       z-index: 10;
     }
@@ -273,34 +230,12 @@
       border-radius: 10px;
     }
     .stats-bars { flex: 1; }
-    .player-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
+    .player-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; }
     .br-tag { color: #ffa502; font-size: 0.85rem; }
-    .bar-bg {
-      width: 100%;
-      height: 12px;
-      background: #2f3542;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 5px;
-      position: relative;
-    }
-    .bar-fill-hp { height: 100%; background: linear-gradient(90deg, #ff4757, #ff6b81); width: 100%; transition: width 0.15s; }
-    .bar-fill-mp { height: 100%; background: linear-gradient(90deg, #1e90ff, #70a1ff); width: 100%; transition: width 0.15s; }
-    .bar-text {
-      position: absolute;
-      inset: 0;
-      font-size: 0.68rem;
-      text-align: center;
-      line-height: 12px;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px #000;
-    }
+    .bar-bg { width: 100%; height: 12px; background: #2f3542; border-radius: 6px; overflow: hidden; margin-bottom: 5px; position: relative; }
+    .bar-fill-hp { height: 100%; background: linear-gradient(90deg, #ff4757, #ff6b81); width: 100%; }
+    .bar-fill-mp { height: 100%; background: linear-gradient(90deg, #1e90ff, #70a1ff); width: 100%; }
+    .bar-text { position: absolute; inset: 0; font-size: 0.68rem; text-align: center; line-height: 12px; font-weight: bold; text-shadow: 1px 1px 2px #000; }
 
     #hud-top-right {
       position: fixed;
@@ -312,35 +247,13 @@
       gap: 8px;
       z-index: 10;
     }
-    .map-info {
-      background: rgba(18, 22, 33, 0.92);
-      border: 1px solid #2f3542;
-      padding: 8px 14px;
-      border-radius: 10px;
-      text-align: right;
-    }
+    .map-info { background: rgba(18, 22, 33, 0.92); border: 1px solid #2f3542; padding: 8px 14px; border-radius: 10px; text-align: right; }
     .map-name { color: #2ed573; font-weight: bold; font-size: 0.95rem; }
     .currency-row { font-size: 0.85rem; color: #f1c40f; margin-top: 3px; }
-    .top-menu-buttons {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .btn-hud {
-      background: #1e2436;
-      border: 1px solid #57606f;
-      color: #fff;
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-    .btn-hud:hover { border-color: #ffa502; color: #ffa502; transform: translateY(-2px); }
+    .top-menu-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .btn-hud { background: #1e2436; border: 1px solid #57606f; color: #fff; padding: 7px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: bold; cursor: pointer; }
+    .btn-hud:hover { border-color: #ffa502; color: #ffa502; }
     .btn-hud.switch-char { border-color: #70a1ff; color: #70a1ff; }
-    .btn-hud.switch-char:hover { background: #70a1ff; color: #0b0d13; }
 
     #hud-bottom {
       position: fixed;
@@ -353,303 +266,137 @@
       gap: 8px;
       z-index: 10;
     }
-    .skill-bar {
-      display: flex;
-      gap: 10px;
-      background: rgba(18, 22, 33, 0.92);
-      border: 2px solid #2f3542;
-      padding: 10px 14px;
-      border-radius: 14px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.6);
-    }
+    .skill-bar { display: flex; gap: 10px; background: rgba(18, 22, 33, 0.92); border: 2px solid #2f3542; padding: 10px 14px; border-radius: 14px; }
     .skill-slot {
-      width: 54px;
-      height: 54px;
-      background: #1e2436;
-      border: 2px solid #57606f;
-      border-radius: 10px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: 0.15s;
+      width: 54px; height: 54px; background: #1e2436; border: 2px solid #57606f; border-radius: 10px;
+      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
     }
-    .skill-slot:hover { border-color: #ffa502; transform: translateY(-2px); }
     .skill-slot .key { position: absolute; top: 2px; left: 5px; font-size: 0.7rem; color: #a4b0be; font-weight: bold; }
     .skill-slot .icon { font-size: 1.5rem; }
     .skill-slot .cd-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 8px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1rem;
-      color: #fff;
+      position: absolute; inset: 0; background: rgba(0, 0, 0, 0.75); border-radius: 8px;
+      display: none; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; color: #fff;
     }
     .btn-auto {
-      width: 64px;
-      height: 54px;
-      border-radius: 10px;
-      border: 2px solid #2ed573;
-      background: #162b22;
-      color: #2ed573;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      transition: 0.2s;
+      width: 64px; height: 54px; border-radius: 10px; border: 2px solid #2ed573; background: #162b22;
+      color: #2ed573; font-weight: bold; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem;
     }
-    .btn-auto.active {
-      background: #2ed573;
-      color: #0b0d13;
-      box-shadow: 0 0 15px rgba(46, 213, 115, 0.6);
-    }
-    .xp-bar-container {
-      width: 440px;
-      height: 10px;
-      background: #1e2436;
-      border: 1px solid #2f3542;
-      border-radius: 5px;
-      overflow: hidden;
-      position: relative;
-    }
-    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #9b59b6, #e056fd); width: 0%; transition: width 0.2s; }
+    .btn-auto.active { background: #2ed573; color: #0b0d13; }
+    .xp-bar-container { width: 440px; height: 10px; background: #1e2436; border: 1px solid #2f3542; border-radius: 5px; overflow: hidden; position: relative; }
+    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #9b59b6, #e056fd); width: 0%; }
     .xp-text { position: absolute; inset: 0; font-size: 0.65rem; text-align: center; line-height: 9px; color: #fff; font-weight: bold; }
 
     #controls-hint {
-      position: fixed;
-      bottom: 15px;
-      left: 15px;
-      background: rgba(18, 22, 33, 0.8);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.76rem;
-      color: #a4b0be;
-      line-height: 1.5;
-      display: none;
-      z-index: 10;
+      position: fixed; bottom: 15px; left: 15px; background: rgba(18, 22, 33, 0.8);
+      padding: 8px 12px; border-radius: 8px; font-size: 0.76rem; color: #a4b0be; line-height: 1.5; display: none; z-index: 10;
     }
 
-    /* ================= JANELAS MODAIS (MOCHILA E FORJA) ================= */
+    /* MODAIS */
     .modal-window {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #141824;
-      border: 2px solid #ffa502;
-      border-radius: 14px;
-      width: 680px;
-      max-width: 95vw;
-      max-height: 85vh;
-      display: none;
-      flex-direction: column;
-      z-index: 100;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.85);
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #141824; border: 2px solid #ffa502; border-radius: 14px;
+      width: 680px; max-width: 95vw; max-height: 85vh; display: none; flex-direction: column; z-index: 100;
     }
-    .modal-header {
-      padding: 14px 20px;
-      background: #1c2233;
-      border-bottom: 1px solid #2f3542;
-      border-radius: 12px 12px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .modal-header { padding: 14px 20px; background: #1c2233; border-bottom: 1px solid #2f3542; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; }
     .modal-header h3 { color: #ffa502; font-size: 1.15rem; }
-    .btn-close-modal {
-      background: #ff4757;
-      border: none;
-      color: #fff;
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .modal-body {
-      padding: 18px;
-      overflow-y: auto;
-      display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
-    }
-    .equip-column {
-      flex: 1;
-      min-width: 230px;
-      background: #0f121b;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #2f3542;
-    }
-    .equip-column h4, .bag-column h4 {
-      font-size: 0.9rem;
-      color: #a4b0be;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
-    .equip-slot-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #181d2c;
-      border: 1px solid #2f3542;
-      padding: 8px 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 0.84rem;
-    }
-    .stat-summary {
-      margin-top: 12px;
-      padding-top: 10px;
-      border-top: 1px solid #2f3542;
-      font-size: 0.82rem;
-      color: #ced6e0;
-      line-height: 1.6;
-    }
-    .bag-column {
-      flex: 1.4;
-      min-width: 280px;
-      background: #0f121b;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #2f3542;
-    }
-    .bag-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
-      gap: 8px;
-      max-height: 290px;
-      overflow-y: auto;
-    }
-    .bag-item {
-      background: #181d2c;
-      border: 1px solid #2f3542;
-      border-radius: 8px;
-      padding: 8px;
-      font-size: 0.78rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+    .btn-close-modal { background: #ff4757; border: none; color: #fff; width: 28px; height: 28px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .modal-body { padding: 18px; overflow-y: auto; display: flex; gap: 18px; flex-wrap: wrap; }
+    .equip-column { flex: 1; min-width: 230px; background: #0f121b; padding: 14px; border-radius: 10px; border: 1px solid #2f3542; }
+    .equip-column h4, .bag-column h4 { font-size: 0.9rem; color: #a4b0be; margin-bottom: 10px; text-transform: uppercase; }
+    .equip-slot-row { display: flex; align-items: center; justify-content: space-between; background: #181d2c; border: 1px solid #2f3542; padding: 8px 10px; border-radius: 8px; margin-bottom: 8px; font-size: 0.84rem; }
+    .stat-summary { margin-top: 12px; padding-top: 10px; border-top: 1px solid #2f3542; font-size: 0.82rem; color: #ced6e0; line-height: 1.6; }
+    .bag-column { flex: 1.4; min-width: 280px; background: #0f121b; padding: 14px; border-radius: 10px; border: 1px solid #2f3542; }
+    .bag-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(125px, 1fr)); gap: 8px; max-height: 290px; overflow-y: auto; }
+    .bag-item { background: #181d2c; border: 1px solid #2f3542; border-radius: 8px; padding: 8px; font-size: 0.78rem; display: flex; flex-direction: column; justify-content: space-between; }
     .bag-item-actions { display: flex; gap: 4px; margin-top: 6px; }
-    .btn-mini {
-      flex: 1;
-      padding: 4px;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .btn-mini { flex: 1; padding: 4px; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
     .btn-equip { background: #2ed573; color: #000; }
     .btn-sell { background: #ffa502; color: #000; }
-
     .forge-list { flex: 1; min-width: 230px; }
-    .forge-item-btn {
-      width: 100%;
-      text-align: left;
-      background: #181d2c;
-      border: 1px solid #2f3542;
-      color: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
+    .forge-item-btn { width: 100%; text-align: left; background: #181d2c; border: 1px solid #2f3542; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.85rem; }
     .forge-item-btn.active { border-color: #ffa502; background: #22293d; }
-    .forge-anvil {
-      flex: 1.3;
-      min-width: 260px;
-      background: #0f121b;
-      border: 1px solid #2f3542;
-      border-radius: 10px;
-      padding: 18px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-    .btn-forge-do {
-      margin-top: 14px;
-      padding: 11px 24px;
-      background: linear-gradient(135deg, #ff6348, #ffa502);
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
+    .forge-anvil { flex: 1.3; min-width: 260px; background: #0f121b; border: 1px solid #2f3542; border-radius: 10px; padding: 18px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .btn-forge-do { margin-top: 14px; padding: 11px 24px; background: linear-gradient(135deg, #ff6348, #ffa502); border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.95rem; }
     .btn-forge-do:disabled { background: #57606f; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
-  <!-- ================= TELA PRINCIPAL ================= -->
+  <!-- TELA PRINCIPAL COM CARDS JÁ NO HTML -->
   <div id="char-screen">
     <h1>⚔️ Asa de Cristal 2.5D ⚔️</h1>
     <p class="subtitle">Crie um novo Herói ou selecione um dos seus personagens salvos abaixo</p>
 
-    <!-- 1. CRIAR NOVO PERSONAGEM (EM CIMA) -->
     <div class="section-box">
       <h2>✨ Criar Novo Personagem</h2>
-      <div class="class-grid" id="class-grid"></div>
+      <div class="class-grid" id="class-grid">
+        <div class="class-card selected" data-class="cavaleiro" onclick="pickClass('cavaleiro', this)">
+          <div class="class-icon" style="background:#eccc6822; border:2px solid #eccc68; color:#eccc68">🛡️</div>
+          <h3 style="color:#eccc68">Cavaleiro</h3>
+          <div class="role">Tanque / Corpo a Corpo</div>
+          <div class="desc">Alta defesa e vida. Protege aliados e resiste a grandes chefes.</div>
+        </div>
+        <div class="class-card" data-class="mago" onclick="pickClass('mago', this)">
+          <div class="class-icon" style="background:#70a1ff22; border:2px solid #70a1ff; color:#70a1ff">🔮</div>
+          <h3 style="color:#70a1ff">Mago</h3>
+          <div class="role">Dano Mágico / Área</div>
+          <div class="desc">Domina fogo e gelo para destruir vários inimigos à distância.</div>
+        </div>
+        <div class="class-card" data-class="arqueiro" onclick="pickClass('arqueiro', this)">
+          <div class="class-icon" style="background:#2ed57322; border:2px solid #2ed573; color:#2ed573">🏹</div>
+          <h3 style="color:#2ed573">Arqueiro</h3>
+          <div class="role">Dano Físico / Crítico</div>
+          <div class="desc">Ataques rápidos à distância com alta chance de acerto crítico.</div>
+        </div>
+        <div class="class-card" data-class="sacerdote" onclick="pickClass('sacerdote', this)">
+          <div class="class-icon" style="background:#f1f2f622; border:2px solid #f1f2f6; color:#f1f2f6">✨</div>
+          <h3 style="color:#f1f2f6">Sacerdote</h3>
+          <div class="role">Suporte / Luz Sagrada</div>
+          <div class="desc">Canaliza a luz para curar ferimentos e punir criaturas das trevas.</div>
+        </div>
+        <div class="class-card" data-class="assassino" onclick="pickClass('assassino', this)">
+          <div class="class-icon" style="background:#ff475722; border:2px solid #ff4757; color:#ff4757">🗡️</div>
+          <h3 style="color:#ff4757">Assassino</h3>
+          <div class="role">Furtivo / Explosão</div>
+          <div class="desc">Velocidade extrema e golpes letais nas sombras.</div>
+        </div>
+      </div>
+
       <div class="start-box">
         <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="HeroiLuz">
         <button class="btn-play" id="btn-create-char" onclick="createCharacterInSlot()">Criar e Entrar</button>
       </div>
     </div>
 
-    <!-- 2. SEUS PERSONAGENS CRIADOS (EMBAIXO - ATÉ 3 SLOTS) -->
     <div class="section-box">
       <h2>👥 Seus Personagens Salvos (Máximo 3)</h2>
-      <div class="slots-container" id="slots-container"></div>
+      <div class="slots-container" id="slots-container">
+        <div class="char-slot-card empty" id="slot-box-0"><span class="slot-badge">SLOT 1</span><div>➕ Espaço Livre</div></div>
+        <div class="char-slot-card empty" id="slot-box-1"><span class="slot-badge">SLOT 2</span><div>➕ Espaço Livre</div></div>
+        <div class="char-slot-card empty" id="slot-box-2"><span class="slot-badge">SLOT 3</span><div>➕ Espaço Livre</div></div>
+      </div>
     </div>
   </div>
 
-  <!-- CANVAS ISOMÉTRICO -->
+  <!-- CANVAS E HUD -->
   <canvas id="gameCanvas"></canvas>
 
-  <!-- HUD SUPERIOR ESQUERDO -->
   <div id="hud-top-left">
-    <div class="avatar-circle" id="hud-avatar">
-      ⚔️
-      <span class="lvl-badge" id="hud-lvl">Nv. 1</span>
-    </div>
+    <div class="avatar-circle" id="hud-avatar">⚔️<span class="lvl-badge" id="hud-lvl">Nv. 1</span></div>
     <div class="stats-bars">
       <div class="player-header">
         <span id="hud-name">Herói</span>
         <span class="br-tag" id="hud-br">BR: 120</span>
       </div>
-      <div class="bar-bg">
-        <div class="bar-fill-hp" id="hud-hp-bar"></div>
-        <div class="bar-text" id="hud-hp-text">100 / 100</div>
-      </div>
-      <div class="bar-bg">
-        <div class="bar-fill-mp" id="hud-mp-bar"></div>
-        <div class="bar-text" id="hud-mp-text">50 / 50</div>
-      </div>
+      <div class="bar-bg"><div class="bar-fill-hp" id="hud-hp-bar"></div><div class="bar-text" id="hud-hp-text">100 / 100</div></div>
+      <div class="bar-bg"><div class="bar-fill-mp" id="hud-mp-bar"></div><div class="bar-text" id="hud-mp-text">50 / 50</div></div>
     </div>
   </div>
 
-  <!-- HUD SUPERIOR DIREITO -->
   <div id="hud-top-right">
     <div class="map-info">
       <div class="map-name">🌲 Floresta de Vidalia (Nv. 1-10)</div>
-      <div class="currency-row">
-        💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span>
-      </div>
+      <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span></div>
     </div>
     <div class="top-menu-buttons">
       <button class="btn-hud" onclick="toggleModal('bag-modal')">🎒 Mochila (B)</button>
@@ -658,14 +405,552 @@
     </div>
   </div>
 
-  <!-- DICA DE CONTROLES -->
   <div id="controls-hint">
     🖱️ <b>Clique:</b> Mover/Atacar | <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção<br>
     ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Mochila & Equips | <b>F:</b> Forja (+1 a +12)
   </div>
 
-  <!-- HUD INFERIOR -->
   <div id="hud-bottom">
     <div class="skill-bar" id="skill-bar"></div>
     <div class="xp-bar-container">
-      <div class="xp-bar-fill" id="hud-
+      <div class="xp-bar-fill" id="hud-xp-bar"></div>
+      <div class="xp-text" id="hud-xp-text">XP: 0 / 100 (0%)</div>
+    </div>
+  </div>
+
+  <!-- MODAL MOCHILA -->
+  <div class="modal-window" id="bag-modal">
+    <div class="modal-header">
+      <h3>🎒 Personagem & Mochila</h3>
+      <button class="btn-close-modal" onclick="closeAllModals()">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="equip-column">
+        <h4>🛡️ Equipamentos Atuais</h4>
+        <div id="equipped-list"></div>
+        <div class="stat-summary" id="stat-summary"></div>
+      </div>
+      <div class="bag-column">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="margin:0;">📦 Mochila (<span id="bag-count">0</span>/24)</h4>
+          <button class="btn-mini btn-sell" style="flex:none; padding:4px 8px;" onclick="sellAllCommon()">Vender Comuns</button>
+        </div>
+        <div class="bag-grid" id="bag-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORJA -->
+  <div class="modal-window" id="forge-modal">
+    <div class="modal-header">
+      <h3>🔨 Forja & Aprimoramento (+1 até +12)</h3>
+      <button class="btn-close-modal" onclick="closeAllModals()">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="forge-list">
+        <h4 style="font-size:0.85rem; color:#a4b0be; margin-bottom:8px;">ESCOLHA UM ITEM EQUIPADO:</h4>
+        <div id="forge-slot-list"></div>
+      </div>
+      <div class="forge-anvil" id="forge-anvil">
+        <p style="color:#a4b0be;">Selecione um equipamento ao lado para aprimorar.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const STORAGE_KEY_SLOTS = 'asaDeCristal_slots_v2';
+  const WORLD_SIZE = 1400;
+  const keysPressed = {};
+
+  let characterSlots = [null, null, null];
+  let activeSlotIndex = -1;
+  let selectedClassKey = 'cavaleiro';
+  let player = null;
+  let enemies = [];
+  let floatingTexts = [];
+  let effects = [];
+  let clickMarker = null;
+  let autoCombat = false;
+  let gameRunning = false;
+  let loopStarted = false;
+  let selectedForgeSlot = 'weapon';
+  let lastTime = performance.now();
+
+  const CLASSES = {
+    cavaleiro: {
+      name: 'Cavaleiro', icon: '🛡️', color: '#eccc68', baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, range: 65,
+      skills: [
+        { name: 'Golpe Cruzado', icon: '⚔️', mult: 1.3, mp: 5, cd: 1.5, range: 70, color: '#ffa502' },
+        { name: 'Escudo Sagrado', icon: '🛡️', mult: 0, heal: 0.25, mp: 15, cd: 6, range: 0, color: '#70a1ff' },
+        { name: 'Impacto Sísmico', icon: '💥', mult: 2.0, mp: 20, cd: 5, range: 90, aoe: true, color: '#ff4757' },
+        { name: 'Fúria Real', icon: '🔥', mult: 2.8, mp: 30, cd: 9, range: 85, color: '#ff6348' }
+      ]
+    },
+    mago: {
+      name: 'Mago', icon: '🔮', color: '#70a1ff', baseHp: 130, baseMp: 180, baseAtk: 34, baseDef: 6, range: 210,
+      skills: [
+        { name: 'Bola de Fogo', icon: '🔥', mult: 1.4, mp: 8, cd: 1.4, range: 220, color: '#ff6348' },
+        { name: 'Lança de Gelo', icon: '❄️', mult: 1.8, mp: 16, cd: 4, range: 220, color: '#1e90ff' },
+        { name: 'Tempestade Arcana', icon: '⚡', mult: 2.3, mp: 28, cd: 6, range: 220, aoe: true, color: '#a29bfe' },
+        { name: 'Meteoro', icon: '☄️', mult: 3.4, mp: 45, cd: 10, range: 230, aoe: true, color: '#ff4757' }
+      ]
+    },
+    arqueiro: {
+      name: 'Arqueiro', icon: '🏹', color: '#2ed573', baseHp: 155, baseMp: 120, baseAtk: 30, baseDef: 8, range: 230,
+      skills: [
+        { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 240, color: '#2ed573' },
+        { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 240, color: '#7bed9f' },
+        { name: 'Chuva de Flechas', icon: '🌧️', mult: 2.1, mp: 24, cd: 6, range: 240, aoe: true, color: '#eccc68' },
+        { name: 'Disparo Mortal', icon: '🎯', mult: 3.2, mp: 35, cd: 9, range: 260, color: '#ff4757' }
+      ]
+    },
+    sacerdote: {
+      name: 'Sacerdote', icon: '✨', color: '#f1f2f6', baseHp: 160, baseMp: 200, baseAtk: 25, baseDef: 9, range: 195,
+      skills: [
+        { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 200, color: '#f1c40f' },
+        { name: 'Cura Divina', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#2ed573' },
+        { name: 'Julgamento', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 200, aoe: true, color: '#ffa502' },
+        { name: 'Ira Celestial', icon: '👼', mult: 3.0, mp: 40, cd: 9, range: 210, color: '#70a1ff' }
+      ]
+    },
+    assassino: {
+      name: 'Assassino', icon: '🗡️', color: '#ff4757', baseHp: 150, baseMp: 110, baseAtk: 35, baseDef: 7, range: 65,
+      skills: [
+        { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 70, color: '#ff4757' },
+        { name: 'Passo Sombrio', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 140, dash: true, color: '#a29bfe' },
+        { name: 'Lâminas Giratórias', icon: '🌀', mult: 2.2, mp: 22, cd: 5.5, range: 85, aoe: true, color: '#ff6b81' },
+        { name: 'Execução', icon: '💀', mult: 3.6, mp: 35, cd: 9, range: 75, color: '#ffa502' }
+      ]
+    }
+  };
+
+  const RARITIES = {
+    comum: { label: 'Comum', color: '#ced6e0', mult: 1.0, price: 15 },
+    raro: { label: 'Raro', color: '#1e90ff', mult: 1.45, price: 45 },
+    epico: { label: 'Épico', color: '#a55eea', mult: 2.0, price: 120 },
+    lendario: { label: 'Lendário', color: '#ffa502', mult: 2.8, price: 300 }
+  };
+
+  const EQUIP_SLOTS = {
+    weapon: { label: 'Arma', icon: '⚔️', baseAtk: 10, baseDef: 0, baseHp: 0 },
+    armor:  { label: 'Armadura', icon: '👕', baseAtk: 0, baseDef: 7, baseHp: 45 },
+    helm:   { label: 'Elmo', icon: '🪖', baseAtk: 2, baseDef: 5, baseHp: 30 },
+    boots:  { label: 'Botas', icon: '👢', baseAtk: 2, baseDef: 4, baseHp: 25 },
+    ring:   { label: 'Anel', icon: '💍', baseAtk: 7, baseDef: 2, baseHp: 20 }
+  };
+
+  function pickClass(classKey, cardEl) {
+    selectedClassKey = classKey;
+    document.querySelectorAll('.class-card').forEach(el => el.classList.remove('selected'));
+    if (cardEl) cardEl.classList.add('selected');
+  }
+
+  function generateRandomItem(playerLvl, forceRare) {
+    const slotKeys = Object.keys(EQUIP_SLOTS);
+    const slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
+    const slotInfo = EQUIP_SLOTS[slot];
+    const roll = Math.random();
+    let rarityKey = 'comum';
+    if (forceRare) {
+      rarityKey = roll > 0.85 ? 'lendario' : (roll > 0.45 ? 'epico' : 'raro');
+    } else {
+      if (roll > 0.96) rarityKey = 'lendario';
+      else if (roll > 0.84) rarityKey = 'epico';
+      else if (roll > 0.55) rarityKey = 'raro';
+    }
+    const r = RARITIES[rarityKey];
+    const scale = 1 + (playerLvl - 1) * 0.22;
+    return {
+      id: 'item_' + Math.random().toString(36).slice(2, 10),
+      name: slotInfo.label + ' ' + r.label,
+      slot: slot,
+      icon: slotInfo.icon,
+      rarity: rarityKey,
+      plus: 0,
+      atk: Math.round(slotInfo.baseAtk * r.mult * scale),
+      def: Math.round(slotInfo.baseDef * r.mult * scale),
+      hp: Math.round(slotInfo.baseHp * r.mult * scale),
+      sellPrice: Math.round(r.price * scale)
+    };
+  }
+
+  function getItemEffectiveStats(item) {
+    if (!item) return { atk: 0, def: 0, hp: 0 };
+    const forgeMult = 1 + (item.plus || 0) * 0.18;
+    return {
+      atk: Math.round((item.atk || 0) * forgeMult),
+      def: Math.round((item.def || 0) * forgeMult),
+      hp: Math.round((item.hp || 0) * forgeMult)
+    };
+  }
+
+  function normalizePlayerObject(p) {
+    if (!p || typeof p !== 'object') return null;
+    if (!CLASSES[p.classKey]) p.classKey = 'cavaleiro';
+    if (typeof p.stones !== 'number') p.stones = 5;
+    if (!Array.isArray(p.inventory)) p.inventory = [];
+    if (!p.equipped || typeof p.equipped !== 'object') {
+      p.equipped = { weapon: null, armor: null, helm: null, boots: null, ring: null };
+    }
+    if (!p.baseMaxHp) p.baseMaxHp = p.maxHp || 150;
+    if (!p.baseAtk) p.baseAtk = p.atk || 25;
+    if (!p.baseDef) p.baseDef = p.def || 8;
+    return p;
+  }
+
+  function saveAllSlots() {
+    try {
+      if (activeSlotIndex >= 0 && player) {
+        characterSlots[activeSlotIndex] = player;
+      }
+      localStorage.setItem(STORAGE_KEY_SLOTS, JSON.stringify(characterSlots));
+    } catch (e) {}
+  }
+
+  function loadAllSlots() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY_SLOTS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          characterSlots = [
+            normalizePlayerObject(parsed[0]),
+            normalizePlayerObject(parsed[1]),
+            normalizePlayerObject(parsed[2])
+          ];
+          return;
+        }
+      }
+      const oldSave = localStorage.getItem('asaDeCristal_save_v1');
+      if (oldSave) {
+        const oldP = normalizePlayerObject(JSON.parse(oldSave));
+        if (oldP) {
+          characterSlots[0] = oldP;
+          saveAllSlots();
+        }
+      }
+    } catch (err) {
+      characterSlots = [null, null, null];
+    }
+  }
+
+  function createNewPlayer(name, classKey) {
+    const cls = CLASSES[classKey];
+    return {
+      name: name || 'Herói',
+      classKey: classKey,
+      level: 1,
+      xp: 0,
+      maxXp: 100,
+      gold: 100,
+      stones: 5,
+      kills: 0,
+      x: 0,
+      y: 0,
+      targetX: 0,
+      targetY: 0,
+      baseMaxHp: cls.baseHp,
+      hp: cls.baseHp,
+      mp: cls.baseMp,
+      maxMp: cls.baseMp,
+      baseAtk: cls.baseAtk,
+      baseDef: cls.baseDef,
+      speed: classKey === 'assassino' ? 210 : 175,
+      cooldowns: [0, 0, 0, 0, 0],
+      equipped: { weapon: null, armor: null, helm: null, boots: null, ring: null },
+      inventory: []
+    };
+  }
+
+  function getTotalStats() {
+    const baseHp = player.baseMaxHp || player.maxHp;
+    const baseAtk = player.baseAtk || player.atk;
+    const baseDef = player.baseDef || player.def;
+    let bonusHp = 0, bonusAtk = 0, bonusDef = 0;
+    Object.values(player.equipped).forEach(item => {
+      if (item) {
+        const st = getItemEffectiveStats(item);
+        bonusHp += st.hp;
+        bonusAtk += st.atk;
+        bonusDef += st.def;
+      }
+    });
+    const totalMaxHp = baseHp + bonusHp;
+    const totalAtk = baseAtk + bonusAtk;
+    const totalDef = baseDef + bonusDef;
+    const br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + player.level * 25);
+    return { totalMaxHp, totalAtk, totalDef, br };
+  }
+
+  function renderCharScreen() {
+    let hasFreeSlot = false;
+    for (let idx = 0; idx < 3; idx++) {
+      const card = document.getElementById('slot-box-' + idx);
+      if (!card) continue;
+      const slotData = characterSlots[idx];
+
+      if (slotData) {
+        const p = normalizePlayerObject(slotData);
+        const cls = CLASSES[p.classKey];
+        let bHp = 0, bAtk = 0, bDef = 0;
+        Object.values(p.equipped).forEach(it => {
+          if (it) { const s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; }
+        });
+        const br = Math.round((p.baseMaxHp + bHp) * 0.5 + (p.baseAtk + bAtk) * 4 + (p.baseDef + bDef) * 3 + p.level * 25);
+
+        card.className = 'char-slot-card occupied';
+        card.innerHTML =
+          '<span class="slot-badge">SLOT ' + (idx + 1) + '</span>' +
+          '<button class="btn-del-slot" onclick="deleteSlot(' + idx + ')">Excluir</button>' +
+          '<div class="slot-avatar" style="background:' + cls.color + '22; border:3px solid ' + cls.color + '; color:' + cls.color + '">' + cls.icon + '</div>' +
+          '<div style="font-weight:bold; font-size:1.15rem; color:#fff;">' + p.name + '</div>' +
+          '<div style="font-size:0.85rem; color:' + cls.color + '; font-weight:bold; margin-top:2px;">' + cls.name + '</div>' +
+          '<div class="slot-stats-pills">' +
+            '<span class="pill-lvl">Nv. ' + p.level + '</span>' +
+            '<span class="pill-br">🔥 BR: ' + br + '</span>' +
+          '</div>' +
+          '<button class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Jogar</button>';
+      } else {
+        hasFreeSlot = true;
+        card.className = 'char-slot-card empty';
+        card.innerHTML =
+          '<span class="slot-badge">SLOT ' + (idx + 1) + '</span>' +
+          '<div style="font-size:2rem; margin-bottom:8px;">➕</div>' +
+          '<div style="font-size:0.95rem; font-weight:bold; color:#a4b0be;">Espaço Livre</div>' +
+          '<div style="font-size:0.78rem; margin-top:4px;">Escolha uma classe acima para criar</div>';
+      }
+    }
+
+    const createBtn = document.getElementById('btn-create-char');
+    if (createBtn) {
+      createBtn.disabled = !hasFreeSlot;
+      createBtn.textContent = hasFreeSlot ? 'Criar e Entrar' : 'Limite de 3 Atingido';
+    }
+  }
+
+  function createCharacterInSlot() {
+    const emptyIdx = characterSlots.findIndex(s => s === null);
+    if (emptyIdx === -1) {
+      alert('Você já atingiu o limite de 3 personagens! Exclua um slot abaixo para criar outro.');
+      return;
+    }
+    const nameInput = document.getElementById('player-name-input').value.trim();
+    const newHero = createNewPlayer(nameInput, selectedClassKey);
+    characterSlots[emptyIdx] = newHero;
+    activeSlotIndex = emptyIdx;
+    player = newHero;
+    saveAllSlots();
+    enterWorld();
+  }
+
+  function selectSlotToPlay(idx) {
+    if (!characterSlots[idx]) return;
+    activeSlotIndex = idx;
+    player = normalizePlayerObject(characterSlots[idx]);
+    player.cooldowns = [0, 0, 0, 0, 0];
+    enterWorld();
+  }
+
+  function deleteSlot(idx) {
+    if (confirm('Tem certeza que deseja excluir o personagem do Slot ' + (idx + 1) + '?')) {
+      characterSlots[idx] = null;
+      saveAllSlots();
+      renderCharScreen();
+    }
+  }
+
+  function returnToCharSelect() {
+    saveAllSlots();
+    gameRunning = false;
+    autoCombat = false;
+    closeAllModals();
+    document.getElementById('hud-top-left').style.display = 'none';
+    document.getElementById('hud-top-right').style.display = 'none';
+    document.getElementById('controls-hint').style.display = 'none';
+    document.getElementById('hud-bottom').style.display = 'none';
+    document.getElementById('char-screen').style.display = 'flex';
+    renderCharScreen();
+  }
+
+  function enterWorld() {
+    document.getElementById('char-screen').style.display = 'none';
+    document.getElementById('hud-top-left').style.display = 'flex';
+    document.getElementById('hud-top-right').style.display = 'flex';
+    document.getElementById('controls-hint').style.display = 'block';
+    document.getElementById('hud-bottom').style.display = 'flex';
+
+    setupSkillBar();
+    spawnInitialEnemies();
+    updateHUD();
+    gameRunning = true;
+
+    if (!loopStarted) {
+      loopStarted = true;
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    }
+  }
+
+  // ================= MODAIS: MOCHILA & FORJA =================
+  function toggleModal(modalId) {
+    const el = document.getElementById(modalId);
+    const isOpen = el.style.display === 'flex';
+    closeAllModals();
+    if (!isOpen) {
+      el.style.display = 'flex';
+      if (modalId === 'bag-modal') renderBagModal();
+      if (modalId === 'forge-modal') renderForgeModal();
+    }
+  }
+
+  function closeAllModals() {
+    document.querySelectorAll('.modal-window').forEach(m => m.style.display = 'none');
+  }
+
+  function renderBagModal() {
+    const eqList = document.getElementById('equipped-list');
+    eqList.innerHTML = '';
+
+    Object.keys(EQUIP_SLOTS).forEach(slotKey => {
+      const slotInfo = EQUIP_SLOTS[slotKey];
+      const item = player.equipped[slotKey];
+      const row = document.createElement('div');
+      row.className = 'equip-slot-row';
+
+      if (item) {
+        const r = RARITIES[item.rarity];
+        const st = getItemEffectiveStats(item);
+        const plusTxt = item.plus > 0 ? ' +' + item.plus : '';
+        row.style.borderColor = r.color;
+        row.innerHTML =
+          '<div><span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + plusTxt + '</span><br>' +
+          '<span style="font-size:0.72rem; color:#a4b0be;">' +
+          (st.atk ? 'ATK +' + st.atk + ' ' : '') + (st.def ? 'DEF +' + st.def + ' ' : '') + (st.hp ? 'HP +' + st.hp : '') +
+          '</span></div><span style="font-size:0.7rem; color:' + r.color + '; font-weight:bold;">' + r.label + '</span>';
+      } else {
+        row.innerHTML = '<span style="color:#57606f;">' + slotInfo.icon + ' ' + slotInfo.label + ': <i>Vazio</i></span>';
+      }
+      eqList.appendChild(row);
+    });
+
+    const stats = getTotalStats();
+    document.getElementById('stat-summary').innerHTML =
+      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + '<br>' +
+      '<b>⚔️ Ataque Total:</b> ' + stats.totalAtk + '<br>' +
+      '<b>🛡️ Defesa Total:</b> ' + stats.totalDef + '<br>' +
+      '<b style="color:#ffa502;">🔥 Poder de Batalha (BR): ' + stats.br + '</b>';
+
+    document.getElementById('bag-count').textContent = player.inventory.length;
+    const bagGrid = document.getElementById('bag-grid');
+    bagGrid.innerHTML = '';
+
+    player.inventory.forEach((item, idx) => {
+      const r = RARITIES[item.rarity];
+      const st = getItemEffectiveStats(item);
+      const plusTxt = item.plus > 0 ? ' +' + item.plus : '';
+      const card = document.createElement('div');
+      card.className = 'bag-item';
+      card.style.borderColor = r.color;
+      card.innerHTML =
+        '<div><div style="color:' + r.color + '; font-weight:bold; margin-bottom:3px;">' + item.icon + ' ' + item.name + plusTxt + '</div>' +
+        '<div style="color:#a4b0be; font-size:0.7rem;">' +
+        (st.atk ? 'ATK +' + st.atk + '<br>' : '') + (st.def ? 'DEF +' + st.def + '<br>' : '') + (st.hp ? 'HP +' + st.hp : '') +
+        '</div></div>' +
+        '<div class="bag-item-actions">' +
+        '<button class="btn-mini btn-equip" onclick="equipItem(' + idx + ')">Equipar</button>' +
+        '<button class="btn-mini btn-sell" onclick="sellItem(' + idx + ')">+$' + item.sellPrice + '</button></div>';
+      bagGrid.appendChild(card);
+    });
+  }
+
+  function equipItem(bagIdx) {
+    const item = player.inventory[bagIdx];
+    if (!item) return;
+    const currentEquipped = player.equipped[item.slot];
+    player.equipped[item.slot] = item;
+    player.inventory.splice(bagIdx, 1);
+    if (currentEquipped) player.inventory.push(currentEquipped);
+    saveAllSlots();
+    updateHUD();
+    renderBagModal();
+  }
+
+  function sellItem(bagIdx) {
+    const item = player.inventory[bagIdx];
+    if (!item) return;
+    player.gold += item.sellPrice;
+    player.inventory.splice(bagIdx, 1);
+    saveAllSlots();
+    updateHUD();
+    renderBagModal();
+  }
+
+  function sellAllCommon() {
+    let earned = 0;
+    player.inventory = player.inventory.filter(item => {
+      if (item.rarity === 'comum') { earned += item.sellPrice; return false; }
+      return true;
+    });
+    if (earned > 0) {
+      player.gold += earned;
+      saveAllSlots();
+      updateHUD();
+      renderBagModal();
+    }
+  }
+
+  function getForgeCostAndChance(plus) {
+    return {
+      stonesCost: plus + 1,
+      goldCost: (plus + 1) * 40,
+      chance: Math.max(20, 100 - plus * 7)
+    };
+  }
+
+  function renderForgeModal() {
+    const list = document.getElementById('forge-slot-list');
+    list.innerHTML = '';
+
+    Object.keys(EQUIP_SLOTS).forEach(slotKey => {
+      const slotInfo = EQUIP_SLOTS[slotKey];
+      const item = player.equipped[slotKey];
+      const btn = document.createElement('button');
+      btn.className = 'forge-item-btn' + (selectedForgeSlot === slotKey ? ' active' : '');
+      if (item) {
+        const r = RARITIES[item.rarity];
+        btn.innerHTML = '<span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + ' (+' + item.plus + ')</span>';
+      } else {
+        btn.innerHTML = '<span style="color:#57606f;">' + slotInfo.icon + ' ' + slotInfo.label + ' (Não equipado)</span>';
+      }
+      btn.onclick = () => { selectedForgeSlot = slotKey; renderForgeModal(); };
+      list.appendChild(btn);
+    });
+
+    const anvil = document.getElementById('forge-anvil');
+    const item = player.equipped[selectedForgeSlot];
+    if (!item) {
+      anvil.innerHTML = '<p style="color:#747d8c;">Equipe um item neste slot pela Mochila (B) para forjar.</p>';
+      return;
+    }
+
+    const r = RARITIES[item.rarity];
+    const currStats = getItemEffectiveStats(item);
+    if (item.plus >= 12) {
+      anvil.innerHTML = '<div style="font-size:2.5rem; margin-bottom:8px;">' + item.icon + '</div><h3 style="color:' + r.color + ';">' + item.name + ' +12 (MÁXIMO!)</h3>';
+      return;
+    }
+
+    const cfg = getForgeCostAndChance(item.plus);
+    const canAfford = player.stones >= cfg.stonesCost && player.gold >= cfg.goldCost;
+
+    anvil.innerHTML =
+      '<div style="font-size:2.4rem; margin-bottom:6px;">' + item.icon + '</div>' +
+      '<h3 style="color:' + r.color + ';">' + item.name + ' (+' + item.plus + ' ➔ +' + (item.plus + 1) + ')</h3>' +
+      '<div style="font-size:0.82rem; color:#ced6e0; margin:10px 0;">Atributos: ' +
+      (currStats.atk ? 'ATK +' + currStats.atk + ' ' : '') + (currStats.def ? 'DEF +' + currStats.def + ' ' : '') + (currStats.hp ? 'HP +' + currStats.hp : '') +
+      '<br><span style="color:#2ed573;">Próximo Nível: +18% de bônus!</span></div>' +
+      '<div style="background:#181d2c; padding:10px 16px; border-radius:8px; width:100%; font-size:0.84rem; line-height:1.6;">' +
+      '<div>🎲 Chance: <b style="color:#ffa502;">' + cfg.chance + '%</b></div>' +
+      '<div>💎 Pedras: <b style="color:' + (player.stones >= cfg.stonesCost ? '#2ed573' : '#ff4757') + ';">' + player.stones + ' / ' + cfg.stonesCost + '</b></div>' +
+      '<div>💰 Ouro: <b style="color:' + (player.gold >= cfg.goldCost ? '#f1c40f' : '#ff4757') + ';">' + cfg.goldCost + '</b></div></div>' +
+      '<button class="btn-forge-do" ' + (canAfford ? '' : 'disabled')
