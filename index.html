@@ -314,6 +314,7 @@
     .btn-mini { flex: 1; padding: 4px; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
     .btn-equip { background: #2ed573; color: #000; }
     .btn-sell { background: #ffa502; color: #000; }
+    .btn-sell-all { background: #ff4757; color: #fff; }
     .forge-list { flex: 1; min-width: 230px; }
     .forge-item-btn { width: 100%; text-align: left; background: #181d2c; border: 1px solid #2f3542; color: #fff; padding: 10px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 0.85rem; }
     .forge-item-btn.active { border-color: #ffa502; background: #22293d; }
@@ -433,9 +434,12 @@
         <div class="stat-summary" id="stat-summary"></div>
       </div>
       <div class="bag-column">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:6px; flex-wrap:wrap;">
           <h4 style="margin:0;">📦 Mochila (<span id="bag-count">0</span>/24)</h4>
-          <button type="button" class="btn-mini btn-sell" style="flex:none; padding:4px 8px;" onclick="sellAllCommon()">Vender Comuns</button>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn-mini btn-sell" style="flex:none; padding:4px 8px;" onclick="sellAllCommon()">Vender Comuns</button>
+            <button type="button" class="btn-mini btn-sell-all" style="flex:none; padding:4px 8px;" onclick="sellEverything()">Vender Tudo</button>
+          </div>
         </div>
         <div class="bag-grid" id="bag-grid"></div>
       </div>
@@ -907,6 +911,21 @@
     });
     if (earned > 0) {
       player.gold += earned;
+      saveAllSlots();
+      updateHUD();
+      renderBagModal();
+    }
+  }
+
+  function sellEverything() {
+    if (!player.inventory || player.inventory.length === 0) return;
+    var totalGold = 0;
+    for (var i = 0; i < player.inventory.length; i++) {
+      totalGold += player.inventory[i].sellPrice;
+    }
+    if (confirm('Deseja vender TODOS os ' + player.inventory.length + ' itens da mochila por +' + totalGold + ' Ouro?')) {
+      player.gold += totalGold;
+      player.inventory = [];
       saveAllSlots();
       updateHUD();
       renderBagModal();
