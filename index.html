@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aethelgard - MMORPG 3D</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <title>Aethelgard - MMORPG 2.5D</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -195,22 +194,8 @@
       font-size: 0.88rem;
     }
 
-    /* ================= VIEWPORT 3D & OVERLAY DE LABELS ================= */
-    #viewport3d {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 1;
-    }
-    #overlay2d {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 5;
-    }
+    /* ================= CANVAS 2.5D & HUD ================= */
+    #gameCanvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
 
     #hud-top-left {
       position: fixed;
@@ -520,7 +505,7 @@
   <!-- TELA PRINCIPAL -->
   <div id="char-screen">
     <h1>⚔️ Aethelgard ⚔️</h1>
-    <p class="subtitle">Forje sua lenda em 3D • Crie um Herói ou selecione um personagem salvo</p>
+    <p class="subtitle">Forje sua lenda em 2.5D • Crie um Herói ou selecione um personagem salvo</p>
 
     <div class="section-box">
       <h2>✨ Criar Novo Personagem</h2>
@@ -573,9 +558,8 @@
     </div>
   </div>
 
-  <!-- VIEWPORT 3D & OVERLAY DE LABELS -->
-  <div id="viewport3d"></div>
-  <canvas id="overlay2d"></canvas>
+  <!-- CANVAS 2.5D TEXTURIZADO -->
+  <canvas id="gameCanvas"></canvas>
 
   <div id="hud-top-left">
     <div class="avatar-circle" id="hud-avatar">⚔️<span class="lvl-badge" id="hud-lvl">Nv. 1</span></div>
@@ -594,9 +578,9 @@
       <div class="map-info">
         <div class="map-name">🌲 Vale de Valenwood (Nv. 1-10)</div>
         <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 💠 Cristais Forja: <span id="hud-stones">0</span></div>
-        <div class="coords-row" id="hud-coords">Coords 3D: (0, 0)</div>
+        <div class="coords-row" id="hud-coords">Coords: (0, 0)</div>
       </div>
-      <div class="minimap-frame" title="Minimapa Tático 3D">
+      <div class="minimap-frame" title="Minimapa Tático 2.5D">
         <canvas id="minimapCanvas" width="128" height="128"></canvas>
         <div class="minimap-legend">⚪Você 🔴Mob ⭐Mini 🐉Boss</div>
       </div>
@@ -610,8 +594,8 @@
   </div>
 
   <div id="controls-hint">
-    🖱️ <b>Clique Esq.:</b> Mover/Atacar | <b>Botão Dir. + Arrastar:</b> Girar Câmera 360° | <b>Scroll:</b> Zoom<br>
-    ⌨️ <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção | <b>A:</b> Auto | <b>B:</b> Mochila | <b>L:</b> Gemas | <b>F:</b> Forja
+    🖱️ <b>Clique no Chão/Monstro:</b> Mover e Atacar<br>
+    ⌨️ <b>WASD / Setas:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção | <b>A:</b> Auto | <b>B:</b> Mochila | <b>L:</b> Gemas | <b>F:</b> Forja
   </div>
 
   <div id="hud-bottom">
@@ -625,7 +609,7 @@
   <!-- MODAL INVENTÁRIO, LINKAGEM & EXTRAÇÃO DE GEMAS DE ÉTER -->
   <div class="modal-window" id="bag-modal">
     <div class="modal-header">
-      <h3>🎒 Inventário 3D, Linkagem & Extração de Gemas de Éter (💰 Ouro)</h3>
+      <h3>🎒 Inventário 2.5D, Linkagem & Extração de Gemas de Éter (💰 Ouro)</h3>
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
@@ -688,8 +672,9 @@
   </div>
 
 <script>
-  var STORAGE_KEY_SLOTS = 'aethelgard_slots_3d_v1';
-  var WORLD_SIZE = 160; // Unidades 3D (-80 a +80)
+  var STORAGE_KEY_SLOTS = 'aethelgard_slots_25d_v1';
+  var WORLD_W = 2800;
+  var WORLD_H = 2800;
   var keysPressed = {};
 
   var characterSlots = [null, null, null];
@@ -698,10 +683,11 @@
   var player = null;
   var enemies = [];
   var worldProps = [];
+  var grassPatches = [];
   var floatingTexts = [];
-  var effects3D = [];
-  var projectiles3D = [];
-  var clickMarker3D = null;
+  var effects = [];
+  var projectiles = [];
+  var clickMarker = null;
   var autoCombat = false;
   var gameRunning = false;
   var loopStarted = false;
@@ -712,24 +698,63 @@
   var lastTime = performance.now();
   var worldAnimTime = 0;
 
-  // ================= CÂMERA ORBITAL 3D DE MMORPG =================
-  var camYaw = 0.75;      // Ângulo horizontal ao redor do herói
-  var camPitch = 0.62;    // Inclinação vertical
-  var camDistance = 24;   // Zoom (8 a 48)
-  var isDraggingCam = false;
-  var lastMouseX = 0;
-  var lastMouseY = 0;
+  var canvas = document.getElementById('gameCanvas');
+  var ctx = canvas.getContext('2d');
+  var minimapCanvas = document.getElementById('minimapCanvas');
+  var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
 
-  // ================= VARIÁVEIS DO MOTOR 3D (THREE.JS) =================
-  var scene = null;
-  var camera = null;
-  var renderer = null;
-  var raycaster = new THREE.Raycaster();
-  var mouseNDC = new THREE.Vector2();
-  var groundPlaneMesh = null;
-  var playerMeshGroup = null;
-  var playerAnimParts = {};
-  var threeInitialized = false;
+  // Textura procedural offscreen para o gramado 2.5D rico
+  var grassPatternCanvas = document.createElement('canvas');
+  grassPatternCanvas.width = 256;
+  grassPatternCanvas.height = 256;
+  (function buildGrassTexture() {
+    var gCtx = grassPatternCanvas.getContext('2d');
+    gCtx.fillStyle = '#0e2920';
+    gCtx.fillRect(0, 0, 256, 256);
+
+    // Manchas orgânicas de musgo e relva
+    for (var i = 0; i < 45; i++) {
+      var rx = (i * 53) % 256;
+      var ry = (i * 97) % 256;
+      var rad = 18 + (i % 24);
+      var grad = gCtx.createRadialGradient(rx, ry, 2, rx, ry, rad);
+      grad.addColorStop(0, i % 2 === 0 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(6, 78, 59, 0.25)');
+      grad.addColorStop(1, 'rgba(14, 41, 32, 0)');
+      gCtx.fillStyle = grad;
+      gCtx.beginPath();
+      gCtx.arc(rx, ry, rad, 0, Math.PI * 2);
+      gCtx.fill();
+    }
+
+    // Folhas de grama e flores silvestres
+    for (var j = 0; j < 95; j++) {
+      var gx = (j * 71 + 13) % 250;
+      var gy = (j * 43 + 19) % 250;
+      gCtx.strokeStyle = j % 3 === 0 ? '#15803d' : '#065f46';
+      gCtx.lineWidth = 1.4;
+      gCtx.beginPath();
+      gCtx.moveTo(gx, gy);
+      gCtx.lineTo(gx - 2, gy - 6);
+      gCtx.moveTo(gx + 2, gy);
+      gCtx.lineTo(gx + 4, gy - 5);
+      gCtx.stroke();
+
+      if (j % 18 === 0) {
+        gCtx.fillStyle = j % 36 === 0 ? '#fbbf24' : '#38bdf8';
+        gCtx.beginPath();
+        gCtx.arc(gx + 1, gy - 3, 1.8, 0, Math.PI * 2);
+        gCtx.fill();
+      }
+    }
+  })();
+  var grassTilePattern = null;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
 
   // ================= SISTEMA DE ÁUDIO (WEB AUDIO API) =================
   var audioCtx = null;
@@ -794,7 +819,7 @@
     } catch (e) {}
   }
 
-  // ================= 7 GEMAS DE ÉTER ORIGINAIS (NV. 1 A 5) =================
+  // ================= 7 GEMAS DE ÉTER (NV. 1 A 5) =================
   var LAPIS_TYPES = {
     FOR: {
       code: 'FOR', name: 'Rubi de Força', statLabel: 'Ataque Físico',
@@ -869,78 +894,78 @@
   // ================= 5 CLASSES ORIGINAIS DE AETHELGARD =================
   var CLASSES = {
     templario: {
-      name: 'Templário', icon: '🛡️', color: '#fbbf24', hexColor: 0xfbbf24, armorHex: 0x1d4ed8,
+      name: 'Templário', icon: '🛡️', color: '#fbbf24', armorColor: '#1d4ed8', trimColor: '#f59e0b',
       attackType: 'melee',
       weaponCategoryLabel: '⚔️ Lâmina Corpo a Corpo (Perto)',
       baseHp: 235, baseMp: 85,
       baseMeleeAtk: 25, baseRangedAtk: 0, baseMagicAtk: 0,
       basePhysDef: 17, baseMagDef: 9,
-      baseCrit: 8, baseEva: 4, range: 6.5,
+      baseCrit: 8, baseEva: 4, range: 95,
       skills: [
-        { name: 'Corte Solar', icon: '⚔️', mult: 1.35, mp: 5, cd: 1.4, range: 6.8, color: '#fbbf24', hex: 0xfbbf24, proj: false },
-        { name: 'Égide Dourada', icon: '🛡️', mult: 0, heal: 0.28, mp: 15, cd: 6, range: 0, color: '#38bdf8', hex: 0x38bdf8, proj: false },
-        { name: 'Onda Sísmica', icon: '💥', mult: 2.05, mp: 20, cd: 5, range: 8.5, aoe: true, color: '#f59e0b', hex: 0xf59e0b, proj: false },
-        { name: 'Juízo do Sol', icon: '☀️', mult: 2.9, mp: 30, cd: 9, range: 8.0, color: '#f43f5e', hex: 0xf43f5e, proj: false }
+        { name: 'Corte Solar', icon: '⚔️', mult: 1.35, mp: 5, cd: 1.4, range: 100, color: '#fbbf24', proj: false },
+        { name: 'Égide Dourada', icon: '🛡️', mult: 0, heal: 0.28, mp: 15, cd: 6, range: 0, color: '#38bdf8', proj: false },
+        { name: 'Onda Sísmica', icon: '💥', mult: 2.05, mp: 20, cd: 5, range: 140, aoe: true, color: '#f59e0b', proj: false },
+        { name: 'Juízo do Sol', icon: '☀️', mult: 2.9, mp: 30, cd: 9, range: 120, color: '#f43f5e', proj: false }
       ]
     },
     arcanista: {
-      name: 'Arcanista', icon: '🔮', color: '#c084fc', hexColor: 0xc084fc, armorHex: 0x581c87,
+      name: 'Arcanista', icon: '🔮', color: '#c084fc', armorColor: '#581c87', trimColor: '#c084fc',
       attackType: 'magic',
       weaponCategoryLabel: '🔮 Cajado Astral (Distância)',
       baseHp: 140, baseMp: 195,
       baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 37,
       basePhysDef: 5, baseMagDef: 16,
-      baseCrit: 12, baseEva: 6, range: 21.0,
+      baseCrit: 12, baseEva: 6, range: 310,
       skills: [
-        { name: 'Orbe Etéreo', icon: '🔮', mult: 1.4, mp: 8, cd: 1.3, range: 22.0, color: '#c084fc', hex: 0xc084fc, proj: true },
-        { name: 'Estilhaço Glacial', icon: '❄️', mult: 1.85, mp: 16, cd: 4, range: 22.0, color: '#38bdf8', hex: 0x38bdf8, proj: true },
-        { name: 'Vórtice Astral', icon: '🌀', mult: 2.35, mp: 28, cd: 6, range: 22.0, aoe: true, color: '#818cf8', hex: 0x818cf8, proj: false },
-        { name: 'Cometa de Éter', icon: '☄️', mult: 3.5, mp: 45, cd: 10, range: 24.0, aoe: true, color: '#f43f5e', hex: 0xf43f5e, proj: true }
+        { name: 'Orbe Etéreo', icon: '🔮', mult: 1.4, mp: 8, cd: 1.3, range: 320, color: '#c084fc', proj: true },
+        { name: 'Estilhaço Glacial', icon: '❄️', mult: 1.85, mp: 16, cd: 4, range: 320, color: '#38bdf8', proj: true },
+        { name: 'Vórtice Astral', icon: '🌀', mult: 2.35, mp: 28, cd: 6, range: 320, aoe: true, color: '#818cf8', proj: false },
+        { name: 'Cometa de Éter', icon: '☄️', mult: 3.5, mp: 45, cd: 10, range: 340, aoe: true, color: '#f43f5e', proj: true }
       ]
     },
     patrulheiro: {
-      name: 'Patrulheiro', icon: '🏹', color: '#34d399', hexColor: 0x34d399, armorHex: 0x065f46,
+      name: 'Patrulheiro', icon: '🏹', color: '#34d399', armorColor: '#065f46', trimColor: '#34d399',
       attackType: 'ranged',
       weaponCategoryLabel: '🏹 Arco de Vento (Longe)',
       baseHp: 160, baseMp: 125,
       baseMeleeAtk: 0, baseRangedAtk: 32, baseMagicAtk: 0,
       basePhysDef: 9, baseMagDef: 9,
-      baseCrit: 18, baseEva: 13, range: 24.0,
+      baseCrit: 18, baseEva: 13, range: 350,
       skills: [
-        { name: 'Flecha de Vento', icon: '🏹', mult: 1.35, mp: 6, cd: 1.15, range: 25.0, color: '#34d399', hex: 0x34d399, proj: true },
-        { name: 'Disparo Tóxico', icon: '🧪', mult: 1.8, mp: 14, cd: 4, range: 25.0, color: '#a3e635', hex: 0xa3e635, proj: true },
-        { name: 'Saraivada Esmeralda', icon: '🌧️', mult: 2.15, mp: 24, cd: 6, range: 25.0, aoe: true, color: '#fbbf24', hex: 0xfbbf24, proj: true },
-        { name: 'Tiro Perfura-Almas', icon: '🎯', mult: 3.25, mp: 35, cd: 9, range: 27.0, color: '#38bdf8', hex: 0x38bdf8, proj: true }
+        { name: 'Flecha de Vento', icon: '🏹', mult: 1.35, mp: 6, cd: 1.15, range: 360, color: '#34d399', proj: true },
+        { name: 'Disparo Tóxico', icon: '🧪', mult: 1.8, mp: 14, cd: 4, range: 360, color: '#a3e635', proj: true },
+        { name: 'Saraivada Esmeralda', icon: '🌧️', mult: 2.15, mp: 24, cd: 6, range: 360, aoe: true, color: '#fbbf24', proj: true },
+        { name: 'Tiro Perfura-Almas', icon: '🎯', mult: 3.25, mp: 35, cd: 9, range: 380, color: '#38bdf8', proj: true }
       ]
     },
     clerigo: {
-      name: 'Clérigo Solar', icon: '✨', color: '#7dd3fc', hexColor: 0x7dd3fc, armorHex: 0x0369a1,
+      name: 'Clérigo Solar', icon: '✨', color: '#7dd3fc', armorColor: '#0369a1', trimColor: '#fde047',
       attackType: 'magic',
       weaponCategoryLabel: '✨ Cetro da Aurora (Distância)',
       baseHp: 170, baseMp: 215,
       baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 28,
       basePhysDef: 8, baseMagDef: 18,
-      baseCrit: 10, baseEva: 7, range: 20.5,
+      baseCrit: 10, baseEva: 7, range: 295,
       skills: [
-        { name: 'Centelha Aurora', icon: '✨', mult: 1.3, mp: 7, cd: 1.35, range: 21.0, color: '#7dd3fc', hex: 0x7dd3fc, proj: true },
-        { name: 'Graça Restauradora', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#34d399', hex: 0x34d399, proj: false },
-        { name: 'Pilar Sagrado', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 21.0, aoe: true, color: '#fbbf24', hex: 0xfbbf24, proj: false },
-        { name: 'Supernova Divina', icon: '🌟', mult: 3.05, mp: 40, cd: 9, range: 22.0, color: '#38bdf8', hex: 0x38bdf8, proj: true }
+        { name: 'Centelha Aurora', icon: '✨', mult: 1.3, mp: 7, cd: 1.35, range: 300, color: '#7dd3fc', proj: true },
+        { name: 'Graça Restauradora', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#34d399', proj: false },
+        { name: 'Pilar Sagrado', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 300, aoe: true, color: '#fbbf24', proj: false },
+        { name: 'Supernova Divina', icon: '🌟', mult: 3.05, mp: 40, cd: 9, range: 310, color: '#38bdf8', proj: true }
       ]
     },
     sombra: {
-      name: 'Sombra', icon: '🗡️', color: '#fb7185', hexColor: 0xfb7185, armorHex: 0x881337,
+      name: 'Sombra', icon: '🗡️', color: '#fb7185', armorColor: '#881337', trimColor: '#fb7185',
       attackType: 'melee',
       weaponCategoryLabel: '🗡️ Adagas Gêmeas (Perto)',
       baseHp: 155, baseMp: 115,
       baseMeleeAtk: 36, baseRangedAtk: 0, baseMagicAtk: 0,
       basePhysDef: 8, baseMagDef: 7,
-      baseCrit: 21, baseEva: 17, range: 6.2,
+      baseCrit: 21, baseEva: 17, range: 90,
       skills: [
-        { name: 'Talho Carmesim', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 6.5, color: '#fb7185', hex: 0xfb7185, proj: false },
-        { name: 'Salto Etéreo', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 15.0, dash: true, color: '#c084fc', hex: 0xc084fc, proj: false },
-        { name: 'Dança das Lâminas', icon: '🌀', mult: 2.25, mp: 22, cd: 5.5, range: 8.0, aoe: true, color: '#f43f5e', hex: 0xf43f5e, proj: false },
-        { name: 'Colheita Sombria', icon: '💀', mult: 3.65, mp: 35, cd: 9, range: 7.0, color: '#fbbf24', hex: 0xfbbf24, proj: false }
+        { name: 'Talho Carmesim', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 95, color: '#fb7185', proj: false },
+        { name: 'Salto Etéreo', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 220, dash: true, color: '#c084fc', proj: false },
+        { name: 'Dança das Lâminas', icon: '🌀', mult: 2.25, mp: 22, cd: 5.5, range: 130, aoe: true, color: '#f43f5e', proj: false },
+        { name: 'Colheita Sombria', icon: '💀', mult: 3.65, mp: 35, cd: 9, range: 105, color: '#fbbf24', proj: false }
       ]
     }
   };
@@ -948,29 +973,29 @@
   // ================= EQUIPAMENTOS & RARIDADES =================
   var CLASS_WEAPON_VARIANTS = {
     templario: [
-      { name: 'Lâmina Solar',      icon: '🗡️', weaponType: 'melee',  weaponRange: 6.8 },
-      { name: 'Martelo Rúnico',    icon: '🔨', weaponType: 'melee',  weaponRange: 6.6 },
-      { name: 'Montante Astral',   icon: '⚔️', weaponType: 'melee',  weaponRange: 7.2 }
+      { name: 'Lâmina Solar',      icon: '🗡️', weaponType: 'melee',  weaponRange: 100 },
+      { name: 'Martelo Rúnico',    icon: '🔨', weaponType: 'melee',  weaponRange: 95 },
+      { name: 'Montante Astral',   icon: '⚔️', weaponType: 'melee',  weaponRange: 110 }
     ],
     sombra: [
-      { name: 'Adagas de Éter',    icon: '🗡️', weaponType: 'melee',  weaponRange: 6.2 },
-      { name: 'Lâminas Carmesim',  icon: '⚔️', weaponType: 'melee',  weaponRange: 6.4 },
-      { name: 'Garras do Crepúsculo', icon: '🦂', weaponType: 'melee', weaponRange: 6.0 }
+      { name: 'Adagas de Éter',       icon: '🗡️', weaponType: 'melee', weaponRange: 90 },
+      { name: 'Lâminas Carmesim',     icon: '⚔️', weaponType: 'melee', weaponRange: 95 },
+      { name: 'Garras do Crepúsculo', icon: '🦂', weaponType: 'melee', weaponRange: 88 }
     ],
     patrulheiro: [
-      { name: 'Arco de Vento',     icon: '🏹', weaponType: 'ranged', weaponRange: 25.0 },
-      { name: 'Besta de Valenwood',icon: '🎯', weaponType: 'ranged', weaponRange: 23.5 },
-      { name: 'Arco Longo Élfico', icon: '🏹', weaponType: 'ranged', weaponRange: 26.5 }
+      { name: 'Arco de Vento',      icon: '🏹', weaponType: 'ranged', weaponRange: 360 },
+      { name: 'Besta de Valenwood', icon: '🎯', weaponType: 'ranged', weaponRange: 335 },
+      { name: 'Arco Longo Élfico',  icon: '🏹', weaponType: 'ranged', weaponRange: 385 }
     ],
     arcanista: [
-      { name: 'Cajado do Vórtice', icon: '🪄', weaponType: 'magic',  weaponRange: 22.0 },
-      { name: 'Orbe Cósmico',      icon: '🔮', weaponType: 'magic',  weaponRange: 21.0 },
-      { name: 'Bastão Etéreo',     icon: '🪄', weaponType: 'magic',  weaponRange: 23.5 }
+      { name: 'Cajado do Vórtice', icon: '🪄', weaponType: 'magic', weaponRange: 320 },
+      { name: 'Orbe Cósmico',      icon: '🔮', weaponType: 'magic', weaponRange: 305 },
+      { name: 'Bastão Etéreo',     icon: '🪄', weaponType: 'magic', weaponRange: 340 }
     ],
     clerigo: [
-      { name: 'Cetro da Aurora',   icon: '🦯', weaponType: 'magic',  weaponRange: 21.0 },
-      { name: 'Relíquia Solar',    icon: '✨', weaponType: 'magic',  weaponRange: 22.0 },
-      { name: 'Cajado Celestial',  icon: '🕯️', weaponType: 'magic',  weaponRange: 20.5 }
+      { name: 'Cetro da Aurora',  icon: '🦯', weaponType: 'magic', weaponRange: 300 },
+      { name: 'Relíquia Solar',   icon: '✨', weaponType: 'magic', weaponRange: 315 },
+      { name: 'Cajado Celestial', icon: '🕯️', weaponType: 'magic', weaponRange: 295 }
     ]
   };
 
@@ -1231,8 +1256,8 @@
       classKey: classKey,
       level: 1, xp: 0, maxXp: 100,
       gold: 350, stones: 5, kills: 0,
-      x: 0, z: 0, targetX: 0, targetZ: 0,
-      rotY: 0, attackAnimTimer: 0,
+      x: WORLD_W / 2, y: WORLD_H / 2, targetX: WORLD_W / 2, targetY: WORLD_H / 2,
+      facing: 1, attackAnimTimer: 0, walkCycle: 0,
       baseMaxHp: cls.baseHp, hp: cls.baseHp,
       mp: cls.baseMp, maxMp: cls.baseMp,
       baseMeleeAtk: cls.baseMeleeAtk,
@@ -1240,7 +1265,7 @@
       baseMagicAtk: cls.baseMagicAtk,
       basePhysDef: cls.basePhysDef,
       baseMagDef: cls.baseMagDef,
-      speed: classKey === 'sombra' ? 16.5 : 13.5,
+      speed: classKey === 'sombra' ? 235 : 195,
       cooldowns: [0, 0, 0, 0, 0],
       equipped: { weapon: null, armor: null, helm: null, boots: null, ring: null },
       inventory: [],
@@ -1309,7 +1334,7 @@
             '<span class="pill-lvl">Nv. ' + p.level + '</span>' +
             '<span class="pill-br">🔥 BR: ' + st.br + '</span>' +
           '</div>' +
-          '<button type="button" class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Entrar no Mundo 3D</button>';
+          '<button type="button" class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Entrar no Mundo</button>';
       } else {
         hasFreeSlot = true;
         card.className = 'char-slot-card empty';
@@ -1332,10 +1357,10 @@
     activeSlotIndex = idx;
     player = normalizePlayerObject(characterSlots[idx]);
     player.cooldowns = [0, 0, 0, 0, 0];
-    player.x = player.x || 0;
-    player.z = player.z || 0;
+    player.x = player.x || WORLD_W / 2;
+    player.y = player.y || WORLD_H / 2;
     player.targetX = player.x;
-    player.targetZ = player.z;
+    player.targetY = player.y;
     enterWorld();
   }
 
@@ -1360,488 +1385,569 @@
     renderCharScreen();
   }
 
-  // ================= CONSTRUÇÃO DO MUNDO 3D (THREE.JS) =================
-  function initThreeEngine() {
-    if (threeInitialized) return;
-    threeInitialized = true;
-
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0c192c);
-    scene.fog = new THREE.FogExp2(0x0c192c, 0.011);
-
-    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.5, 280);
-
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    var container = document.getElementById('viewport3d');
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
-
-    // Iluminação Atmosférica (Luz Solar Dourada + Luz Ambiente Astral)
-    var hemiLight = new THREE.HemisphereLight(0x7dd3fc, 0x064e3b, 0.78);
-    scene.add(hemiLight);
-
-    var dirLight = new THREE.DirectionalLight(0xfef3c7, 1.05);
-    dirLight.position.set(45, 75, 40);
-    dirLight.castShadow = true;
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.camera.near = 10;
-    dirLight.shadow.camera.far = 200;
-    var d = 85;
-    dirLight.shadow.camera.left = -d;
-    dirLight.shadow.camera.right = d;
-    dirLight.shadow.camera.top = d;
-    dirLight.shadow.camera.bottom = -d;
-    scene.add(dirLight);
-
-    build3DTerrainAndProps();
-    setup3DInputHandlers();
+  // ================= AMBIENTE 2.5D TEXTURIZADO (VALE DE VALENWOOD) =================
+  function isPointInLake(wx, wy) {
+    var dx = (wx - 760) / 310;
+    var dy = (wy - 2080) / 210;
+    return (dx * dx + dy * dy) <= 1.0;
   }
 
-  function isPointInLake3D(wx, wz) {
-    var dx = (wx - (-42)) / 20;
-    var dz = (wz - 38) / 14;
-    return (dx * dx + dz * dz) <= 1.0;
+  function buildWorldEnvironment() {
+    worldProps = [];
+    grassPatches = [];
+
+    for (var b = 55; b < WORLD_W; b += 115) {
+      worldProps.push({ type: 'pine', x: b, y: 55, scale: 1.15 });
+      worldProps.push({ type: 'pine', x: b, y: WORLD_H - 45, scale: 1.15 });
+      worldProps.push({ type: 'pine', x: 55, y: b, scale: 1.15 });
+      worldProps.push({ type: 'pine', x: WORLD_W - 55, y: b, scale: 1.15 });
+    }
+
+    var fixedLandmarks = [
+      { type: 'crystal', x: 1050, y: 1080, scale: 1.15, col: '#38bdf8' },
+      { type: 'crystal', x: 1850, y: 920,  scale: 1.25, col: '#c084fc' },
+      { type: 'crystal', x: 2150, y: 1850, scale: 1.15, col: '#38bdf8' },
+      { type: 'crystal', x: 640,  y: 1620, scale: 1.10, col: '#34d399' },
+
+      { type: 'ruin', x: 1180, y: 1240, scale: 1.1 },
+      { type: 'ruin', x: 1620, y: 1240, scale: 1.1 },
+      { type: 'ruin', x: 1960, y: 1120, scale: 1.0 },
+      { type: 'ruin', x: 2040, y: 1170, scale: 0.9 },
+
+      { type: 'oak',  x: 820,  y: 620,  scale: 1.25 },
+      { type: 'pine', x: 620,  y: 840,  scale: 1.15 },
+      { type: 'rock', x: 920,  y: 740,  scale: 1.1 },
+      { type: 'oak',  x: 1580, y: 560,  scale: 1.3 },
+      { type: 'pine', x: 2220, y: 620,  scale: 1.2 },
+      { type: 'rock', x: 1860, y: 1060, scale: 0.95 },
+
+      { type: 'oak',  x: 2380, y: 1320, scale: 1.35 },
+      { type: 'pine', x: 2450, y: 1680, scale: 1.15 },
+      { type: 'rock', x: 1980, y: 2150, scale: 1.2 },
+      { type: 'oak',  x: 1160, y: 1980, scale: 1.1 },
+      { type: 'rock', x: 980,  y: 2280, scale: 1.1 },
+      { type: 'pine', x: 420,  y: 1150, scale: 1.3 }
+    ];
+
+    fixedLandmarks.forEach(function(item) { worldProps.push(item); });
+
+    for (var i = 0; i < 65; i++) {
+      var rx = 180 + Math.random() * (WORLD_W - 360);
+      var ry = 180 + Math.random() * (WORLD_H - 360);
+      if (Math.hypot(rx - WORLD_W / 2, ry - WORLD_H / 2) < 330) continue;
+      if (isPointInLake(rx, ry)) continue;
+      grassPatches.push({
+        x: rx, y: ry,
+        size: 10 + Math.random() * 14,
+        hasFlower: Math.random() > 0.55,
+        flowerColor: Math.random() > 0.5 ? '#fbbf24' : '#38bdf8'
+      });
+    }
   }
 
-  function build3DTerrainAndProps() {
-    // 1. Plataforma Principal do Vale de Valenwood
-    var groundGeo = new THREE.BoxGeometry(WORLD_SIZE, 4, WORLD_SIZE);
-    var groundMat = new THREE.MeshStandardMaterial({ color: 0x133829, roughness: 0.9 });
-    groundPlaneMesh = new THREE.Mesh(groundGeo, groundMat);
-    groundPlaneMesh.position.y = -2;
-    groundPlaneMesh.receiveShadow = true;
-    scene.add(groundPlaneMesh);
+  function renderWorldTerrain(camX, camY) {
+    if (!grassTilePattern && grassPatternCanvas) {
+      grassTilePattern = ctx.createPattern(grassPatternCanvas, 'repeat');
+    }
 
-    // 2. Grade sutil de ladrilhos do vale
-    var gridHelper = new THREE.GridHelper(WORLD_SIZE, 16, 0x10b981, 0x0f2920);
-    gridHelper.position.y = 0.02;
-    gridHelper.material.opacity = 0.25;
-    gridHelper.material.transparent = true;
-    scene.add(gridHelper);
+    // 1. Gramado Texturizado
+    ctx.fillStyle = grassTilePattern || '#0e2920';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 2. Estradas de Pedra Texturizadas
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Borda de terra batida
+    ctx.strokeStyle = '#3b2f24';
+    ctx.lineWidth = 104;
+    ctx.beginPath();
+    ctx.moveTo(220 - camX, 1650 - camY);
+    ctx.quadraticCurveTo(950 - camX, 1480 - camY, 1400 - camX, 1400 - camY);
+    ctx.quadraticCurveTo(1950 - camX, 1300 - camY, 2550 - camX, 1520 - camY);
+    ctx.moveTo(1400 - camX, 1400 - camY);
+    ctx.quadraticCurveTo(1680 - camX, 1080 - camY, 1980 - camX, 820 - camY);
+    ctx.stroke();
+
+    // Calçamento de pedra
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 82;
+    ctx.stroke();
+
+    // Pedras individuais na estrada
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 64;
+    ctx.setLineDash([28, 18]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
 
     // 3. Praça Central Rúnica (Spawn)
-    var plazaGeo = new THREE.CylinderGeometry(12, 12.8, 0.16, 32);
-    var plazaMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.7 });
-    var plaza = new THREE.Mesh(plazaGeo, plazaMat);
-    plaza.position.y = 0.08;
-    plaza.receiveShadow = true;
-    scene.add(plaza);
+    var cx = WORLD_W / 2 - camX;
+    var cy = WORLD_H / 2 - camY;
+    ctx.save();
+    var plazaGrad = ctx.createRadialGradient(cx, cy, 30, cx, cy, 240);
+    plazaGrad.addColorStop(0, '#334155');
+    plazaGrad.addColorStop(0.85, '#1e293b');
+    plazaGrad.addColorStop(1, 'rgba(30, 41, 59, 0)');
+    ctx.fillStyle = plazaGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 240, 0, Math.PI * 2);
+    ctx.fill();
 
-    var runeRingGeo = new THREE.RingGeometry(6.5, 7.2, 32);
-    var runeRingMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, side: THREE.DoubleSide });
-    var runeRing = new THREE.Mesh(runeRingGeo, runeRingMat);
-    runeRing.rotation.x = -Math.PI / 2;
-    runeRing.position.y = 0.18;
-    scene.add(runeRing);
+    // Círculo rúnico giratório suave no chão da praça
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 130, 0, Math.PI * 2);
+    ctx.stroke();
 
-    // 4. Estradas de Pedra 3D
-    var roadMat = new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.85 });
-    var road1 = new THREE.Mesh(new THREE.BoxGeometry(140, 0.12, 6), roadMat);
-    road1.position.set(0, 0.06, 0);
-    road1.rotation.y = -0.25;
-    road1.receiveShadow = true;
-    scene.add(road1);
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.25)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([16, 12]);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 105, worldAnimTime * 0.2, worldAnimTime * 0.2 + Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
 
-    var road2 = new THREE.Mesh(new THREE.BoxGeometry(5, 0.12, 65), roadMat);
-    road2.position.set(22, 0.06, -32);
-    road2.receiveShadow = true;
-    scene.add(road2);
+    // 4. Lago de Éter Texturizado (Sudoeste)
+    var lx = 760 - camX;
+    var ly = 2080 - camY;
+    ctx.save();
+    // Margem de areia/pedra
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.ellipse(lx, ly, 315, 215, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    // 5. Lago Luminoso de Éter (Setor Sudoeste)
-    var lakeGeo = new THREE.CylinderGeometry(18, 18, 0.14, 32);
-    var lakeMat = new THREE.MeshStandardMaterial({
-      color: 0x0284c7, emissive: 0x0369a1, emissiveIntensity: 0.35, roughness: 0.15, metalness: 0.6
-    });
-    var lakeMesh = new THREE.Mesh(lakeGeo, lakeMat);
-    lakeMesh.position.set(-42, 0.07, 38);
-    lakeMesh.scale.set(1.15, 1, 0.8);
-    scene.add(lakeMesh);
+    // Água profunda
+    var waterGrad = ctx.createRadialGradient(lx - 40, ly - 30, 20, lx, ly, 295);
+    waterGrad.addColorStop(0, '#0ea5e9');
+    waterGrad.addColorStop(0.6, '#0284c7');
+    waterGrad.addColorStop(1, '#0c4a6e');
+    ctx.fillStyle = waterGrad;
+    ctx.beginPath();
+    ctx.ellipse(lx, ly, 295, 195, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    // 6. Árvores 3D, Cristais de Éter Flutuantes, Monolitos e Rochas
-    worldProps = [];
-    var half = WORLD_SIZE / 2;
+    // Ondas animadas na água
+    var waveOffset = Math.sin(worldAnimTime * 2) * 8;
+    ctx.strokeStyle = 'rgba(186, 230, 253, 0.35)';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.ellipse(lx, ly, 190 + waveOffset, 115 + waveOffset * 0.5, 0, 0, Math.PI * 2);
+    ctx.stroke();
 
-    // Borda de pinheiros ao redor do mapa
-    for (var b = -half + 4; b <= half - 4; b += 11) {
-      createTree3D('pine', b, -half + 3, 1.2);
-      createTree3D('pine', b, half - 3, 1.2);
-      createTree3D('pine', -half + 3, b, 1.2);
-      createTree3D('pine', half - 3, b, 1.2);
-    }
+    // Nenúfares
+    ctx.fillStyle = '#15803d';
+    ctx.beginPath();
+    ctx.arc(lx - 130, ly + 50, 14, 0.2, Math.PI * 1.85);
+    ctx.lineTo(lx - 130, ly + 50);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(lx + 150, ly - 40, 11, 0.5, Math.PI * 2.1);
+    ctx.lineTo(lx + 150, ly - 40);
+    ctx.fill();
+    ctx.restore();
 
-    // Cristais de Éter gigantes com luz própria
-    var crystalCoords = [
-      { x: -24, z: -26, col: 0x38bdf8 },
-      { x: 31,  z: -36, col: 0xc084fc },
-      { x: 46,  z: 28,  col: 0x38bdf8 },
-      { x: -52, z: 12,  col: 0x34d399 }
-    ];
-    crystalCoords.forEach(function(c) {
-      createCrystal3D(c.x, c.z, c.col);
-    });
-
-    // Monolitos de Ruínas Antigas
-    createMonolith3D(-16, -14);
-    createMonolith3D(16, -14);
-    createMonolith3D(38, -18);
-
-    // Árvores e Rochas internas
-    var forestLayout = [
-      { t: 'oak',  x: -34, z: -44, s: 1.2 }, { t: 'pine', x: -45, z: -32, s: 1.1 }, { t: 'rock', x: -29, z: -39, s: 1.1 },
-      { t: 'pine', x: 12,  z: -48, s: 1.3 }, { t: 'oak',  x: 47,  z: -46, s: 1.2 }, { t: 'rock', x: 26,  z: -25, s: 0.9 },
-      { t: 'oak',  x: 56,  z: -4,  s: 1.3 }, { t: 'pine', x: 61,  z: 16,  s: 1.1 }, { t: 'rock', x: 34,  z: 44,  s: 1.2 },
-      { t: 'oak',  x: -14, z: 34,  s: 1.1 }, { t: 'rock', x: -24, z: 51,  s: 1.1 }, { t: 'pine', x: -61, z: -15, s: 1.3 }
-    ];
-    forestLayout.forEach(function(item) {
-      if (item.t === 'rock') createRock3D(item.x, item.z, item.s);
-      else createTree3D(item.t, item.x, item.z, item.s);
-    });
-
-    // 7. Marcador 3D de destino no chão
-    var markerGeo = new THREE.RingGeometry(0.6, 0.95, 24);
-    var markerMat = new THREE.MeshBasicMaterial({ color: 0x34d399, side: THREE.DoubleSide });
-    clickMarker3D = new THREE.Mesh(markerGeo, markerMat);
-    clickMarker3D.rotation.x = -Math.PI / 2;
-    clickMarker3D.position.y = 0.22;
-    clickMarker3D.visible = false;
-    scene.add(clickMarker3D);
-  }
-
-  function createTree3D(type, x, z, scale) {
-    var group = new THREE.Group();
-    var trunk = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.35 * scale, 0.55 * scale, 2.6 * scale, 8),
-      new THREE.MeshStandardMaterial({ color: 0x5c3d24, roughness: 0.9 })
-    );
-    trunk.position.y = 1.3 * scale;
-    trunk.castShadow = true;
-    group.add(trunk);
-
-    if (type === 'pine') {
-      var colors = [0x065f46, 0x047857, 0x10b981];
-      for (var i = 0; i < 3; i++) {
-        var cone = new THREE.Mesh(
-          new THREE.ConeGeometry((2.4 - i * 0.55) * scale, 2.8 * scale, 8),
-          new THREE.MeshStandardMaterial({ color: colors[i], roughness: 0.8 })
-        );
-        cone.position.y = (3.2 + i * 1.5) * scale;
-        cone.castShadow = true;
-        group.add(cone);
+    // 5. Tufos de grama e flores extras
+    grassPatches.forEach(function(gp) {
+      var sx = gp.x - camX, sy = gp.y - camY;
+      if (sx < -40 || sy < -40 || sx > canvas.width + 40 || sy > canvas.height + 40) return;
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy); ctx.lineTo(sx - 5, sy - gp.size);
+      ctx.moveTo(sx, sy); ctx.lineTo(sx + 5, sy - gp.size + 2);
+      ctx.stroke();
+      if (gp.hasFlower) {
+        ctx.fillStyle = gp.flowerColor;
+        ctx.beginPath();
+        ctx.arc(sx + 3, sy - gp.size + 1, 2.8, 0, Math.PI * 2);
+        ctx.fill();
       }
-    } else {
-      var crown = new THREE.Mesh(
-        new THREE.DodecahedronGeometry(2.5 * scale, 1),
-        new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.85 })
-      );
-      crown.position.y = 4.2 * scale;
-      crown.castShadow = true;
-      group.add(crown);
+    });
+  }
+
+  function drawWorldProp(pr, camX, camY) {
+    var sx = pr.x - camX;
+    var sy = pr.y - camY;
+    var s = pr.scale || 1;
+    if (sx < -160 || sy < -160 || sx > canvas.width + 160 || sy > canvas.height + 160) return;
+
+    ctx.save();
+    if (pr.type === 'pine') {
+      // Sombra projetada 2.5D
+      ctx.fillStyle = 'rgba(0,0,0,0.38)';
+      ctx.beginPath(); ctx.ellipse(sx + 10 * s, sy + 14 * s, 42 * s, 18 * s, 0, 0, Math.PI * 2); ctx.fill();
+      // Tronco texturizado
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(sx - 8 * s, sy - 26 * s, 16 * s, 32 * s);
+      // Camadas sombreadas do pinheiro
+      var pineShades = ['#064e3b', '#047857', '#10b981'];
+      for (var tier = 0; tier < 3; tier++) {
+        var w = (46 - tier * 10) * s;
+        var topY = (-88 - tier * 24) * s;
+        var botY = (-20 - tier * 24) * s;
+        ctx.fillStyle = pineShades[tier];
+        ctx.beginPath();
+        ctx.moveTo(sx, sy + topY);
+        ctx.lineTo(sx - w, sy + botY);
+        ctx.lineTo(sx + w, sy + botY);
+        ctx.closePath();
+        ctx.fill();
+      }
+    } else if (pr.type === 'oak') {
+      ctx.fillStyle = 'rgba(0,0,0,0.38)';
+      ctx.beginPath(); ctx.ellipse(sx + 12 * s, sy + 16 * s, 52 * s, 22 * s, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#5c3d24';
+      ctx.fillRect(sx - 10 * s, sy - 34 * s, 20 * s, 40 * s);
+      // Copa volumétrica 2.5D
+      ctx.fillStyle = '#065f46';
+      ctx.beginPath(); ctx.arc(sx, sy - 64 * s, 48 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#15803d';
+      ctx.beginPath(); ctx.arc(sx - 22 * s, sy - 54 * s, 32 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(sx + 22 * s, sy - 54 * s, 32 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#22c55e';
+      ctx.beginPath(); ctx.arc(sx - 6 * s, sy - 76 * s, 26 * s, 0, Math.PI * 2); ctx.fill();
+    } else if (pr.type === 'rock') {
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.beginPath(); ctx.ellipse(sx + 6 * s, sy + 10 * s, 34 * s, 14 * s, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#475569';
+      ctx.beginPath();
+      ctx.moveTo(sx - 30 * s, sy + 6 * s);
+      ctx.lineTo(sx - 20 * s, sy - 24 * s);
+      ctx.lineTo(sx + 8 * s, sy - 28 * s);
+      ctx.lineTo(sx + 32 * s, sy - 6 * s);
+      ctx.lineTo(sx + 24 * s, sy + 10 * s);
+      ctx.closePath();
+      ctx.fill();
+      // Face iluminada da rocha
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.moveTo(sx - 20 * s, sy - 24 * s);
+      ctx.lineTo(sx + 8 * s, sy - 28 * s);
+      ctx.lineTo(sx + 2 * s, sy - 6 * s);
+      ctx.lineTo(sx - 18 * s, sy - 4 * s);
+      ctx.closePath();
+      ctx.fill();
+    } else if (pr.type === 'ruin') {
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.beginPath(); ctx.ellipse(sx + 6 * s, sy + 8 * s, 24 * s, 10 * s, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(sx - 14 * s, sy - 64 * s, 28 * s, 68 * s);
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(sx - 18 * s, sy - 70 * s, 36 * s, 10 * s);
+      ctx.fillRect(sx - 18 * s, sy - 4 * s, 36 * s, 10 * s);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy - 50 * s);
+      ctx.lineTo(sx, sy - 16 * s);
+      ctx.stroke();
+    } else if (pr.type === 'crystal') {
+      var pulse = Math.sin(worldAnimTime * 3 + pr.x) * 4;
+      var cCol = pr.col || '#38bdf8';
+      ctx.fillStyle = cCol + '28';
+      ctx.beginPath(); ctx.ellipse(sx, sy + 6 * s, 38 * s, 18 * s, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = cCol;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy - (58 + pulse) * s);
+      ctx.lineTo(sx - 18 * s, sy - (20 + pulse) * s);
+      ctx.lineTo(sx, sy + (4 - pulse) * s);
+      ctx.lineTo(sx + 18 * s, sy - (20 + pulse) * s);
+      ctx.closePath();
+      ctx.fill();
+      // Reflexo cristalino interno
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.beginPath();
+      ctx.moveTo(sx, sy - (58 + pulse) * s);
+      ctx.lineTo(sx - 9 * s, sy - (20 + pulse) * s);
+      ctx.lineTo(sx, sy - (14 + pulse) * s);
+      ctx.closePath();
+      ctx.fill();
     }
-
-    group.position.set(x, 0, z);
-    scene.add(group);
-    worldProps.push({ type: 'tree', x: x, z: z, mesh: group });
+    ctx.restore();
   }
 
-  function createRock3D(x, z, scale) {
-    var rock = new THREE.Mesh(
-      new THREE.DodecahedronGeometry(1.6 * scale, 0),
-      new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.9 })
-    );
-    rock.position.set(x, 0.9 * scale, z);
-    rock.scale.set(1.2, 0.75, 1.0);
-    rock.castShadow = true;
-    rock.receiveShadow = true;
-    scene.add(rock);
-    worldProps.push({ type: 'rock', x: x, z: z, mesh: rock });
-  }
-
-  function createMonolith3D(x, z) {
-    var group = new THREE.Group();
-    var pillar = new THREE.Mesh(
-      new THREE.BoxGeometry(1.4, 5.2, 1.4),
-      new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7 })
-    );
-    pillar.position.y = 2.6;
-    pillar.castShadow = true;
-    group.add(pillar);
-
-    var runeCore = new THREE.Mesh(
-      new THREE.BoxGeometry(0.3, 2.2, 1.5),
-      new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
-    );
-    runeCore.position.y = 2.8;
-    group.add(runeCore);
-
-    group.position.set(x, 0, z);
-    scene.add(group);
-    worldProps.push({ type: 'ruin', x: x, z: z, mesh: group });
-  }
-
-  function createCrystal3D(x, z, hexCol) {
-    var group = new THREE.Group();
-    var crystal = new THREE.Mesh(
-      new THREE.OctahedronGeometry(1.6, 0),
-      new THREE.MeshStandardMaterial({
-        color: hexCol, emissive: hexCol, emissiveIntensity: 0.65, roughness: 0.15, metalness: 0.8
-      })
-    );
-    crystal.scale.set(0.75, 1.9, 0.75);
-    crystal.position.y = 3.2;
-    crystal.castShadow = true;
-    group.add(crystal);
-
-    var baseRing = new THREE.Mesh(
-      new THREE.RingGeometry(1.8, 2.3, 24),
-      new THREE.MeshBasicMaterial({ color: hexCol, side: THREE.DoubleSide })
-    );
-    baseRing.rotation.x = -Math.PI / 2;
-    baseRing.position.y = 0.15;
-    group.add(baseRing);
-
-    group.position.set(x, 0, z);
-    scene.add(group);
-    worldProps.push({ type: 'crystal', x: x, z: z, mesh: group, spinObj: crystal });
-  }
-
-  // ================= MODELO 3D ARTICULADO DO HERÓI (5 CLASSES + ARMAS) =================
-  function buildPlayer3DModel() {
-    if (playerMeshGroup) {
-      scene.remove(playerMeshGroup);
-    }
+  // ================= PERSONAGENS 2.5D TEXTURIZADOS COM ARMAS NA MÃO =================
+  function drawHero25D(px, py) {
     var cls = CLASSES[player.classKey];
-    var group = new THREE.Group();
+    var dir = player.facing || 1;
+    var walkBob = Math.sin(player.walkCycle || 0) * 3.5;
+    var swingAngle = player.attackAnimTimer > 0 ? Math.sin((player.attackAnimTimer / 0.35) * Math.PI) * 1.1 : 0;
 
-    var armorMat = new THREE.MeshStandardMaterial({ color: cls.armorHex, roughness: 0.45, metalness: 0.35 });
-    var accentMat = new THREE.MeshStandardMaterial({ color: cls.hexColor, emissive: cls.hexColor, emissiveIntensity: 0.25, roughness: 0.3 });
-    var skinMat = new THREE.MeshStandardMaterial({ color: 0xfde68a, roughness: 0.6 });
-    var darkMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.7 });
+    ctx.save();
+    ctx.translate(px, py);
 
-    // Torso
-    var torso = new THREE.Mesh(new THREE.BoxGeometry(1.05, 1.35, 0.65), armorMat);
-    torso.position.y = 1.65;
-    torso.castShadow = true;
-    group.add(torso);
+    // Aura no chão
+    ctx.fillStyle = cls.color + '26';
+    ctx.beginPath();
+    ctx.ellipse(0, 14, 24, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = cls.color;
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
 
-    // Capa / Ombreiras de destaque
-    var cape = new THREE.Mesh(new THREE.BoxGeometry(0.95, 1.45, 0.12), accentMat);
-    cape.position.set(0, 1.55, -0.38);
-    group.add(cape);
+    // Capa esvoaçante atrás
+    ctx.fillStyle = cls.armorColor;
+    ctx.beginPath();
+    ctx.moveTo(-10 * dir, -14 + walkBob * 0.4);
+    ctx.lineTo(-22 * dir, 10 + walkBob * 0.8);
+    ctx.lineTo(2 * dir, 12);
+    ctx.closePath();
+    ctx.fill();
+
+    // Pernas animadas
+    var legOffset = Math.sin(player.walkCycle || 0) * 5;
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(-8 + legOffset * 0.5, 4, 6, 12);
+    ctx.fillRect(2 - legOffset * 0.5, 4, 6, 12);
+
+    // Torso / Armadura texturizada
+    ctx.fillStyle = cls.armorColor;
+    ctx.beginPath();
+    ctx.roundRect(-12, -16 + walkBob * 0.5, 24, 22, 6);
+    ctx.fill();
+    ctx.strokeStyle = cls.trimColor;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Detalhe peitoral
+    ctx.fillStyle = cls.trimColor;
+    ctx.fillRect(-3, -12 + walkBob * 0.5, 6, 12);
 
     // Cabeça
-    var head = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.72, 0.72), skinMat);
-    head.position.y = 2.72;
-    head.castShadow = true;
-    group.add(head);
+    ctx.fillStyle = '#fde68a';
+    ctx.beginPath();
+    ctx.arc(0, -25 + walkBob * 0.5, 10, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Capacete / Chapéu / Capuz / Auréola exclusivo da Classe
+    // Acessório de cabeça exclusivo da classe
     if (player.classKey === 'templario') {
-      var helm = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.45, 0.8), accentMat);
-      helm.position.y = 2.95;
-      group.add(helm);
+      ctx.fillStyle = cls.trimColor;
+      ctx.beginPath();
+      ctx.arc(0, -27 + walkBob * 0.5, 10.5, Math.PI, Math.PI * 2);
+      ctx.fill();
     } else if (player.classKey === 'arcanista') {
-      var hat = new THREE.Mesh(new THREE.ConeGeometry(0.65, 1.25, 12), accentMat);
-      hat.position.y = 3.55;
-      group.add(hat);
+      ctx.fillStyle = cls.armorColor;
+      ctx.beginPath();
+      ctx.moveTo(-14, -30 + walkBob * 0.5);
+      ctx.lineTo(0, -48 + walkBob * 0.5);
+      ctx.lineTo(14, -30 + walkBob * 0.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = cls.trimColor;
+      ctx.stroke();
     } else if (player.classKey === 'patrulheiro') {
-      var hood = new THREE.Mesh(new THREE.BoxGeometry(0.82, 0.82, 0.82), armorMat);
-      hood.position.set(0, 2.76, -0.05);
-      group.add(hood);
+      ctx.fillStyle = cls.armorColor;
+      ctx.beginPath();
+      ctx.arc(0, -26 + walkBob * 0.5, 11, Math.PI * 0.85, Math.PI * 2.15);
+      ctx.fill();
     } else if (player.classKey === 'clerigo') {
-      var halo = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.06, 8, 24), accentMat);
-      halo.rotation.x = Math.PI / 2;
-      halo.position.y = 3.35;
-      group.add(halo);
+      ctx.strokeStyle = '#fde047';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(0, -39 + walkBob * 0.5, 9, 3, 0, 0, Math.PI * 2);
+      ctx.stroke();
     } else if (player.classKey === 'sombra') {
-      var mask = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.35, 0.78), darkMat);
-      mask.position.y = 2.58;
-      group.add(mask);
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-9, -25 + walkBob * 0.5, 18, 6);
     }
 
-    // Pernas articuladas
-    var leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.95, 0.42), darkMat);
-    leftLeg.position.set(-0.28, 0.5, 0);
-    leftLeg.castShadow = true;
-    group.add(leftLeg);
-
-    var rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.95, 0.42), darkMat);
-    rightLeg.position.set(0.28, 0.5, 0);
-    rightLeg.castShadow = true;
-    group.add(rightLeg);
-
-    // Braço Esquerdo + Escudo (se Templário) ou Adaga Secundária (se Sombra)
-    var leftArm = new THREE.Group();
-    leftArm.position.set(-0.72, 2.15, 0);
-    var lArmMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.95, 0.32), armorMat);
-    lArmMesh.position.y = -0.35;
-    leftArm.add(lArmMesh);
-
+    // Escudo na mão esquerda (Templário)
     if (player.classKey === 'templario') {
-      var shield = new THREE.Mesh(new THREE.BoxGeometry(0.16, 1.15, 0.85), accentMat);
-      shield.position.set(-0.22, -0.45, 0.25);
-      leftArm.add(shield);
-    } else if (player.classKey === 'sombra') {
-      var offDagger = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 1.1), accentMat);
-      offDagger.position.set(0, -0.75, 0.45);
-      leftArm.add(offDagger);
+      ctx.fillStyle = '#1e3a8a';
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(-13 * dir, -5 + walkBob * 0.4, 7, 11, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
     }
-    group.add(leftArm);
 
-    // Braço Direito + Arma 3D Principal na Mão
-    var rightArm = new THREE.Group();
-    rightArm.position.set(0.72, 2.15, 0);
-    var rArmMesh = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.95, 0.32), armorMat);
-    rArmMesh.position.y = -0.35;
-    rightArm.add(rArmMesh);
+    // Arma na mão principal com rotação de ataque
+    ctx.save();
+    ctx.translate(12 * dir, -6 + walkBob * 0.4);
+    ctx.rotate(dir * (0.25 + swingAngle));
 
     if (player.classKey === 'templario') {
-      // Lâmina Solar 3D
-      var blade = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.22, 1.9), accentMat);
-      blade.position.set(0, -0.75, 0.85);
-      rightArm.add(blade);
+      // Lâmina Solar
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(-2, -26, 4, 24);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(-6, -3, 12, 3);
     } else if (player.classKey === 'arcanista' || player.classKey === 'clerigo') {
-      // Cajado / Cetro com Cristal Luminoso na Ponta
-      var staff = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 2.6, 8), darkMat);
-      staff.position.set(0, -0.3, 0.35);
-      staff.rotation.x = 0.25;
-      rightArm.add(staff);
-
-      var orb = new THREE.Mesh(new THREE.OctahedronGeometry(0.28, 0), accentMat);
-      orb.position.set(0, 0.98, 0.68);
-      rightArm.add(orb);
+      // Cajado / Cetro com Cristal Brilhante
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(0, 14);
+      ctx.lineTo(0, -24);
+      ctx.stroke();
+      ctx.fillStyle = cls.color;
+      ctx.beginPath();
+      ctx.arc(0, -27, 5 + Math.sin(worldAnimTime * 6) * 1, 0, Math.PI * 2);
+      ctx.fill();
     } else if (player.classKey === 'patrulheiro') {
-      // Arco de Vento 3D
-      var bow = new THREE.Mesh(new THREE.TorusGeometry(0.75, 0.06, 8, 16, Math.PI), accentMat);
-      bow.rotation.y = Math.PI / 2;
-      bow.position.set(0, -0.55, 0.55);
-      rightArm.add(bow);
+      // Arco de Vento
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, -6, 15, -Math.PI * 0.45, Math.PI * 0.45);
+      ctx.stroke();
     } else if (player.classKey === 'sombra') {
-      // Adaga Principal
-      var dagger = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 1.15), accentMat);
-      dagger.position.set(0, -0.75, 0.45);
-      rightArm.add(dagger);
+      // Adaga Carmesim
+      ctx.fillStyle = '#fb7185';
+      ctx.beginPath();
+      ctx.moveTo(-2, 0);
+      ctx.lineTo(0, -18);
+      ctx.lineTo(2, 0);
+      ctx.closePath();
+      ctx.fill();
     }
-    group.add(rightArm);
+    ctx.restore();
 
-    // Anel de seleção no chão sob o herói
-    var baseAura = new THREE.Mesh(
-      new THREE.RingGeometry(0.95, 1.2, 24),
-      new THREE.MeshBasicMaterial({ color: cls.hexColor, side: THREE.DoubleSide })
-    );
-    baseAura.rotation.x = -Math.PI / 2;
-    baseAura.position.y = 0.08;
-    group.add(baseAura);
-
-    group.position.set(player.x, 0, player.z);
-    scene.add(group);
-
-    playerMeshGroup = group;
-    playerAnimParts = { leftLeg: leftLeg, rightLeg: rightLeg, leftArm: leftArm, rightArm: rightArm, cape: cape };
+    ctx.restore();
   }
 
-  // ================= MONSTROS, MINI-BOSS E BOSS 3D =================
+  // ================= MONSTROS, MINI-BOSS E BOSS 2.5D TEXTURIZADOS =================
+  function drawEnemy25D(en, ex, ey) {
+    var s = en.scale || 1;
+    var bob = Math.sin(worldAnimTime * 5 + en.id * 10) * 3;
+
+    ctx.save();
+    ctx.translate(ex, ey);
+
+    // Aura de Mini-Boss / Boss
+    if (en.tier === 'boss' || en.tier === 'miniboss') {
+      ctx.fillStyle = en.tier === 'boss' ? 'rgba(249, 115, 22, 0.24)' : 'rgba(251, 191, 36, 0.22)';
+      ctx.beginPath();
+      ctx.ellipse(0, 12 * s, 32 * s, 14 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = en.color;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.beginPath();
+      ctx.ellipse(0, 10 * s, 18 * s, 8 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (en.kind === 'slime') {
+      // Slime de Musgo gelatinoso
+      var squash = Math.sin(worldAnimTime * 6 + en.id) * 2.5;
+      var slimeGrad = ctx.createRadialGradient(-4, -8 + bob, 3, 0, 0 + bob, 20 * s);
+      slimeGrad.addColorStop(0, '#a7f3d0');
+      slimeGrad.addColorStop(0.5, '#10b981');
+      slimeGrad.addColorStop(1, '#065f46');
+      ctx.fillStyle = slimeGrad;
+      ctx.beginPath();
+      ctx.ellipse(0, bob, (18 + squash) * s, (15 - squash * 0.6) * s, 0, Math.PI, 0);
+      ctx.ellipse(0, bob, (18 + squash) * s, 7 * s, 0, 0, Math.PI);
+      ctx.fill();
+      // Olhos
+      ctx.fillStyle = '#060911';
+      ctx.beginPath(); ctx.arc(-5 * s, -3 * s + bob, 2.2 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(5 * s, -3 * s + bob, 2.2 * s, 0, Math.PI * 2); ctx.fill();
+    } else if (en.kind === 'wolf') {
+      // Lobo Etéreo
+      ctx.fillStyle = '#475569';
+      ctx.beginPath();
+      ctx.ellipse(0, -2 + bob * 0.5, 20 * s, 12 * s, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Cabeça e Orelhas
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath(); ctx.arc(12 * s, -12 * s + bob * 0.5, 10 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(8 * s, -20 * s); ctx.lineTo(10 * s, -29 * s); ctx.lineTo(14 * s, -20 * s);
+      ctx.moveTo(14 * s, -20 * s); ctx.lineTo(17 * s, -29 * s); ctx.lineTo(20 * s, -19 * s);
+      ctx.fill();
+      // Olho brilhante
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath(); ctx.arc(16 * s, -13 * s + bob * 0.5, 2.2 * s, 0, Math.PI * 2); ctx.fill();
+    } else if (en.kind === 'goblin') {
+      // Saqueador Goblinoid
+      ctx.fillStyle = '#0369a1';
+      ctx.beginPath(); ctx.roundRect(-12 * s, -14 * s + bob * 0.4, 24 * s, 22 * s, 6); ctx.fill();
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath(); ctx.arc(0, -22 * s + bob * 0.4, 10 * s, 0, Math.PI * 2); ctx.fill();
+      // Orelhas pontudas
+      ctx.beginPath();
+      ctx.moveTo(-10 * s, -22 * s); ctx.lineTo(-20 * s, -26 * s); ctx.lineTo(-10 * s, -18 * s);
+      ctx.moveTo(10 * s, -22 * s); ctx.lineTo(20 * s, -26 * s); ctx.lineTo(10 * s, -18 * s);
+      ctx.fill();
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(-4 * s, -23 * s, 2.5 * s, 2.5 * s);
+      ctx.fillRect(2 * s, -23 * s, 2.5 * s, 2.5 * s);
+    } else if (en.kind === 'golem') {
+      // Colosso Ancestral (Mini-Boss)
+      ctx.fillStyle = '#334155';
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-22 * s, 8 * s);
+      ctx.lineTo(-26 * s, -22 * s);
+      ctx.lineTo(-10 * s, -34 * s);
+      ctx.lineTo(10 * s, -34 * s);
+      ctx.lineTo(26 * s, -22 * s);
+      ctx.lineTo(22 * s, 8 * s);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // Núcleo rúnico dourado no peito
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath(); ctx.arc(0, -14 * s, 7 * s, 0, Math.PI * 2); ctx.fill();
+    } else if (en.kind === 'dragon') {
+      // Ignisdrake (BOSS) com Asas Batendo!
+      var flap = Math.sin(worldAnimTime * 7) * 14;
+      ctx.fillStyle = '#9a3412';
+      // Asa Esquerda
+      ctx.beginPath();
+      ctx.moveTo(-10 * s, -14 * s);
+      ctx.lineTo(-42 * s, (-34 + flap) * s);
+      ctx.lineTo(-32 * s, (-6 + flap * 0.5) * s);
+      ctx.closePath();
+      ctx.fill();
+      // Asa Direita
+      ctx.beginPath();
+      ctx.moveTo(10 * s, -14 * s);
+      ctx.lineTo(42 * s, (-34 + flap) * s);
+      ctx.lineTo(32 * s, (-6 + flap * 0.5) * s);
+      ctx.closePath();
+      ctx.fill();
+
+      // Corpo e Escamas do Dragão
+      ctx.fillStyle = '#ea580c';
+      ctx.beginPath(); ctx.ellipse(0, -12 * s, 20 * s, 24 * s, 0, 0, Math.PI * 2); ctx.fill();
+      // Cabeça e Chifres
+      ctx.fillStyle = '#c2410c';
+      ctx.beginPath(); ctx.arc(0, -34 * s, 13 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.moveTo(-8 * s, -44 * s); ctx.lineTo(-14 * s, -56 * s); ctx.lineTo(-3 * s, -46 * s);
+      ctx.moveTo(8 * s, -44 * s); ctx.lineTo(14 * s, -56 * s); ctx.lineTo(3 * s, -46 * s);
+      ctx.fill();
+      // Olhos de fogo
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath(); ctx.arc(-5 * s, -35 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(5 * s, -35 * s, 2.5 * s, 0, Math.PI * 2); ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
+  // ================= MONSTROS & SPAWN =================
   var MONSTER_TYPES = [
-    { name: 'Slime de Musgo (Mágico)',     kind: 'slime',  hp: 70,  atk: 9,  dmgType: 'magic', xp: 25,  gold: 12,  color: '#34d399', hex: 0x34d399, scale: 1.0,  tier: 'normal' },
-    { name: 'Lobo Etéreo',                 kind: 'wolf',   hp: 110, atk: 14, dmgType: 'phys',  xp: 40,  gold: 20,  color: '#94a3b8', hex: 0x64748b, scale: 1.1,  tier: 'normal' },
-    { name: 'Saqueador Goblinoid',         kind: 'goblin', hp: 150, atk: 19, dmgType: 'phys',  xp: 60,  gold: 32,  color: '#38bdf8', hex: 0x0284c7, scale: 1.15, tier: 'normal' },
-    { name: 'Colosso Ancestral (Mini-Boss)', kind: 'golem', hp: 360, atk: 30, dmgType: 'phys', xp: 160, gold: 110, color: '#fbbf24', hex: 0xd97706, scale: 1.65, tier: 'miniboss' },
-    { name: 'Ignisdrake (BOSS)',           kind: 'dragon', hp: 750, atk: 46, dmgType: 'magic', xp: 420, gold: 320, color: '#f97316', hex: 0xea580c, scale: 2.2,  tier: 'boss' }
+    { name: 'Slime de Musgo (Mágico)',       kind: 'slime',  hp: 70,  atk: 9,  dmgType: 'magic', xp: 25,  gold: 12,  color: '#34d399', scale: 1.0,  tier: 'normal' },
+    { name: 'Lobo Etéreo',                   kind: 'wolf',   hp: 110, atk: 14, dmgType: 'phys',  xp: 40,  gold: 20,  color: '#94a3b8', scale: 1.05, tier: 'normal' },
+    { name: 'Saqueador Goblinoid',           kind: 'goblin', hp: 150, atk: 19, dmgType: 'phys',  xp: 60,  gold: 32,  color: '#38bdf8', scale: 1.1,  tier: 'normal' },
+    { name: 'Colosso Ancestral (Mini-Boss)', kind: 'golem',  hp: 360, atk: 30, dmgType: 'phys',  xp: 160, gold: 110, color: '#fbbf24', scale: 1.4,  tier: 'miniboss' },
+    { name: 'Ignisdrake (BOSS)',             kind: 'dragon', hp: 750, atk: 46, dmgType: 'magic', xp: 420, gold: 320, color: '#f97316', scale: 1.65, tier: 'boss' }
   ];
-
-  function createEnemy3DMesh(t) {
-    var group = new THREE.Group();
-    var s = t.scale;
-    var matMain = new THREE.MeshStandardMaterial({ color: t.hex, roughness: 0.55 });
-    var matGlow = new THREE.MeshBasicMaterial({ color: t.tier === 'boss' ? 0xfbbf24 : (t.tier === 'miniboss' ? 0x38bdf8 : 0xf43f5e) });
-
-    if (t.kind === 'slime') {
-      var blob = new THREE.Mesh(new THREE.SphereGeometry(1.05 * s, 16, 12), new THREE.MeshStandardMaterial({ color: t.hex, transparent: true, opacity: 0.85, roughness: 0.2 }));
-      blob.scale.set(1.15, 0.85, 1.15);
-      blob.position.y = 0.85 * s;
-      blob.castShadow = true;
-      group.add(blob);
-    } else if (t.kind === 'wolf') {
-      var body = new THREE.Mesh(new THREE.BoxGeometry(0.85 * s, 0.8 * s, 1.7 * s), matMain);
-      body.position.y = 0.85 * s;
-      body.castShadow = true;
-      group.add(body);
-      var snout = new THREE.Mesh(new THREE.BoxGeometry(0.65 * s, 0.65 * s, 0.8 * s), matMain);
-      snout.position.set(0, 1.2 * s, 0.95 * s);
-      group.add(snout);
-    } else if (t.kind === 'goblin') {
-      var gBody = new THREE.Mesh(new THREE.BoxGeometry(0.95 * s, 1.2 * s, 0.65 * s), matMain);
-      gBody.position.y = 1.1 * s;
-      gBody.castShadow = true;
-      group.add(gBody);
-      var gHead = new THREE.Mesh(new THREE.BoxGeometry(0.85 * s, 0.75 * s, 0.75 * s), matMain);
-      gHead.position.y = 2.0 * s;
-      group.add(gHead);
-    } else if (t.kind === 'golem') {
-      var colTorso = new THREE.Mesh(new THREE.DodecahedronGeometry(1.4 * s, 0), new THREE.MeshStandardMaterial({ color: 0x475569, roughness: 0.9 }));
-      colTorso.position.y = 1.9 * s;
-      colTorso.castShadow = true;
-      group.add(colTorso);
-      var core = new THREE.Mesh(new THREE.OctahedronGeometry(0.55 * s, 0), matGlow);
-      core.position.set(0, 1.9 * s, 1.1 * s);
-      group.add(core);
-    } else if (t.kind === 'dragon') {
-      // Dragão 3D Ignisdrake com Asas Articuladas!
-      var dBody = new THREE.Mesh(new THREE.ConeGeometry(1.25 * s, 3.2 * s, 10), matMain);
-      dBody.rotation.x = Math.PI / 2.3;
-      dBody.position.y = 2.2 * s;
-      dBody.castShadow = true;
-      group.add(dBody);
-
-      var dHead = new THREE.Mesh(new THREE.BoxGeometry(1.0 * s, 0.9 * s, 1.4 * s), matMain);
-      dHead.position.set(0, 3.3 * s, 1.5 * s);
-      group.add(dHead);
-
-      var wingGeo = new THREE.BoxGeometry(2.6 * s, 0.12 * s, 1.4 * s);
-      var leftWing = new THREE.Mesh(wingGeo, matGlow);
-      leftWing.position.set(-1.7 * s, 2.7 * s, 0.2 * s);
-      group.add(leftWing);
-
-      var rightWing = new THREE.Mesh(wingGeo, matGlow);
-      rightWing.position.set(1.7 * s, 2.7 * s, 0.2 * s);
-      group.add(rightWing);
-
-      group.userData.leftWing = leftWing;
-      group.userData.rightWing = rightWing;
-    }
-
-    // Olhos brilhantes
-    var eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.12 * s, 6, 6), matGlow);
-    eyeL.position.set(-0.22 * s, 1.8 * s, 0.55 * s);
-    group.add(eyeL);
-    var eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.12 * s, 6, 6), matGlow);
-    eyeR.position.set(0.22 * s, 1.8 * s, 0.55 * s);
-    group.add(eyeR);
-
-    if (t.tier === 'boss' || t.tier === 'miniboss') {
-      var aura = new THREE.Mesh(
-        new THREE.RingGeometry(1.4 * s, 1.75 * s, 24),
-        new THREE.MeshBasicMaterial({ color: t.hex, side: THREE.DoubleSide })
-      );
-      aura.rotation.x = -Math.PI / 2;
-      aura.position.y = 0.1;
-      group.add(aura);
-    }
-
-    return group;
-  }
-
-  function clearAllEnemies3D() {
-    enemies.forEach(function(en) {
-      if (en.mesh && scene) scene.remove(en.mesh);
-    });
-    enemies = [];
-  }
 
   function spawnEnemy(forcedTypeIdx) {
     var typeIdx = typeof forcedTypeIdx === 'number' ? forcedTypeIdx : 0;
@@ -1854,97 +1960,53 @@
     }
 
     var t = MONSTER_TYPES[typeIdx];
-    var wx = 0, wz = 0, tries = 0;
+    var wx = 0, wy = 0, tries = 0;
     do {
       var angle = Math.random() * Math.PI * 2;
-      var dist = 18 + Math.random() * (WORLD_SIZE / 2 - 24);
-      wx = Math.cos(angle) * dist;
-      wz = Math.sin(angle) * dist;
+      var dist = 320 + Math.random() * 980;
+      wx = Math.max(120, Math.min(WORLD_W - 120, WORLD_W / 2 + Math.cos(angle) * dist));
+      wy = Math.max(120, Math.min(WORLD_H - 120, WORLD_H / 2 + Math.sin(angle) * dist));
       tries++;
-    } while (isPointInLake3D(wx, wz) && tries < 15);
-
-    var mesh = createEnemy3DMesh(t);
-    mesh.position.set(wx, 0, wz);
-    scene.add(mesh);
+    } while (isPointInLake(wx, wy) && tries < 15);
 
     enemies.push({
       id: Math.random(), name: t.name, kind: t.kind,
-      x: wx, z: wz, mesh: mesh,
+      x: wx, y: wy,
       hp: t.hp, maxHp: t.hp, atk: t.atk, dmgType: t.dmgType, xp: t.xp, gold: t.gold,
-      color: t.color, hex: t.hex, scale: t.scale, tier: t.tier, atkTimer: 0
+      color: t.color, scale: t.scale, tier: t.tier, atkTimer: 0
     });
   }
 
   function spawnInitialEnemies() {
-    clearAllEnemies3D();
+    enemies = [];
     for (var i = 0; i < 14; i++) spawnEnemy();
     spawnEnemy(3);
     spawnEnemy(4);
   }
 
-  // ================= CONTROLES 3D (RAYCASTER + CÂMERA GIRATÓRIA) =================
-  function setup3DInputHandlers() {
-    var dom = renderer.domElement;
+  // ================= CONTROLES =================
+  canvas.addEventListener('mousedown', function(e) {
+    if (!gameRunning) return;
+    getAudioCtx();
+    var rect = canvas.getBoundingClientRect();
+    var clickX = e.clientX - rect.left;
+    var clickY = e.clientY - rect.top;
+    var camX = player.x - canvas.width / 2;
+    var camY = player.y - canvas.height / 2;
+    var worldX = Math.max(60, Math.min(WORLD_W - 60, clickX + camX));
+    var worldY = Math.max(60, Math.min(WORLD_H - 60, clickY + camY));
 
-    dom.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    player.targetX = worldX;
+    player.targetY = worldY;
+    if (Math.abs(worldX - player.x) > 4) player.facing = worldX >= player.x ? 1 : -1;
+    clickMarker = { x: worldX, y: worldY, timer: 0.5 };
 
-    dom.addEventListener('mousedown', function(e) {
-      if (!gameRunning) return;
-      getAudioCtx();
-
-      if (e.button === 2) {
-        isDraggingCam = true;
-        lastMouseX = e.clientX;
-        lastMouseY = e.clientY;
-        return;
-      }
-
-      if (e.button === 0) {
-        mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(mouseNDC, camera);
-
-        var hits = raycaster.intersectObject(groundPlaneMesh);
-        if (hits.length > 0) {
-          var pt = hits[0].point;
-          var half = WORLD_SIZE / 2 - 5;
-          player.targetX = Math.max(-half, Math.min(half, pt.x));
-          player.targetZ = Math.max(-half, Math.min(half, pt.z));
-
-          if (clickMarker3D) {
-            clickMarker3D.position.set(player.targetX, 0.22, player.targetZ);
-            clickMarker3D.visible = true;
-            clickMarker3D.userData.timer = 0.6;
-          }
-
-          var nearest = getNearestEnemy(pt.x, pt.z, 7.5);
-          var effRange = Math.max(CLASSES[player.classKey].skills[0].range, getPlayerEffectiveRange());
-          if (nearest && getDist(player, nearest) <= effRange) {
-            useSkill(0);
-          }
-        }
-      }
-    });
-
-    window.addEventListener('mousemove', function(e) {
-      if (!isDraggingCam) return;
-      var dx = e.clientX - lastMouseX;
-      var dy = e.clientY - lastMouseY;
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
-      camYaw -= dx * 0.007;
-      camPitch = Math.max(0.25, Math.min(1.25, camPitch + dy * 0.006));
-    });
-
-    window.addEventListener('mouseup', function(e) {
-      if (e.button === 2) isDraggingCam = false;
-    });
-
-    dom.addEventListener('wheel', function(e) {
-      if (!gameRunning) return;
-      camDistance = Math.max(9, Math.min(46, camDistance + e.deltaY * 0.015));
-    }, { passive: true });
-  }
+    var nearest = getNearestEnemy(worldX, worldY, 95);
+    var effRange = Math.max(CLASSES[player.classKey].skills[0].range, getPlayerEffectiveRange());
+    if (nearest && getDist(player, nearest) <= effRange) {
+      useSkill(0);
+    }
+  });
 
   window.addEventListener('keydown', function(e) {
     if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
@@ -1965,45 +2027,16 @@
 
   window.addEventListener('keyup', function(e) { keysPressed[e.key.toLowerCase()] = false; });
 
-  function getDist(a, b) { return Math.hypot(a.x - b.x, a.z - b.z); }
+  function getDist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
 
-  function getNearestEnemy(x, z, maxRange) {
+  function getNearestEnemy(x, y, maxRange) {
     if (typeof maxRange === 'undefined') maxRange = Infinity;
     var best = null, bestDist = maxRange;
     enemies.forEach(function(en) {
-      var d = Math.hypot(en.x - x, en.z - z);
+      var d = Math.hypot(en.x - x, en.y - y);
       if (d < bestDist) { bestDist = d; best = en; }
     });
     return best;
-  }
-
-  // ================= EFEITOS 3D DE SKILLS & PROJÉTEIS =================
-  function spawnSkillEffect3D(x, z, radius, hexColor) {
-    var ring = new THREE.Mesh(
-      new THREE.RingGeometry(0.4, radius, 28),
-      new THREE.MeshBasicMaterial({ color: hexColor, side: THREE.DoubleSide, transparent: true, opacity: 0.75 })
-    );
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.set(x, 0.25, z);
-    scene.add(ring);
-    effects3D.push({ mesh: ring, timer: 0.4, maxTimer: 0.4 });
-  }
-
-  function spawnProjectile3D(startX, startZ, targetEn, hexColor, isArrow) {
-    var geo = isArrow
-      ? new THREE.CylinderGeometry(0.08, 0.08, 1.8, 6)
-      : new THREE.SphereGeometry(0.45, 10, 10);
-    var mat = new THREE.MeshBasicMaterial({ color: hexColor });
-    var mesh = new THREE.Mesh(geo, mat);
-    if (isArrow) mesh.rotation.x = Math.PI / 2;
-    mesh.position.set(startX, 1.8, startZ);
-    scene.add(mesh);
-    projectiles3D.push({
-      mesh: mesh,
-      x: startX, z: startZ,
-      tx: targetEn.x, tz: targetEn.z,
-      speed: 45, timer: 0.6
-    });
   }
 
   function usePotion() {
@@ -2012,8 +2045,8 @@
     var healAmt = Math.round(stats.totalMaxHp * 0.5);
     player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
     player.cooldowns[4] = 4.0;
-    addFloatingText(player.x, 3.6, player.z, '+' + healAmt + ' HP', '#34d399');
-    spawnSkillEffect3D(player.x, player.z, 3.2, 0x34d399);
+    addFloatingText(player.x, player.y - 38, '+' + healAmt + ' HP', '#34d399');
+    effects.push({ x: player.x, y: player.y, radius: 55, color: '#34d399', timer: 0.35 });
     updateHUD();
   }
 
@@ -2022,7 +2055,7 @@
     var sk = cls.skills[idx];
     var stats = getTotalStats();
     if (!sk || player.cooldowns[idx] > 0) return;
-    if (player.mp < sk.mp) { addFloatingText(player.x, 3.5, player.z, 'Sem Éter!', '#38bdf8'); return; }
+    if (player.mp < sk.mp) { addFloatingText(player.x, player.y - 35, 'Sem Éter!', '#38bdf8'); return; }
 
     player.attackAnimTimer = 0.35;
 
@@ -2031,36 +2064,41 @@
       player.cooldowns[idx] = sk.cd;
       var healAmt = Math.round(stats.totalMaxHp * sk.heal);
       player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
-      addFloatingText(player.x, 3.8, player.z, '+' + healAmt + ' HP', '#34d399');
-      spawnSkillEffect3D(player.x, player.z, 4.2, sk.hex);
+      addFloatingText(player.x, player.y - 45, '+' + healAmt + ' HP', '#34d399');
+      effects.push({ x: player.x, y: player.y, radius: 75, color: sk.color, timer: 0.45 });
       updateHUD();
       return;
     }
 
     var effRange = idx === 0 ? Math.max(sk.range, getPlayerEffectiveRange()) : sk.range;
-    var target = getNearestEnemy(player.x, player.z, effRange + 2.5);
+    var target = getNearestEnemy(player.x, player.y, effRange + 45);
     if (!target) {
-      if (!autoCombat) addFloatingText(player.x, 3.5, player.z, 'Alvo fora de alcance!', '#fbbf24');
+      if (!autoCombat) addFloatingText(player.x, player.y - 35, 'Alvo fora de alcance!', '#fbbf24');
       return;
     }
 
-    player.rotY = Math.atan2(target.x - player.x, target.z - player.z);
+    player.facing = target.x >= player.x ? 1 : -1;
     player.mp -= sk.mp;
     player.cooldowns[idx] = sk.cd;
 
     if (sk.dash) {
-      player.x = target.x - 1.8;
-      player.z = target.z;
+      player.x = target.x - 32 * player.facing;
+      player.y = target.y;
       player.targetX = player.x;
-      player.targetZ = player.z;
+      player.targetY = player.y;
     }
 
     if (sk.proj) {
-      spawnProjectile3D(player.x, player.z, target, sk.hex, player.classKey === 'patrulheiro');
+      projectiles.push({
+        x: player.x, y: player.y - 12,
+        tx: target.x, ty: target.y - 10,
+        color: sk.color, isArrow: player.classKey === 'patrulheiro',
+        timer: 0.25, maxTimer: 0.25
+      });
     }
 
-    var hitList = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 8.5; }) : [target];
-    spawnSkillEffect3D(target.x, target.z, sk.aoe ? 7.5 : 3.2, sk.hex);
+    var hitList = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 135; }) : [target];
+    effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 130 : 60, color: sk.color, timer: 0.38 });
 
     var atkPower = stats.primaryAtk;
     var normalColor = stats.attackType === 'magic' ? '#c084fc' : (stats.attackType === 'ranged' ? '#34d399' : '#ffffff');
@@ -2070,25 +2108,24 @@
       var dmg = Math.round(atkPower * sk.mult * (0.9 + Math.random() * 0.2));
       if (isCrit) dmg = Math.round(dmg * 1.65);
       en.hp -= dmg;
-      addFloatingText(en.x, 3.2 * en.scale, en.z, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#fbbf24' : normalColor);
+      addFloatingText(en.x, en.y - 32 * en.scale, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#fbbf24' : normalColor);
       if (en.hp <= 0) killEnemy(en);
     });
     updateHUD();
   }
 
   function killEnemy(en) {
-    if (en.mesh && scene) scene.remove(en.mesh);
     enemies = enemies.filter(function(e) { return e.id !== en.id; });
     player.xp += en.xp;
     player.gold += en.gold;
     player.kills += 1;
-    addFloatingText(en.x, 4.0, en.z, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#fbbf24');
+    addFloatingText(en.x, en.y - 45, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#fbbf24');
 
     var isSpecial = (en.tier === 'miniboss' || en.tier === 'boss');
     if (isSpecial || Math.random() < 0.45) {
       var stonesWon = en.tier === 'boss' ? 4 : (en.tier === 'miniboss' ? 2 : 1);
       player.stones += stonesWon;
-      addFloatingText(en.x, 4.8, en.z, '💠 +' + stonesWon + ' Cristal Forja!', '#38bdf8');
+      addFloatingText(en.x, en.y - 68, '💠 +' + stonesWon + ' Cristal Forja!', '#38bdf8');
     }
 
     var dropChance = en.tier === 'boss' ? 0.92 : (en.tier === 'miniboss' ? 0.68 : 0.38);
@@ -2096,7 +2133,7 @@
       var droppedItem = generateRandomItem(player.level, en.tier);
       player.inventory.push(droppedItem);
       var rData = getRarityData(droppedItem.rarity);
-      addFloatingText(en.x, 5.6, en.z, '🎁 ' + droppedItem.name + '!', rData.color);
+      addFloatingText(en.x, en.y - 90, '🎁 ' + droppedItem.name + '!', rData.color);
     }
 
     var lapisChance = en.tier === 'boss' ? 0.85 : (en.tier === 'miniboss' ? 0.55 : 0.24);
@@ -2104,7 +2141,7 @@
       var droppedLapis = generateRandomLapis(en.tier);
       player.lapisBag.push(droppedLapis);
       var lMeta = LAPIS_TYPES[droppedLapis.type];
-      addFloatingText(en.x, 6.4, en.z, '💎 ' + lMeta.name + ' Nv.' + droppedLapis.level + '!', lMeta.color);
+      addFloatingText(en.x, en.y - 112, '💎 ' + lMeta.name + ' Nv.' + droppedLapis.level + '!', lMeta.color);
     }
 
     while (player.xp >= player.maxXp) {
@@ -2125,19 +2162,19 @@
       var stats = getTotalStats();
       player.hp = stats.totalMaxHp;
       player.mp = player.maxMp;
-      addFloatingText(player.x, 5.0, player.z, '🎉 LEVEL UP! Nv. ' + player.level, '#fbbf24');
-      spawnSkillEffect3D(player.x, player.z, 6.0, 0xfbbf24);
+      addFloatingText(player.x, player.y - 75, '🎉 LEVEL UP! Nv. ' + player.level, '#fbbf24');
+      effects.push({ x: player.x, y: player.y, radius: 110, color: '#fbbf24', timer: 0.6 });
     }
 
     saveAllSlots();
     setTimeout(function() { if (gameRunning) spawnEnemy(); }, 2500);
   }
 
-  function addFloatingText(x, y, z, text, color) {
-    floatingTexts.push({ x: x, y: y, z: z, text: text, color: color, timer: 1.4 });
+  function addFloatingText(x, y, text, color) {
+    floatingTexts.push({ x: x, y: y, text: text, color: color, timer: 1.35 });
   }
 
-  // ================= LOOP PRINCIPAL 3D =================
+  // ================= LOOP PRINCIPAL 2.5D =================
   function enterWorld() {
     document.getElementById('char-screen').style.display = 'none';
     document.getElementById('hud-top-left').style.display = 'flex';
@@ -2145,8 +2182,7 @@
     document.getElementById('controls-hint').style.display = 'block';
     document.getElementById('hud-bottom').style.display = 'flex';
 
-    initThreeEngine();
-    buildPlayer3DModel();
+    buildWorldEnvironment();
     setupSkillBar();
     spawnInitialEnemies();
     updateHUD();
@@ -2163,17 +2199,15 @@
     var dt = Math.min(0.05, (now - lastTime) / 1000);
     lastTime = now;
     worldAnimTime += dt;
-
-    if (gameRunning && threeInitialized) {
-      update3D(dt);
-      renderer.render(scene, camera);
-      renderOverlayLabels2D();
+    if (gameRunning) {
+      update25D(dt);
+      render25D();
       renderMinimap();
     }
     requestAnimationFrame(gameLoop);
   }
 
-  function update3D(dt) {
+  function update25D(dt) {
     var stats = getTotalStats();
     player.hp = Math.min(stats.totalMaxHp, player.hp + stats.totalMaxHp * 0.02 * dt);
     player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.06 * dt);
@@ -2189,292 +2223,218 @@
       }
     }
 
-    // Movimento relativo ao ângulo da câmera 3D (WASD)
-    var forwardInput = 0, rightInput = 0;
-    if (keysPressed['w']) forwardInput += 1;
-    if (keysPressed['s']) forwardInput -= 1;
-    if (keysPressed['d']) rightInput += 1;
-    if (keysPressed['a']) rightInput -= 1;
+    if (player.attackAnimTimer > 0) player.attackAnimTimer = Math.max(0, player.attackAnimTimer - dt);
+
+    var moveX = 0, moveY = 0;
+    if (keysPressed['w'] || keysPressed['arrowup']) moveY -= 1;
+    if (keysPressed['s'] || keysPressed['arrowdown']) moveY += 1;
+    if (keysPressed['a'] || keysPressed['arrowleft']) moveX -= 1;
+    if (keysPressed['d'] || keysPressed['arrowright']) moveX += 1;
 
     var isMoving = false;
-    if (forwardInput !== 0 || rightInput !== 0) {
-      var camForwardX = -Math.sin(camYaw);
-      var camForwardZ = -Math.cos(camYaw);
-      var camRightX   = Math.cos(camYaw);
-      var camRightZ   = -Math.sin(camYaw);
-
-      var vx = camForwardX * forwardInput + camRightX * rightInput;
-      var vz = camForwardZ * forwardInput + camRightZ * rightInput;
-      var len = Math.hypot(vx, vz);
-      vx /= len; vz /= len;
-
-      player.x += vx * player.speed * dt;
-      player.z += vz * player.speed * dt;
-      player.targetX = player.x;
-      player.targetZ = player.z;
-      player.rotY = Math.atan2(vx, vz);
+    if (moveX !== 0 || moveY !== 0) {
+      var len = Math.hypot(moveX, moveY);
+      player.x += (moveX / len) * player.speed * dt;
+      player.y += (moveY / len) * player.speed * dt;
+      player.targetX = player.x; player.targetY = player.y;
+      if (moveX !== 0) player.facing = moveX > 0 ? 1 : -1;
       isMoving = true;
     } else {
       if (autoCombat) {
         if (player.hp < stats.totalMaxHp * 0.45) usePotion();
-        var target = getNearestEnemy(player.x, player.z);
+        var target = getNearestEnemy(player.x, player.y);
         if (target) {
           var dist = getDist(player, target);
           var combatRange = getPlayerEffectiveRange();
           if (dist > combatRange * 0.85) {
-            player.targetX = target.x; player.targetZ = target.z;
+            player.targetX = target.x; player.targetY = target.y;
           } else {
-            player.targetX = player.x; player.targetZ = player.z;
+            player.targetX = player.x; player.targetY = player.y;
             for (var s = 3; s >= 0; s--) {
               if (player.cooldowns[s] <= 0 && player.mp >= CLASSES[player.classKey].skills[s].mp) { useSkill(s); break; }
             }
           }
         }
       }
-      var dx = player.targetX - player.x, dz = player.targetZ - player.z, dist2 = Math.hypot(dx, dz);
-      if (dist2 > 0.35) {
+      var dx = player.targetX - player.x, dy = player.targetY - player.y, dist2 = Math.hypot(dx, dy);
+      if (dist2 > 5) {
         player.x += (dx / dist2) * player.speed * dt;
-        player.z += (dz / dist2) * player.speed * dt;
-        player.rotY = Math.atan2(dx, dz);
+        player.y += (dy / dist2) * player.speed * dt;
+        if (Math.abs(dx) > 2) player.facing = dx > 0 ? 1 : -1;
         isMoving = true;
       }
     }
 
-    var boundHalf = WORLD_SIZE / 2 - 5;
-    player.x = Math.max(-boundHalf, Math.min(boundHalf, player.x));
-    player.z = Math.max(-boundHalf, Math.min(boundHalf, player.z));
+    if (isMoving) player.walkCycle = (player.walkCycle || 0) + dt * 14;
+    else player.walkCycle = 0;
 
-    // Atualiza posição e animação 3D do Herói
-    if (playerMeshGroup) {
-      playerMeshGroup.position.set(player.x, 0, player.z);
-      playerMeshGroup.rotation.y = player.rotY;
+    player.x = Math.max(70, Math.min(WORLD_W - 70, player.x));
+    player.y = Math.max(70, Math.min(WORLD_H - 70, player.y));
 
-      if (isMoving) {
-        var swing = Math.sin(worldAnimTime * 12) * 0.65;
-        playerAnimParts.leftLeg.rotation.x = swing;
-        playerAnimParts.rightLeg.rotation.x = -swing;
-        playerAnimParts.leftArm.rotation.x = -swing * 0.6;
-      } else {
-        playerAnimParts.leftLeg.rotation.x = 0;
-        playerAnimParts.rightLeg.rotation.x = 0;
-        playerAnimParts.leftArm.rotation.x = Math.sin(worldAnimTime * 2.5) * 0.08;
-      }
-
-      if (player.attackAnimTimer > 0) {
-        player.attackAnimTimer -= dt;
-        playerAnimParts.rightArm.rotation.x = -Math.PI * 0.65 * Math.sin((player.attackAnimTimer / 0.35) * Math.PI);
-      } else {
-        playerAnimParts.rightArm.rotation.x = isMoving ? Math.sin(worldAnimTime * 12) * 0.5 : 0;
-      }
-    }
-
-    // Câmera 3D em 3ª pessoa seguindo o Herói
-    var camX = player.x + Math.sin(camYaw) * Math.cos(camPitch) * camDistance;
-    var camY = 2.2 + Math.sin(camPitch) * camDistance;
-    var camZ = player.z + Math.cos(camYaw) * Math.cos(camPitch) * camDistance;
-    camera.position.set(camX, camY, camZ);
-    camera.lookAt(player.x, 2.0, player.z);
-
-    // Rotação dos Cristais de Éter no cenário
-    worldProps.forEach(function(pr) {
-      if (pr.spinObj) {
-        pr.spinObj.rotation.y += 1.4 * dt;
-        pr.spinObj.position.y = 3.2 + Math.sin(worldAnimTime * 2.5 + pr.x) * 0.35;
-      }
-    });
-
-    // Atualização dos Monstros 3D
     enemies.forEach(function(en) {
       var dist = getDist(player, en);
-      if (dist < 24 && dist > 4.2) {
-        var vx = (player.x - en.x) / dist;
-        var vz = (player.z - en.z) / dist;
-        en.x += vx * 6.5 * dt;
-        en.z += vz * 6.5 * dt;
-        if (en.mesh) en.mesh.rotation.y = Math.atan2(vx, vz);
-      } else if (dist <= 4.8) {
+      if (dist < 320 && dist > 62) {
+        en.x += ((player.x - en.x) / dist) * 85 * dt;
+        en.y += ((player.y - en.y) / dist) * 85 * dt;
+      } else if (dist <= 68) {
         en.atkTimer += dt;
         if (en.atkTimer >= 1.6) {
           en.atkTimer = 0;
           if ((Math.random() * 100) < stats.totalEva) {
-            addFloatingText(player.x, 3.6, player.z, '💨 DESVIOU!', '#38bdf8');
+            addFloatingText(player.x, player.y - 38, '💨 DESVIOU!', '#38bdf8');
           } else {
             var relevantDef = en.dmgType === 'magic' ? stats.totalMagDef : stats.totalPhysDef;
             var dmg = Math.max(2, en.atk - Math.round(relevantDef * 0.5));
             player.hp -= dmg;
             var dmgColor = en.dmgType === 'magic' ? '#c084fc' : '#fb7185';
-            addFloatingText(player.x, 3.4, player.z, (en.dmgType === 'magic' ? '🔮 -' : '-') + dmg, dmgColor);
+            addFloatingText(player.x, player.y - 35, (en.dmgType === 'magic' ? '🔮 -' : '-') + dmg, dmgColor);
             if (player.hp <= 0) {
               player.hp = stats.totalMaxHp;
-              player.x = 0; player.z = 0; player.targetX = 0; player.targetZ = 0;
+              player.x = WORLD_W / 2; player.y = WORLD_H / 2;
+              player.targetX = player.x; player.targetY = player.y;
             }
           }
         }
       }
-
-      if (en.mesh) {
-        en.mesh.position.set(en.x, 0, en.z);
-        if (en.kind === 'slime') {
-          en.mesh.position.y = Math.abs(Math.sin(worldAnimTime * 5 + en.id * 10)) * 0.55;
-        }
-        if (en.kind === 'dragon' && en.mesh.userData.leftWing) {
-          var flap = Math.sin(worldAnimTime * 7) * 0.45;
-          en.mesh.userData.leftWing.rotation.z = flap;
-          en.mesh.userData.rightWing.rotation.z = -flap;
-        }
-      }
     });
 
-    // Projéteis 3D voando
-    projectiles3D.forEach(function(p) {
-      p.timer -= dt;
-      var dx = p.tx - p.x, dz = p.tz - p.z;
-      var d = Math.hypot(dx, dz);
-      if (d > 0.5) {
-        p.x += (dx / d) * p.speed * dt;
-        p.z += (dz / d) * p.speed * dt;
-        p.mesh.position.set(p.x, 1.8, p.z);
-        p.mesh.rotation.y = Math.atan2(dx, dz);
-      } else {
-        p.timer = 0;
-      }
-      if (p.timer <= 0) scene.remove(p.mesh);
-    });
-    projectiles3D = projectiles3D.filter(function(p) { return p.timer > 0; });
+    projectiles.forEach(function(p) { p.timer -= dt; });
+    projectiles = projectiles.filter(function(p) { return p.timer > 0; });
 
-    // Efeitos de ondas no chão 3D
-    effects3D.forEach(function(ef) {
-      ef.timer -= dt;
-      var prog = 1 - (ef.timer / ef.maxTimer);
-      ef.mesh.scale.set(0.4 + prog * 0.8, 0.4 + prog * 0.8, 1);
-      ef.mesh.material.opacity = Math.max(0, 1 - prog);
-      if (ef.timer <= 0) scene.remove(ef.mesh);
-    });
-    effects3D = effects3D.filter(function(ef) { return ef.timer > 0; });
+    effects.forEach(function(ef) { ef.timer -= dt; });
+    effects = effects.filter(function(ef) { return ef.timer > 0; });
 
-    // Marcador de clique
-    if (clickMarker3D && clickMarker3D.visible) {
-      clickMarker3D.userData.timer -= dt;
-      clickMarker3D.rotation.z += 4 * dt;
-      if (clickMarker3D.userData.timer <= 0) clickMarker3D.visible = false;
-    }
-
-    // Textos flutuantes
-    floatingTexts.forEach(function(ft) { ft.y += 2.2 * dt; ft.timer -= dt; });
+    floatingTexts.forEach(function(ft) { ft.y -= 35 * dt; ft.timer -= dt; });
     floatingTexts = floatingTexts.filter(function(ft) { return ft.timer > 0; });
 
+    if (clickMarker) { clickMarker.timer -= dt; if (clickMarker.timer <= 0) clickMarker = null; }
     updateHUD();
   }
 
-  // ================= PROJEÇÃO 3D -> 2D PARA NOMES, BARRAS DE VIDA E DANOS =================
-  var overlayCanvas = document.getElementById('overlay2d');
-  var oCtx = overlayCanvas.getContext('2d');
+  function render25D() {
+    var camX = player.x - canvas.width / 2;
+    var camY = player.y - canvas.height / 2;
 
-  function resizeViewports() {
-    var w = window.innerWidth, h = window.innerHeight;
-    overlayCanvas.width = w;
-    overlayCanvas.height = h;
-    if (renderer && camera) {
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    }
-  }
-  window.addEventListener('resize', resizeViewports);
-  resizeViewports();
+    renderWorldTerrain(camX, camY);
 
-  function projectToScreen(wx, wy, wz) {
-    var vec = new THREE.Vector3(wx, wy, wz);
-    vec.project(camera);
-    if (vec.z > 1) return null; // Atrás da câmera
-    return {
-      x: (vec.x * 0.5 + 0.5) * overlayCanvas.width,
-      y: (-vec.y * 0.5 + 0.5) * overlayCanvas.height
-    };
-  }
-
-  function renderOverlayLabels2D() {
-    oCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-
-    // Nome e Nível do Jogador sobre a cabeça 3D
-    var pPos = projectToScreen(player.x, 3.85, player.z);
-    if (pPos) {
-      oCtx.font = 'bold 13px Segoe UI';
-      oCtx.textAlign = 'center';
-      oCtx.fillStyle = '#000';
-      oCtx.fillText('[Nv.' + player.level + '] ' + player.name, pPos.x + 1, pPos.y + 1);
-      oCtx.fillStyle = '#ffffff';
-      oCtx.fillText('[Nv.' + player.level + '] ' + player.name, pPos.x, pPos.y);
+    if (clickMarker) {
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(clickMarker.x - camX, clickMarker.y - camY, 22 * clickMarker.timer * 2, 11 * clickMarker.timer * 2, 0, 0, Math.PI * 2);
+      ctx.stroke();
     }
 
-    // Nomes e Barras de HP dos Monstros 3D
-    enemies.forEach(function(en) {
-      var ePos = projectToScreen(en.x, 2.9 * en.scale, en.z);
-      if (!ePos) return;
-      oCtx.font = 'bold 11px Segoe UI';
-      oCtx.textAlign = 'center';
-      oCtx.fillStyle = '#000';
-      oCtx.fillText(en.name, ePos.x + 1, ePos.y - 7);
-      oCtx.fillStyle = en.tier === 'boss' ? '#f97316' : (en.tier === 'miniboss' ? '#fbbf24' : '#fda4af');
-      oCtx.fillText(en.name, ePos.x, ePos.y - 8);
+    // Ordenação por profundidade Y (Y-Sorting 2.5D para árvores, monstros e herói se sobreporem corretamente!)
+    var renderQueue = [];
+    worldProps.forEach(function(pr) { renderQueue.push({ kind: 'prop', y: pr.y, data: pr }); });
+    enemies.forEach(function(en) { renderQueue.push({ kind: 'enemy', y: en.y, data: en }); });
+    renderQueue.push({ kind: 'player', y: player.y, data: player });
 
-      var barW = 48 * Math.min(1.5, en.scale);
-      oCtx.fillStyle = '#1e293b';
-      oCtx.fillRect(ePos.x - barW / 2, ePos.y - 3, barW, 5);
-      oCtx.fillStyle = '#e11d48';
-      oCtx.fillRect(ePos.x - barW / 2, ePos.y - 3, barW * Math.max(0, en.hp / en.maxHp), 5);
+    renderQueue.sort(function(a, b) { return a.y - b.y; });
+
+    renderQueue.forEach(function(item) {
+      if (item.kind === 'prop') {
+        drawWorldProp(item.data, camX, camY);
+      } else if (item.kind === 'enemy') {
+        var en = item.data;
+        var ex = en.x - camX, ey = en.y - camY;
+        if (ex < -140 || ey < -140 || ex > canvas.width + 140 || ey > canvas.height + 140) return;
+
+        drawEnemy25D(en, ex, ey);
+
+        var r = 20 * en.scale;
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 11px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(en.name, ex, ey - r - 18);
+
+        var barW = 54 * Math.min(1.4, en.scale);
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(ex - barW / 2, ey - r - 13, barW, 6);
+        ctx.fillStyle = '#e11d48';
+        ctx.fillRect(ex - barW / 2, ey - r - 13, barW * Math.max(0, en.hp / en.maxHp), 6);
+      } else if (item.kind === 'player') {
+        var px = player.x - camX, py = player.y - camY;
+        drawHero25D(px, py);
+
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 12px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText('[Nv.' + player.level + '] ' + player.name, px, py - 46);
+      }
     });
 
-    // Danos, Críticos, XP e Drops flutuantes
+    // Projéteis 2.5D
+    projectiles.forEach(function(p) {
+      var prog = 1 - (p.timer / p.maxTimer);
+      var curX = p.x + (p.tx - p.x) * prog - camX;
+      var curY = p.y + (p.ty - p.y) * prog - camY;
+      ctx.save();
+      ctx.fillStyle = p.color;
+      if (p.isArrow) {
+        var ang = Math.atan2(p.ty - p.y, p.tx - p.x);
+        ctx.translate(curX, curY);
+        ctx.rotate(ang);
+        ctx.fillRect(-14, -2, 28, 4);
+      } else {
+        ctx.beginPath();
+        ctx.arc(curX, curY, 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+
+    // Ondas de Skills 2.5D
+    effects.forEach(function(ef) {
+      ctx.fillStyle = ef.color + '44';
+      ctx.strokeStyle = ef.color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(ef.x - camX, ef.y - camY, ef.radius, ef.radius * 0.65, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    // Textos flutuantes
     floatingTexts.forEach(function(ft) {
-      var fPos = projectToScreen(ft.x, ft.y, ft.z);
-      if (!fPos) return;
-      oCtx.font = 'bold 14px Segoe UI';
-      oCtx.textAlign = 'center';
-      oCtx.fillStyle = '#000';
-      oCtx.fillText(ft.text, fPos.x + 1, fPos.y + 1);
-      oCtx.fillStyle = ft.color;
-      oCtx.fillText(ft.text, fPos.x, fPos.y);
+      ctx.font = 'bold 15px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000';
+      ctx.fillText(ft.text, ft.x - camX + 1, ft.y - camY + 1);
+      ctx.fillStyle = ft.color;
+      ctx.fillText(ft.text, ft.x - camX, ft.y - camY);
     });
   }
 
-  // ================= MINIMAPA TÁTICO 3D =================
-  var minimapCanvas = document.getElementById('minimapCanvas');
-  var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
-
+  // ================= MINIMAPA TÁTICO 2.5D =================
   function renderMinimap() {
     if (!mCtx || !minimapCanvas) return;
     var w = minimapCanvas.width, h = minimapCanvas.height;
-    var scale = w / WORLD_SIZE;
-    function toMiniX(wx) { return (wx + WORLD_SIZE / 2) * scale; }
-    function toMiniY(wz) { return (wz + WORLD_SIZE / 2) * scale; }
+    var scaleX = w / WORLD_W, scaleY = h / WORLD_H;
 
     mCtx.fillStyle = '#0c241d';
     mCtx.fillRect(0, 0, w, h);
 
-    // Lago
     mCtx.fillStyle = '#0284c7';
     mCtx.beginPath();
-    mCtx.ellipse(toMiniX(-42), toMiniY(38), 20 * scale, 14 * scale, 0, 0, Math.PI * 2);
+    mCtx.ellipse(760 * scaleX, 2080 * scaleY, 310 * scaleX, 210 * scaleY, 0, 0, Math.PI * 2);
     mCtx.fill();
 
-    // Praça Central
     mCtx.fillStyle = '#475569';
     mCtx.beginPath();
-    mCtx.arc(toMiniX(0), toMiniY(0), 6, 0, Math.PI * 2);
+    mCtx.arc((WORLD_W / 2) * scaleX, (WORLD_H / 2) * scaleY, 6, 0, Math.PI * 2);
     mCtx.fill();
 
-    // Cristais
     worldProps.forEach(function(pr) {
       if (pr.type === 'crystal') {
         mCtx.fillStyle = '#38bdf8';
-        mCtx.fillRect(toMiniX(pr.x) - 1.5, toMiniY(pr.z) - 1.5, 3, 3);
+        mCtx.fillRect(pr.x * scaleX - 1.5, pr.y * scaleY - 1.5, 3, 3);
       }
     });
 
-    // Monstros
     enemies.forEach(function(en) {
-      var mx = toMiniX(en.x), my = toMiniY(en.z);
+      var mx = en.x * scaleX, my = en.y * scaleY;
       if (en.tier === 'boss') {
         mCtx.fillStyle = '#f97316';
         mCtx.beginPath(); mCtx.arc(mx, my, 4.2, 0, Math.PI * 2); mCtx.fill();
@@ -2488,8 +2448,7 @@
       }
     });
 
-    // Jogador
-    var px = toMiniX(player.x), py = toMiniY(player.z);
+    var px = player.x * scaleX, py = player.y * scaleY;
     mCtx.fillStyle = '#ffffff';
     mCtx.beginPath(); mCtx.arc(px, py, 3.2, 0, Math.PI * 2); mCtx.fill();
     mCtx.strokeStyle = '#38bdf8'; mCtx.lineWidth = 1.5; mCtx.stroke();
@@ -2509,7 +2468,7 @@
     document.getElementById('hud-gold').textContent = player.gold;
     document.getElementById('hud-stones').textContent = player.stones;
     var coordsEl = document.getElementById('hud-coords');
-    if (coordsEl) coordsEl.textContent = 'Coords 3D: (' + Math.round(player.x) + ', ' + Math.round(player.z) + ')';
+    if (coordsEl) coordsEl.textContent = 'Coords: (' + Math.round(player.x) + ', ' + Math.round(player.y) + ')';
     var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
     document.getElementById('hud-xp-bar').style.width = xpPct + '%';
     document.getElementById('hud-xp-text').textContent = 'XP: ' + player.xp + ' / ' + player.maxXp + ' (' + xpPct.toFixed(0) + '%)';
@@ -2551,10 +2510,10 @@
     var btn = document.getElementById('btn-auto');
     if (autoCombat) {
       btn.classList.add('active');
-      addFloatingText(player.x, 3.8, player.z, 'AUTO ATIVADO', '#34d399');
+      addFloatingText(player.x, player.y - 38, 'AUTO ATIVADO', '#34d399');
     } else {
       btn.classList.remove('active');
-      addFloatingText(player.x, 3.8, player.z, 'AUTO DESLIGADO', '#fb7185');
+      addFloatingText(player.x, player.y - 38, 'AUTO DESLIGADO', '#fb7185');
     }
   }
 
@@ -2905,11 +2864,11 @@
       inspectedItem.sockets[freeSocketIdx] = { type: lapis.type, level: lapis.level };
       playLinkSuccessSound();
       showLinkFeedback('✨ SUCESSO (-$' + goldCost + ')! ' + meta.name + ' Nv.' + lapis.level + ' linkado!', true);
-      addFloatingText(player.x, 4.5, player.z, '💎 LINK SUCESSO!', meta.color);
+      addFloatingText(player.x, player.y - 50, '💎 LINK SUCESSO!', meta.color);
     } else {
       playGlassBreakSound();
       showLinkFeedback('💥 FALHOU (-$' + goldCost + ')! ' + meta.name + ' Nv.' + lapis.level + ' estilhaçou!', false);
-      addFloatingText(player.x, 4.5, player.z, '💔 Gema Quebrou!', '#fb7185');
+      addFloatingText(player.x, player.y - 50, '💔 Gema Quebrou!', '#fb7185');
     }
 
     saveAllSlots();
@@ -3090,10 +3049,10 @@
     if (Math.random() * 100 <= cfg.chance) {
       item.plus += 1;
       playLinkSuccessSound();
-      addFloatingText(player.x, 4.5, player.z, '🔨 SUCESSO! ' + item.name + ' +' + item.plus + '!', '#34d399');
-      spawnSkillEffect3D(player.x, player.z, 5.0, 0xfbbf24);
+      addFloatingText(player.x, player.y - 50, '🔨 SUCESSO! ' + item.name + ' +' + item.plus + '!', '#34d399');
+      effects.push({ x: player.x, y: player.y, radius: 95, color: '#fbbf24', timer: 0.45 });
     } else {
-      addFloatingText(player.x, 4.5, player.z, '💥 Falha na Forja!', '#fb7185');
+      addFloatingText(player.x, player.y - 50, '💥 Falha na Forja!', '#fb7185');
     }
 
     saveAllSlots();
