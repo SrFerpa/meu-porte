@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Fase 2.5</title>
+  <title>Asa de Cristal 2.5D - Fase 3</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -297,93 +297,108 @@
     .modal-window {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
       background: #121622; border: 2px solid #ffa502; border-radius: 16px;
-      width: 960px; max-width: 96vw; max-height: 88vh; display: none; flex-direction: column; z-index: 100;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.85);
+      width: 1020px; max-width: 97vw; max-height: 90vh; display: none; flex-direction: column; z-index: 100;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.88);
     }
     .modal-header {
-      padding: 14px 20px; background: #1a2030; border-bottom: 1px solid #2f3542;
+      padding: 13px 20px; background: #1a2030; border-bottom: 1px solid #2f3542;
       border-radius: 14px 14px 0 0; display: flex; justify-content: space-between; align-items: center;
     }
-    .modal-header h3 { color: #ffa502; font-size: 1.15rem; letter-spacing: 0.5px; }
+    .modal-header h3 { color: #ffa502; font-size: 1.12rem; letter-spacing: 0.5px; }
     .btn-close-modal { background: #ff4757; border: none; color: #fff; width: 30px; height: 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .modal-body { padding: 16px; overflow-y: auto; display: flex; gap: 14px; flex-wrap: wrap; }
+    .modal-body { padding: 15px; overflow-y: auto; display: flex; gap: 14px; flex-wrap: wrap; }
 
     /* Coluna 1: Equipados */
     .equip-column {
-      flex: 1.1; min-width: 250px; background: #0d1018; padding: 14px;
+      flex: 1.05; min-width: 245px; background: #0d1018; padding: 13px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .equip-column h4, .inspect-column h4, .bag-column h4 {
-      font-size: 0.84rem; color: #a4b0be; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+      font-size: 0.82rem; color: #a4b0be; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px;
     }
     .equip-slot-row {
       display: flex; align-items: center; justify-content: space-between;
       background: #161b29; border: 1.5px solid #2f3542; padding: 8px 10px;
-      border-radius: 10px; margin-bottom: 8px; font-size: 0.82rem; cursor: pointer; transition: 0.15s;
+      border-radius: 10px; margin-bottom: 8px; font-size: 0.8rem; cursor: pointer; transition: 0.15s;
     }
     .equip-slot-row:hover { transform: translateX(3px); background: #1d2436; }
     .stat-summary {
       margin-top: auto; padding-top: 10px; border-top: 1px solid #2f3542;
-      font-size: 0.82rem; color: #ced6e0; line-height: 1.6;
+      font-size: 0.8rem; color: #ced6e0; line-height: 1.55;
     }
 
-    /* Coluna 2: Inspeção de Item + Slots de Lápis */
+    /* Coluna 2: Inspeção de Item + Comparação com Setas + Slots de Lápis */
     .inspect-column {
-      flex: 1; min-width: 240px; background: #0d1018; padding: 14px;
+      flex: 1.1; min-width: 265px; background: #0d1018; padding: 13px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .inspect-card {
       flex: 1; background: #141926; border: 1.5px solid #2f3542; border-radius: 12px;
-      padding: 14px; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 13px; display: flex; flex-direction: column; justify-content: space-between;
     }
-    .inspect-header { text-align: center; padding-bottom: 10px; border-bottom: 1px solid #252c3d; }
+    .inspect-header { text-align: center; padding-bottom: 9px; border-bottom: 1px solid #252c3d; }
     .inspect-icon-box {
-      width: 56px; height: 56px; border-radius: 12px; margin: 0 auto 8px;
-      display: flex; align-items: center; justify-content: center; font-size: 2rem; background: #0d1018;
+      width: 52px; height: 52px; border-radius: 12px; margin: 0 auto 7px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.9rem; background: #0d1018;
     }
     .rarity-badge {
-      display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.72rem;
+      display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.7rem;
       font-weight: bold; text-transform: uppercase; margin-top: 4px;
     }
-    .inspect-stats { margin: 12px 0; font-size: 0.84rem; line-height: 1.7; color: #e2e8f0; }
+    .class-req-pill {
+      display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.7rem;
+      font-weight: bold; margin-top: 5px;
+    }
+    .class-req-ok { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid #2ed57355; }
+    .class-req-no { background: rgba(255, 71, 87, 0.18); color: #ff6b81; border: 1px solid #ff475777; }
+
+    .inspect-stats { margin: 10px 0; font-size: 0.82rem; color: #e2e8f0; }
+    .stat-comp-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .arrow-up { color: #2ed573; font-weight: bold; font-size: 0.78rem; }
+    .arrow-down { color: #ff4757; font-weight: bold; font-size: 0.78rem; }
+    .arrow-eq { color: #64748b; font-size: 0.74rem; }
 
     /* Engastes / Slots de Lápis */
     .lapis-section {
-      background: #0b0e15; border: 1px dashed #334155; border-radius: 10px; padding: 10px; margin-top: 6px;
+      background: #0b0e15; border: 1px dashed #334155; border-radius: 10px; padding: 9px; margin-top: 6px;
     }
-    .lapis-title { font-size: 0.74rem; color: #94a3b8; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; }
-    .lapis-sockets-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .lapis-title { font-size: 0.72rem; color: #94a3b8; margin-bottom: 7px; font-weight: bold; text-transform: uppercase; text-align: center; }
+    .lapis-sockets-row { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
     .lapis-socket {
-      width: 30px; height: 30px; border-radius: 50%; border: 2px dashed #475569;
+      width: 28px; height: 28px; border-radius: 50%; border: 2px dashed #475569;
       background: #161c2c; display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; color: #64748b; position: relative;
+      font-size: 0.72rem; color: #64748b;
     }
     .lapis-socket.unlocked { border-style: solid; box-shadow: inset 0 0 8px rgba(255,255,255,0.08); }
 
     /* Coluna 3: Mochila */
     .bag-column {
-      flex: 1.45; min-width: 310px; background: #0d1018; padding: 14px;
+      flex: 1.5; min-width: 320px; background: #0d1018; padding: 13px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .bag-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-      gap: 8px; max-height: 360px; overflow-y: auto; padding-right: 2px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px; max-height: 395px; overflow-y: auto; padding-right: 2px;
     }
     .bag-item {
       background: #161b29; border: 1.5px solid #2f3542; border-radius: 10px;
-      padding: 8px; font-size: 0.78rem; display: flex; flex-direction: column;
+      padding: 8px; font-size: 0.76rem; display: flex; flex-direction: column;
       justify-content: space-between; cursor: pointer; transition: 0.15s;
     }
     .bag-item:hover { transform: translateY(-2px); background: #1d2436; }
-    .bag-item.selected-inspect { box-shadow: 0 0 12px rgba(255, 165, 2, 0.5); }
-    .mini-sockets { display: flex; gap: 3px; margin: 5px 0; flex-wrap: wrap; }
-    .mini-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #64748b; background: #0b0e15; }
+    .bag-item.wrong-class { opacity: 0.85; }
+    .mini-sockets { display: flex; gap: 3px; margin: 4px 0; flex-wrap: wrap; }
+    .mini-dot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid #64748b; background: #0b0e15; }
     .bag-item-actions { display: flex; gap: 4px; margin-top: 6px; }
-    .btn-mini { flex: 1; padding: 5px 4px; border: none; border-radius: 5px; font-size: 0.7rem; font-weight: bold; cursor: pointer; }
+    .btn-mini { flex: 1; padding: 5px 4px; border: none; border-radius: 5px; font-size: 0.69rem; font-weight: bold; cursor: pointer; }
     .btn-equip { background: #2ed573; color: #000; }
+    .btn-equip:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
     .btn-sell { background: #ffa502; color: #000; }
     .btn-sell-all { background: #ff4757; color: #fff; }
-    .btn-unequip { background: #475569; color: #fff; padding: 3px 7px; border: none; border-radius: 5px; font-size: 0.68rem; cursor: pointer; }
+    .btn-unequip { background: #475569; color: #fff; padding: 3px 7px; border: none; border-radius: 5px; font-size: 0.66rem; cursor: pointer; }
 
     /* Forja */
     .forge-list { flex: 1; min-width: 240px; }
@@ -408,31 +423,31 @@
           <div class="class-icon" style="background:#eccc6822; border:2px solid #eccc68; color:#eccc68">🛡️</div>
           <h3 style="color:#eccc68">Cavaleiro</h3>
           <div class="role">Tanque / Corpo a Corpo</div>
-          <div class="desc">Alta defesa e vida. Protege aliados e resiste a grandes chefes.</div>
+          <div class="desc">Alta defesa e vida. Usa Espadas Pesadas e Armaduras de Placas.</div>
         </div>
         <div class="class-card" id="card-mago" onclick="selecionarClasse('mago')">
           <div class="class-icon" style="background:#70a1ff22; border:2px solid #70a1ff; color:#70a1ff">🔮</div>
           <h3 style="color:#70a1ff">Mago</h3>
           <div class="role">Dano Mágico / Área</div>
-          <div class="desc">Domina fogo e gelo para destruir vários inimigos à distância.</div>
+          <div class="desc">Domina fogo e gelo. Usa Cajados Arcanos e Vestes Místicas.</div>
         </div>
         <div class="class-card" id="card-arqueiro" onclick="selecionarClasse('arqueiro')">
           <div class="class-icon" style="background:#2ed57322; border:2px solid #2ed573; color:#2ed573">🏹</div>
           <h3 style="color:#2ed573">Arqueiro</h3>
           <div class="role">Dano Físico / Crítico</div>
-          <div class="desc">Ataques rápidos à distância com alta chance de acerto crítico.</div>
+          <div class="desc">Ataques rápidos à distância. Usa Arcos Longos e Couro Leve.</div>
         </div>
         <div class="class-card" id="card-sacerdote" onclick="selecionarClasse('sacerdote')">
           <div class="class-icon" style="background:#f1f2f622; border:2px solid #f1f2f6; color:#f1f2f6">✨</div>
           <h3 style="color:#f1f2f6">Sacerdote</h3>
           <div class="role">Suporte / Luz Sagrada</div>
-          <div class="desc">Canaliza a luz para curar ferimentos e punir criaturas das trevas.</div>
+          <div class="desc">Canaliza a luz divina. Usa Cetros Sagrados e Batina Celestial.</div>
         </div>
         <div class="class-card" id="card-assassino" onclick="selecionarClasse('assassino')">
           <div class="class-icon" style="background:#ff475722; border:2px solid #ff4757; color:#ff4757">🗡️</div>
           <h3 style="color:#ff4757">Assassino</h3>
           <div class="role">Furtivo / Explosão</div>
-          <div class="desc">Velocidade extrema e golpes letais nas sombras.</div>
+          <div class="desc">Alta evasão e crítico. Usa Adagas Sombrias e Trajes Furtivos.</div>
         </div>
       </div>
 
@@ -481,7 +496,7 @@
 
   <div id="controls-hint">
     🖱️ <b>Clique:</b> Mover/Atacar | <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção<br>
-    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Inventário & Lápis | <b>F:</b> Forja (+1 a +12)
+    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Inventário & Comparador | <b>F:</b> Forja (+1 a +12)
   </div>
 
   <div id="hud-bottom">
@@ -495,7 +510,7 @@
   <!-- MODAL INVENTÁRIO DINÂMICO -->
   <div class="modal-window" id="bag-modal">
     <div class="modal-header">
-      <h3>🎒 Inventário Dinâmico & Engastes de Lápis</h3>
+      <h3>🎒 Inventário Dinâmico, Itens de Classe & Comparador</h3>
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
@@ -506,12 +521,12 @@
         <div class="stat-summary" id="stat-summary"></div>
       </div>
 
-      <!-- COLUNA 2: INSPEÇÃO & SLOTS DE LÁPIS -->
+      <!-- COLUNA 2: INSPEÇÃO & COMPARAÇÃO COM SETAS -->
       <div class="inspect-column">
-        <h4>🔍 Detalhes & Slots de Lápis</h4>
+        <h4>🔍 Comparador & Slots de Lápis</h4>
         <div class="inspect-card" id="inspect-panel">
           <div style="text-align:center; color:#64748b; margin:auto;">
-            Clique ou passe o mouse sobre um item equipado ou na mochila para inspecionar seus atributos e slots de Lápis.
+            Clique ou passe o mouse sobre um item na mochila para comparar com o que você está usando (<span style="color:#2ed573;">▲</span> melhor / <span style="color:#ff4757;">▼</span> pior).
           </div>
         </div>
       </div>
@@ -565,11 +580,12 @@
   var loopStarted = false;
   var selectedForgeSlot = 'weapon';
   var inspectedItem = null;
+  var inspectedFromBag = false;
   var lastTime = performance.now();
 
   var CLASSES = {
     cavaleiro: {
-      name: 'Cavaleiro', icon: '🛡️', color: '#eccc68', baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, range: 65,
+      name: 'Cavaleiro', icon: '🛡️', color: '#eccc68', baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, baseCrit: 8, baseEva: 4, range: 65,
       skills: [
         { name: 'Golpe Cruzado', icon: '⚔️', mult: 1.3, mp: 5, cd: 1.5, range: 70, color: '#ffa502' },
         { name: 'Escudo Sagrado', icon: '🛡️', mult: 0, heal: 0.25, mp: 15, cd: 6, range: 0, color: '#70a1ff' },
@@ -578,7 +594,7 @@
       ]
     },
     mago: {
-      name: 'Mago', icon: '🔮', color: '#70a1ff', baseHp: 130, baseMp: 180, baseAtk: 34, baseDef: 6, range: 210,
+      name: 'Mago', icon: '🔮', color: '#70a1ff', baseHp: 130, baseMp: 180, baseAtk: 34, baseDef: 6, baseCrit: 12, baseEva: 6, range: 210,
       skills: [
         { name: 'Bola de Fogo', icon: '🔥', mult: 1.4, mp: 8, cd: 1.4, range: 220, color: '#ff6348' },
         { name: 'Lança de Gelo', icon: '❄️', mult: 1.8, mp: 16, cd: 4, range: 220, color: '#1e90ff' },
@@ -587,7 +603,7 @@
       ]
     },
     arqueiro: {
-      name: 'Arqueiro', icon: '🏹', color: '#2ed573', baseHp: 155, baseMp: 120, baseAtk: 30, baseDef: 8, range: 230,
+      name: 'Arqueiro', icon: '🏹', color: '#2ed573', baseHp: 155, baseMp: 120, baseAtk: 30, baseDef: 8, baseCrit: 18, baseEva: 12, range: 230,
       skills: [
         { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 240, color: '#2ed573' },
         { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 240, color: '#7bed9f' },
@@ -596,7 +612,7 @@
       ]
     },
     sacerdote: {
-      name: 'Sacerdote', icon: '✨', color: '#f1f2f6', baseHp: 160, baseMp: 200, baseAtk: 25, baseDef: 9, range: 195,
+      name: 'Sacerdote', icon: '✨', color: '#f1f2f6', baseHp: 160, baseMp: 200, baseAtk: 25, baseDef: 9, baseCrit: 10, baseEva: 7, range: 195,
       skills: [
         { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 200, color: '#f1c40f' },
         { name: 'Cura Divina', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#2ed573' },
@@ -605,13 +621,52 @@
       ]
     },
     assassino: {
-      name: 'Assassino', icon: '🗡️', color: '#ff4757', baseHp: 150, baseMp: 110, baseAtk: 35, baseDef: 7, range: 65,
+      name: 'Assassino', icon: '🗡️', color: '#ff4757', baseHp: 150, baseMp: 110, baseAtk: 35, baseDef: 7, baseCrit: 20, baseEva: 16, range: 65,
       skills: [
         { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 70, color: '#ff4757' },
         { name: 'Passo Sombrio', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 140, dash: true, color: '#a29bfe' },
         { name: 'Lâminas Giratórias', icon: '🌀', mult: 2.2, mp: 22, cd: 5.5, range: 85, aoe: true, color: '#ff6b81' },
         { name: 'Execução', icon: '💀', mult: 3.6, mp: 35, cd: 9, range: 75, color: '#ffa502' }
       ]
+    }
+  };
+
+  // ================= EQUIPAMENTOS ESPECÍFICOS POR CLASSE =================
+  var CLASS_GEAR_NAMES = {
+    cavaleiro: {
+      weapon: { name: 'Espada Pesada', icon: '🗡️' },
+      armor:  { name: 'Peitoral de Placas', icon: '🛡️' },
+      helm:   { name: 'Elmo de Aço', icon: '🪖' },
+      boots:  { name: 'Grevas Blindadas', icon: '👢' },
+      ring:   { name: 'Anel do Guardião', icon: '💍' }
+    },
+    mago: {
+      weapon: { name: 'Cajado Arcano', icon: '🪄' },
+      armor:  { name: 'Veste Mística', icon: '👘' },
+      helm:   { name: 'Chapéu do Feiticeiro', icon: '🎩' },
+      boots:  { name: 'Botas Etéreas', icon: '👢' },
+      ring:   { name: 'Anel de Safira', icon: '💍' }
+    },
+    arqueiro: {
+      weapon: { name: 'Arco Longo', icon: '🏹' },
+      armor:  { name: 'Túnica de Caçador', icon: '🦺' },
+      helm:   { name: 'Capuz da Floresta', icon: '🧢' },
+      boots:  { name: 'Botas do Vento', icon: '👢' },
+      ring:   { name: 'Anel Olho de Águia', icon: '💍' }
+    },
+    sacerdote: {
+      weapon: { name: 'Cetro Sagrado', icon: '🦯' },
+      armor:  { name: 'Batina Celestial', icon: '🥼' },
+      helm:   { name: 'Tiara da Luz', icon: '👑' },
+      boots:  { name: 'Sandálias Divinas', icon: '🩴' },
+      ring:   { name: 'Anel da Bênção', icon: '💍' }
+    },
+    assassino: {
+      weapon: { name: 'Adagas Sombrias', icon: '⚔️' },
+      armor:  { name: 'Traje Furtivo', icon: '🥷' },
+      helm:   { name: 'Máscara das Sombras', icon: '🎭' },
+      boots:  { name: 'Botas Silenciosas', icon: '👢' },
+      ring:   { name: 'Anel do Crepúsculo', icon: '💍' }
     }
   };
 
@@ -627,16 +682,15 @@
   };
 
   var EQUIP_SLOTS = {
-    weapon: { label: 'Arma',     icon: '⚔️', baseAtk: 10, baseDef: 0, baseHp: 0 },
-    armor:  { label: 'Armadura', icon: '👕', baseAtk: 0,  baseDef: 7, baseHp: 45 },
-    helm:   { label: 'Elmo',     icon: '🪖', baseAtk: 2,  baseDef: 5, baseHp: 30 },
-    boots:  { label: 'Botas',    icon: '👢', baseAtk: 2,  baseDef: 4, baseHp: 25 },
-    ring:   { label: 'Anel',     icon: '💍', baseAtk: 7,  baseDef: 2, baseHp: 20 }
+    weapon: { label: 'Arma',     icon: '⚔️', baseAtk: 11, baseDef: 0, baseHp: 0,  baseCrit: 3.0, baseEva: 0.5 },
+    armor:  { label: 'Armadura', icon: '👕', baseAtk: 0,  baseDef: 8, baseHp: 48, baseCrit: 0.5, baseEva: 1.5 },
+    helm:   { label: 'Elmo',     icon: '🪖', baseAtk: 2,  baseDef: 5, baseHp: 32, baseCrit: 1.5, baseEva: 1.0 },
+    boots:  { label: 'Botas',    icon: '👢', baseAtk: 2,  baseDef: 4, baseHp: 25, baseCrit: 1.0, baseEva: 3.5 },
+    ring:   { label: 'Anel',     icon: '💍', baseAtk: 7,  baseDef: 2, baseHp: 20, baseCrit: 3.5, baseEva: 2.0 }
   };
 
   function getRarityData(key) {
     if (RARITIES[key]) return RARITIES[key];
-    // Compatibilidade com itens antigos salvos
     var mapOld = { comum: 'normal', raro: 'nobre', epico: 'heroico', lendario: 'legendario' };
     return RARITIES[mapOld[key] || 'normal'];
   }
@@ -650,31 +704,48 @@
     if (!Array.isArray(item.sockets) || item.sockets.length !== r.slots) {
       item.sockets = new Array(r.slots).fill(null);
     }
+    if (typeof item.crit !== 'number') item.crit = Math.round((EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].baseCrit : 1) * r.mult * 10) / 10;
+    if (typeof item.eva !== 'number') item.eva = Math.round((EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].baseEva : 1) * r.mult * 10) / 10;
+    // Itens antigos sem classReq ficam compatíveis com qualquer classe ('all')
+    if (!item.classReq) item.classReq = 'all';
     return item;
   }
 
+  function canClassEquip(item) {
+    if (!item) return false;
+    if (!item.classReq || item.classReq === 'all') return true;
+    return item.classReq === player.classKey;
+  }
+
+  function getClassReqLabel(classReq) {
+    if (!classReq || classReq === 'all') return 'Todas as Classes';
+    return CLASSES[classReq] ? CLASSES[classReq].name : classReq;
+  }
+
   function generateRandomItem(playerLvl, tierType) {
-    // tierType: 'normal' | 'miniboss' | 'boss'
     var slotKeys = Object.keys(EQUIP_SLOTS);
     var slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
     var slotInfo = EQUIP_SLOTS[slot];
+
+    // 45% de chance de dropar para a classe do próprio jogador, 55% dividido entre as outras classes
+    var classKeys = Object.keys(CLASSES);
+    var itemClass = Math.random() < 0.45 ? player.classKey : classKeys[Math.floor(Math.random() * classKeys.length)];
+    var gearMeta = CLASS_GEAR_NAMES[itemClass][slot];
+
     var roll = Math.random();
     var rarityKey = 'normal';
 
     if (tierType === 'boss') {
-      // Supremo cai APENAS de Boss
       if (roll > 0.72) rarityKey = 'supremo';
       else if (roll > 0.42) rarityKey = 'deusa';
       else if (roll > 0.18) rarityKey = 'legendario';
       else rarityKey = 'atroz';
     } else if (tierType === 'miniboss') {
-      // Deusa cai APENAS de Mini-Boss (e nunca Supremo aqui)
       if (roll > 0.72) rarityKey = 'deusa';
       else if (roll > 0.40) rarityKey = 'legendario';
       else if (roll > 0.15) rarityKey = 'atroz';
       else rarityKey = 'heroico';
     } else {
-      // Monstros comuns: até Legendário (bem difícil), nunca Deusa nem Supremo
       if (roll > 0.975) rarityKey = 'legendario';
       else if (roll > 0.91) rarityKey = 'atroz';
       else if (roll > 0.78) rarityKey = 'heroico';
@@ -685,28 +756,41 @@
     var r = RARITIES[rarityKey];
     var scale = 1 + (playerLvl - 1) * 0.22;
 
+    // Bônus temático por classe
+    var classCritBonus = (itemClass === 'arqueiro' || itemClass === 'assassino') ? 1.35 : 1.0;
+    var classEvaBonus  = (itemClass === 'assassino' || itemClass === 'arqueiro') ? 1.35 : 1.0;
+    var classDefBonus  = (itemClass === 'cavaleiro') ? 1.35 : 1.0;
+    var classAtkBonus  = (itemClass === 'mago' || itemClass === 'assassino') ? 1.25 : 1.0;
+
     return {
       id: 'item_' + Math.random().toString(36).slice(2, 10),
-      name: slotInfo.label + ' ' + r.label,
+      name: gearMeta.name + ' (' + r.label + ')',
       slot: slot,
-      icon: slotInfo.icon,
+      icon: gearMeta.icon,
+      classReq: itemClass,
       rarity: rarityKey,
       plus: 0,
       sockets: new Array(r.slots).fill(null),
-      atk: Math.round(slotInfo.baseAtk * r.mult * scale),
-      def: Math.round(slotInfo.baseDef * r.mult * scale),
-      hp: Math.round(slotInfo.baseHp * r.mult * scale),
+      atk:  Math.round(slotInfo.baseAtk * r.mult * scale * classAtkBonus),
+      def:  Math.round(slotInfo.baseDef * r.mult * scale * classDefBonus),
+      hp:   Math.round(slotInfo.baseHp  * r.mult * scale),
+      crit: Math.round(slotInfo.baseCrit * (1 + (r.mult - 1) * 0.65) * classCritBonus * 10) / 10,
+      eva:  Math.round(slotInfo.baseEva  * (1 + (r.mult - 1) * 0.65) * classEvaBonus  * 10) / 10,
       sellPrice: Math.round(r.price * scale)
     };
   }
 
   function getItemEffectiveStats(item) {
-    if (!item) return { atk: 0, def: 0, hp: 0 };
+    if (!item) return { atk: 0, def: 0, hp: 0, crit: 0, eva: 0 };
+    normalizeItem(item);
     var forgeMult = 1 + (item.plus || 0) * 0.18;
+    var critForgeMult = 1 + (item.plus || 0) * 0.08;
     return {
-      atk: Math.round((item.atk || 0) * forgeMult),
-      def: Math.round((item.def || 0) * forgeMult),
-      hp: Math.round((item.hp || 0) * forgeMult)
+      atk:  Math.round((item.atk || 0) * forgeMult),
+      def:  Math.round((item.def || 0) * forgeMult),
+      hp:   Math.round((item.hp  || 0) * forgeMult),
+      crit: Math.round((item.crit || 0) * critForgeMult * 10) / 10,
+      eva:  Math.round((item.eva  || 0) * critForgeMult * 10) / 10
     };
   }
 
@@ -821,23 +905,33 @@
   }
 
   function getTotalStats() {
+    var cls = CLASSES[player.classKey];
     var baseHp = player.baseMaxHp || player.maxHp;
     var baseAtk = player.baseAtk || player.atk;
     var baseDef = player.baseDef || player.def;
-    var bonusHp = 0, bonusAtk = 0, bonusDef = 0;
+    var baseCrit = cls.baseCrit || 10;
+    var baseEva = cls.baseEva || 5;
+
+    var bonusHp = 0, bonusAtk = 0, bonusDef = 0, bonusCrit = 0, bonusEva = 0;
     Object.values(player.equipped).forEach(function(item) {
       if (item) {
         var st = getItemEffectiveStats(item);
         bonusHp += st.hp;
         bonusAtk += st.atk;
         bonusDef += st.def;
+        bonusCrit += st.crit;
+        bonusEva += st.eva;
       }
     });
+
     var totalMaxHp = baseHp + bonusHp;
     var totalAtk = baseAtk + bonusAtk;
     var totalDef = baseDef + bonusDef;
-    var br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + player.level * 25);
-    return { totalMaxHp: totalMaxHp, totalAtk: totalAtk, totalDef: totalDef, br: br };
+    var totalCrit = Math.min(85, Math.round((baseCrit + bonusCrit) * 10) / 10);
+    var totalEva = Math.min(65, Math.round((baseEva + bonusEva) * 10) / 10);
+
+    var br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + totalCrit * 8 + totalEva * 8 + player.level * 25);
+    return { totalMaxHp: totalMaxHp, totalAtk: totalAtk, totalDef: totalDef, totalCrit: totalCrit, totalEva: totalEva, br: br };
   }
 
   function renderCharScreen() {
@@ -850,11 +944,11 @@
       if (slotData) {
         var p = normalizePlayerObject(slotData);
         var cls = CLASSES[p.classKey];
-        var bHp = 0, bAtk = 0, bDef = 0;
+        var bHp = 0, bAtk = 0, bDef = 0, bCrit = 0, bEva = 0;
         Object.values(p.equipped).forEach(function(it) {
-          if (it) { var s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; }
+          if (it) { var s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; bCrit += s.crit; bEva += s.eva; }
         });
-        var br = Math.round((p.baseMaxHp + bHp) * 0.5 + (p.baseAtk + bAtk) * 4 + (p.baseDef + bDef) * 3 + p.level * 25);
+        var br = Math.round((p.baseMaxHp + bHp) * 0.5 + (p.baseAtk + bAtk) * 4 + (p.baseDef + bDef) * 3 + ((cls.baseCrit || 10) + bCrit) * 8 + ((cls.baseEva || 5) + bEva) * 8 + p.level * 25);
 
         card.className = 'char-slot-card occupied';
         card.innerHTML =
@@ -934,7 +1028,7 @@
     }
   }
 
-  // ================= INVENTÁRIO DINÂMICO & INSPEÇÃO DE SLOTS =================
+  // ================= INVENTÁRIO DINÂMICO, COMPARADOR E SLOTS =================
   function toggleModal(modalId) {
     var el = document.getElementById(modalId);
     var isOpen = el.style.display === 'flex';
@@ -943,7 +1037,13 @@
       el.style.display = 'flex';
       if (modalId === 'bag-modal') {
         if (!inspectedItem) {
-          inspectedItem = player.equipped.weapon || player.inventory[0] || null;
+          if (player.inventory.length > 0) {
+            inspectedItem = player.inventory[0];
+            inspectedFromBag = true;
+          } else {
+            inspectedItem = player.equipped.weapon || null;
+            inspectedFromBag = false;
+          }
         }
         renderBagModal();
       }
@@ -955,9 +1055,28 @@
     document.querySelectorAll('.modal-window').forEach(function(m) { m.style.display = 'none'; });
   }
 
-  function inspectItem(item) {
+  function inspectItem(item, fromBag) {
     inspectedItem = item;
+    inspectedFromBag = !!fromBag;
     renderInspectPanel();
+  }
+
+  function buildStatCompareLine(icon, label, newVal, eqVal, suffix, compareEnabled) {
+    var arrowHtml = '';
+    if (compareEnabled) {
+      var diff = Math.round((newVal - eqVal) * 10) / 10;
+      if (diff > 0) {
+        arrowHtml = '<span class="arrow-up">▲ +' + diff + suffix + '</span>';
+      } else if (diff < 0) {
+        arrowHtml = '<span class="arrow-down">▼ ' + diff + suffix + '</span>';
+      } else {
+        arrowHtml = '<span class="arrow-eq">▬ Igual</span>';
+      }
+    }
+    return '<div class="stat-comp-row">' +
+      '<span>' + icon + ' <b>' + label + ':</b> +' + newVal + suffix + '</span>' +
+      arrowHtml +
+    '</div>';
   }
 
   function renderInspectPanel() {
@@ -966,7 +1085,7 @@
 
     if (!inspectedItem) {
       panel.style.borderColor = '#2f3542';
-      panel.innerHTML = '<div style="text-align:center; color:#64748b; margin:auto;">Passe o mouse ou clique em um item para ver os detalhes e slots de Lápis.</div>';
+      panel.innerHTML = '<div style="text-align:center; color:#64748b; margin:auto;">Clique ou passe o mouse sobre um item na mochila para comparar com o que você está usando (<span style="color:#2ed573;">▲</span> melhor / <span style="color:#ff4757;">▼</span> pior).</div>';
       return;
     }
 
@@ -975,10 +1094,24 @@
     var st = getItemEffectiveStats(item);
     var plusTxt = item.plus > 0 ? ' +' + item.plus : '';
     var slotLabel = EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].label : 'Equipamento';
+    var allowed = canClassEquip(item);
+    var reqText = getClassReqLabel(item.classReq);
+
+    // Compara com o item atualmente equipado no mesmo slot (quando inspecionando da mochila)
+    var currentlyEquipped = player.equipped[item.slot];
+    var compareEnabled = inspectedFromBag && (!currentlyEquipped || currentlyEquipped.id !== item.id);
+    var eqStats = currentlyEquipped ? getItemEffectiveStats(currentlyEquipped) : { atk: 0, def: 0, hp: 0, crit: 0, eva: 0 };
+
+    var compareHeaderNote = '';
+    if (compareEnabled) {
+      compareHeaderNote = currentlyEquipped
+        ? '<div style="font-size:0.7rem; color:#94a3b8; margin-top:4px;">Comparando com: <b style="color:#e2e8f0;">' + currentlyEquipped.name + '</b></div>'
+        : '<div style="font-size:0.7rem; color:#2ed573; margin-top:4px;">▲ Slot vazio (melhoria direta!)</div>';
+    }
 
     var socketsHtml = '';
     if (r.slots === 0) {
-      socketsHtml = '<div style="font-size:0.75rem; color:#64748b; text-align:center;">Este item (Normal) não possui engastes de Lápis.</div>';
+      socketsHtml = '<div style="font-size:0.73rem; color:#64748b; text-align:center;">Item Normal: 0 engastes de Lápis.</div>';
     } else {
       socketsHtml = '<div class="lapis-sockets-row">';
       for (var i = 0; i < r.slots; i++) {
@@ -992,14 +1125,20 @@
       '<div>' +
         '<div class="inspect-header">' +
           '<div class="inspect-icon-box" style="border:2px solid ' + r.color + '; box-shadow:0 0 12px ' + r.color + '44;">' + item.icon + '</div>' +
-          '<div style="color:' + r.color + '; font-weight:bold; font-size:1.05rem;">' + item.name + plusTxt + '</div>' +
-          '<div class="rarity-badge" style="background:' + r.bgTint + '; color:' + r.color + '; border:1px solid ' + r.color + ';">' + r.label + ' • ' + slotLabel + '</div>' +
+          '<div style="color:' + r.color + '; font-weight:bold; font-size:1rem;">' + item.name + plusTxt + '</div>' +
+          '<div><span class="rarity-badge" style="background:' + r.bgTint + '; color:' + r.color + '; border:1px solid ' + r.color + ';">' + r.label + ' • ' + slotLabel + '</span></div>' +
+          '<div><span class="class-req-pill ' + (allowed ? 'class-req-ok' : 'class-req-no') + '">' +
+            (allowed ? '✔ Classe: ' + reqText : '🔒 Exclusivo: ' + reqText) +
+          '</span></div>' +
+          compareHeaderNote +
         '</div>' +
         '<div class="inspect-stats">' +
-          (st.atk ? '<div>⚔️ <b>Ataque:</b> +' + st.atk + '</div>' : '') +
-          (st.def ? '<div>🛡️ <b>Defesa:</b> +' + st.def + '</div>' : '') +
-          (st.hp  ? '<div>❤️ <b>Vida Máx:</b> +' + st.hp + '</div>' : '') +
-          '<div>💰 <b>Valor de Venda:</b> ' + item.sellPrice + ' Ouro</div>' +
+          buildStatCompareLine('❤️', 'Vida Máx', st.hp, eqStats.hp, '', compareEnabled) +
+          buildStatCompareLine('⚔️', 'Ataque', st.atk, eqStats.atk, '', compareEnabled) +
+          buildStatCompareLine('🛡️', 'Defesa', st.def, eqStats.def, '', compareEnabled) +
+          buildStatCompareLine('💥', 'Crítico', st.crit, eqStats.crit, '%', compareEnabled) +
+          buildStatCompareLine('💨', 'Evasão', st.eva, eqStats.eva, '%', compareEnabled) +
+          '<div style="margin-top:6px; font-size:0.76rem; color:#facc15;">💰 Venda: <b>' + item.sellPrice + ' Ouro</b></div>' +
         '</div>' +
       '</div>' +
       '<div class="lapis-section">' +
@@ -1009,13 +1148,25 @@
   }
 
   function renderMiniSockets(count, color) {
-    if (!count) return '<div class="mini-sockets"><span style="font-size:0.65rem; color:#64748b;">0 slots</span></div>';
+    if (!count) return '<div class="mini-sockets"><span style="font-size:0.64rem; color:#64748b;">0 slots</span></div>';
     var html = '<div class="mini-sockets">';
     for (var i = 0; i < count; i++) {
       html += '<span class="mini-dot" style="border-color:' + color + ';"></span>';
     }
     html += '</div>';
     return html;
+  }
+
+  function getOverallCompareArrow(item) {
+    var eq = player.equipped[item.slot];
+    if (!eq) return '<span class="arrow-up" title="Slot vazio">▲</span>';
+    var sNew = getItemEffectiveStats(item);
+    var sEq = getItemEffectiveStats(eq);
+    var scoreNew = sNew.hp * 0.5 + sNew.atk * 4 + sNew.def * 3 + sNew.crit * 8 + sNew.eva * 8;
+    var scoreEq  = sEq.hp * 0.5  + sEq.atk * 4  + sEq.def * 3  + sEq.crit * 8  + sEq.eva * 8;
+    if (scoreNew > scoreEq) return '<span class="arrow-up" title="Melhor que o equipado">▲</span>';
+    if (scoreNew < scoreEq) return '<span class="arrow-down" title="Inferior ao equipado">▼</span>';
+    return '';
   }
 
   function renderBagModal() {
@@ -1035,13 +1186,14 @@
         var plusTxt = item.plus > 0 ? ' +' + item.plus : '';
         row.style.borderColor = r.color;
         row.style.background = r.bgTint;
-        row.onmouseenter = function() { inspectItem(item); };
-        row.onclick = function() { inspectItem(item); };
+        row.onmouseenter = function() { inspectItem(item, false); };
+        row.onclick = function() { inspectItem(item, false); };
         row.innerHTML =
           '<div>' +
             '<span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + plusTxt + '</span><br>' +
-            '<span style="font-size:0.71rem; color:#cbd5e1;">' +
-            (st.atk ? 'ATK +' + st.atk + ' ' : '') + (st.def ? 'DEF +' + st.def + ' ' : '') + (st.hp ? 'HP +' + st.hp : '') +
+            '<span style="font-size:0.69rem; color:#cbd5e1;">' +
+              'ATK +' + st.atk + ' | DEF +' + st.def + ' | HP +' + st.hp + '<br>' +
+              'CRIT +' + st.crit + '% | EVA +' + st.eva + '%' +
             '</span>' +
             renderMiniSockets(r.slots, r.color) +
           '</div>' +
@@ -1057,9 +1209,9 @@
 
     var stats = getTotalStats();
     document.getElementById('stat-summary').innerHTML =
-      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + '<br>' +
-      '<b>⚔️ Ataque Total:</b> ' + stats.totalAtk + '<br>' +
-      '<b>🛡️ Defesa Total:</b> ' + stats.totalDef + '<br>' +
+      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + ' &nbsp;|&nbsp; <b>⚔️ ATK:</b> ' + stats.totalAtk + '<br>' +
+      '<b>🛡️ Defesa:</b> ' + stats.totalDef + ' &nbsp;|&nbsp; <b>💥 Crítico:</b> ' + stats.totalCrit + '%<br>' +
+      '<b>💨 Evasão:</b> ' + stats.totalEva + '%<br>' +
       '<b style="color:#ffa502;">🔥 Poder de Batalha (BR): ' + stats.br + '</b>';
 
     document.getElementById('bag-count').textContent = player.inventory.length;
@@ -1071,23 +1223,34 @@
       var r = getRarityData(item.rarity);
       var st = getItemEffectiveStats(item);
       var plusTxt = item.plus > 0 ? ' +' + item.plus : '';
+      var allowed = canClassEquip(item);
+      var reqLabel = getClassReqLabel(item.classReq);
+      var arrowBadge = allowed ? getOverallCompareArrow(item) : '';
+
       var card = document.createElement('div');
-      card.className = 'bag-item';
+      card.className = 'bag-item' + (allowed ? '' : ' wrong-class');
       card.style.borderColor = r.color;
       card.style.background = r.bgTint;
-      card.onmouseenter = function() { inspectItem(item); };
-      card.onclick = function() { inspectItem(item); };
+      card.onmouseenter = function() { inspectItem(item, true); };
+      card.onclick = function() { inspectItem(item, true); };
       card.innerHTML =
         '<div>' +
-          '<div style="color:' + r.color + '; font-weight:bold; margin-bottom:2px;">' + item.icon + ' ' + item.name + plusTxt + '</div>' +
-          '<div style="font-size:0.66rem; color:' + r.color + '; font-weight:bold; margin-bottom:3px;">[' + r.label + ']</div>' +
-          '<div style="color:#cbd5e1; font-size:0.7rem;">' +
-          (st.atk ? 'ATK +' + st.atk + '<br>' : '') + (st.def ? 'DEF +' + st.def + '<br>' : '') + (st.hp ? 'HP +' + st.hp : '') +
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:3px;">' +
+            '<span style="color:' + r.color + '; font-weight:bold; margin-bottom:2px;">' + item.icon + ' ' + item.name + plusTxt + '</span>' +
+            arrowBadge +
+          '</div>' +
+          '<div style="font-size:0.65rem; font-weight:bold; color:' + (allowed ? '#2ed573' : '#ff6b81') + '; margin-bottom:3px;">' +
+            (allowed ? '✔ ' + reqLabel : '🔒 ' + reqLabel) +
+          '</div>' +
+          '<div style="color:#cbd5e1; font-size:0.68rem; line-height:1.35;">' +
+            'HP +' + st.hp + ' | ATK +' + st.atk + '<br>' +
+            'DEF +' + st.def + ' | CRIT +' + st.crit + '%<br>' +
+            'EVA +' + st.eva + '%' +
           '</div>' +
           renderMiniSockets(r.slots, r.color) +
         '</div>' +
         '<div class="bag-item-actions">' +
-          '<button type="button" class="btn-mini btn-equip" onclick="event.stopPropagation(); equipItem(' + idx + ')">Equipar</button>' +
+          '<button type="button" class="btn-mini btn-equip" ' + (allowed ? '' : 'disabled title="Classe incompatível"') + ' onclick="event.stopPropagation(); equipItem(' + idx + ')">' + (allowed ? 'Equipar' : 'Bloq.') + '</button>' +
           '<button type="button" class="btn-mini btn-sell" onclick="event.stopPropagation(); sellItem(' + idx + ')">+$' + item.sellPrice + '</button>' +
         '</div>';
       bagGrid.appendChild(card);
@@ -1113,11 +1276,16 @@
   function equipItem(bagIdx) {
     var item = player.inventory[bagIdx];
     if (!item) return;
+    if (!canClassEquip(item)) {
+      alert('Este equipamento é exclusivo para a classe ' + getClassReqLabel(item.classReq) + '!');
+      return;
+    }
     var currentEquipped = player.equipped[item.slot];
     player.equipped[item.slot] = item;
     player.inventory.splice(bagIdx, 1);
     if (currentEquipped) player.inventory.push(currentEquipped);
     inspectedItem = item;
+    inspectedFromBag = false;
     saveAllSlots();
     updateHUD();
     renderBagModal();
@@ -1219,7 +1387,7 @@
       '<div style="font-size:2.4rem; margin-bottom:6px;">' + item.icon + '</div>' +
       '<h3 style="color:' + r.color + ';">' + item.name + ' (+' + item.plus + ' ➔ +' + (item.plus + 1) + ')</h3>' +
       '<div style="font-size:0.82rem; color:#ced6e0; margin:10px 0;">Atributos: ' +
-      (currStats.atk ? 'ATK +' + currStats.atk + ' ' : '') + (currStats.def ? 'DEF +' + currStats.def + ' ' : '') + (currStats.hp ? 'HP +' + currStats.hp : '') +
+      'ATK +' + currStats.atk + ' | DEF +' + currStats.def + ' | HP +' + currStats.hp +
       '<br><span style="color:#2ed573;">Próximo Nível: +18% de bônus!</span></div>' +
       '<div style="background:#181d2c; padding:10px 16px; border-radius:8px; width:100%; font-size:0.84rem; line-height:1.6;">' +
       '<div>🎲 Chance: <b style="color:#ffa502;">' + cfg.chance + '%</b></div>' +
@@ -1294,19 +1462,19 @@
 
   // ================= MONSTROS, MINI-BOSS E BOSS =================
   var MONSTER_TYPES = [
-    { name: 'Slime da Floresta',        icon: '🟢', hp: 70,  atk: 8,  xp: 25,  gold: 12,  color: '#2ed573', scale: 1,    tier: 'normal' },
-    { name: 'Lobo Cinzento',            icon: '🐺', hp: 110, atk: 14, xp: 40,  gold: 20,  color: '#a4b0be', scale: 1.1,  tier: 'normal' },
-    { name: 'Goblin Saqueador',         icon: '👺', hp: 150, atk: 19, xp: 60,  gold: 32,  color: '#3b82f6', scale: 1.15, tier: 'normal' },
+    { name: 'Slime da Floresta',           icon: '🟢', hp: 70,  atk: 8,  xp: 25,  gold: 12,  color: '#2ed573', scale: 1,    tier: 'normal' },
+    { name: 'Lobo Cinzento',               icon: '🐺', hp: 110, atk: 14, xp: 40,  gold: 20,  color: '#a4b0be', scale: 1.1,  tier: 'normal' },
+    { name: 'Goblin Saqueador',            icon: '👺', hp: 150, atk: 19, xp: 60,  gold: 32,  color: '#3b82f6', scale: 1.15, tier: 'normal' },
     { name: 'Guardião Tronco (Mini-Boss)', icon: '🌳', hp: 360, atk: 30, xp: 160, gold: 110, color: '#facc15', scale: 1.45, tier: 'miniboss' },
-    { name: 'Dragão Ignis (BOSS)',      icon: '🐉', hp: 750, atk: 46, xp: 420, gold: 320, color: '#ff7f11', scale: 1.85, tier: 'boss' }
+    { name: 'Dragão Ignis (BOSS)',         icon: '🐉', hp: 750, atk: 46, xp: 420, gold: 320, color: '#ff7f11', scale: 1.85, tier: 'boss' }
   ];
 
   function spawnEnemy(forcedTypeIdx) {
     var typeIdx = typeof forcedTypeIdx === 'number' ? forcedTypeIdx : 0;
     if (typeof forcedTypeIdx !== 'number') {
       var roll = Math.random();
-      if (roll > 0.94) typeIdx = 4;       // Boss (Supremo)
-      else if (roll > 0.82) typeIdx = 3;  // Mini-Boss (Deusa)
+      if (roll > 0.94) typeIdx = 4;
+      else if (roll > 0.82) typeIdx = 3;
       else if (roll > 0.55) typeIdx = 2;
       else if (roll > 0.28) typeIdx = 1;
     }
@@ -1325,8 +1493,8 @@
   function spawnInitialEnemies() {
     enemies = [];
     for (var i = 0; i < 14; i++) spawnEnemy();
-    spawnEnemy(3); // Garante pelo menos 1 Mini-Boss no mapa
-    spawnEnemy(4); // Garante pelo menos 1 Boss no mapa
+    spawnEnemy(3);
+    spawnEnemy(4);
   }
 
   var canvas = document.getElementById('gameCanvas');
@@ -1430,9 +1598,10 @@
     effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 105 : 45, color: sk.color, timer: 0.35 });
 
     hitList.forEach(function(en) {
-      var isCrit = Math.random() < (player.classKey === 'arqueiro' || player.classKey === 'assassino' ? 0.3 : 0.15);
+      // Usa a Chance de Crítico real do personagem + equipamentos!
+      var isCrit = (Math.random() * 100) < stats.totalCrit;
       var dmg = Math.round(stats.totalAtk * sk.mult * (0.9 + Math.random() * 0.2));
-      if (isCrit) dmg = Math.round(dmg * 1.6);
+      if (isCrit) dmg = Math.round(dmg * 1.65);
       en.hp -= dmg;
       addFloatingText(en.x, en.y - 35, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#ffa502' : '#ffffff');
       if (en.hp <= 0) killEnemy(en);
@@ -1454,12 +1623,13 @@
       addFloatingText(en.x, en.y - 68, '💎 +' + stonesWon + ' Pedra de Forja!', '#00f2fe');
     }
 
-    var dropChance = en.tier === 'boss' ? 0.90 : (en.tier === 'miniboss' ? 0.65 : 0.35);
+    var dropChance = en.tier === 'boss' ? 0.92 : (en.tier === 'miniboss' ? 0.68 : 0.38);
     if (player.inventory.length < 24 && Math.random() < dropChance) {
       var droppedItem = generateRandomItem(player.level, en.tier);
       player.inventory.push(droppedItem);
       var rData = getRarityData(droppedItem.rarity);
-      addFloatingText(en.x, en.y - 88, '🎁 Drop: ' + droppedItem.name + ' [' + rData.slots + ' slots]!', rData.color);
+      var reqName = getClassReqLabel(droppedItem.classReq);
+      addFloatingText(en.x, en.y - 88, '🎁 ' + droppedItem.name + ' [' + reqName + ']!', rData.color);
     }
 
     while (player.xp >= player.maxXp) {
@@ -1551,10 +1721,15 @@
         en.atkTimer += dt;
         if (en.atkTimer >= 1.6) {
           en.atkTimer = 0;
-          var dmg = Math.max(2, en.atk - Math.round(stats.totalDef * 0.5));
-          player.hp -= dmg;
-          addFloatingText(player.x, player.y - 35, '-' + dmg, '#ff4757');
-          if (player.hp <= 0) { player.hp = stats.totalMaxHp; player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0; }
+          // Teste real de Evasão do personagem + equipamentos!
+          if ((Math.random() * 100) < stats.totalEva) {
+            addFloatingText(player.x, player.y - 38, '💨 DESVIOU!', '#00f2fe');
+          } else {
+            var dmg = Math.max(2, en.atk - Math.round(stats.totalDef * 0.5));
+            player.hp -= dmg;
+            addFloatingText(player.x, player.y - 35, '-' + dmg, '#ff4757');
+            if (player.hp <= 0) { player.hp = stats.totalMaxHp; player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0; }
+          }
         }
       }
     });
