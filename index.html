@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Fase 4 (Sistema de Lápis)</title>
+  <title>Asa de Cristal 2.5D - Fase 4.1 (Armas por Alcance & Lápis)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -353,6 +353,10 @@
     }
     .class-req-ok { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid #2ed57355; }
     .class-req-no { background: rgba(255, 71, 87, 0.18); color: #ff6b81; border: 1px solid #ff475777; }
+    .weapon-cat-pill {
+      display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.67rem;
+      font-weight: bold; margin-top: 4px; background: rgba(112, 161, 255, 0.14); color: #70a1ff; border: 1px solid #70a1ff44;
+    }
 
     .inspect-stats { margin: 8px 0; font-size: 0.79rem; color: #e2e8f0; }
     .stat-comp-row {
@@ -449,32 +453,32 @@
         <div class="class-card selected" id="card-cavaleiro" onclick="selecionarClasse('cavaleiro')">
           <div class="class-icon" style="background:#eccc6822; border:2px solid #eccc68; color:#eccc68">🛡️</div>
           <h3 style="color:#eccc68">Cavaleiro</h3>
-          <div class="role">ATQ Perto • DEF Física</div>
-          <div class="desc">Tanque corpo a corpo. Alta vida e armadura pesada contra golpes físicos.</div>
+          <div class="role">Corpo a Corpo • Espada/Machado</div>
+          <div class="desc">Tanque corpo a corpo. Usa armas de curta distância e armadura pesada.</div>
         </div>
         <div class="class-card" id="card-mago" onclick="selecionarClasse('mago')">
           <div class="class-icon" style="background:#70a1ff22; border:2px solid #70a1ff; color:#70a1ff">🔮</div>
           <h3 style="color:#70a1ff">Mago</h3>
-          <div class="role">ATQ Mágico • DEF Mágica</div>
-          <div class="desc">Dano elemental devastador em área e alta resistência mágica.</div>
+          <div class="role">ATQ Mágico • Cajado/Orbe</div>
+          <div class="desc">Conjura magias à distância com cajados arcanos e alta defesa mágica.</div>
         </div>
         <div class="class-card" id="card-arqueiro" onclick="selecionarClasse('arqueiro')">
           <div class="class-icon" style="background:#2ed57322; border:2px solid #2ed573; color:#2ed573">🏹</div>
           <h3 style="color:#2ed573">Arqueiro</h3>
-          <div class="role">ATQ Distância • Crítico</div>
-          <div class="desc">Disparos de longo alcance com alta precisão, crítico e evasão.</div>
+          <div class="role">À Distância • Arco/Besta</div>
+          <div class="desc">Especialista em longo alcance com arcos e bestas de alto crítico.</div>
         </div>
         <div class="class-card" id="card-sacerdote" onclick="selecionarClasse('sacerdote')">
           <div class="class-icon" style="background:#f1f2f622; border:2px solid #f1f2f6; color:#f1f2f6">✨</div>
           <h3 style="color:#f1f2f6">Sacerdote</h3>
-          <div class="role">ATQ Mágico • DEF Mágica</div>
-          <div class="desc">Canaliza magia sagrada de cura e punição celestial à distância.</div>
+          <div class="role">ATQ Mágico • Cetro/Livro</div>
+          <div class="desc">Usa cetros sagrados à distância para cura divina e luz celestial.</div>
         </div>
         <div class="class-card" id="card-assassino" onclick="selecionarClasse('assassino')">
           <div class="class-icon" style="background:#ff475722; border:2px solid #ff4757; color:#ff4757">🗡️</div>
           <h3 style="color:#ff4757">Assassino</h3>
-          <div class="role">ATQ Perto • Evasão</div>
-          <div class="desc">Golpes corpo a corpo velozes com letalidade crítica e esquiva extrema.</div>
+          <div class="role">Corpo a Corpo • Adagas/Garras</div>
+          <div class="desc">Combate corpo a corpo letal com adagas gêmeas, crítico e esquiva.</div>
         </div>
       </div>
 
@@ -627,7 +631,7 @@
   var currentBagTab = 'equip';
   var lastTime = performance.now();
 
-  // ================= SISTEMA DE ÁUDIO (WEB AUDIO API - SEM ARQUIVOS EXTERNOS) =================
+  // ================= SISTEMA DE ÁUDIO (WEB AUDIO API) =================
   var audioCtx = null;
   function getAudioCtx() {
     if (!audioCtx) {
@@ -640,13 +644,12 @@
     return audioCtx;
   }
 
-  // Som cristalino mágico quando o Lápis linka com sucesso
   function playLinkSuccessSound() {
     try {
       var ctxAudio = getAudioCtx();
       if (!ctxAudio) return;
       var now = ctxAudio.currentTime;
-      var notes = [587.33, 880, 1174.66, 1760]; // Acorde D maior ascendente cristalino
+      var notes = [587.33, 880, 1174.66, 1760];
       notes.forEach(function(freq, i) {
         var osc = ctxAudio.createOscillator();
         var gain = ctxAudio.createGain();
@@ -663,20 +666,17 @@
     } catch (e) {}
   }
 
-  // Som de vidro quebrando / estilhaçando quando o Lápis falha e quebra
   function playGlassBreakSound() {
     try {
       var ctxAudio = getAudioCtx();
       if (!ctxAudio) return;
       var now = ctxAudio.currentTime;
 
-      // 1. Ruído branco filtrado curto simulando estilhaços de vidro
       var bufferSize = Math.floor(ctxAudio.sampleRate * 0.45);
       var buffer = ctxAudio.createBuffer(1, bufferSize, ctxAudio.sampleRate);
       var data = buffer.getChannelData(0);
       for (var i = 0; i < bufferSize; i++) {
         var env = Math.pow(1 - i / bufferSize, 2.2);
-        // Picos irregulares como cacos de vidro caindo
         var shardBurst = (Math.random() > 0.72) ? 1.0 : 0.25;
         data[i] = (Math.random() * 2 - 1) * env * shardBurst;
       }
@@ -696,7 +696,6 @@
       noiseGain.connect(ctxAudio.destination);
       noise.start(now);
 
-      // 2. Pequenos estalos agudos de cacos quicando
       var shards = [2400, 3150, 1950, 2850, 3600];
       shards.forEach(function(freq, idx) {
         var osc = ctxAudio.createOscillator();
@@ -720,7 +719,7 @@
     STR: {
       code: 'STR', name: 'Lápis STR', statLabel: 'Ataque Físico',
       color: '#ff4757', bgTint: '#ff475722',
-      values: [0, 8, 18, 32, 52, 80], // Nv 1..5
+      values: [0, 8, 18, 32, 52, 80],
       formatBonus: function(lvl) { return '+' + this.values[lvl] + ' ATQ Físico'; }
     },
     DEX: {
@@ -761,7 +760,7 @@
     }
   };
 
-  var LAPIS_LINK_CHANCE = [0, 85, 70, 55, 40, 25]; // Nv 1..5
+  var LAPIS_LINK_CHANCE = [0, 85, 70, 55, 40, 25];
 
   function generateRandomLapis(tierType) {
     var keys = Object.keys(LAPIS_TYPES);
@@ -783,7 +782,6 @@
       else lvl = 1;
     }
 
-    var meta = LAPIS_TYPES[typeKey];
     return {
       id: 'lapis_' + Math.random().toString(36).slice(2, 10),
       type: typeKey,
@@ -792,15 +790,17 @@
     };
   }
 
-  // ================= CLASSES COM STATUS PADRÃO SEPARADOS =================
+  // ================= CLASSES COM ALCANCE E TIPO DE ARMA EXCLUSIVO =================
+  // attackType: 'melee' (Corpo a Corpo) | 'ranged' (À Distância) | 'magic' (Mágico à Distância)
   var CLASSES = {
     cavaleiro: {
       name: 'Cavaleiro', icon: '🛡️', color: '#eccc68',
       attackType: 'melee',
+      weaponCategoryLabel: '⚔️ Arma Corpo a Corpo (Perto)',
       baseHp: 230, baseMp: 80,
       baseMeleeAtk: 24, baseRangedAtk: 0, baseMagicAtk: 0,
       basePhysDef: 16, baseMagDef: 8,
-      baseCrit: 8, baseEva: 4, range: 65,
+      baseCrit: 8, baseEva: 4, range: 68,
       skills: [
         { name: 'Golpe Cruzado', icon: '⚔️', mult: 1.3, mp: 5, cd: 1.5, range: 70, color: '#ffa502' },
         { name: 'Escudo Sagrado', icon: '🛡️', mult: 0, heal: 0.25, mp: 15, cd: 6, range: 0, color: '#70a1ff' },
@@ -811,6 +811,7 @@
     mago: {
       name: 'Mago', icon: '🔮', color: '#70a1ff',
       attackType: 'magic',
+      weaponCategoryLabel: '🔮 Arma Mágica (Distância)',
       baseHp: 135, baseMp: 190,
       baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 36,
       basePhysDef: 5, baseMagDef: 15,
@@ -825,85 +826,118 @@
     arqueiro: {
       name: 'Arqueiro', icon: '🏹', color: '#2ed573',
       attackType: 'ranged',
+      weaponCategoryLabel: '🏹 Arma à Distância (Longe)',
       baseHp: 155, baseMp: 120,
       baseMeleeAtk: 0, baseRangedAtk: 31, baseMagicAtk: 0,
       basePhysDef: 9, baseMagDef: 9,
-      baseCrit: 18, baseEva: 13, range: 235,
+      baseCrit: 18, baseEva: 13, range: 240,
       skills: [
-        { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 240, color: '#2ed573' },
-        { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 240, color: '#7bed9f' },
-        { name: 'Chuva de Flechas', icon: '🌧️', mult: 2.1, mp: 24, cd: 6, range: 240, aoe: true, color: '#eccc68' },
-        { name: 'Disparo Mortal', icon: '🎯', mult: 3.2, mp: 35, cd: 9, range: 260, color: '#ff4757' }
+        { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 245, color: '#2ed573' },
+        { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 245, color: '#7bed9f' },
+        { name: 'Chuva de Flechas', icon: '🌧️', mult: 2.1, mp: 24, cd: 6, range: 245, aoe: true, color: '#eccc68' },
+        { name: 'Disparo Mortal', icon: '🎯', mult: 3.2, mp: 35, cd: 9, range: 265, color: '#ff4757' }
       ]
     },
     sacerdote: {
       name: 'Sacerdote', icon: '✨', color: '#f1f2f6',
       attackType: 'magic',
+      weaponCategoryLabel: '✨ Arma Sagrada (Distância)',
       baseHp: 165, baseMp: 210,
       baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 27,
       basePhysDef: 7, baseMagDef: 17,
-      baseCrit: 10, baseEva: 7, range: 200,
+      baseCrit: 10, baseEva: 7, range: 205,
       skills: [
-        { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 200, color: '#f1c40f' },
+        { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 205, color: '#f1c40f' },
         { name: 'Cura Divina', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#2ed573' },
-        { name: 'Julgamento', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 200, aoe: true, color: '#ffa502' },
-        { name: 'Ira Celestial', icon: '👼', mult: 3.0, mp: 40, cd: 9, range: 210, color: '#70a1ff' }
+        { name: 'Julgamento', icon: '☀️', mult: 2.1, mp: 25, cd: 6, range: 205, aoe: true, color: '#ffa502' },
+        { name: 'Ira Celestial', icon: '👼', mult: 3.0, mp: 40, cd: 9, range: 215, color: '#70a1ff' }
       ]
     },
     assassino: {
       name: 'Assassino', icon: '🗡️', color: '#ff4757',
       attackType: 'melee',
+      weaponCategoryLabel: '🗡️ Arma Corpo a Corpo (Perto)',
       baseHp: 150, baseMp: 110,
       baseMeleeAtk: 35, baseRangedAtk: 0, baseMagicAtk: 0,
       basePhysDef: 8, baseMagDef: 7,
       baseCrit: 21, baseEva: 17, range: 65,
       skills: [
-        { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 70, color: '#ff4757' },
+        { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 68, color: '#ff4757' },
         { name: 'Passo Sombrio', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 140, dash: true, color: '#a29bfe' },
         { name: 'Lâminas Giratórias', icon: '🌀', mult: 2.2, mp: 22, cd: 5.5, range: 85, aoe: true, color: '#ff6b81' },
-        { name: 'Execução', icon: '💀', mult: 3.6, mp: 35, cd: 9, range: 75, color: '#ffa502' }
+        { name: 'Execução', icon: '💀', mult: 3.6, mp: 35, cd: 9, range: 72, color: '#ffa502' }
       ]
     }
   };
 
-  // ================= EQUIPAMENTOS ESPECÍFICOS POR CLASSE =================
+  // ================= ARMAS & EQUIPAMENTOS ESPECÍFICOS POR CLASSE E ALCANCE =================
+  var CLASS_WEAPON_VARIANTS = {
+    cavaleiro: [
+      { name: 'Espada Longa de Aço',   icon: '🗡️', weaponType: 'melee',  weaponRange: 68 },
+      { name: 'Machado de Guerra',     icon: '🪓', weaponType: 'melee',  weaponRange: 66 },
+      { name: 'Montante do Guardião',  icon: '⚔️', weaponType: 'melee',  weaponRange: 72 }
+    ],
+    assassino: [
+      { name: 'Adagas Sombrias',       icon: '🗡️', weaponType: 'melee',  weaponRange: 64 },
+      { name: 'Lâminas Gêmeas',        icon: '⚔️', weaponType: 'melee',  weaponRange: 66 },
+      { name: 'Garras da Noite',       icon: '🦂', weaponType: 'melee',  weaponRange: 62 }
+    ],
+    arqueiro: [
+      { name: 'Arco Longo de Carvalho',icon: '🏹', weaponType: 'ranged', weaponRange: 245 },
+      { name: 'Besta de Precisão',     icon: '🎯', weaponType: 'ranged', weaponRange: 235 },
+      { name: 'Arco Composto Élfico',  icon: '🏹', weaponType: 'ranged', weaponRange: 260 }
+    ],
+    mago: [
+      { name: 'Cajado Arcano',         icon: '🪄', weaponType: 'magic',  weaponRange: 220 },
+      { name: 'Orbe Elemental',        icon: '🔮', weaponType: 'magic',  weaponRange: 210 },
+      { name: 'Bastão das Estrelas',   icon: ' Staff'.trim() ? '🪄' : '🪄', weaponType: 'magic', weaponRange: 230 }
+    ],
+    sacerdote: [
+      { name: 'Cetro Sagrado',         icon: '🦯', weaponType: 'magic',  weaponRange: 205 },
+      { name: 'Cajado da Luz Divina',  icon: '✨', weaponType: 'magic',  weaponRange: 215 },
+      { name: 'Relíquia Celestial',    icon: '🕯️', weaponType: 'magic',  weaponRange: 200 }
+    ]
+  };
+
   var CLASS_GEAR_NAMES = {
     cavaleiro: {
-      weapon: { name: 'Espada Pesada', icon: '🗡️' },
       armor:  { name: 'Peitoral de Placas', icon: '🛡️' },
       helm:   { name: 'Elmo de Aço', icon: '🪖' },
       boots:  { name: 'Grevas Blindadas', icon: '👢' },
       ring:   { name: 'Anel do Guardião', icon: '💍' }
     },
     mago: {
-      weapon: { name: 'Cajado Arcano', icon: '🪄' },
       armor:  { name: 'Veste Mística', icon: '👘' },
       helm:   { name: 'Chapéu do Feiticeiro', icon: '🎩' },
       boots:  { name: 'Botas Etéreas', icon: '👢' },
       ring:   { name: 'Anel de Safira', icon: '💍' }
     },
     arqueiro: {
-      weapon: { name: 'Arco Longo', icon: '🏹' },
       armor:  { name: 'Túnica de Caçador', icon: '🦺' },
       helm:   { name: 'Capuz da Floresta', icon: '🧢' },
       boots:  { name: 'Botas do Vento', icon: '👢' },
       ring:   { name: 'Anel Olho de Águia', icon: '💍' }
     },
     sacerdote: {
-      weapon: { name: 'Cetro Sagrado', icon: '🦯' },
       armor:  { name: 'Batina Celestial', icon: '🥼' },
       helm:   { name: 'Tiara da Luz', icon: '👑' },
       boots:  { name: 'Sandálias Divinas', icon: '🩴' },
       ring:   { name: 'Anel da Bênção', icon: '💍' }
     },
     assassino: {
-      weapon: { name: 'Adagas Sombrias', icon: '⚔️' },
       armor:  { name: 'Traje Furtivo', icon: '🥷' },
       helm:   { name: 'Máscara das Sombras', icon: '🎭' },
       boots:  { name: 'Botas Silenciosas', icon: '👢' },
       ring:   { name: 'Anel do Crepúsculo', icon: '💍' }
     }
   };
+
+  function getWeaponTypeLabel(wType) {
+    if (wType === 'melee')  return '⚔️ Corpo a Corpo (Perto)';
+    if (wType === 'ranged') return '🏹 À Distância (Longe)';
+    if (wType === 'magic')  return '🔮 Mágica (Distância)';
+    return '';
+  }
 
   // ================= 7 RARIDADES OFICIAIS + SLOTS DE LÁPIS =================
   var RARITIES = {
@@ -945,6 +979,13 @@
     }
     if (!item.classReq) item.classReq = 'all';
 
+    // Garante que toda arma possua weaponType ('melee' | 'ranged' | 'magic') e alcance coerente
+    if (item.slot === 'weapon' && !item.weaponType) {
+      var targetCls = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'cavaleiro');
+      item.weaponType = CLASSES[targetCls].attackType;
+      item.weaponRange = CLASSES[targetCls].range;
+    }
+
     if (typeof item.meleeAtk !== 'number' && typeof item.rangedAtk !== 'number' && typeof item.magicAtk !== 'number') {
       var oldAtk = item.atk || 0;
       var targetClass = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'cavaleiro');
@@ -975,8 +1016,13 @@
     return item;
   }
 
+  // Validação rígida: classe + compatibilidade de arma corpo a corpo vs distância vs mágica
   function canClassEquip(item) {
     if (!item) return false;
+    var playerCls = CLASSES[player.classKey];
+    if (item.slot === 'weapon' && item.weaponType && item.weaponType !== playerCls.attackType) {
+      return false;
+    }
     if (!item.classReq || item.classReq === 'all') return true;
     return item.classReq === player.classKey;
   }
@@ -993,8 +1039,25 @@
 
     var classKeys = Object.keys(CLASSES);
     var itemClass = Math.random() < 0.45 ? player.classKey : classKeys[Math.floor(Math.random() * classKeys.length)];
-    var gearMeta = CLASS_GEAR_NAMES[itemClass][slot];
     var atkType = CLASSES[itemClass].attackType;
+
+    var gearName = '';
+    var gearIcon = '';
+    var weaponType = null;
+    var weaponRange = null;
+
+    if (slot === 'weapon') {
+      var variants = CLASS_WEAPON_VARIANTS[itemClass];
+      var chosenW = variants[Math.floor(Math.random() * variants.length)];
+      gearName = chosenW.name;
+      gearIcon = chosenW.icon;
+      weaponType = chosenW.weaponType;
+      weaponRange = chosenW.weaponRange;
+    } else {
+      var gearMeta = CLASS_GEAR_NAMES[itemClass][slot];
+      gearName = gearMeta.name;
+      gearIcon = gearMeta.icon;
+    }
 
     var roll = Math.random();
     var rarityKey = 'normal';
@@ -1036,10 +1099,12 @@
 
     return {
       id: 'item_' + Math.random().toString(36).slice(2, 10),
-      name: gearMeta.name + ' (' + r.label + ')',
+      name: gearName + ' (' + r.label + ')',
       slot: slot,
-      icon: gearMeta.icon,
+      icon: gearIcon,
       classReq: itemClass,
+      weaponType: weaponType,
+      weaponRange: weaponRange,
       rarity: rarityKey,
       plus: 0,
       sockets: new Array(r.slots).fill(null),
@@ -1055,7 +1120,6 @@
     };
   }
 
-  // Calcula os status totais do item somando Forja (+1..+12) + todos os Lápis linkados nos slots!
   function getItemEffectiveStats(item) {
     if (!item) return { meleeAtk: 0, rangedAtk: 0, magicAtk: 0, physDef: 0, magDef: 0, hp: 0, crit: 0, eva: 0 };
     normalizeItem(item);
@@ -1073,14 +1137,12 @@
       eva:       Math.round((item.eva       || 0) * critForgeMult * 10) / 10
     };
 
-    // Soma o bônus de cada Lápis linkado nos engastes deste item
     if (Array.isArray(item.sockets)) {
       item.sockets.forEach(function(sock) {
         if (sock && LAPIS_TYPES[sock.type]) {
           var meta = LAPIS_TYPES[sock.type];
           var val = meta.values[sock.level] || 0;
           if (sock.type === 'STR') {
-            // STR aumenta Ataque Físico (Perto e Distância)
             res.meleeAtk  += val;
             res.rangedAtk += val;
           } else if (sock.type === 'DEX') {
@@ -1100,6 +1162,16 @@
       });
     }
     return res;
+  }
+
+  // Retorna o alcance efetivo do personagem baseado na arma equipada (ou alcance padrão da classe)
+  function getPlayerEffectiveRange() {
+    var cls = CLASSES[player.classKey];
+    var eqW = player.equipped && player.equipped.weapon;
+    if (eqW && typeof eqW.weaponRange === 'number' && eqW.weaponRange > 0) {
+      return eqW.weaponRange;
+    }
+    return cls.range;
   }
 
   function selecionarClasse(classe) {
@@ -1480,6 +1552,11 @@
     var allowed = canClassEquip(item);
     var reqText = getClassReqLabel(item.classReq);
 
+    var weaponTypeBadge = '';
+    if (item.slot === 'weapon' && item.weaponType) {
+      weaponTypeBadge = '<div><span class="weapon-cat-pill">' + getWeaponTypeLabel(item.weaponType) + ' • Alcance ' + (item.weaponRange || 70) + '</span></div>';
+    }
+
     var currentlyEquipped = player.equipped[item.slot];
     var compareEnabled = inspectedFromBag && (!currentlyEquipped || currentlyEquipped.id !== item.id);
     var eqStats = currentlyEquipped ? getItemEffectiveStats(currentlyEquipped) : { meleeAtk: 0, rangedAtk: 0, magicAtk: 0, physDef: 0, magDef: 0, hp: 0, crit: 0, eva: 0 };
@@ -1531,6 +1608,7 @@
           '<div class="inspect-icon-box" style="border:2px solid ' + r.color + '; box-shadow:0 0 12px ' + r.color + '44;">' + item.icon + '</div>' +
           '<div style="color:' + r.color + '; font-weight:bold; font-size:0.96rem;">' + item.name + plusTxt + '</div>' +
           '<div><span class="rarity-badge" style="background:' + r.bgTint + '; color:' + r.color + '; border:1px solid ' + r.color + ';">' + r.label + ' • ' + slotLabel + '</span></div>' +
+          weaponTypeBadge +
           '<div><span class="class-req-pill ' + (allowed ? 'class-req-ok' : 'class-req-no') + '">' +
             (allowed ? '✔ Classe: ' + reqText : '🔒 Exclusivo: ' + reqText) +
           '</span></div>' +
@@ -1623,8 +1701,9 @@
     });
 
     var stats = getTotalStats();
+    var effRange = getPlayerEffectiveRange();
     document.getElementById('stat-summary').innerHTML =
-      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + '<br>' +
+      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + ' &nbsp;|&nbsp; <b>🎯 Alcance:</b> ' + effRange + 'px<br>' +
       '<b>⚔️ ATQ Perto:</b> ' + stats.totalMeleeAtk + ' &nbsp;|&nbsp; <b>🏹 ATQ Dist.:</b> ' + stats.totalRangedAtk + '<br>' +
       '<b>🔮 ATQ Mágico:</b> ' + stats.totalMagicAtk + '<br>' +
       '<b>🛡️ DEF Física:</b> ' + stats.totalPhysDef + ' &nbsp;|&nbsp; <b>💠 DEF Mágica:</b> ' + stats.totalMagDef + '<br>' +
@@ -1666,7 +1745,7 @@
           renderMiniSockets(item, r.color) +
         '</div>' +
         '<div class="bag-item-actions">' +
-          '<button type="button" class="btn-mini btn-equip" ' + (allowed ? '' : 'disabled title="Classe incompatível"') + ' onclick="event.stopPropagation(); equipItem(' + idx + ')">' + (allowed ? 'Equipar' : 'Bloq.') + '</button>' +
+          '<button type="button" class="btn-mini btn-equip" ' + (allowed ? '' : 'disabled title="Arma ou classe incompatível"') + ' onclick="event.stopPropagation(); equipItem(' + idx + ')">' + (allowed ? 'Equipar' : 'Bloq.') + '</button>' +
           '<button type="button" class="btn-mini btn-sell" onclick="event.stopPropagation(); sellItem(' + idx + ')">+$' + item.sellPrice + '</button>' +
         '</div>';
       bagGrid.appendChild(card);
@@ -1681,7 +1760,6 @@
     if (!lapisGrid) return;
     lapisGrid.innerHTML = '';
 
-    // Verifica se o item atualmente inspecionado possui pelo menos 1 engaste vazio
     var hasEmptySocket = false;
     if (inspectedItem) {
       normalizeItem(inspectedItem);
@@ -1752,19 +1830,16 @@
     var meta = LAPIS_TYPES[lapis.type];
     var chance = LAPIS_LINK_CHANCE[lapis.level] || 50;
 
-    // Remove o Lápis da bolsa (seja sucesso para encaixar, seja falha para quebrar)
     player.lapisBag.splice(lapisIdx, 1);
 
     var roll = Math.random() * 100;
     if (roll <= chance) {
-      // SUCESSO: Linka no slot e toca som cristalino!
       inspectedItem.sockets[freeSocketIdx] = { type: lapis.type, level: lapis.level };
       playLinkSuccessSound();
       showLinkFeedback('✨ SUCESSO! ' + meta.name + ' Nv.' + lapis.level + ' (' + meta.formatBonus(lapis.level) + ') linkado em ' + inspectedItem.name + '!', true);
       addFloatingText(player.x, player.y - 60, '💎 LINK SUCESSO! ' + meta.name + ' Nv.' + lapis.level, meta.color);
       effects.push({ x: player.x, y: player.y, radius: 85, color: meta.color, timer: 0.55 });
     } else {
-      // FALHA: Lápis quebra e toca som de vidro estilhaçando!
       playGlassBreakSound();
       showLinkFeedback('💥 FALHOU! O ' + meta.name + ' Nv.' + lapis.level + ' quebrou em pedaços durante a linkagem!', false);
       addFloatingText(player.x, player.y - 60, '💔 Lápis Quebrou!', '#ff4757');
@@ -1803,7 +1878,8 @@
     var item = player.inventory[bagIdx];
     if (!item) return;
     if (!canClassEquip(item)) {
-      alert('Este equipamento é exclusivo para a classe ' + getClassReqLabel(item.classReq) + '!');
+      var cls = CLASSES[player.classKey];
+      alert('Incompatível! ' + cls.name + ' utiliza apenas: ' + cls.weaponCategoryLabel + '.');
       return;
     }
     var currentEquipped = player.equipped[item.slot];
@@ -2048,7 +2124,8 @@
     player.targetY = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.y));
     clickMarker = { x: player.targetX, y: player.targetY, timer: 0.5 };
     var nearest = getNearestEnemy(worldPos.x, worldPos.y, 85);
-    if (nearest && getDist(player, nearest) <= CLASSES[player.classKey].skills[0].range) useSkill(0);
+    var effRange = Math.max(CLASSES[player.classKey].skills[0].range, getPlayerEffectiveRange());
+    if (nearest && getDist(player, nearest) <= effRange) useSkill(0);
   });
 
   window.addEventListener('keydown', function(e) {
@@ -2111,7 +2188,9 @@
       return;
     }
 
-    var target = getNearestEnemy(player.x, player.y, sk.range + 30);
+    // Respeita o alcance real da arma (corpo a corpo = curto; arco/cajado = longo)
+    var effRange = idx === 0 ? Math.max(sk.range, getPlayerEffectiveRange()) : sk.range;
+    var target = getNearestEnemy(player.x, player.y, effRange + 25);
     if (!target) {
       if (!autoCombat) addFloatingText(player.x, player.y - 40, 'Fora de alcance!', '#ffa502');
       return;
@@ -2161,7 +2240,6 @@
       addFloatingText(en.x, en.y - 88, '🎁 ' + droppedItem.name + ' [' + reqName + ']!', rData.color);
     }
 
-    // Drop de Lápis (Nv. 1 a 5)
     var lapisChance = en.tier === 'boss' ? 0.85 : (en.tier === 'miniboss' ? 0.55 : 0.24);
     if (player.lapisBag.length < 30 && Math.random() < lapisChance) {
       var droppedLapis = generateRandomLapis(en.tier);
@@ -2240,7 +2318,8 @@
         var target = getNearestEnemy(player.x, player.y);
         if (target) {
           var dist = getDist(player, target);
-          if (dist > CLASSES[player.classKey].range * 0.85) {
+          var combatRange = getPlayerEffectiveRange();
+          if (dist > combatRange * 0.85) {
             player.targetX = target.x; player.targetY = target.y;
           } else {
             player.targetX = player.x; player.targetY = player.y;
