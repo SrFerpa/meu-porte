@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Fase 3</title>
+  <title>Asa de Cristal 2.5D - Fase 3.5</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -100,8 +100,8 @@
     }
     .class-card h3, .class-card .role, .class-card .desc { pointer-events: none; }
     .class-card h3 { margin-bottom: 4px; font-size: 1.05rem; }
-    .class-card .role { font-size: 0.74rem; color: #ffa502; margin-bottom: 6px; font-weight: bold; }
-    .class-card .desc { font-size: 0.76rem; color: #ced6e0; line-height: 1.28; }
+    .class-card .role { font-size: 0.72rem; color: #ffa502; margin-bottom: 6px; font-weight: bold; }
+    .class-card .desc { font-size: 0.75rem; color: #ced6e0; line-height: 1.28; }
 
     .start-box { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
     .start-box input {
@@ -297,95 +297,96 @@
     .modal-window {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
       background: #121622; border: 2px solid #ffa502; border-radius: 16px;
-      width: 1020px; max-width: 97vw; max-height: 90vh; display: none; flex-direction: column; z-index: 100;
+      width: 1060px; max-width: 97vw; max-height: 91vh; display: none; flex-direction: column; z-index: 100;
       box-shadow: 0 20px 60px rgba(0,0,0,0.88);
     }
     .modal-header {
       padding: 13px 20px; background: #1a2030; border-bottom: 1px solid #2f3542;
       border-radius: 14px 14px 0 0; display: flex; justify-content: space-between; align-items: center;
     }
-    .modal-header h3 { color: #ffa502; font-size: 1.12rem; letter-spacing: 0.5px; }
+    .modal-header h3 { color: #ffa502; font-size: 1.1rem; letter-spacing: 0.5px; }
     .btn-close-modal { background: #ff4757; border: none; color: #fff; width: 30px; height: 30px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .modal-body { padding: 15px; overflow-y: auto; display: flex; gap: 14px; flex-wrap: wrap; }
+    .modal-body { padding: 14px; overflow-y: auto; display: flex; gap: 13px; flex-wrap: wrap; }
 
     /* Coluna 1: Equipados */
     .equip-column {
-      flex: 1.05; min-width: 245px; background: #0d1018; padding: 13px;
+      flex: 1.05; min-width: 255px; background: #0d1018; padding: 12px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .equip-column h4, .inspect-column h4, .bag-column h4 {
-      font-size: 0.82rem; color: #a4b0be; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+      font-size: 0.8rem; color: #a4b0be; margin-bottom: 9px; text-transform: uppercase; letter-spacing: 0.8px;
     }
     .equip-slot-row {
       display: flex; align-items: center; justify-content: space-between;
-      background: #161b29; border: 1.5px solid #2f3542; padding: 8px 10px;
-      border-radius: 10px; margin-bottom: 8px; font-size: 0.8rem; cursor: pointer; transition: 0.15s;
+      background: #161b29; border: 1.5px solid #2f3542; padding: 7px 10px;
+      border-radius: 10px; margin-bottom: 7px; font-size: 0.78rem; cursor: pointer; transition: 0.15s;
     }
     .equip-slot-row:hover { transform: translateX(3px); background: #1d2436; }
     .stat-summary {
-      margin-top: auto; padding-top: 10px; border-top: 1px solid #2f3542;
-      font-size: 0.8rem; color: #ced6e0; line-height: 1.55;
+      margin-top: auto; padding-top: 9px; border-top: 1px solid #2f3542;
+      font-size: 0.77rem; color: #ced6e0; line-height: 1.55;
+      background: #131724; padding: 9px; border-radius: 8px;
     }
 
     /* Coluna 2: Inspeção de Item + Comparação com Setas + Slots de Lápis */
     .inspect-column {
-      flex: 1.1; min-width: 265px; background: #0d1018; padding: 13px;
+      flex: 1.15; min-width: 275px; background: #0d1018; padding: 12px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .inspect-card {
       flex: 1; background: #141926; border: 1.5px solid #2f3542; border-radius: 12px;
-      padding: 13px; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 12px; display: flex; flex-direction: column; justify-content: space-between;
     }
-    .inspect-header { text-align: center; padding-bottom: 9px; border-bottom: 1px solid #252c3d; }
+    .inspect-header { text-align: center; padding-bottom: 8px; border-bottom: 1px solid #252c3d; }
     .inspect-icon-box {
-      width: 52px; height: 52px; border-radius: 12px; margin: 0 auto 7px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.9rem; background: #0d1018;
+      width: 48px; height: 48px; border-radius: 12px; margin: 0 auto 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: #0d1018;
     }
     .rarity-badge {
-      display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.7rem;
-      font-weight: bold; text-transform: uppercase; margin-top: 4px;
+      display: inline-block; padding: 2px 9px; border-radius: 12px; font-size: 0.69rem;
+      font-weight: bold; text-transform: uppercase; margin-top: 3px;
     }
     .class-req-pill {
-      display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.7rem;
-      font-weight: bold; margin-top: 5px;
+      display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.69rem;
+      font-weight: bold; margin-top: 4px;
     }
     .class-req-ok { background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid #2ed57355; }
     .class-req-no { background: rgba(255, 71, 87, 0.18); color: #ff6b81; border: 1px solid #ff475777; }
 
-    .inspect-stats { margin: 10px 0; font-size: 0.82rem; color: #e2e8f0; }
+    .inspect-stats { margin: 8px 0; font-size: 0.8rem; color: #e2e8f0; }
     .stat-comp-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
     }
-    .arrow-up { color: #2ed573; font-weight: bold; font-size: 0.78rem; }
-    .arrow-down { color: #ff4757; font-weight: bold; font-size: 0.78rem; }
-    .arrow-eq { color: #64748b; font-size: 0.74rem; }
+    .arrow-up { color: #2ed573; font-weight: bold; font-size: 0.76rem; }
+    .arrow-down { color: #ff4757; font-weight: bold; font-size: 0.76rem; }
+    .arrow-eq { color: #64748b; font-size: 0.72rem; }
 
     /* Engastes / Slots de Lápis */
     .lapis-section {
-      background: #0b0e15; border: 1px dashed #334155; border-radius: 10px; padding: 9px; margin-top: 6px;
+      background: #0b0e15; border: 1px dashed #334155; border-radius: 10px; padding: 8px; margin-top: 6px;
     }
-    .lapis-title { font-size: 0.72rem; color: #94a3b8; margin-bottom: 7px; font-weight: bold; text-transform: uppercase; text-align: center; }
+    .lapis-title { font-size: 0.7rem; color: #94a3b8; margin-bottom: 6px; font-weight: bold; text-transform: uppercase; text-align: center; }
     .lapis-sockets-row { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
     .lapis-socket {
-      width: 28px; height: 28px; border-radius: 50%; border: 2px dashed #475569;
+      width: 27px; height: 27px; border-radius: 50%; border: 2px dashed #475569;
       background: #161c2c; display: flex; align-items: center; justify-content: center;
-      font-size: 0.72rem; color: #64748b;
+      font-size: 0.7rem; color: #64748b;
     }
     .lapis-socket.unlocked { border-style: solid; box-shadow: inset 0 0 8px rgba(255,255,255,0.08); }
 
     /* Coluna 3: Mochila */
     .bag-column {
-      flex: 1.5; min-width: 320px; background: #0d1018; padding: 13px;
+      flex: 1.5; min-width: 325px; background: #0d1018; padding: 12px;
       border-radius: 12px; border: 1px solid #2a3142; display: flex; flex-direction: column;
     }
     .bag-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 8px; max-height: 395px; overflow-y: auto; padding-right: 2px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+      gap: 8px; max-height: 410px; overflow-y: auto; padding-right: 2px;
     }
     .bag-item {
       background: #161b29; border: 1.5px solid #2f3542; border-radius: 10px;
-      padding: 8px; font-size: 0.76rem; display: flex; flex-direction: column;
+      padding: 8px; font-size: 0.75rem; display: flex; flex-direction: column;
       justify-content: space-between; cursor: pointer; transition: 0.15s;
     }
     .bag-item:hover { transform: translateY(-2px); background: #1d2436; }
@@ -398,7 +399,7 @@
     .btn-equip:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
     .btn-sell { background: #ffa502; color: #000; }
     .btn-sell-all { background: #ff4757; color: #fff; }
-    .btn-unequip { background: #475569; color: #fff; padding: 3px 7px; border: none; border-radius: 5px; font-size: 0.66rem; cursor: pointer; }
+    .btn-unequip { background: #475569; color: #fff; padding: 3px 7px; border: none; border-radius: 5px; font-size: 0.65rem; cursor: pointer; }
 
     /* Forja */
     .forge-list { flex: 1; min-width: 240px; }
@@ -422,32 +423,32 @@
         <div class="class-card selected" id="card-cavaleiro" onclick="selecionarClasse('cavaleiro')">
           <div class="class-icon" style="background:#eccc6822; border:2px solid #eccc68; color:#eccc68">🛡️</div>
           <h3 style="color:#eccc68">Cavaleiro</h3>
-          <div class="role">Tanque / Corpo a Corpo</div>
-          <div class="desc">Alta defesa e vida. Usa Espadas Pesadas e Armaduras de Placas.</div>
+          <div class="role">ATQ Perto • DEF Física</div>
+          <div class="desc">Tanque corpo a corpo. Alta vida e armadura pesada contra golpes físicos.</div>
         </div>
         <div class="class-card" id="card-mago" onclick="selecionarClasse('mago')">
           <div class="class-icon" style="background:#70a1ff22; border:2px solid #70a1ff; color:#70a1ff">🔮</div>
           <h3 style="color:#70a1ff">Mago</h3>
-          <div class="role">Dano Mágico / Área</div>
-          <div class="desc">Domina fogo e gelo. Usa Cajados Arcanos e Vestes Místicas.</div>
+          <div class="role">ATQ Mágico • DEF Mágica</div>
+          <div class="desc">Dano elemental devastador em área e alta resistência mágica.</div>
         </div>
         <div class="class-card" id="card-arqueiro" onclick="selecionarClasse('arqueiro')">
           <div class="class-icon" style="background:#2ed57322; border:2px solid #2ed573; color:#2ed573">🏹</div>
           <h3 style="color:#2ed573">Arqueiro</h3>
-          <div class="role">Dano Físico / Crítico</div>
-          <div class="desc">Ataques rápidos à distância. Usa Arcos Longos e Couro Leve.</div>
+          <div class="role">ATQ Distância • Crítico</div>
+          <div class="desc">Disparos de longo alcance com alta precisão, crítico e evasão.</div>
         </div>
         <div class="class-card" id="card-sacerdote" onclick="selecionarClasse('sacerdote')">
           <div class="class-icon" style="background:#f1f2f622; border:2px solid #f1f2f6; color:#f1f2f6">✨</div>
           <h3 style="color:#f1f2f6">Sacerdote</h3>
-          <div class="role">Suporte / Luz Sagrada</div>
-          <div class="desc">Canaliza a luz divina. Usa Cetros Sagrados e Batina Celestial.</div>
+          <div class="role">ATQ Mágico • DEF Mágica</div>
+          <div class="desc">Canaliza magia sagrada de cura e punição celestial à distância.</div>
         </div>
         <div class="class-card" id="card-assassino" onclick="selecionarClasse('assassino')">
           <div class="class-icon" style="background:#ff475722; border:2px solid #ff4757; color:#ff4757">🗡️</div>
           <h3 style="color:#ff4757">Assassino</h3>
-          <div class="role">Furtivo / Explosão</div>
-          <div class="desc">Alta evasão e crítico. Usa Adagas Sombrias e Trajes Furtivos.</div>
+          <div class="role">ATQ Perto • Evasão</div>
+          <div class="desc">Golpes corpo a corpo velozes com letalidade crítica e esquiva extrema.</div>
         </div>
       </div>
 
@@ -496,7 +497,7 @@
 
   <div id="controls-hint">
     🖱️ <b>Clique:</b> Mover/Atacar | <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção<br>
-    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Inventário & Comparador | <b>F:</b> Forja (+1 a +12)
+    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Inventário & Status | <b>F:</b> Forja (+1 a +12)
   </div>
 
   <div id="hud-bottom">
@@ -510,7 +511,7 @@
   <!-- MODAL INVENTÁRIO DINÂMICO -->
   <div class="modal-window" id="bag-modal">
     <div class="modal-header">
-      <h3>🎒 Inventário Dinâmico, Itens de Classe & Comparador</h3>
+      <h3>🎒 Inventário Dinâmico, Atributos de Classe & Comparador</h3>
       <button type="button" class="btn-close-modal" onclick="closeAllModals()">X</button>
     </div>
     <div class="modal-body">
@@ -583,9 +584,16 @@
   var inspectedFromBag = false;
   var lastTime = performance.now();
 
+  // ================= CLASSES COM STATUS PADRÃO SEPARADOS =================
+  // attackType: 'melee' (ATQ Perto) | 'ranged' (ATQ Distância) | 'magic' (ATQ Mágico)
   var CLASSES = {
     cavaleiro: {
-      name: 'Cavaleiro', icon: '🛡️', color: '#eccc68', baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, baseCrit: 8, baseEva: 4, range: 65,
+      name: 'Cavaleiro', icon: '🛡️', color: '#eccc68',
+      attackType: 'melee',
+      baseHp: 230, baseMp: 80,
+      baseMeleeAtk: 24, baseRangedAtk: 0, baseMagicAtk: 0,
+      basePhysDef: 16, baseMagDef: 8,
+      baseCrit: 8, baseEva: 4, range: 65,
       skills: [
         { name: 'Golpe Cruzado', icon: '⚔️', mult: 1.3, mp: 5, cd: 1.5, range: 70, color: '#ffa502' },
         { name: 'Escudo Sagrado', icon: '🛡️', mult: 0, heal: 0.25, mp: 15, cd: 6, range: 0, color: '#70a1ff' },
@@ -594,7 +602,12 @@
       ]
     },
     mago: {
-      name: 'Mago', icon: '🔮', color: '#70a1ff', baseHp: 130, baseMp: 180, baseAtk: 34, baseDef: 6, baseCrit: 12, baseEva: 6, range: 210,
+      name: 'Mago', icon: '🔮', color: '#70a1ff',
+      attackType: 'magic',
+      baseHp: 135, baseMp: 190,
+      baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 36,
+      basePhysDef: 5, baseMagDef: 15,
+      baseCrit: 12, baseEva: 6, range: 215,
       skills: [
         { name: 'Bola de Fogo', icon: '🔥', mult: 1.4, mp: 8, cd: 1.4, range: 220, color: '#ff6348' },
         { name: 'Lança de Gelo', icon: '❄️', mult: 1.8, mp: 16, cd: 4, range: 220, color: '#1e90ff' },
@@ -603,7 +616,12 @@
       ]
     },
     arqueiro: {
-      name: 'Arqueiro', icon: '🏹', color: '#2ed573', baseHp: 155, baseMp: 120, baseAtk: 30, baseDef: 8, baseCrit: 18, baseEva: 12, range: 230,
+      name: 'Arqueiro', icon: '🏹', color: '#2ed573',
+      attackType: 'ranged',
+      baseHp: 155, baseMp: 120,
+      baseMeleeAtk: 0, baseRangedAtk: 31, baseMagicAtk: 0,
+      basePhysDef: 9, baseMagDef: 9,
+      baseCrit: 18, baseEva: 13, range: 235,
       skills: [
         { name: 'Tiro Preciso', icon: '🏹', mult: 1.35, mp: 6, cd: 1.2, range: 240, color: '#2ed573' },
         { name: 'Flecha Venenosa', icon: '🧪', mult: 1.75, mp: 14, cd: 4, range: 240, color: '#7bed9f' },
@@ -612,7 +630,12 @@
       ]
     },
     sacerdote: {
-      name: 'Sacerdote', icon: '✨', color: '#f1f2f6', baseHp: 160, baseMp: 200, baseAtk: 25, baseDef: 9, baseCrit: 10, baseEva: 7, range: 195,
+      name: 'Sacerdote', icon: '✨', color: '#f1f2f6',
+      attackType: 'magic',
+      baseHp: 165, baseMp: 210,
+      baseMeleeAtk: 0, baseRangedAtk: 0, baseMagicAtk: 27,
+      basePhysDef: 7, baseMagDef: 17,
+      baseCrit: 10, baseEva: 7, range: 200,
       skills: [
         { name: 'Raio de Luz', icon: '✨', mult: 1.3, mp: 7, cd: 1.4, range: 200, color: '#f1c40f' },
         { name: 'Cura Divina', icon: '💚', mult: 0, heal: 0.45, mp: 20, cd: 5, range: 0, color: '#2ed573' },
@@ -621,7 +644,12 @@
       ]
     },
     assassino: {
-      name: 'Assassino', icon: '🗡️', color: '#ff4757', baseHp: 150, baseMp: 110, baseAtk: 35, baseDef: 7, baseCrit: 20, baseEva: 16, range: 65,
+      name: 'Assassino', icon: '🗡️', color: '#ff4757',
+      attackType: 'melee',
+      baseHp: 150, baseMp: 110,
+      baseMeleeAtk: 35, baseRangedAtk: 0, baseMagicAtk: 0,
+      basePhysDef: 8, baseMagDef: 7,
+      baseCrit: 21, baseEva: 17, range: 65,
       skills: [
         { name: 'Corte Duplo', icon: '🗡️', mult: 1.45, mp: 6, cd: 1.1, range: 70, color: '#ff4757' },
         { name: 'Passo Sombrio', icon: '👤', mult: 1.9, mp: 15, cd: 4, range: 140, dash: true, color: '#a29bfe' },
@@ -682,11 +710,11 @@
   };
 
   var EQUIP_SLOTS = {
-    weapon: { label: 'Arma',     icon: '⚔️', baseAtk: 11, baseDef: 0, baseHp: 0,  baseCrit: 3.0, baseEva: 0.5 },
-    armor:  { label: 'Armadura', icon: '👕', baseAtk: 0,  baseDef: 8, baseHp: 48, baseCrit: 0.5, baseEva: 1.5 },
-    helm:   { label: 'Elmo',     icon: '🪖', baseAtk: 2,  baseDef: 5, baseHp: 32, baseCrit: 1.5, baseEva: 1.0 },
-    boots:  { label: 'Botas',    icon: '👢', baseAtk: 2,  baseDef: 4, baseHp: 25, baseCrit: 1.0, baseEva: 3.5 },
-    ring:   { label: 'Anel',     icon: '💍', baseAtk: 7,  baseDef: 2, baseHp: 20, baseCrit: 3.5, baseEva: 2.0 }
+    weapon: { label: 'Arma',     icon: '⚔️', baseAtk: 12, basePhysDef: 0, baseMagDef: 0, baseHp: 0,  baseCrit: 3.0, baseEva: 0.5 },
+    armor:  { label: 'Armadura', icon: '👕', baseAtk: 0,  basePhysDef: 7, baseMagDef: 6, baseHp: 50, baseCrit: 0.5, baseEva: 1.5 },
+    helm:   { label: 'Elmo',     icon: '🪖', baseAtk: 2,  basePhysDef: 4, baseMagDef: 4, baseHp: 32, baseCrit: 1.5, baseEva: 1.0 },
+    boots:  { label: 'Botas',    icon: '👢', baseAtk: 2,  basePhysDef: 3, baseMagDef: 3, baseHp: 25, baseCrit: 1.0, baseEva: 3.5 },
+    ring:   { label: 'Anel',     icon: '💍', baseAtk: 7,  basePhysDef: 2, baseMagDef: 2, baseHp: 20, baseCrit: 3.5, baseEva: 2.0 }
   };
 
   function getRarityData(key) {
@@ -704,10 +732,36 @@
     if (!Array.isArray(item.sockets) || item.sockets.length !== r.slots) {
       item.sockets = new Array(r.slots).fill(null);
     }
+    if (!item.classReq) item.classReq = 'all';
+
+    // Migração automática de itens antigos (atk/def genéricos -> específicos da classe)
+    if (typeof item.meleeAtk !== 'number' && typeof item.rangedAtk !== 'number' && typeof item.magicAtk !== 'number') {
+      var oldAtk = item.atk || 0;
+      var targetClass = (item.classReq && CLASSES[item.classReq]) ? item.classReq : (player ? player.classKey : 'cavaleiro');
+      var atkType = CLASSES[targetClass].attackType;
+      item.meleeAtk  = atkType === 'melee'  ? oldAtk : 0;
+      item.rangedAtk = atkType === 'ranged' ? oldAtk : 0;
+      item.magicAtk  = atkType === 'magic'  ? oldAtk : 0;
+    }
+    if (typeof item.physDef !== 'number' && typeof item.magDef !== 'number') {
+      var oldDef = item.def || 0;
+      var cReq = (item.classReq && CLASSES[item.classReq]) ? item.classReq : 'cavaleiro';
+      if (cReq === 'mago' || cReq === 'sacerdote') {
+        item.physDef = Math.round(oldDef * 0.45);
+        item.magDef  = Math.round(oldDef * 1.15);
+      } else {
+        item.physDef = Math.round(oldDef * 1.15);
+        item.magDef  = Math.round(oldDef * 0.55);
+      }
+    }
+    item.meleeAtk  = item.meleeAtk  || 0;
+    item.rangedAtk = item.rangedAtk || 0;
+    item.magicAtk  = item.magicAtk  || 0;
+    item.physDef   = item.physDef   || 0;
+    item.magDef    = item.magDef    || 0;
+
     if (typeof item.crit !== 'number') item.crit = Math.round((EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].baseCrit : 1) * r.mult * 10) / 10;
     if (typeof item.eva !== 'number') item.eva = Math.round((EQUIP_SLOTS[item.slot] ? EQUIP_SLOTS[item.slot].baseEva : 1) * r.mult * 10) / 10;
-    // Itens antigos sem classReq ficam compatíveis com qualquer classe ('all')
-    if (!item.classReq) item.classReq = 'all';
     return item;
   }
 
@@ -727,10 +781,10 @@
     var slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
     var slotInfo = EQUIP_SLOTS[slot];
 
-    // 45% de chance de dropar para a classe do próprio jogador, 55% dividido entre as outras classes
     var classKeys = Object.keys(CLASSES);
     var itemClass = Math.random() < 0.45 ? player.classKey : classKeys[Math.floor(Math.random() * classKeys.length)];
     var gearMeta = CLASS_GEAR_NAMES[itemClass][slot];
+    var atkType = CLASSES[itemClass].attackType;
 
     var roll = Math.random();
     var rarityKey = 'normal';
@@ -756,11 +810,21 @@
     var r = RARITIES[rarityKey];
     var scale = 1 + (playerLvl - 1) * 0.22;
 
-    // Bônus temático por classe
+    // Especialização de ataque por classe (nunca gera ataque mágico em arco/espada!)
+    var rawAtk = Math.round(slotInfo.baseAtk * r.mult * scale * (itemClass === 'mago' || itemClass === 'assassino' ? 1.2 : 1.0));
+    var meleeAtk  = atkType === 'melee'  ? rawAtk : 0;
+    var rangedAtk = atkType === 'ranged' ? rawAtk : 0;
+    var magicAtk  = atkType === 'magic'  ? rawAtk : 0;
+
+    // Especialização de defesa por classe (Cavaleiro foca DEF Física; Mago/Sacerdote focam DEF Mágica; Arqueiro/Assassino equilibrados)
+    var physMult = itemClass === 'cavaleiro' ? 1.45 : (itemClass === 'mago' || itemClass === 'sacerdote' ? 0.55 : 0.95);
+    var magMult  = (itemClass === 'mago' || itemClass === 'sacerdote') ? 1.45 : (itemClass === 'cavaleiro' ? 0.65 : 0.95);
+
+    var physDef = Math.round(slotInfo.basePhysDef * r.mult * scale * physMult);
+    var magDef  = Math.round(slotInfo.baseMagDef  * r.mult * scale * magMult);
+
     var classCritBonus = (itemClass === 'arqueiro' || itemClass === 'assassino') ? 1.35 : 1.0;
     var classEvaBonus  = (itemClass === 'assassino' || itemClass === 'arqueiro') ? 1.35 : 1.0;
-    var classDefBonus  = (itemClass === 'cavaleiro') ? 1.35 : 1.0;
-    var classAtkBonus  = (itemClass === 'mago' || itemClass === 'assassino') ? 1.25 : 1.0;
 
     return {
       id: 'item_' + Math.random().toString(36).slice(2, 10),
@@ -771,9 +835,12 @@
       rarity: rarityKey,
       plus: 0,
       sockets: new Array(r.slots).fill(null),
-      atk:  Math.round(slotInfo.baseAtk * r.mult * scale * classAtkBonus),
-      def:  Math.round(slotInfo.baseDef * r.mult * scale * classDefBonus),
-      hp:   Math.round(slotInfo.baseHp  * r.mult * scale),
+      meleeAtk: meleeAtk,
+      rangedAtk: rangedAtk,
+      magicAtk: magicAtk,
+      physDef: physDef,
+      magDef: magDef,
+      hp:   Math.round(slotInfo.baseHp * r.mult * scale * (itemClass === 'cavaleiro' ? 1.25 : 1.0)),
       crit: Math.round(slotInfo.baseCrit * (1 + (r.mult - 1) * 0.65) * classCritBonus * 10) / 10,
       eva:  Math.round(slotInfo.baseEva  * (1 + (r.mult - 1) * 0.65) * classEvaBonus  * 10) / 10,
       sellPrice: Math.round(r.price * scale)
@@ -781,16 +848,19 @@
   }
 
   function getItemEffectiveStats(item) {
-    if (!item) return { atk: 0, def: 0, hp: 0, crit: 0, eva: 0 };
+    if (!item) return { meleeAtk: 0, rangedAtk: 0, magicAtk: 0, physDef: 0, magDef: 0, hp: 0, crit: 0, eva: 0 };
     normalizeItem(item);
     var forgeMult = 1 + (item.plus || 0) * 0.18;
     var critForgeMult = 1 + (item.plus || 0) * 0.08;
     return {
-      atk:  Math.round((item.atk || 0) * forgeMult),
-      def:  Math.round((item.def || 0) * forgeMult),
-      hp:   Math.round((item.hp  || 0) * forgeMult),
-      crit: Math.round((item.crit || 0) * critForgeMult * 10) / 10,
-      eva:  Math.round((item.eva  || 0) * critForgeMult * 10) / 10
+      meleeAtk:  Math.round((item.meleeAtk  || 0) * forgeMult),
+      rangedAtk: Math.round((item.rangedAtk || 0) * forgeMult),
+      magicAtk:  Math.round((item.magicAtk  || 0) * forgeMult),
+      physDef:   Math.round((item.physDef   || 0) * forgeMult),
+      magDef:    Math.round((item.magDef    || 0) * forgeMult),
+      hp:        Math.round((item.hp        || 0) * forgeMult),
+      crit:      Math.round((item.crit      || 0) * critForgeMult * 10) / 10,
+      eva:       Math.round((item.eva       || 0) * critForgeMult * 10) / 10
     };
   }
 
@@ -825,6 +895,7 @@
   function normalizePlayerObject(p) {
     if (!p || typeof p !== 'object') return null;
     if (!CLASSES[p.classKey]) p.classKey = 'cavaleiro';
+    var cls = CLASSES[p.classKey];
     if (typeof p.stones !== 'number') p.stones = 5;
     if (!Array.isArray(p.inventory)) p.inventory = [];
     p.inventory = p.inventory.map(normalizeItem);
@@ -834,9 +905,20 @@
     Object.keys(p.equipped).forEach(function(k) {
       if (p.equipped[k]) p.equipped[k] = normalizeItem(p.equipped[k]);
     });
-    if (!p.baseMaxHp) p.baseMaxHp = p.maxHp || 150;
-    if (!p.baseAtk) p.baseAtk = p.atk || 25;
-    if (!p.baseDef) p.baseDef = p.def || 8;
+    if (!p.baseMaxHp) p.baseMaxHp = p.maxHp || cls.baseHp;
+
+    // Migração dos status base antigos do personagem para os novos atributos separados
+    if (typeof p.baseMeleeAtk !== 'number' && typeof p.baseRangedAtk !== 'number' && typeof p.baseMagicAtk !== 'number') {
+      var lvlBonus = Math.max(0, (p.level || 1) - 1) * 6;
+      p.baseMeleeAtk  = cls.attackType === 'melee'  ? cls.baseMeleeAtk  + lvlBonus : 0;
+      p.baseRangedAtk = cls.attackType === 'ranged' ? cls.baseRangedAtk + lvlBonus : 0;
+      p.baseMagicAtk  = cls.attackType === 'magic'  ? cls.baseMagicAtk  + lvlBonus : 0;
+    }
+    if (typeof p.basePhysDef !== 'number' && typeof p.baseMagDef !== 'number') {
+      var defLvlBonus = Math.max(0, (p.level || 1) - 1) * 3;
+      p.basePhysDef = cls.basePhysDef + defLvlBonus;
+      p.baseMagDef  = cls.baseMagDef  + defLvlBonus;
+    }
     return p;
   }
 
@@ -895,8 +977,11 @@
       hp: cls.baseHp,
       mp: cls.baseMp,
       maxMp: cls.baseMp,
-      baseAtk: cls.baseAtk,
-      baseDef: cls.baseDef,
+      baseMeleeAtk: cls.baseMeleeAtk,
+      baseRangedAtk: cls.baseRangedAtk,
+      baseMagicAtk: cls.baseMagicAtk,
+      basePhysDef: cls.basePhysDef,
+      baseMagDef: cls.baseMagDef,
       speed: classKey === 'assassino' ? 210 : 175,
       cooldowns: [0, 0, 0, 0, 0],
       equipped: { weapon: null, armor: null, helm: null, boots: null, ring: null },
@@ -904,34 +989,53 @@
     };
   }
 
-  function getTotalStats() {
-    var cls = CLASSES[player.classKey];
-    var baseHp = player.baseMaxHp || player.maxHp;
-    var baseAtk = player.baseAtk || player.atk;
-    var baseDef = player.baseDef || player.def;
-    var baseCrit = cls.baseCrit || 10;
-    var baseEva = cls.baseEva || 5;
+  function computePlayerStats(p) {
+    var cls = CLASSES[p.classKey];
+    var bonusHp = 0, bMelee = 0, bRanged = 0, bMagic = 0, bPhysDef = 0, bMagDef = 0, bCrit = 0, bEva = 0;
 
-    var bonusHp = 0, bonusAtk = 0, bonusDef = 0, bonusCrit = 0, bonusEva = 0;
-    Object.values(player.equipped).forEach(function(item) {
+    Object.values(p.equipped).forEach(function(item) {
       if (item) {
         var st = getItemEffectiveStats(item);
-        bonusHp += st.hp;
-        bonusAtk += st.atk;
-        bonusDef += st.def;
-        bonusCrit += st.crit;
-        bonusEva += st.eva;
+        bonusHp  += st.hp;
+        bMelee   += st.meleeAtk;
+        bRanged  += st.rangedAtk;
+        bMagic   += st.magicAtk;
+        bPhysDef += st.physDef;
+        bMagDef  += st.magDef;
+        bCrit    += st.crit;
+        bEva     += st.eva;
       }
     });
 
-    var totalMaxHp = baseHp + bonusHp;
-    var totalAtk = baseAtk + bonusAtk;
-    var totalDef = baseDef + bonusDef;
-    var totalCrit = Math.min(85, Math.round((baseCrit + bonusCrit) * 10) / 10);
-    var totalEva = Math.min(65, Math.round((baseEva + bonusEva) * 10) / 10);
+    var totalMaxHp     = (p.baseMaxHp || cls.baseHp) + bonusHp;
+    var totalMeleeAtk  = (p.baseMeleeAtk  || 0) + bMelee;
+    var totalRangedAtk = (p.baseRangedAtk || 0) + bRanged;
+    var totalMagicAtk  = (p.baseMagicAtk  || 0) + bMagic;
+    var totalPhysDef   = (p.basePhysDef   || 0) + bPhysDef;
+    var totalMagDef    = (p.baseMagDef    || 0) + bMagDef;
+    var totalCrit      = Math.min(85, Math.round(((cls.baseCrit || 10) + bCrit) * 10) / 10);
+    var totalEva       = Math.min(65, Math.round(((cls.baseEva  || 5)  + bEva)  * 10) / 10);
 
-    var br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + totalCrit * 8 + totalEva * 8 + player.level * 25);
-    return { totalMaxHp: totalMaxHp, totalAtk: totalAtk, totalDef: totalDef, totalCrit: totalCrit, totalEva: totalEva, br: br };
+    var primaryAtk = cls.attackType === 'magic' ? totalMagicAtk : (cls.attackType === 'ranged' ? totalRangedAtk : totalMeleeAtk);
+    var br = Math.round(totalMaxHp * 0.5 + primaryAtk * 4 + (totalPhysDef + totalMagDef) * 2 + totalCrit * 8 + totalEva * 8 + p.level * 25);
+
+    return {
+      totalMaxHp: totalMaxHp,
+      totalMeleeAtk: totalMeleeAtk,
+      totalRangedAtk: totalRangedAtk,
+      totalMagicAtk: totalMagicAtk,
+      primaryAtk: primaryAtk,
+      attackType: cls.attackType,
+      totalPhysDef: totalPhysDef,
+      totalMagDef: totalMagDef,
+      totalCrit: totalCrit,
+      totalEva: totalEva,
+      br: br
+    };
+  }
+
+  function getTotalStats() {
+    return computePlayerStats(player);
   }
 
   function renderCharScreen() {
@@ -944,11 +1048,7 @@
       if (slotData) {
         var p = normalizePlayerObject(slotData);
         var cls = CLASSES[p.classKey];
-        var bHp = 0, bAtk = 0, bDef = 0, bCrit = 0, bEva = 0;
-        Object.values(p.equipped).forEach(function(it) {
-          if (it) { var s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; bCrit += s.crit; bEva += s.eva; }
-        });
-        var br = Math.round((p.baseMaxHp + bHp) * 0.5 + (p.baseAtk + bAtk) * 4 + (p.baseDef + bDef) * 3 + ((cls.baseCrit || 10) + bCrit) * 8 + ((cls.baseEva || 5) + bEva) * 8 + p.level * 25);
+        var st = computePlayerStats(p);
 
         card.className = 'char-slot-card occupied';
         card.innerHTML =
@@ -959,7 +1059,7 @@
           '<div style="font-size:0.85rem; color:' + cls.color + '; font-weight:bold; margin-top:2px;">' + cls.name + '</div>' +
           '<div class="slot-stats-pills">' +
             '<span class="pill-lvl">Nv. ' + p.level + '</span>' +
-            '<span class="pill-br">🔥 BR: ' + br + '</span>' +
+            '<span class="pill-br">🔥 BR: ' + st.br + '</span>' +
           '</div>' +
           '<button type="button" class="btn-enter-slot" onclick="selectSlotToPlay(' + idx + ')">▶ Jogar</button>';
       } else {
@@ -1061,6 +1161,19 @@
     renderInspectPanel();
   }
 
+  function formatCompactItemStats(st) {
+    var parts = [];
+    if (st.hp > 0)        parts.push('HP +' + st.hp);
+    if (st.meleeAtk > 0)  parts.push('ATQ Perto +' + st.meleeAtk);
+    if (st.rangedAtk > 0) parts.push('ATQ Dist. +' + st.rangedAtk);
+    if (st.magicAtk > 0)  parts.push('ATQ Mág. +' + st.magicAtk);
+    if (st.physDef > 0)   parts.push('DEF Fís. +' + st.physDef);
+    if (st.magDef > 0)    parts.push('DEF Mág. +' + st.magDef);
+    if (st.crit > 0)      parts.push('CRIT +' + st.crit + '%');
+    if (st.eva > 0)       parts.push('EVA +' + st.eva + '%');
+    return parts.join(' | ');
+  }
+
   function buildStatCompareLine(icon, label, newVal, eqVal, suffix, compareEnabled) {
     var arrowHtml = '';
     if (compareEnabled) {
@@ -1097,21 +1210,30 @@
     var allowed = canClassEquip(item);
     var reqText = getClassReqLabel(item.classReq);
 
-    // Compara com o item atualmente equipado no mesmo slot (quando inspecionando da mochila)
     var currentlyEquipped = player.equipped[item.slot];
     var compareEnabled = inspectedFromBag && (!currentlyEquipped || currentlyEquipped.id !== item.id);
-    var eqStats = currentlyEquipped ? getItemEffectiveStats(currentlyEquipped) : { atk: 0, def: 0, hp: 0, crit: 0, eva: 0 };
+    var eqStats = currentlyEquipped ? getItemEffectiveStats(currentlyEquipped) : { meleeAtk: 0, rangedAtk: 0, magicAtk: 0, physDef: 0, magDef: 0, hp: 0, crit: 0, eva: 0 };
 
     var compareHeaderNote = '';
     if (compareEnabled) {
       compareHeaderNote = currentlyEquipped
-        ? '<div style="font-size:0.7rem; color:#94a3b8; margin-top:4px;">Comparando com: <b style="color:#e2e8f0;">' + currentlyEquipped.name + '</b></div>'
-        : '<div style="font-size:0.7rem; color:#2ed573; margin-top:4px;">▲ Slot vazio (melhoria direta!)</div>';
+        ? '<div style="font-size:0.69rem; color:#94a3b8; margin-top:4px;">Comparando com: <b style="color:#e2e8f0;">' + currentlyEquipped.name + '</b></div>'
+        : '<div style="font-size:0.69rem; color:#2ed573; margin-top:4px;">▲ Slot vazio (melhoria direta!)</div>';
     }
+
+    var statRowsHtml = '';
+    if (st.hp > 0 || eqStats.hp > 0)               statRowsHtml += buildStatCompareLine('❤️', 'Vida Máx', st.hp, eqStats.hp, '', compareEnabled);
+    if (st.meleeAtk > 0 || eqStats.meleeAtk > 0)   statRowsHtml += buildStatCompareLine('⚔️', 'ATQ Perto', st.meleeAtk, eqStats.meleeAtk, '', compareEnabled);
+    if (st.rangedAtk > 0 || eqStats.rangedAtk > 0) statRowsHtml += buildStatCompareLine('🏹', 'ATQ Distância', st.rangedAtk, eqStats.rangedAtk, '', compareEnabled);
+    if (st.magicAtk > 0 || eqStats.magicAtk > 0)   statRowsHtml += buildStatCompareLine('🔮', 'ATQ Mágico', st.magicAtk, eqStats.magicAtk, '', compareEnabled);
+    if (st.physDef > 0 || eqStats.physDef > 0)     statRowsHtml += buildStatCompareLine('🛡️', 'DEF Física', st.physDef, eqStats.physDef, '', compareEnabled);
+    if (st.magDef > 0 || eqStats.magDef > 0)       statRowsHtml += buildStatCompareLine('💠', 'DEF Mágica', st.magDef, eqStats.magDef, '', compareEnabled);
+    if (st.crit > 0 || eqStats.crit > 0)           statRowsHtml += buildStatCompareLine('💥', 'Crítico', st.crit, eqStats.crit, '%', compareEnabled);
+    if (st.eva > 0 || eqStats.eva > 0)             statRowsHtml += buildStatCompareLine('💨', 'Evasão', st.eva, eqStats.eva, '%', compareEnabled);
 
     var socketsHtml = '';
     if (r.slots === 0) {
-      socketsHtml = '<div style="font-size:0.73rem; color:#64748b; text-align:center;">Item Normal: 0 engastes de Lápis.</div>';
+      socketsHtml = '<div style="font-size:0.72rem; color:#64748b; text-align:center;">Item Normal: 0 engastes de Lápis.</div>';
     } else {
       socketsHtml = '<div class="lapis-sockets-row">';
       for (var i = 0; i < r.slots; i++) {
@@ -1125,7 +1247,7 @@
       '<div>' +
         '<div class="inspect-header">' +
           '<div class="inspect-icon-box" style="border:2px solid ' + r.color + '; box-shadow:0 0 12px ' + r.color + '44;">' + item.icon + '</div>' +
-          '<div style="color:' + r.color + '; font-weight:bold; font-size:1rem;">' + item.name + plusTxt + '</div>' +
+          '<div style="color:' + r.color + '; font-weight:bold; font-size:0.98rem;">' + item.name + plusTxt + '</div>' +
           '<div><span class="rarity-badge" style="background:' + r.bgTint + '; color:' + r.color + '; border:1px solid ' + r.color + ';">' + r.label + ' • ' + slotLabel + '</span></div>' +
           '<div><span class="class-req-pill ' + (allowed ? 'class-req-ok' : 'class-req-no') + '">' +
             (allowed ? '✔ Classe: ' + reqText : '🔒 Exclusivo: ' + reqText) +
@@ -1133,12 +1255,8 @@
           compareHeaderNote +
         '</div>' +
         '<div class="inspect-stats">' +
-          buildStatCompareLine('❤️', 'Vida Máx', st.hp, eqStats.hp, '', compareEnabled) +
-          buildStatCompareLine('⚔️', 'Ataque', st.atk, eqStats.atk, '', compareEnabled) +
-          buildStatCompareLine('🛡️', 'Defesa', st.def, eqStats.def, '', compareEnabled) +
-          buildStatCompareLine('💥', 'Crítico', st.crit, eqStats.crit, '%', compareEnabled) +
-          buildStatCompareLine('💨', 'Evasão', st.eva, eqStats.eva, '%', compareEnabled) +
-          '<div style="margin-top:6px; font-size:0.76rem; color:#facc15;">💰 Venda: <b>' + item.sellPrice + ' Ouro</b></div>' +
+          statRowsHtml +
+          '<div style="margin-top:6px; font-size:0.75rem; color:#facc15;">💰 Venda: <b>' + item.sellPrice + ' Ouro</b></div>' +
         '</div>' +
       '</div>' +
       '<div class="lapis-section">' +
@@ -1148,7 +1266,7 @@
   }
 
   function renderMiniSockets(count, color) {
-    if (!count) return '<div class="mini-sockets"><span style="font-size:0.64rem; color:#64748b;">0 slots</span></div>';
+    if (!count) return '<div class="mini-sockets"><span style="font-size:0.63rem; color:#64748b;">0 slots</span></div>';
     var html = '<div class="mini-sockets">';
     for (var i = 0; i < count; i++) {
       html += '<span class="mini-dot" style="border-color:' + color + ';"></span>';
@@ -1157,13 +1275,15 @@
     return html;
   }
 
+  function calcItemPowerScore(st) {
+    return st.hp * 0.5 + (st.meleeAtk + st.rangedAtk + st.magicAtk) * 4 + (st.physDef + st.magDef) * 2 + st.crit * 8 + st.eva * 8;
+  }
+
   function getOverallCompareArrow(item) {
     var eq = player.equipped[item.slot];
     if (!eq) return '<span class="arrow-up" title="Slot vazio">▲</span>';
-    var sNew = getItemEffectiveStats(item);
-    var sEq = getItemEffectiveStats(eq);
-    var scoreNew = sNew.hp * 0.5 + sNew.atk * 4 + sNew.def * 3 + sNew.crit * 8 + sNew.eva * 8;
-    var scoreEq  = sEq.hp * 0.5  + sEq.atk * 4  + sEq.def * 3  + sEq.crit * 8  + sEq.eva * 8;
+    var scoreNew = calcItemPowerScore(getItemEffectiveStats(item));
+    var scoreEq  = calcItemPowerScore(getItemEffectiveStats(eq));
     if (scoreNew > scoreEq) return '<span class="arrow-up" title="Melhor que o equipado">▲</span>';
     if (scoreNew < scoreEq) return '<span class="arrow-down" title="Inferior ao equipado">▼</span>';
     return '';
@@ -1191,14 +1311,11 @@
         row.innerHTML =
           '<div>' +
             '<span style="color:' + r.color + '; font-weight:bold;">' + item.icon + ' ' + item.name + plusTxt + '</span><br>' +
-            '<span style="font-size:0.69rem; color:#cbd5e1;">' +
-              'ATK +' + st.atk + ' | DEF +' + st.def + ' | HP +' + st.hp + '<br>' +
-              'CRIT +' + st.crit + '% | EVA +' + st.eva + '%' +
-            '</span>' +
+            '<span style="font-size:0.67rem; color:#cbd5e1;">' + formatCompactItemStats(st) + '</span>' +
             renderMiniSockets(r.slots, r.color) +
           '</div>' +
           '<div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">' +
-            '<span style="font-size:0.68rem; color:' + r.color + '; font-weight:bold;">' + r.label + '</span>' +
+            '<span style="font-size:0.66rem; color:' + r.color + '; font-weight:bold;">' + r.label + '</span>' +
             '<button type="button" class="btn-unequip" onclick="event.stopPropagation(); unequipSlot(\'' + slotKey + '\')">Guardar</button>' +
           '</div>';
       } else {
@@ -1209,9 +1326,11 @@
 
     var stats = getTotalStats();
     document.getElementById('stat-summary').innerHTML =
-      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + ' &nbsp;|&nbsp; <b>⚔️ ATK:</b> ' + stats.totalAtk + '<br>' +
-      '<b>🛡️ Defesa:</b> ' + stats.totalDef + ' &nbsp;|&nbsp; <b>💥 Crítico:</b> ' + stats.totalCrit + '%<br>' +
-      '<b>💨 Evasão:</b> ' + stats.totalEva + '%<br>' +
+      '<b>❤️ Vida Máx:</b> ' + stats.totalMaxHp + '<br>' +
+      '<b>⚔️ ATQ Perto:</b> ' + stats.totalMeleeAtk + ' &nbsp;|&nbsp; <b>🏹 ATQ Dist.:</b> ' + stats.totalRangedAtk + '<br>' +
+      '<b>🔮 ATQ Mágico:</b> ' + stats.totalMagicAtk + '<br>' +
+      '<b>🛡️ DEF Física:</b> ' + stats.totalPhysDef + ' &nbsp;|&nbsp; <b>💠 DEF Mágica:</b> ' + stats.totalMagDef + '<br>' +
+      '<b>💥 Crítico:</b> ' + stats.totalCrit + '% &nbsp;|&nbsp; <b>💨 Evasão:</b> ' + stats.totalEva + '%<br>' +
       '<b style="color:#ffa502;">🔥 Poder de Batalha (BR): ' + stats.br + '</b>';
 
     document.getElementById('bag-count').textContent = player.inventory.length;
@@ -1239,13 +1358,11 @@
             '<span style="color:' + r.color + '; font-weight:bold; margin-bottom:2px;">' + item.icon + ' ' + item.name + plusTxt + '</span>' +
             arrowBadge +
           '</div>' +
-          '<div style="font-size:0.65rem; font-weight:bold; color:' + (allowed ? '#2ed573' : '#ff6b81') + '; margin-bottom:3px;">' +
+          '<div style="font-size:0.64rem; font-weight:bold; color:' + (allowed ? '#2ed573' : '#ff6b81') + '; margin-bottom:3px;">' +
             (allowed ? '✔ ' + reqLabel : '🔒 ' + reqLabel) +
           '</div>' +
-          '<div style="color:#cbd5e1; font-size:0.68rem; line-height:1.35;">' +
-            'HP +' + st.hp + ' | ATK +' + st.atk + '<br>' +
-            'DEF +' + st.def + ' | CRIT +' + st.crit + '%<br>' +
-            'EVA +' + st.eva + '%' +
+          '<div style="color:#cbd5e1; font-size:0.66rem; line-height:1.35;">' +
+            formatCompactItemStats(st) +
           '</div>' +
           renderMiniSockets(r.slots, r.color) +
         '</div>' +
@@ -1386,8 +1503,7 @@
     anvil.innerHTML =
       '<div style="font-size:2.4rem; margin-bottom:6px;">' + item.icon + '</div>' +
       '<h3 style="color:' + r.color + ';">' + item.name + ' (+' + item.plus + ' ➔ +' + (item.plus + 1) + ')</h3>' +
-      '<div style="font-size:0.82rem; color:#ced6e0; margin:10px 0;">Atributos: ' +
-      'ATK +' + currStats.atk + ' | DEF +' + currStats.def + ' | HP +' + currStats.hp +
+      '<div style="font-size:0.8rem; color:#ced6e0; margin:10px 0;">Atributos: ' + formatCompactItemStats(currStats) +
       '<br><span style="color:#2ed573;">Próximo Nível: +18% de bônus!</span></div>' +
       '<div style="background:#181d2c; padding:10px 16px; border-radius:8px; width:100%; font-size:0.84rem; line-height:1.6;">' +
       '<div>🎲 Chance: <b style="color:#ffa502;">' + cfg.chance + '%</b></div>' +
@@ -1460,13 +1576,13 @@
     }
   }
 
-  // ================= MONSTROS, MINI-BOSS E BOSS =================
+  // ================= MONSTROS, MINI-BOSS E BOSS (COM DANO FÍSICO E MÁGICO) =================
   var MONSTER_TYPES = [
-    { name: 'Slime da Floresta',           icon: '🟢', hp: 70,  atk: 8,  xp: 25,  gold: 12,  color: '#2ed573', scale: 1,    tier: 'normal' },
-    { name: 'Lobo Cinzento',               icon: '🐺', hp: 110, atk: 14, xp: 40,  gold: 20,  color: '#a4b0be', scale: 1.1,  tier: 'normal' },
-    { name: 'Goblin Saqueador',            icon: '👺', hp: 150, atk: 19, xp: 60,  gold: 32,  color: '#3b82f6', scale: 1.15, tier: 'normal' },
-    { name: 'Guardião Tronco (Mini-Boss)', icon: '🌳', hp: 360, atk: 30, xp: 160, gold: 110, color: '#facc15', scale: 1.45, tier: 'miniboss' },
-    { name: 'Dragão Ignis (BOSS)',         icon: '🐉', hp: 750, atk: 46, xp: 420, gold: 320, color: '#ff7f11', scale: 1.85, tier: 'boss' }
+    { name: 'Slime Ácido (Mágico)',        icon: '🟢', hp: 70,  atk: 9,  dmgType: 'magic', xp: 25,  gold: 12,  color: '#2ed573', scale: 1,    tier: 'normal' },
+    { name: 'Lobo Cinzento',               icon: '🐺', hp: 110, atk: 14, dmgType: 'phys',  xp: 40,  gold: 20,  color: '#a4b0be', scale: 1.1,  tier: 'normal' },
+    { name: 'Goblin Saqueador',            icon: '👺', hp: 150, atk: 19, dmgType: 'phys',  xp: 60,  gold: 32,  color: '#3b82f6', scale: 1.15, tier: 'normal' },
+    { name: 'Guardião Tronco (Mini-Boss)', icon: '🌳', hp: 360, atk: 30, dmgType: 'phys',  xp: 160, gold: 110, color: '#facc15', scale: 1.45, tier: 'miniboss' },
+    { name: 'Dragão Ignis (BOSS)',         icon: '🐉', hp: 750, atk: 46, dmgType: 'magic', xp: 420, gold: 320, color: '#ff7f11', scale: 1.85, tier: 'boss' }
   ];
 
   function spawnEnemy(forcedTypeIdx) {
@@ -1485,7 +1601,7 @@
     enemies.push({
       id: Math.random(), name: t.name, icon: t.icon,
       x: Math.cos(angle) * dist, y: Math.sin(angle) * dist,
-      hp: t.hp, maxHp: t.hp, atk: t.atk, xp: t.xp, gold: t.gold,
+      hp: t.hp, maxHp: t.hp, atk: t.atk, dmgType: t.dmgType, xp: t.xp, gold: t.gold,
       color: t.color, scale: t.scale, tier: t.tier, atkTimer: 0
     });
   }
@@ -1597,13 +1713,16 @@
     var hitList = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 110; }) : [target];
     effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 105 : 45, color: sk.color, timer: 0.35 });
 
+    // Usa o ataque específico da classe (ATQ Perto, ATQ Distância ou ATQ Mágico)
+    var atkPower = stats.primaryAtk;
+    var normalColor = stats.attackType === 'magic' ? '#70a1ff' : (stats.attackType === 'ranged' ? '#7bed9f' : '#ffffff');
+
     hitList.forEach(function(en) {
-      // Usa a Chance de Crítico real do personagem + equipamentos!
       var isCrit = (Math.random() * 100) < stats.totalCrit;
-      var dmg = Math.round(stats.totalAtk * sk.mult * (0.9 + Math.random() * 0.2));
+      var dmg = Math.round(atkPower * sk.mult * (0.9 + Math.random() * 0.2));
       if (isCrit) dmg = Math.round(dmg * 1.65);
       en.hp -= dmg;
-      addFloatingText(en.x, en.y - 35, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#ffa502' : '#ffffff');
+      addFloatingText(en.x, en.y - 35, isCrit ? '💥 ' + dmg + '!' : '-' + dmg, isCrit ? '#ffa502' : normalColor);
       if (en.hp <= 0) killEnemy(en);
     });
     updateHUD();
@@ -1633,13 +1752,21 @@
     }
 
     while (player.xp >= player.maxXp) {
+      var cls = CLASSES[player.classKey];
       player.xp -= player.maxXp;
       player.level += 1;
       player.maxXp = Math.round(player.maxXp * 1.35);
-      player.baseMaxHp = (player.baseMaxHp || player.maxHp) + 35;
+      player.baseMaxHp = (player.baseMaxHp || cls.baseHp) + 35;
       player.maxMp += 20;
-      player.baseAtk = (player.baseAtk || player.atk) + 6;
-      player.baseDef = (player.baseDef || player.def) + 3;
+
+      // Evolui o atributo ofensivo específico da classe e ambas as defesas
+      if (cls.attackType === 'melee')  player.baseMeleeAtk  = (player.baseMeleeAtk  || 0) + 6;
+      if (cls.attackType === 'ranged') player.baseRangedAtk = (player.baseRangedAtk || 0) + 6;
+      if (cls.attackType === 'magic')  player.baseMagicAtk  = (player.baseMagicAtk  || 0) + 6;
+
+      player.basePhysDef = (player.basePhysDef || 0) + (cls.attackType === 'melee' ? 4 : 2);
+      player.baseMagDef  = (player.baseMagDef  || 0) + (cls.attackType === 'magic' ? 4 : 2);
+
       var stats = getTotalStats();
       player.hp = stats.totalMaxHp;
       player.mp = player.maxMp;
@@ -1721,13 +1848,15 @@
         en.atkTimer += dt;
         if (en.atkTimer >= 1.6) {
           en.atkTimer = 0;
-          // Teste real de Evasão do personagem + equipamentos!
           if ((Math.random() * 100) < stats.totalEva) {
             addFloatingText(player.x, player.y - 38, '💨 DESVIOU!', '#00f2fe');
           } else {
-            var dmg = Math.max(2, en.atk - Math.round(stats.totalDef * 0.5));
+            // Usa Defesa Mágica contra monstros mágicos e Defesa Física contra monstros físicos!
+            var relevantDef = en.dmgType === 'magic' ? stats.totalMagDef : stats.totalPhysDef;
+            var dmg = Math.max(2, en.atk - Math.round(relevantDef * 0.5));
             player.hp -= dmg;
-            addFloatingText(player.x, player.y - 35, '-' + dmg, '#ff4757');
+            var dmgColor = en.dmgType === 'magic' ? '#a29bfe' : '#ff4757';
+            addFloatingText(player.x, player.y - 35, (en.dmgType === 'magic' ? '🔮 -' : '-') + dmg, dmgColor);
             if (player.hp <= 0) { player.hp = stats.totalMaxHp; player.x = 0; player.y = 0; player.targetX = 0; player.targetY = 0; }
           }
         }
