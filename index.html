@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asa de Cristal 2.5D - Protótipo Fase 1</title>
+  <title>Asa de Cristal 2.5D - Fase 2 (Slots, Drops e Forja)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
@@ -15,8 +15,8 @@
       height: 100vh;
     }
 
-    /* TELA DE CRIAÇÃO DE PERSONAGEM */
-    #char-creation {
+    /* ================= TELA DE SELEÇÃO / CRIAÇÃO DE PERSONAGEM ================= */
+    #char-screen {
       position: fixed;
       inset: 0;
       background: radial-gradient(circle at center, #1b2030 0%, #090b10 100%);
@@ -24,98 +24,185 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: 200;
       padding: 20px;
+      overflow-y: auto;
     }
-    #char-creation h1 {
-      font-size: 2.5rem;
+    #char-screen h1 {
+      font-size: 2.3rem;
       color: #ffa502;
       text-shadow: 0 0 20px rgba(255, 165, 2, 0.5);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
-    #char-creation p.subtitle {
+    #char-screen p.subtitle {
       color: #a4b0be;
-      margin-bottom: 30px;
+      margin-bottom: 22px;
+    }
+
+    /* SLOTS DE PERSONAGENS SALVOS (LIMITE 3) */
+    .slots-container {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .char-slot-card {
+      width: 240px;
+      background: #141824;
+      border: 2px solid #2f3542;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      position: relative;
+      transition: 0.2s;
+    }
+    .char-slot-card.occupied { border-color: #3742fa; }
+    .char-slot-card.occupied:hover { border-color: #ffa502; transform: translateY(-3px); }
+    .char-slot-card.empty {
+      border-style: dashed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 175px;
+      color: #747d8c;
+    }
+    .slot-badge {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      font-size: 0.7rem;
+      color: #747d8c;
+      font-weight: bold;
+    }
+    .btn-del-slot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(255, 71, 87, 0.15);
+      border: 1px solid #ff4757;
+      color: #ff6b81;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .btn-del-slot:hover { background: #ff4757; color: #fff; }
+    .slot-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin: 8px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+    .btn-enter-slot {
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: #2ed573;
+      color: #0b0d13;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    .btn-enter-slot:hover { filter: brightness(1.1); }
+
+    /* PAINEL DE CRIAR NOVO PERSONAGEM */
+    #create-panel {
+      background: rgba(22, 26, 38, 0.85);
+      border: 1px solid #2f3542;
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 1050px;
+    }
+    #create-panel h2 {
+      font-size: 1.1rem;
+      color: #70a1ff;
+      margin-bottom: 14px;
+      text-transform: uppercase;
     }
     .class-grid {
       display: flex;
-      gap: 15px;
+      gap: 12px;
       flex-wrap: wrap;
       justify-content: center;
-      max-width: 1100px;
-      margin-bottom: 25px;
+      margin-bottom: 18px;
     }
     .class-card {
       background: #161a26;
       border: 2px solid #2f3542;
-      border-radius: 12px;
-      width: 195px;
-      padding: 18px;
+      border-radius: 10px;
+      width: 175px;
+      padding: 12px;
       text-align: center;
       cursor: pointer;
       transition: 0.2s;
     }
-    .class-card:hover { transform: translateY(-5px); border-color: #70a1ff; }
+    .class-card:hover { transform: translateY(-4px); border-color: #70a1ff; }
     .class-card.selected {
       border-color: #ffa502;
       background: #212638;
-      box-shadow: 0 0 20px rgba(255, 165, 2, 0.3);
+      box-shadow: 0 0 15px rgba(255, 165, 2, 0.3);
     }
     .class-icon {
-      width: 60px;
-      height: 60px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
-      margin: 0 auto 12px;
+      margin: 0 auto 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
-      font-weight: bold;
+      font-size: 1.4rem;
     }
-    .class-card h3 { margin-bottom: 6px; font-size: 1.15rem; }
-    .class-card .role { font-size: 0.8rem; color: #ffa502; margin-bottom: 10px; font-weight: bold; }
-    .class-card .desc { font-size: 0.8rem; color: #ced6e0; line-height: 1.3; }
+    .class-card h3 { margin-bottom: 4px; font-size: 1rem; }
+    .class-card .role { font-size: 0.72rem; color: #ffa502; margin-bottom: 6px; font-weight: bold; }
+    .class-card .desc { font-size: 0.74rem; color: #ced6e0; line-height: 1.25; }
 
-    .start-box {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    .start-box { display: flex; gap: 10px; align-items: center; }
     .start-box input {
-      padding: 12px 16px;
+      padding: 10px 14px;
       border-radius: 8px;
       border: 2px solid #2f3542;
-      background: #161a26;
+      background: #0f121b;
       color: #fff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       outline: none;
     }
     .start-box input:focus { border-color: #ffa502; }
     .btn-play {
-      padding: 12px 28px;
+      padding: 10px 24px;
       background: linear-gradient(135deg, #ffa502, #ff6348);
       border: none;
       border-radius: 8px;
       color: #fff;
       font-weight: bold;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       text-transform: uppercase;
-      transition: 0.2s;
     }
-    .btn-play:hover { filter: brightness(1.15); transform: scale(1.03); }
+    .btn-play:hover { filter: brightness(1.15); }
+    .btn-play:disabled { background: #57606f; cursor: not-allowed; filter: none; }
 
-    /* CANVAS DO JOGO */
+    /* ================= CANVAS & HUD ================= */
     canvas { display: block; }
 
-    /* HUD SUPERIOR ESQUERDO (STATUS DO JOGADOR) */
     #hud-top-left {
       position: fixed;
       top: 15px;
       left: 15px;
-      background: rgba(18, 22, 33, 0.9);
+      background: rgba(18, 22, 33, 0.92);
       border: 1px solid #3742fa;
       border-radius: 12px;
       padding: 12px 16px;
@@ -123,7 +210,8 @@
       align-items: center;
       gap: 14px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-      min-width: 290px;
+      min-width: 295px;
+      z-index: 10;
     }
     .avatar-circle {
       width: 54px;
@@ -177,7 +265,7 @@
       text-shadow: 1px 1px 2px #000;
     }
 
-    /* HUD SUPERIOR DIREITO (MAPA, OURO E OPÇÕES) */
+    /* HUD SUPERIOR DIREITO */
     #hud-top-right {
       position: fixed;
       top: 15px;
@@ -186,9 +274,10 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 8px;
+      z-index: 10;
     }
     .map-info {
-      background: rgba(18, 22, 33, 0.9);
+      background: rgba(18, 22, 33, 0.92);
       border: 1px solid #2f3542;
       padding: 8px 14px;
       border-radius: 10px;
@@ -196,18 +285,28 @@
     }
     .map-name { color: #2ed573; font-weight: bold; font-size: 0.95rem; }
     .currency-row { font-size: 0.85rem; color: #f1c40f; margin-top: 3px; }
-    .btn-reset {
-      background: rgba(255, 71, 87, 0.2);
-      border: 1px solid #ff4757;
-      color: #ff6b81;
-      padding: 5px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
+    .top-menu-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
-    .btn-reset:hover { background: #ff4757; color: #fff; }
+    .btn-hud {
+      background: #1e2436;
+      border: 1px solid #57606f;
+      color: #fff;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-hud:hover { border-color: #ffa502; color: #ffa502; transform: translateY(-2px); }
+    .btn-hud.switch-char { border-color: #70a1ff; color: #70a1ff; }
+    .btn-hud.switch-char:hover { background: #70a1ff; color: #0b0d13; }
 
-    /* BARRA INFERIOR DE SKILLS E XP */
+    /* BARRA INFERIOR */
     #hud-bottom {
       position: fixed;
       bottom: 15px;
@@ -217,6 +316,7 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
+      z-index: 10;
     }
     .skill-bar {
       display: flex;
@@ -242,14 +342,7 @@
       transition: 0.15s;
     }
     .skill-slot:hover { border-color: #ffa502; transform: translateY(-2px); }
-    .skill-slot .key {
-      position: absolute;
-      top: 2px;
-      left: 5px;
-      font-size: 0.7rem;
-      color: #a4b0be;
-      font-weight: bold;
-    }
+    .skill-slot .key { position: absolute; top: 2px; left: 5px; font-size: 0.7rem; color: #a4b0be; font-weight: bold; }
     .skill-slot .icon { font-size: 1.5rem; }
     .skill-slot .cd-overlay {
       position: absolute;
@@ -283,14 +376,7 @@
       background: #2ed573;
       color: #0b0d13;
       box-shadow: 0 0 15px rgba(46, 213, 115, 0.6);
-      animation: pulse 1.5s infinite;
     }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.04); }
-      100% { transform: scale(1); }
-    }
-
     .xp-bar-container {
       width: 440px;
       height: 10px;
@@ -300,48 +386,204 @@
       overflow: hidden;
       position: relative;
     }
-    .xp-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #9b59b6, #e056fd);
-      width: 0%;
-      transition: width 0.2s;
-    }
-    .xp-text {
-      position: absolute;
-      inset: 0;
-      font-size: 0.65rem;
-      text-align: center;
-      line-height: 9px;
-      color: #fff;
-      font-weight: bold;
-    }
+    .xp-bar-fill { height: 100%; background: linear-gradient(90deg, #9b59b6, #e056fd); width: 0%; transition: width 0.2s; }
+    .xp-text { position: absolute; inset: 0; font-size: 0.65rem; text-align: center; line-height: 9px; color: #fff; font-weight: bold; }
 
-    /* LOG DE COMBATE / CONTROLES */
     #controls-hint {
       position: fixed;
       bottom: 15px;
       left: 15px;
-      background: rgba(18, 22, 33, 0.75);
+      background: rgba(18, 22, 33, 0.8);
       padding: 8px 12px;
       border-radius: 8px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: #a4b0be;
       line-height: 1.5;
+      z-index: 10;
     }
+
+    /* ================= JANELAS MODAIS (MOCHILA E FORJA) ================= */
+    .modal-window {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #141824;
+      border: 2px solid #ffa502;
+      border-radius: 14px;
+      width: 680px;
+      max-width: 95vw;
+      max-height: 85vh;
+      display: none;
+      flex-direction: column;
+      z-index: 100;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.85);
+    }
+    .modal-header {
+      padding: 14px 20px;
+      background: #1c2233;
+      border-bottom: 1px solid #2f3542;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 { color: #ffa502; font-size: 1.15rem; }
+    .btn-close-modal {
+      background: #ff4757;
+      border: none;
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* EQUIPAMENTOS & MOCHILA */
+    .equip-column {
+      flex: 1;
+      min-width: 230px;
+      background: #0f121b;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #2f3542;
+    }
+    .equip-column h4, .bag-column h4 {
+      font-size: 0.9rem;
+      color: #a4b0be;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .equip-slot-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #181d2c;
+      border: 1px solid #2f3542;
+      padding: 8px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 0.84rem;
+    }
+    .stat-summary {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #2f3542;
+      font-size: 0.82rem;
+      color: #ced6e0;
+      line-height: 1.6;
+    }
+
+    .bag-column {
+      flex: 1.4;
+      min-width: 280px;
+      background: #0f121b;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #2f3542;
+    }
+    .bag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+      gap: 8px;
+      max-height: 290px;
+      overflow-y: auto;
+    }
+    .bag-item {
+      background: #181d2c;
+      border: 1px solid #2f3542;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 0.78rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .bag-item-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .btn-mini {
+      flex: 1;
+      padding: 4px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-equip { background: #2ed573; color: #000; }
+    .btn-sell { background: #ffa502; color: #000; }
+
+    /* FORJA */
+    .forge-list { flex: 1; min-width: 230px; }
+    .forge-item-btn {
+      width: 100%;
+      text-align: left;
+      background: #181d2c;
+      border: 1px solid #2f3542;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .forge-item-btn.active { border-color: #ffa502; background: #22293d; }
+    .forge-anvil {
+      flex: 1.3;
+      min-width: 260px;
+      background: #0f121b;
+      border: 1px solid #2f3542;
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn-forge-do {
+      margin-top: 14px;
+      padding: 11px 24px;
+      background: linear-gradient(135deg, #ff6348, #ffa502);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .btn-forge-do:disabled { background: #57606f; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
-  <!-- TELA DE ESCOLHA DE CLASSE -->
-  <div id="char-creation">
+  <!-- ================= TELA DE SELEÇÃO E CRIAÇÃO DE PERSONAGENS ================= -->
+  <div id="char-screen">
     <h1>⚔️ Asa de Cristal 2.5D ⚔️</h1>
-    <p class="subtitle">Escolha sua classe inicial para entrar em Vidalia</p>
+    <p class="subtitle">Selecione um Herói salvo ou crie um novo (Máximo: 3 Personagens)</p>
 
-    <div class="class-grid" id="class-grid"></div>
+    <!-- 3 SLOTS DE PERSONAGENS -->
+    <div class="slots-container" id="slots-container"></div>
 
-    <div class="start-box">
-      <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="GuerreiroLuz">
-      <button class="btn-play" onclick="startGame()">Entrar no Mundo</button>
+    <!-- CRIAR NOVO PERSONAGEM -->
+    <div id="create-panel">
+      <h2>✨ Criar Novo Personagem</h2>
+      <div class="class-grid" id="class-grid"></div>
+      <div class="start-box">
+        <input type="text" id="player-name-input" placeholder="Nome do Herói..." maxlength="16" value="HeroiLuz">
+        <button class="btn-play" id="btn-create-char" onclick="createCharacterInSlot()">Criar Personagem</button>
+      </div>
     </div>
   </div>
 
@@ -374,15 +616,21 @@
   <div id="hud-top-right" style="display:none;">
     <div class="map-info">
       <div class="map-name">🌲 Floresta de Vidalia (Nv. 1-10)</div>
-      <div class="currency-row">💰 Ouro: <span id="hud-gold">0</span> | 👾 Abates: <span id="hud-kills">0</span></div>
+      <div class="currency-row">
+        💰 Ouro: <span id="hud-gold">0</span> | 💎 Pedras Forja: <span id="hud-stones">0</span>
+      </div>
     </div>
-    <button class="btn-reset" onclick="resetSave()">🔄 Resetar Personagem</button>
+    <div class="top-menu-buttons">
+      <button class="btn-hud" onclick="toggleModal('bag-modal')">🎒 Mochila (B)</button>
+      <button class="btn-hud" onclick="toggleModal('forge-modal')">🔨 Forja (F)</button>
+      <button class="btn-hud switch-char" onclick="returnToCharSelect()">👥 Personagens</button>
+    </div>
   </div>
 
   <!-- DICA DE CONTROLES -->
   <div id="controls-hint" style="display:none;">
-    🖱️ <b>Clique no chão/monstro:</b> Mover e Atacar<br>
-    ⌨️ <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção HP | <b>A:</b> Auto
+    🖱️ <b>Clique:</b> Mover/Atacar | <b>WASD:</b> Mover | <b>1-4:</b> Skills | <b>5:</b> Poção<br>
+    ⌨️ <b>A:</b> Auto-Combate | <b>B:</b> Mochila & Equips | <b>F:</b> Forja (+1 a +12)
   </div>
 
   <!-- HUD INFERIOR -->
@@ -394,14 +642,50 @@
     </div>
   </div>
 
+  <!-- MODAL: MOCHILA & EQUIPAMENTOS -->
+  <div class="modal-window" id="bag-modal">
+    <div class="modal-header">
+      <h3>🎒 Personagem & Mochila</h3>
+      <button class="btn-close-modal" onclick="closeAllModals()">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="equip-column">
+        <h4>🛡️ Equipamentos Atuais</h4>
+        <div id="equipped-list"></div>
+        <div class="stat-summary" id="stat-summary"></div>
+      </div>
+      <div class="bag-column">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="margin:0;">📦 Mochila (<span id="bag-count">0</span>/24)</h4>
+          <button class="btn-mini btn-sell" style="flex:none; padding:4px 8px;" onclick="sellAllCommon()">Vender Comuns</button>
+        </div>
+        <div class="bag-grid" id="bag-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FORJA (+1 A +12) -->
+  <div class="modal-window" id="forge-modal">
+    <div class="modal-header">
+      <h3>🔨 Forja & Aprimoramento (+1 até +12)</h3>
+      <button class="btn-close-modal" onclick="closeAllModals()">X</button>
+    </div>
+    <div class="modal-body">
+      <div class="forge-list">
+        <h4 style="font-size:0.85rem; color:#a4b0be; margin-bottom:8px;">ESCOLHA UM ITEM EQUIPADO:</h4>
+        <div id="forge-slot-list"></div>
+      </div>
+      <div class="forge-anvil" id="forge-anvil">
+        <p style="color:#a4b0be;">Selecione um equipamento ao lado para aprimorar.</p>
+      </div>
+    </div>
+  </div>
+
 <script>
   // ================= CONFIGURAÇÃO DAS 5 CLASSES =================
   const CLASSES = {
     cavaleiro: {
-      name: 'Cavaleiro',
-      role: 'Tanque / Corpo a Corpo',
-      icon: '🛡️',
-      color: '#eccc68',
+      name: 'Cavaleiro', role: 'Tanque / Corpo a Corpo', icon: '🛡️', color: '#eccc68',
       desc: 'Alta defesa e vida. Protege aliados e resiste a grandes chefes.',
       baseHp: 220, baseMp: 80, baseAtk: 22, baseDef: 14, range: 65,
       skills: [
@@ -412,10 +696,7 @@
       ]
     },
     mago: {
-      name: 'Mago',
-      role: 'Dano Mágico / Área',
-      icon: '🔮',
-      color: '#70a1ff',
+      name: 'Mago', role: 'Dano Mágico / Área', icon: '🔮', color: '#70a1ff',
       desc: 'Domina fogo e gelo para destruir vários inimigos à distância.',
       baseHp: 130, baseMp: 180, baseAtk: 34, baseDef: 6, range: 210,
       skills: [
@@ -426,10 +707,7 @@
       ]
     },
     arqueiro: {
-      name: 'Arqueiro',
-      role: 'Dano Físico / Crítico',
-      icon: '🏹',
-      color: '#2ed573',
+      name: 'Arqueiro', role: 'Dano Físico / Crítico', icon: '🏹', color: '#2ed573',
       desc: 'Ataques rápidos à distância com alta chance de acerto crítico.',
       baseHp: 155, baseMp: 120, baseAtk: 30, baseDef: 8, range: 230,
       skills: [
@@ -440,10 +718,7 @@
       ]
     },
     sacerdote: {
-      name: 'Sacerdote',
-      role: 'Suporte / Luz Sagrada',
-      icon: '✨',
-      color: '#f1f2f6',
+      name: 'Sacerdote', role: 'Suporte / Luz Sagrada', icon: '✨', color: '#f1f2f6',
       desc: 'Canaliza a luz para curar ferimentos e punir criaturas das trevas.',
       baseHp: 160, baseMp: 200, baseAtk: 25, baseDef: 9, range: 195,
       skills: [
@@ -454,10 +729,7 @@
       ]
     },
     assassino: {
-      name: 'Assassino',
-      role: 'Furtivo / Explosão',
-      icon: '🗡️',
-      color: '#ff4757',
+      name: 'Assassino', role: 'Furtivo / Explosão', icon: '🗡️', color: '#ff4757',
       desc: 'Velocidade extrema e golpes letais nas sombras.',
       baseHp: 150, baseMp: 110, baseAtk: 35, baseDef: 7, range: 65,
       skills: [
@@ -469,9 +741,251 @@
     }
   };
 
+  // ================= SISTEMA DE ITENS E RARIDADES =================
+  const RARITIES = {
+    comum: { label: 'Comum', color: '#ced6e0', mult: 1.0, price: 15 },
+    raro: { label: 'Raro', color: '#1e90ff', mult: 1.45, price: 45 },
+    epico: { label: 'Épico', color: '#a55eea', mult: 2.0, price: 120 },
+    lendario: { label: 'Lendário', color: '#ffa502', mult: 2.8, price: 300 }
+  };
+
+  const EQUIP_SLOTS = {
+    weapon: { label: 'Arma', icon: '⚔️', baseAtk: 10, baseDef: 0, baseHp: 0 },
+    armor:  { label: 'Armadura', icon: '👕', baseAtk: 0, baseDef: 7, baseHp: 45 },
+    helm:   { label: 'Elmo', icon: '🪖', baseAtk: 2, baseDef: 5, baseHp: 30 },
+    boots:  { label: 'Botas', icon: '👢', baseAtk: 2, baseDef: 4, baseHp: 25 },
+    ring:   { label: 'Anel', icon: '💍', baseAtk: 7, baseDef: 2, baseHp: 20 }
+  };
+
+  function generateRandomItem(playerLvl, forceRare = false) {
+    const slotKeys = Object.keys(EQUIP_SLOTS);
+    const slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
+    const slotInfo = EQUIP_SLOTS[slot];
+
+    const roll = Math.random();
+    let rarityKey = 'comum';
+    if (forceRare) {
+      rarityKey = roll > 0.85 ? 'lendario' : (roll > 0.45 ? 'epico' : 'raro');
+    } else {
+      if (roll > 0.96) rarityKey = 'lendario';
+      else if (roll > 0.84) rarityKey = 'epico';
+      else if (roll > 0.55) rarityKey = 'raro';
+    }
+
+    const r = RARITIES[rarityKey];
+    const scale = 1 + (playerLvl - 1) * 0.22;
+
+    return {
+      id: 'item_' + Math.random().toString(36).substr(2, 9),
+      name: `${slotInfo.label} ${r.label}`,
+      slot: slot,
+      icon: slotInfo.icon,
+      rarity: rarityKey,
+      plus: 0,
+      atk: Math.round(slotInfo.baseAtk * r.mult * scale),
+      def: Math.round(slotInfo.baseDef * r.mult * scale),
+      hp: Math.round(slotInfo.baseHp * r.mult * scale),
+      sellPrice: Math.round(r.price * scale)
+    };
+  }
+
+  function getItemEffectiveStats(item) {
+    if (!item) return { atk: 0, def: 0, hp: 0 };
+    const forgeMult = 1 + item.plus * 0.18; // +18% por nível de forja
+    return {
+      atk: Math.round(item.atk * forgeMult),
+      def: Math.round(item.def * forgeMult),
+      hp: Math.round(item.hp * forgeMult)
+    };
+  }
+
+  // ================= GERENCIAMENTO DOS 3 SLOTS DE PERSONAGEM =================
+  const STORAGE_KEY_SLOTS = 'asaDeCristal_slots_v2';
+  let characterSlots = [null, null, null];
+  let activeSlotIndex = -1;
   let selectedClassKey = 'cavaleiro';
 
-  // Renderiza cards na tela inicial
+  function loadAllSlots() {
+    const raw = localStorage.getItem(STORAGE_KEY_SLOTS);
+    if (raw) {
+      characterSlots = JSON.parse(raw);
+    } else {
+      // Migra automaticamente o personagem da Fase 1 para o Slot 1!
+      const oldSave = localStorage.getItem('asaDeCristal_save_v1');
+      if (oldSave) {
+        const oldP = JSON.parse(oldSave);
+        characterSlots[0] = normalizePlayerObject(oldP);
+        saveAllSlots();
+      }
+    }
+  }
+
+  function saveAllSlots() {
+    if (activeSlotIndex >= 0 && player) {
+      characterSlots[activeSlotIndex] = player;
+    }
+    localStorage.setItem(STORAGE_KEY_SLOTS, JSON.stringify(characterSlots));
+  }
+
+  function normalizePlayerObject(p) {
+    if (!p.stones && p.stones !== 0) p.stones = 5;
+    if (!p.inventory) p.inventory = [];
+    if (!p.equipped) {
+      p.equipped = { weapon: null, armor: null, helm: null, boots: null, ring: null };
+    }
+    return p;
+  }
+
+  function createNewPlayer(name, classKey) {
+    const cls = CLASSES[classKey];
+    return {
+      name: name || 'Herói',
+      classKey: classKey,
+      level: 1,
+      xp: 0,
+      maxXp: 100,
+      gold: 100,
+      stones: 5,
+      kills: 0,
+      x: 0,
+      y: 0,
+      targetX: 0,
+      targetY: 0,
+      baseMaxHp: cls.baseHp,
+      hp: cls.baseHp,
+      mp: cls.baseMp,
+      maxMp: cls.baseMp,
+      baseAtk: cls.baseAtk,
+      baseDef: cls.baseDef,
+      speed: classKey === 'assassino' ? 210 : 175,
+      cooldowns: [0, 0, 0, 0, 0],
+      equipped: { weapon: null, armor: null, helm: null, boots: null, ring: null },
+      inventory: []
+    };
+  }
+
+  // Calcula atributos totais (Base + Equipamentos + Forja)
+  function getTotalStats() {
+    // Garante compatibilidade com saves da Fase 1
+    const baseHp = player.baseMaxHp || player.maxHp;
+    const baseAtk = player.baseAtk || player.atk;
+    const baseDef = player.baseDef || player.def;
+
+    let bonusHp = 0, bonusAtk = 0, bonusDef = 0;
+    Object.values(player.equipped).forEach(item => {
+      if (item) {
+        const st = getItemEffectiveStats(item);
+        bonusHp += st.hp;
+        bonusAtk += st.atk;
+        bonusDef += st.def;
+      }
+    });
+
+    const totalMaxHp = baseHp + bonusHp;
+    const totalAtk = baseAtk + bonusAtk;
+    const totalDef = baseDef + bonusDef;
+    const br = Math.round(totalMaxHp * 0.5 + totalAtk * 4 + totalDef * 3 + player.level * 25);
+
+    return { totalMaxHp, totalAtk, totalDef, br };
+  }
+
+  function renderCharScreen() {
+    const container = document.getElementById('slots-container');
+    container.innerHTML = '';
+    let hasFreeSlot = false;
+
+    characterSlots.forEach((slotData, idx) => {
+      const card = document.createElement('div');
+      if (slotData) {
+        const p = normalizePlayerObject(slotData);
+        const cls = CLASSES[p.classKey];
+        // Calcula BR temporário para exibir no card
+        const baseHp = p.baseMaxHp || p.maxHp;
+        const baseAtk = p.baseAtk || p.atk;
+        const baseDef = p.baseDef || p.def;
+        let bHp = 0, bAtk = 0, bDef = 0;
+        Object.values(p.equipped).forEach(it => {
+          if (it) { const s = getItemEffectiveStats(it); bHp += s.hp; bAtk += s.atk; bDef += s.def; }
+        });
+        const br = Math.round((baseHp + bHp) * 0.5 + (baseAtk + bAtk) * 4 + (baseDef + bDef) * 3 + p.level * 25);
+
+        card.className = 'char-slot-card occupied';
+        card.innerHTML = `
+          <span class="slot-badge">SLOT ${idx + 1}</span>
+          <button class="btn-del-slot" onclick="deleteSlot(${idx})">Excluir</button>
+          <div class="slot-avatar" style="background:${cls.color}22; border:2px solid ${cls.color}; color:${cls.color}">${cls.icon}</div>
+          <div style="font-weight:bold; font-size:1.05rem; color:#fff;">${p.name}</div>
+          <div style="font-size:0.82rem; color:${cls.color}; margin:3px 0;">${cls.name} • Nv. ${p.level}</div>
+          <div style="font-size:0.8rem; color:#ffa502; font-weight:bold;">BR: ${br}</div>
+          <button class="btn-enter-slot" onclick="selectSlotToPlay(${idx})">▶ Jogar</button>
+        `;
+      } else {
+        hasFreeSlot = true;
+        card.className = 'char-slot-card empty';
+        card.innerHTML = `
+          <span class="slot-badge">SLOT ${idx + 1}</span>
+          <div style="font-size:1.8rem; margin-bottom:6px;">➕</div>
+          <div style="font-size:0.88rem; font-weight:bold;">Slot Vazio</div>
+          <div style="font-size:0.75rem;">Crie um herói abaixo</div>
+        `;
+      }
+      container.appendChild(card);
+    });
+
+    const createBtn = document.getElementById('btn-create-char');
+    createBtn.disabled = !hasFreeSlot;
+    createBtn.textContent = hasFreeSlot ? 'Criar Personagem' : 'Limite de 3 Atingido';
+  }
+
+  function createCharacterInSlot() {
+    const emptyIdx = characterSlots.findIndex(s => s === null);
+    if (emptyIdx === -1) {
+      alert('Você já atingiu o limite de 3 personagens! Exclua um slot para criar outro.');
+      return;
+    }
+    const nameInput = document.getElementById('player-name-input').value.trim();
+    const newHero = createNewPlayer(nameInput, selectedClassKey);
+    characterSlots[emptyIdx] = newHero;
+    activeSlotIndex = emptyIdx;
+    player = newHero;
+    saveAllSlots();
+    enterWorld();
+  }
+
+  function selectSlotToPlay(idx) {
+    if (!characterSlots[idx]) return;
+    activeSlotIndex = idx;
+    player = normalizePlayerObject(characterSlots[idx]);
+    // Garante estrutura da Fase 2 se veio da Fase 1
+    if (!player.baseMaxHp) player.baseMaxHp = player.maxHp;
+    if (!player.baseAtk) player.baseAtk = player.atk;
+    if (!player.baseDef) player.baseDef = player.def;
+    player.cooldowns = [0, 0, 0, 0, 0];
+    enterWorld();
+  }
+
+  function deleteSlot(idx) {
+    if (confirm(`Tem certeza que deseja excluir o personagem do Slot ${idx + 1}?`)) {
+      characterSlots[idx] = null;
+      saveAllSlots();
+      renderCharScreen();
+    }
+  }
+
+  function returnToCharSelect() {
+    saveAllSlots();
+    gameRunning = false;
+    autoCombat = false;
+    closeAllModals();
+    document.getElementById('hud-top-left').style.display = 'none';
+    document.getElementById('hud-top-right').style.display = 'none';
+    document.getElementById('controls-hint').style.display = 'none';
+    document.getElementById('hud-bottom').style.display = 'none';
+    document.getElementById('char-screen').style.display = 'flex';
+    renderCharScreen();
+  }
+
+  // Renderiza cards de classe na tela inicial
   const classGrid = document.getElementById('class-grid');
   Object.keys(CLASSES).forEach(key => {
     const c = CLASSES[key];
@@ -491,7 +1005,7 @@
     classGrid.appendChild(card);
   });
 
-  // ================= ESTADO DO JOGO & SAVE LOCAL =================
+  // ================= ESTADO DO JOGO & ENTRADA NO MUNDO =================
   let player = null;
   let enemies = [];
   let floatingTexts = [];
@@ -499,66 +1013,14 @@
   let clickMarker = null;
   let autoCombat = false;
   let gameRunning = false;
+  let loopStarted = false;
+  let selectedForgeSlot = 'weapon';
 
-  const WORLD_SIZE = 1400; // Tamanho lógico do mapa
+  const WORLD_SIZE = 1400;
   const keysPressed = {};
 
-  function createNewPlayer(name, classKey) {
-    const cls = CLASSES[classKey];
-    return {
-      name: name || 'Herói',
-      classKey: classKey,
-      level: 1,
-      xp: 0,
-      maxXp: 100,
-      gold: 50,
-      kills: 0,
-      x: 0,
-      y: 0,
-      targetX: 0,
-      targetY: 0,
-      hp: cls.baseHp,
-      maxHp: cls.baseHp,
-      mp: cls.baseMp,
-      maxMp: cls.baseMp,
-      atk: cls.baseAtk,
-      def: cls.baseDef,
-      speed: classKey === 'assassino' ? 210 : 175,
-      cooldowns: [0, 0, 0, 0, 0] // 4 skills + 1 poção
-    };
-  }
-
-  function saveGame() {
-    if (player) {
-      localStorage.setItem('asaDeCristal_save_v1', JSON.stringify(player));
-    }
-  }
-
-  function loadGame() {
-    const saved = localStorage.getItem('asaDeCristal_save_v1');
-    if (saved) {
-      player = JSON.parse(saved);
-      player.cooldowns = [0, 0, 0, 0, 0];
-      enterWorld();
-    }
-  }
-
-  function resetSave() {
-    if (confirm('Deseja apagar seu personagem atual e criar um novo?')) {
-      localStorage.removeItem('asaDeCristal_save_v1');
-      location.reload();
-    }
-  }
-
-  function startGame() {
-    const nameInput = document.getElementById('player-name-input').value.trim();
-    player = createNewPlayer(nameInput, selectedClassKey);
-    saveGame();
-    enterWorld();
-  }
-
   function enterWorld() {
-    document.getElementById('char-creation').style.display = 'none';
+    document.getElementById('char-screen').style.display = 'none';
     document.getElementById('hud-top-left').style.display = 'flex';
     document.getElementById('hud-top-right').style.display = 'flex';
     document.getElementById('controls-hint').style.display = 'block';
@@ -568,7 +1030,229 @@
     spawnInitialEnemies();
     updateHUD();
     gameRunning = true;
-    requestAnimationFrame(gameLoop);
+
+    if (!loopStarted) {
+      loopStarted = true;
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    }
+  }
+
+  // ================= MODAIS: MOCHILA & FORJA =================
+  function toggleModal(modalId) {
+    const el = document.getElementById(modalId);
+    const isOpen = el.style.display === 'flex';
+    closeAllModals();
+    if (!isOpen) {
+      el.style.display = 'flex';
+      if (modalId === 'bag-modal') renderBagModal();
+      if (modalId === 'forge-modal') renderForgeModal();
+    }
+  }
+
+  function closeAllModals() {
+    document.querySelectorAll('.modal-window').forEach(m => m.style.display = 'none');
+  }
+
+  function renderBagModal() {
+    const eqList = document.getElementById('equipped-list');
+    eqList.innerHTML = '';
+
+    Object.keys(EQUIP_SLOTS).forEach(slotKey => {
+      const slotInfo = EQUIP_SLOTS[slotKey];
+      const item = player.equipped[slotKey];
+      const row = document.createElement('div');
+      row.className = 'equip-slot-row';
+
+      if (item) {
+        const r = RARITIES[item.rarity];
+        const st = getItemEffectiveStats(item);
+        const plusTxt = item.plus > 0 ? ` +${item.plus}` : '';
+        row.style.borderColor = r.color;
+        row.innerHTML = `
+          <div>
+            <span style="color:${r.color}; font-weight:bold;">${item.icon} ${item.name}${plusTxt}</span><br>
+            <span style="font-size:0.72rem; color:#a4b0be;">
+              ${st.atk ? `ATK +${st.atk} ` : ''}${st.def ? `DEF +${st.def} ` : ''}${st.hp ? `HP +${st.hp}` : ''}
+            </span>
+          </div>
+          <span style="font-size:0.7rem; color:${r.color}; font-weight:bold;">${r.label}</span>
+        `;
+      } else {
+        row.innerHTML = `<span style="color:#57606f;">${slotInfo.icon} ${slotInfo.label}: <i>Vazio</i></span>`;
+      }
+      eqList.appendChild(row);
+    });
+
+    const stats = getTotalStats();
+    document.getElementById('stat-summary').innerHTML = `
+      <b>❤️ Vida Máx:</b> ${stats.totalMaxHp}<br>
+      <b>⚔️ Ataque Total:</b> ${stats.totalAtk}<br>
+      <b>🛡️ Defesa Total:</b> ${stats.totalDef}<br>
+      <b style="color:#ffa502;">🔥 Poder de Batalha (BR): ${stats.br}</b>
+    `;
+
+    // Mochila
+    document.getElementById('bag-count').textContent = player.inventory.length;
+    const bagGrid = document.getElementById('bag-grid');
+    bagGrid.innerHTML = '';
+
+    player.inventory.forEach((item, idx) => {
+      const r = RARITIES[item.rarity];
+      const st = getItemEffectiveStats(item);
+      const plusTxt = item.plus > 0 ? ` +${item.plus}` : '';
+      const card = document.createElement('div');
+      card.className = 'bag-item';
+      card.style.borderColor = r.color;
+      card.innerHTML = `
+        <div>
+          <div style="color:${r.color}; font-weight:bold; margin-bottom:3px;">${item.icon} ${item.name}${plusTxt}</div>
+          <div style="color:#a4b0be; font-size:0.7rem;">
+            ${st.atk ? `ATK +${st.atk}<br>` : ''}${st.def ? `DEF +${st.def}<br>` : ''}${st.hp ? `HP +${st.hp}` : ''}
+          </div>
+        </div>
+        <div class="bag-item-actions">
+          <button class="btn-mini btn-equip" onclick="equipItem(${idx})">Equipar</button>
+          <button class="btn-mini btn-sell" onclick="sellItem(${idx})">+$${item.sellPrice}</button>
+        </div>
+      `;
+      bagGrid.appendChild(card);
+    });
+  }
+
+  function equipItem(bagIdx) {
+    const item = player.inventory[bagIdx];
+    if (!item) return;
+    const currentEquipped = player.equipped[item.slot];
+    player.equipped[item.slot] = item;
+    player.inventory.splice(bagIdx, 1);
+    if (currentEquipped) {
+      player.inventory.push(currentEquipped);
+    }
+    saveAllSlots();
+    updateHUD();
+    renderBagModal();
+  }
+
+  function sellItem(bagIdx) {
+    const item = player.inventory[bagIdx];
+    if (!item) return;
+    player.gold += item.sellPrice;
+    player.inventory.splice(bagIdx, 1);
+    saveAllSlots();
+    updateHUD();
+    renderBagModal();
+  }
+
+  function sellAllCommon() {
+    let earned = 0;
+    player.inventory = player.inventory.filter(item => {
+      if (item.rarity === 'comum') {
+        earned += item.sellPrice;
+        return false;
+      }
+      return true;
+    });
+    if (earned > 0) {
+      player.gold += earned;
+      saveAllSlots();
+      updateHUD();
+      renderBagModal();
+    }
+  }
+
+  // ================= SISTEMA DE FORJA (+1 A +12) =================
+  function getForgeCostAndChance(plus) {
+    const stonesCost = plus + 1;
+    const goldCost = (plus + 1) * 40;
+    const chance = Math.max(20, 100 - plus * 7); // +0->+1 = 100%, +11->+12 = 23%
+    return { stonesCost, goldCost, chance };
+  }
+
+  function renderForgeModal() {
+    const list = document.getElementById('forge-slot-list');
+    list.innerHTML = '';
+
+    Object.keys(EQUIP_SLOTS).forEach(slotKey => {
+      const slotInfo = EQUIP_SLOTS[slotKey];
+      const item = player.equipped[slotKey];
+      const btn = document.createElement('button');
+      btn.className = 'forge-item-btn' + (selectedForgeSlot === slotKey ? ' active' : '');
+
+      if (item) {
+        const r = RARITIES[item.rarity];
+        btn.innerHTML = `<span style="color:${r.color}; font-weight:bold;">${item.icon} ${item.name} (+${item.plus})</span>`;
+      } else {
+        btn.innerHTML = `<span style="color:#57606f;">${slotInfo.icon} ${slotInfo.label} (Não equipado)</span>`;
+      }
+      btn.onclick = () => {
+        selectedForgeSlot = slotKey;
+        renderForgeModal();
+      };
+      list.appendChild(btn);
+    });
+
+    const anvil = document.getElementById('forge-anvil');
+    const item = player.equipped[selectedForgeSlot];
+
+    if (!item) {
+      anvil.innerHTML = `<p style="color:#747d8c;">Equipe um item neste slot pela Mochila (B) para forjar.</p>`;
+      return;
+    }
+
+    const r = RARITIES[item.rarity];
+    const currStats = getItemEffectiveStats(item);
+
+    if (item.plus >= 12) {
+      anvil.innerHTML = `
+        <div style="font-size:2.5rem; margin-bottom:8px;">${item.icon}</div>
+        <h3 style="color:${r.color};">${item.name} +12 (MÁXIMO!)</h3>
+        <p style="color:#2ed573; margin-top:10px; font-weight:bold;">Este equipamento atingiu o nível máximo de aprimoramento!</p>
+      `;
+      return;
+    }
+
+    const { stonesCost, goldCost, chance } = getForgeCostAndChance(item.plus);
+    const canAfford = player.stones >= stonesCost && player.gold >= goldCost;
+
+    anvil.innerHTML = `
+      <div style="font-size:2.4rem; margin-bottom:6px;">${item.icon}</div>
+      <h3 style="color:${r.color};">${item.name} (+${item.plus} ➔ +${item.plus + 1})</h3>
+      <div style="font-size:0.82rem; color:#ced6e0; margin:10px 0;">
+        Atributos Atuais: ${currStats.atk ? `ATK +${currStats.atk} ` : ''}${currStats.def ? `DEF +${currStats.def} ` : ''}${currStats.hp ? `HP +${currStats.hp}` : ''}<br>
+        <span style="color:#2ed573;">Próximo Nível: +18% de bônus base!</span>
+      </div>
+      <div style="background:#181d2c; padding:10px 16px; border-radius:8px; width:100%; font-size:0.84rem; line-height:1.6;">
+        <div>🎲 Chance de Sucesso: <b style="color:#ffa502;">${chance}%</b></div>
+        <div>💎 Pedras Necessárias: <b style="color:${player.stones >= stonesCost ? '#2ed573' : '#ff4757'};">${player.stones} / ${stonesCost}</b></div>
+        <div>💰 Ouro Necessário: <b style="color:${player.gold >= goldCost ? '#f1c40f' : '#ff4757'};">${goldCost}</b></div>
+      </div>
+      <button class="btn-forge-do" ${canAfford ? '' : 'disabled'} onclick="doForgeUpgrade()">
+        🔨 Aprimorar para +${item.plus + 1}
+      </button>
+    `;
+  }
+
+  function doForgeUpgrade() {
+    const item = player.equipped[selectedForgeSlot];
+    if (!item || item.plus >= 12) return;
+    const { stonesCost, goldCost, chance } = getForgeCostAndChance(item.plus);
+    if (player.stones < stonesCost || player.gold < goldCost) return;
+
+    player.stones -= stonesCost;
+    player.gold -= goldCost;
+
+    if (Math.random() * 100 <= chance) {
+      item.plus += 1;
+      addFloatingText(player.x, player.y - 60, `🔨 SUCESSO! ${item.name} +${item.plus}!`, '#2ed573');
+      effects.push({ x: player.x, y: player.y, radius: 95, color: '#ffa502', timer: 0.6 });
+    } else {
+      addFloatingText(player.x, player.y - 60, `💥 Falha na Forja! (Item mantido em +${item.plus})`, '#ff4757');
+    }
+
+    saveAllSlots();
+    updateHUD();
+    renderForgeModal();
   }
 
   // ================= BARRA DE SKILLS =================
@@ -590,7 +1274,6 @@
       bar.appendChild(slot);
     });
 
-    // Slot 5: Poção de Vida
     const potSlot = document.createElement('div');
     potSlot.className = 'skill-slot';
     potSlot.title = 'Poção de Vida (Recupera 50% HP)';
@@ -602,7 +1285,6 @@
     potSlot.onclick = () => usePotion();
     bar.appendChild(potSlot);
 
-    // Botão AUTO
     const autoBtn = document.createElement('button');
     autoBtn.className = 'btn-auto';
     autoBtn.id = 'btn-auto';
@@ -625,16 +1307,16 @@
 
   // ================= MONSTROS DO MAPA =================
   const MONSTER_TYPES = [
-    { name: 'Slime da Floresta', icon: '🟢', hp: 70, atk: 8, xp: 25, gold: 12, color: '#2ed573', scale: 1 },
-    { name: 'Lobo Cinzento', icon: '🐺', hp: 110, atk: 14, xp: 40, gold: 20, color: '#a4b0be', scale: 1.1 },
-    { name: 'Goblin Saqueador', icon: '👺', hp: 150, atk: 19, xp: 60, gold: 32, color: '#ffa502', scale: 1.15 },
-    { name: 'Guardião Tronco (Elite)', icon: '🌳', hp: 320, atk: 28, xp: 140, gold: 85, color: '#ff4757', scale: 1.45 }
+    { name: 'Slime da Floresta', icon: '🟢', hp: 70, atk: 8, xp: 25, gold: 12, color: '#2ed573', scale: 1, elite: false },
+    { name: 'Lobo Cinzento', icon: '🐺', hp: 110, atk: 14, xp: 40, gold: 20, color: '#a4b0be', scale: 1.1, elite: false },
+    { name: 'Goblin Saqueador', icon: '👺', hp: 150, atk: 19, xp: 60, gold: 32, color: '#ffa502', scale: 1.15, elite: false },
+    { name: 'Guardião Tronco (Elite)', icon: '🌳', hp: 320, atk: 28, xp: 140, gold: 85, color: '#ff4757', scale: 1.45, elite: true }
   ];
 
   function spawnEnemy() {
     const roll = Math.random();
     let typeIdx = 0;
-    if (roll > 0.88) typeIdx = 3; // Elite
+    if (roll > 0.88) typeIdx = 3;
     else if (roll > 0.60) typeIdx = 2;
     else if (roll > 0.30) typeIdx = 1;
 
@@ -655,6 +1337,7 @@
       gold: t.gold,
       color: t.color,
       scale: t.scale,
+      elite: t.elite,
       atkTimer: 0
     });
   }
@@ -675,7 +1358,6 @@
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
-  // Converte coordenadas do mundo (x, y) para tela isométrica 2.5D
   function worldToIso(wx, wy) {
     const rx = wx - player.x;
     const ry = wy - player.y;
@@ -684,7 +1366,6 @@
     return { x: isoX, y: isoY };
   }
 
-  // Converte clique na tela de volta para coordenadas do mundo
   function isoToWorld(sx, sy) {
     const dx = (sx - canvas.width / 2) / 0.85;
     const dy = (sy - canvas.height / 2) / 0.45;
@@ -693,7 +1374,7 @@
     return { x: player.x + rx, y: player.y + ry };
   }
 
-  // ================= CONTROLES (MOUSE E TECLADO) =================
+  // ================= CONTROLES =================
   canvas.addEventListener('mousedown', (e) => {
     if (!gameRunning) return;
     const worldPos = isoToWorld(e.clientX, e.clientY);
@@ -701,7 +1382,6 @@
     player.targetY = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, worldPos.y));
     clickMarker = { x: player.targetX, y: player.targetY, timer: 0.5 };
 
-    // Se clicou perto de um monstro e está no alcance, já usa skill 1
     const nearest = getNearestEnemy(worldPos.x, worldPos.y, 70);
     if (nearest && getDist(player, nearest) <= CLASSES[player.classKey].skills[0].range) {
       useSkill(0);
@@ -709,21 +1389,27 @@
   });
 
   window.addEventListener('keydown', (e) => {
-    keysPressed[e.key.toLowerCase()] = true;
+    if (document.activeElement.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    keysPressed[k] = true;
     if (!gameRunning) return;
+
     if (e.key === '1') useSkill(0);
     if (e.key === '2') useSkill(1);
     if (e.key === '3') useSkill(2);
     if (e.key === '4') useSkill(3);
     if (e.key === '5') usePotion();
-    if (e.key.toLowerCase() === 'a') toggleAuto();
+    if (k === 'a') toggleAuto();
+    if (k === 'b') toggleModal('bag-modal');
+    if (k === 'f') toggleModal('forge-modal');
+    if (e.key === 'Escape') closeAllModals();
   });
 
   window.addEventListener('keyup', (e) => {
     keysPressed[e.key.toLowerCase()] = false;
   });
 
-  // ================= COMBATE E HABILIDADES =================
+  // ================= COMBATE & DROPS =================
   function getDist(a, b) {
     return Math.hypot(a.x - b.x, a.y - b.y);
   }
@@ -742,9 +1428,10 @@
   }
 
   function usePotion() {
-    if (player.cooldowns[4] > 0 || player.hp >= player.maxHp) return;
-    const healAmt = Math.round(player.maxHp * 0.5);
-    player.hp = Math.min(player.maxHp, player.hp + healAmt);
+    const stats = getTotalStats();
+    if (player.cooldowns[4] > 0 || player.hp >= stats.totalMaxHp) return;
+    const healAmt = Math.round(stats.totalMaxHp * 0.5);
+    player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
     player.cooldowns[4] = 4.0;
     addFloatingText(player.x, player.y - 40, `+${healAmt} HP`, '#2ed573');
     effects.push({ x: player.x, y: player.y, radius: 45, color: '#2ed573', timer: 0.4 });
@@ -754,6 +1441,7 @@
   function useSkill(idx) {
     const cls = CLASSES[player.classKey];
     const sk = cls.skills[idx];
+    const stats = getTotalStats();
     if (!sk || player.cooldowns[idx] > 0) return;
 
     if (player.mp < sk.mp) {
@@ -761,12 +1449,11 @@
       return;
     }
 
-    // Skill de cura própria
     if (sk.heal) {
       player.mp -= sk.mp;
       player.cooldowns[idx] = sk.cd;
-      const healAmt = Math.round(player.maxHp * sk.heal);
-      player.hp = Math.min(player.maxHp, player.hp + healAmt);
+      const healAmt = Math.round(stats.totalMaxHp * sk.heal);
+      player.hp = Math.min(stats.totalMaxHp, player.hp + healAmt);
       addFloatingText(player.x, player.y - 45, `+${healAmt} HP`, '#2ed573');
       effects.push({ x: player.x, y: player.y, radius: 60, color: sk.color, timer: 0.5 });
       updateHUD();
@@ -789,7 +1476,6 @@
       player.targetY = player.y;
     }
 
-    // Aplica dano (Área ou Alvo Único)
     const hitList = sk.aoe
       ? enemies.filter(en => getDist(target, en) <= 110)
       : [target];
@@ -798,7 +1484,7 @@
 
     hitList.forEach(en => {
       const isCrit = Math.random() < (player.classKey === 'arqueiro' || player.classKey === 'assassino' ? 0.3 : 0.15);
-      let dmg = Math.round(player.atk * sk.mult * (0.9 + Math.random() * 0.2));
+      let dmg = Math.round(stats.totalAtk * sk.mult * (0.9 + Math.random() * 0.2));
       if (isCrit) dmg = Math.round(dmg * 1.6);
 
       en.hp -= dmg;
@@ -825,48 +1511,66 @@
 
     addFloatingText(en.x, en.y - 50, `+${en.xp} XP  +${en.gold} Ouro`, '#f1c40f');
 
-    // Level Up!
+    // Drop de Pedra de Forja (45% comum, 100% Elite)
+    if (en.elite || Math.random() < 0.45) {
+      const stonesWon = en.elite ? 2 : 1;
+      player.stones += stonesWon;
+      addFloatingText(en.x, en.y - 68, `💎 +${stonesWon} Pedra de Forja!`, '#70a1ff');
+    }
+
+    // Drop de Equipamento (35% comum, 85% Elite)
+    if (player.inventory.length < 24 && (en.elite || Math.random() < 0.35)) {
+      const droppedItem = generateRandomItem(player.level, en.elite);
+      player.inventory.push(droppedItem);
+      const r = RARITIES[droppedItem.rarity];
+      addFloatingText(en.x, en.y - 86, `🎁 Drop: ${droppedItem.name}!`, r.color);
+    }
+
+    // Level Up
     while (player.xp >= player.maxXp) {
       player.xp -= player.maxXp;
       player.level += 1;
       player.maxXp = Math.round(player.maxXp * 1.35);
-      player.maxHp += 35;
+      player.baseMaxHp = (player.baseMaxHp || player.maxHp) + 35;
       player.maxMp += 20;
-      player.atk += 6;
-      player.def += 3;
-      player.hp = player.maxHp;
+      player.baseAtk = (player.baseAtk || player.atk) + 6;
+      player.baseDef = (player.baseDef || player.def) + 3;
+
+      const stats = getTotalStats();
+      player.hp = stats.totalMaxHp;
       player.mp = player.maxMp;
       addFloatingText(player.x, player.y - 70, `🎉 LEVEL UP! Nv. ${player.level}`, '#ffa502');
       effects.push({ x: player.x, y: player.y, radius: 120, color: '#ffa502', timer: 0.8 });
     }
 
-    saveGame();
+    saveAllSlots();
     setTimeout(spawnEnemy, 2500);
   }
 
   function addFloatingText(x, y, text, color) {
-    floatingTexts.push({ x, y, text, color, timer: 1.1 });
+    floatingTexts.push({ x, y, text, color, timer: 1.25 });
   }
 
-  // ================= LOOP PRINCIPAL DO JOGO =================
+  // ================= LOOP PRINCIPAL =================
   let lastTime = performance.now();
 
   function gameLoop(now) {
     const dt = Math.min(0.05, (now - lastTime) / 1000);
     lastTime = now;
 
-    update(dt);
-    render();
+    if (gameRunning) {
+      update(dt);
+      render();
+    }
 
     requestAnimationFrame(gameLoop);
   }
 
   function update(dt) {
-    // Regeneração natural de HP e MP
-    player.hp = Math.min(player.maxHp, player.hp + player.maxHp * 0.02 * dt);
+    const stats = getTotalStats();
+    player.hp = Math.min(stats.totalMaxHp, player.hp + stats.totalMaxHp * 0.02 * dt);
     player.mp = Math.min(player.maxMp, player.mp + player.maxMp * 0.06 * dt);
 
-    // Atualiza cooldowns
     for (let i = 0; i < player.cooldowns.length; i++) {
       if (player.cooldowns[i] > 0) {
         player.cooldowns[i] = Math.max(0, player.cooldowns[i] - dt);
@@ -882,7 +1586,6 @@
       }
     }
 
-    // Movimento por teclado WASD
     let moveX = 0, moveY = 0;
     if (keysPressed['w']) { moveX -= 1; moveY -= 1; }
     if (keysPressed['s']) { moveX += 1; moveY += 1; }
@@ -896,9 +1599,8 @@
       player.targetX = player.x;
       player.targetY = player.y;
     } else {
-      // Lógica do modo AUTO (AFK)
       if (autoCombat) {
-        if (player.hp < player.maxHp * 0.45) usePotion();
+        if (player.hp < stats.totalMaxHp * 0.45) usePotion();
         const target = getNearestEnemy(player.x, player.y);
         if (target) {
           const baseRange = CLASSES[player.classKey].range;
@@ -909,7 +1611,6 @@
           } else {
             player.targetX = player.x;
             player.targetY = player.y;
-            // Tenta usar da skill mais forte para a mais fraca
             for (let s = 3; s >= 0; s--) {
               if (player.cooldowns[s] <= 0 && player.mp >= CLASSES[player.classKey].skills[s].mp) {
                 useSkill(s);
@@ -920,7 +1621,6 @@
         }
       }
 
-      // Move em direção ao ponto clicado / alvo
       const dx = player.targetX - player.x;
       const dy = player.targetY - player.y;
       const dist = Math.hypot(dx, dy);
@@ -930,11 +1630,9 @@
       }
     }
 
-    // Limites do mapa
     player.x = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.x));
     player.y = Math.max(-WORLD_SIZE/2, Math.min(WORLD_SIZE/2, player.y));
 
-    // IA simples dos monstros
     enemies.forEach(en => {
       const dist = getDist(player, en);
       if (dist < 240 && dist > 48) {
@@ -946,11 +1644,11 @@
         en.atkTimer += dt;
         if (en.atkTimer >= 1.6) {
           en.atkTimer = 0;
-          const dmg = Math.max(2, en.atk - Math.round(player.def * 0.5));
+          const dmg = Math.max(2, en.atk - Math.round(stats.totalDef * 0.5));
           player.hp -= dmg;
           addFloatingText(player.x, player.y - 35, `-${dmg}`, '#ff4757');
           if (player.hp <= 0) {
-            player.hp = player.maxHp;
+            player.hp = stats.totalMaxHp;
             player.x = 0;
             player.y = 0;
             player.targetX = 0;
@@ -961,7 +1659,6 @@
       }
     });
 
-    // Atualiza efeitos e textos flutuantes
     effects.forEach(ef => ef.timer -= dt);
     effects = effects.filter(ef => ef.timer > 0);
 
@@ -981,21 +1678,21 @@
 
   function updateHUD() {
     const cls = CLASSES[player.classKey];
-    const br = Math.round(player.maxHp * 0.5 + player.atk * 4 + player.def * 3 + player.level * 25);
+    const stats = getTotalStats();
 
     document.getElementById('hud-avatar').childNodes[0].textContent = cls.icon;
     document.getElementById('hud-lvl').textContent = `Nv. ${player.level}`;
     document.getElementById('hud-name').textContent = `${player.name} (${cls.name})`;
-    document.getElementById('hud-br').textContent = `BR: ${br}`;
+    document.getElementById('hud-br').textContent = `BR: ${stats.br}`;
 
-    document.getElementById('hud-hp-bar').style.width = `${(player.hp / player.maxHp) * 100}%`;
-    document.getElementById('hud-hp-text').textContent = `${Math.ceil(player.hp)} / ${player.maxHp}`;
+    document.getElementById('hud-hp-bar').style.width = `${Math.min(100, (player.hp / stats.totalMaxHp) * 100)}%`;
+    document.getElementById('hud-hp-text').textContent = `${Math.ceil(player.hp)} / ${stats.totalMaxHp}`;
 
-    document.getElementById('hud-mp-bar').style.width = `${(player.mp / player.maxMp) * 100}%`;
+    document.getElementById('hud-mp-bar').style.width = `${Math.min(100, (player.mp / player.maxMp) * 100)}%`;
     document.getElementById('hud-mp-text').textContent = `${Math.ceil(player.mp)} / ${player.maxMp}`;
 
     document.getElementById('hud-gold').textContent = player.gold;
-    document.getElementById('hud-kills').textContent = player.kills;
+    document.getElementById('hud-stones').textContent = player.stones;
 
     const xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
     document.getElementById('hud-xp-bar').style.width = `${xpPct}%`;
@@ -1007,11 +1704,9 @@
     ctx.fillStyle = '#0d131a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Desenha o chão isométrico (Losango do mapa + Grade)
     const tileStep = 100;
     const half = WORLD_SIZE / 2;
 
-    // Fundo do terreno
     const c1 = worldToIso(-half, -half);
     const c2 = worldToIso(half, -half);
     const c3 = worldToIso(half, half);
@@ -1029,27 +1724,19 @@
     ctx.strokeStyle = '#2ed57355';
     ctx.stroke();
 
-    // Grade isométrica
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
     ctx.lineWidth = 1;
     for (let x = -half; x <= half; x += tileStep) {
       const p1 = worldToIso(x, -half);
       const p2 = worldToIso(x, half);
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
     }
     for (let y = -half; y <= half; y += tileStep) {
       const p1 = worldToIso(-half, y);
       const p2 = worldToIso(half, y);
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
     }
 
-    // Marcador de clique no chão
     if (clickMarker) {
       const pos = worldToIso(clickMarker.x, clickMarker.y);
       ctx.beginPath();
@@ -1059,110 +1746,6 @@
       ctx.stroke();
     }
 
-    // Ordena entidades por profundidade Y para efeito 2.5D real
     const renderList = [
       { type: 'player', y: player.y, obj: player },
-      ...enemies.map(en => ({ type: 'enemy', y: en.y, obj: en }))
-    ].sort((a, b) => a.y - b.y);
-
-    renderList.forEach(item => {
-      if (item.type === 'player') drawPlayer();
-      else drawEnemy(item.obj);
-    });
-
-    // Efeitos visuais de skills
-    effects.forEach(ef => {
-      const pos = worldToIso(ef.x, ef.y);
-      ctx.beginPath();
-      ctx.ellipse(pos.x, pos.y, ef.radius * 0.85, ef.radius * 0.45, 0, 0, Math.PI * 2);
-      ctx.fillStyle = ef.color + '44';
-      ctx.fill();
-      ctx.strokeStyle = ef.color;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    });
-
-    // Números de dano e XP flutuantes
-    floatingTexts.forEach(ft => {
-      const pos = worldToIso(ft.x, ft.y);
-      ctx.font = 'bold 15px Segoe UI';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#000';
-      ctx.fillText(ft.text, pos.x + 1, pos.y + 1);
-      ctx.fillStyle = ft.color;
-      ctx.fillText(ft.text, pos.x, pos.y);
-    });
-  }
-
-  function drawPlayer() {
-    const pos = worldToIso(player.x, player.y);
-    const cls = CLASSES[player.classKey];
-
-    // Sombra no chão
-    ctx.beginPath();
-    ctx.ellipse(pos.x, pos.y, 22, 11, 0, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.fill();
-
-    // Aura da classe
-    ctx.beginPath();
-    ctx.ellipse(pos.x, pos.y, 26, 13, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = cls.color;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Corpo 2.5D do personagem
-    ctx.fillStyle = cls.color;
-    ctx.beginPath();
-    ctx.roundRect(pos.x - 14, pos.y - 44, 28, 42, 10);
-    ctx.fill();
-
-    // Ícone da classe
-    ctx.font = '22px Segoe UI';
-    ctx.textAlign = 'center';
-    ctx.fillText(cls.icon, pos.x, pos.y - 16);
-
-    // Nome acima da cabeça
-    ctx.font = 'bold 12px Segoe UI';
-    ctx.fillStyle = '#fff';
-    ctx.fillText(`[Nv.${player.level}] ${player.name}`, pos.x, pos.y - 52);
-  }
-
-  function drawEnemy(en) {
-    const pos = worldToIso(en.x, en.y);
-    const s = en.scale;
-
-    // Sombra
-    ctx.beginPath();
-    ctx.ellipse(pos.x, pos.y, 20 * s, 10 * s, 0, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.fill();
-
-    // Corpo do monstro
-    ctx.fillStyle = en.color + 'cc';
-    ctx.beginPath();
-    ctx.roundRect(pos.x - 15 * s, pos.y - 38 * s, 30 * s, 36 * s, 8);
-    ctx.fill();
-
-    // Ícone
-    ctx.font = `${Math.round(22 * s)}px Segoe UI`;
-    ctx.textAlign = 'center';
-    ctx.fillText(en.icon, pos.x, pos.y - 12 * s);
-
-    // Nome e Barra de HP do monstro
-    ctx.font = 'bold 11px Segoe UI';
-    ctx.fillStyle = '#ff6b81';
-    ctx.fillText(en.name, pos.x, pos.y - 48 * s);
-
-    const barW = 46 * s;
-    ctx.fillStyle = '#2f3542';
-    ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW, 5);
-    ctx.fillStyle = '#ff4757';
-    ctx.fillRect(pos.x - barW / 2, pos.y - 44 * s, barW * Math.max(0, en.hp / en.maxHp), 5);
-  }
-
-  // Inicia verificando se já existe personagem salvo
-  loadGame();
-</script>
-</body>
-</html>
+      ...enemies.map(en => ({ type: 'enemy', y:
