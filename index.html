@@ -15,7 +15,7 @@
       height: 100vh;
     }
 
-    /* ================= TELA DE CRIAÇÃO E SELEÇÃO (ESTILO EP 4.5) ================= */
+    /* ================= TELA DE CRIAÇÃO E SELEÇÃO ================= */
     #char-screen {
       position: fixed;
       inset: 0;
@@ -29,7 +29,7 @@
       overflow-y: auto;
     }
     #char-screen h1 {
-      font-size: 2.2rem;
+      font-size: 2.15rem;
       color: #fbbf24;
       text-shadow: 0 0 22px rgba(251, 191, 36, 0.45);
       margin-bottom: 4px;
@@ -39,7 +39,7 @@
     }
     #char-screen p.subtitle {
       color: #94a3b8;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       font-size: 0.9rem;
       text-align: center;
     }
@@ -50,26 +50,26 @@
       background: rgba(13, 19, 31, 0.92);
       border: 1px solid #263248;
       border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: 15px;
+      margin-bottom: 15px;
       box-shadow: 0 12px 35px rgba(0,0,0,0.6);
     }
     .ep-box h2 {
-      font-size: 0.96rem;
+      font-size: 0.94rem;
       color: #fbbf24;
       text-transform: uppercase;
       letter-spacing: 1.2px;
-      margin-bottom: 12px;
+      margin-bottom: 11px;
       text-align: center;
       border-bottom: 1px solid #1e293b;
-      padding-bottom: 8px;
+      padding-bottom: 7px;
     }
 
     .faction-row {
       display: flex;
       gap: 14px;
       justify-content: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
     .faction-btn {
@@ -101,13 +101,13 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .class-card {
       background: #0b101b;
       border: 2px solid #1e293b;
       border-radius: 10px;
-      padding: 11px;
+      padding: 10px;
       text-align: center;
       cursor: pointer;
       transition: 0.18s;
@@ -119,20 +119,20 @@
       box-shadow: 0 0 16px rgba(251, 191, 36, 0.3);
     }
     .class-icon {
-      width: 46px; height: 46px; border-radius: 50%; margin: 0 auto 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.45rem;
+      width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
     }
-    .class-card h3 { font-size: 0.96rem; margin-bottom: 2px; }
-    .class-card .sub-race { font-size: 0.68rem; color: #94a3b8; margin-bottom: 5px; }
-    .class-card .auto-stat { font-size: 0.7rem; color: #34d399; font-weight: bold; margin-bottom: 4px; }
-    .class-card .desc { font-size: 0.7rem; color: #cbd5e1; line-height: 1.25; }
+    .class-card h3 { font-size: 0.94rem; margin-bottom: 2px; }
+    .class-card .sub-race { font-size: 0.67rem; color: #94a3b8; margin-bottom: 4px; }
+    .class-card .auto-stat { font-size: 0.69rem; color: #34d399; font-weight: bold; margin-bottom: 4px; }
+    .class-card .desc { font-size: 0.69rem; color: #cbd5e1; line-height: 1.25; }
 
     .mode-row {
       display: flex;
       gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .mode-card {
       flex: 1;
@@ -149,8 +149,8 @@
     .mode-card.selected-nm { border-color: #38bdf8; background: #0f2036; }
     .mode-card.selected-hm { border-color: #a855f7; background: #221338; }
     .mode-card.selected-um { border-color: #f43f5e; background: #33101b; box-shadow: 0 0 16px rgba(244, 63, 94, 0.3); }
-    .mode-title { font-weight: bold; font-size: 0.86rem; margin-bottom: 3px; }
-    .mode-desc { font-size: 0.71rem; color: #cbd5e1; line-height: 1.3; }
+    .mode-title { font-weight: bold; font-size: 0.85rem; margin-bottom: 3px; }
+    .mode-desc { font-size: 0.7rem; color: #cbd5e1; line-height: 1.3; }
 
     .create-bar {
       display: flex;
@@ -165,7 +165,7 @@
       border: 2px solid #263248;
       background: #070a10;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       outline: none;
       width: 220px;
     }
@@ -220,20 +220,20 @@
       color: #05070c; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-transform: uppercase;
     }
 
-    /* ================= CANVAS & HUD ESTILO EP 4.5 ================= */
+    /* ================= CANVAS & HUD ================= */
     #gameCanvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
 
     #hud-top-left {
       position: fixed;
       top: 12px; left: 12px;
-      background: rgba(11, 16, 27, 0.92);
+      background: rgba(11, 16, 27, 0.93);
       border: 1.5px solid #334155;
       border-radius: 10px;
       padding: 10px 14px;
       display: none;
       align-items: center;
       gap: 12px;
-      min-width: 315px;
+      min-width: 345px;
       z-index: 15;
       box-shadow: 0 6px 20px rgba(0,0,0,0.65);
     }
@@ -250,8 +250,13 @@
     }
     .hud-bars-col { flex: 1; }
     .hud-name-line {
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: space-between; align-items: center; gap: 6px;
       font-size: 0.84rem; font-weight: bold; margin-bottom: 4px;
+    }
+    .kill-rank-pill {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 0.72rem; padding: 1px 6px; border-radius: 6px;
+      border: 1px solid currentColor; background: rgba(0,0,0,0.45);
     }
     .mode-badge {
       font-size: 0.66rem; padding: 1px 6px; border-radius: 5px; font-weight: bold;
@@ -267,15 +272,22 @@
       position: absolute; inset: 0; font-size: 0.64rem; text-align: center;
       line-height: 10px; font-weight: bold; text-shadow: 1px 1px 2px #000;
     }
+    .hud-buffs-row {
+      display: flex; gap: 5px; flex-wrap: wrap; margin-top: 3px; min-height: 16px;
+    }
+    .buff-chip {
+      font-size: 0.62rem; font-weight: bold; padding: 1px 6px; border-radius: 5px;
+      background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; color: #7dd3fc;
+    }
 
     #hud-target-box {
       position: fixed;
       top: 12px; left: 50%; transform: translateX(-50%);
-      background: rgba(11, 16, 27, 0.92);
+      background: rgba(11, 16, 27, 0.94);
       border: 1.5px solid #475569;
       border-radius: 10px;
       padding: 8px 14px;
-      min-width: 280px;
+      min-width: 300px;
       display: none;
       flex-direction: column;
       align-items: center;
@@ -283,10 +295,11 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.65);
     }
     .target-header {
-      display: flex; align-items: center; gap: 6px; font-size: 0.84rem; font-weight: bold; margin-bottom: 5px;
+      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: bold; margin-bottom: 5px;
     }
     .elem-tag {
-      font-size: 0.66rem; padding: 1px 6px; border-radius: 5px; font-weight: bold; text-transform: uppercase;
+      font-size: 0.72rem; padding: 2px 8px; border-radius: 6px; font-weight: bold;
+      border: 1px solid currentColor; display: inline-flex; align-items: center; gap: 4px;
     }
     .target-hp-bg {
       width: 100%; height: 12px; background: #1e293b; border-radius: 6px; overflow: hidden; position: relative;
@@ -339,28 +352,28 @@
       z-index: 15;
     }
     .skill-dock {
-      display: flex; gap: 8px; background: rgba(11, 16, 27, 0.94);
-      border: 1.5px solid #334155; padding: 8px 12px; border-radius: 12px;
+      display: flex; gap: 6px; background: rgba(11, 16, 27, 0.94);
+      border: 1.5px solid #334155; padding: 8px 10px; border-radius: 12px; flex-wrap: wrap; justify-content: center;
     }
     .sk-slot {
-      width: 50px; height: 50px; background: #161f30; border: 1.5px solid #475569;
+      width: 48px; height: 48px; background: #161f30; border: 1.5px solid #475569;
       border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
     .sk-slot:hover { border-color: #fbbf24; }
-    .sk-key { position: absolute; top: 2px; left: 4px; font-size: 0.66rem; color: #94a3b8; font-weight: bold; }
-    .sk-cost-dot { position: absolute; bottom: 2px; right: 4px; font-size: 0.58rem; font-weight: bold; }
-    .sk-ico { font-size: 1.4rem; }
+    .sk-key { position: absolute; top: 2px; left: 4px; font-size: 0.64rem; color: #94a3b8; font-weight: bold; }
+    .sk-cost-dot { position: absolute; bottom: 2px; right: 4px; font-size: 0.56rem; font-weight: bold; }
+    .sk-ico { font-size: 1.35rem; }
     .sk-cd {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.8); border-radius: 6px;
-      display: none; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold;
+      position: absolute; inset: 0; background: rgba(0,0,0,0.82); border-radius: 6px;
+      display: none; align-items: center; justify-content: center; font-size: 0.88rem; font-weight: bold;
     }
     .btn-auto-ep {
-      width: 58px; height: 50px; border-radius: 8px; border: 1.5px solid #10b981;
-      background: #064e3b; color: #34d399; font-weight: bold; font-size: 0.74rem; cursor: pointer;
+      width: 56px; height: 48px; border-radius: 8px; border: 1.5px solid #10b981;
+      background: #064e3b; color: #34d399; font-weight: bold; font-size: 0.72rem; cursor: pointer;
     }
     .btn-auto-ep.active { background: #10b981; color: #05070c; }
     .xp-strip {
-      width: 450px; max-width: 92vw; height: 10px; background: #161f30;
+      width: 530px; max-width: 94vw; height: 10px; background: #161f30;
       border: 1px solid #334155; border-radius: 5px; overflow: hidden; position: relative;
     }
     .xp-fill { height: 100%; background: linear-gradient(90deg, #d97706, #fbbf24); width: 0%; }
@@ -369,10 +382,10 @@
     #controls-hint {
       position: fixed; bottom: 12px; left: 12px;
       background: rgba(11, 16, 27, 0.88); border: 1px solid #263248;
-      padding: 7px 11px; border-radius: 8px; font-size: 0.7rem; color: #94a3b8; line-height: 1.5; display: none; z-index: 15;
+      padding: 7px 11px; border-radius: 8px; font-size: 0.68rem; color: #94a3b8; line-height: 1.45; display: none; z-index: 15;
     }
 
-    /* ================= JANELAS FLUTUANTES (STATUS, INVENTÁRIO E FERREIRO) ================= */
+    /* ================= JANELAS FLUTUANTES ================= */
     .ep-window {
       position: fixed;
       top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -395,14 +408,14 @@
       justify-content: space-between;
       align-items: center;
     }
-    .ep-win-header h3 { color: #fbbf24; font-size: 0.98rem; letter-spacing: 0.6px; }
+    .ep-win-header h3 { color: #fbbf24; font-size: 0.96rem; letter-spacing: 0.5px; }
     .btn-x {
       background: #dc2626; border: none; color: #fff;
       width: 26px; height: 26px; border-radius: 6px; font-weight: bold; cursor: pointer;
     }
 
     /* JANELA DE STATUS (C) */
-    #status-modal { width: 540px; }
+    #status-modal { width: 550px; }
     .status-body { padding: 14px; overflow-y: auto; }
     .status-top-summary {
       display: flex; justify-content: space-between; align-items: center;
@@ -442,10 +455,9 @@
       margin-top: 8px; width: 100%; padding: 7px; border-radius: 6px;
       border: 1px solid #475569; background: #161f30; color: #cbd5e1; font-size: 0.75rem; cursor: pointer;
     }
-    .btn-reset-stats:hover { border-color: #fbbf24; color: #fbbf24; }
 
     /* JANELA DE INVENTÁRIO (B) */
-    #bag-modal { width: 990px; }
+    #bag-modal { width: 1010px; }
     .inv-layout {
       display: flex; gap: 12px; padding: 12px; overflow-y: auto; flex-wrap: wrap;
     }
@@ -459,7 +471,7 @@
     }
     .pd-col { display: flex; flex-direction: column; gap: 6px; align-items: center; }
     .pd-center-figure {
-      height: 250px; background: radial-gradient(circle at center, #182338 0%, #090d16 75%);
+      height: 255px; background: radial-gradient(circle at center, #182338 0%, #090d16 75%);
       border: 1px dashed #263248; border-radius: 10px;
       display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6px;
     }
@@ -472,20 +484,33 @@
     .pd-slot-lbl { font-size: 0.56rem; color: #64748b; text-transform: uppercase; margin-top: 2px; }
     .pd-slot-ico { font-size: 1.35rem; }
     .pd-plus-tag { position: absolute; top: 1px; right: 3px; font-size: 0.58rem; font-weight: bold; color: #fbbf24; }
+    .pd-elem-badge { position: absolute; bottom: 1px; right: 2px; font-size: 0.65rem; }
     .pd-bottom-row { display: flex; gap: 8px; justify-content: center; margin-top: 4px; }
 
-    .bag-right-panel { flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px; }
+    .bag-right-panel { flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 8px; }
+    .bag-top-actions {
+      display: flex; gap: 8px; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      background: #090d16; border: 1px solid #1e293b; border-radius: 8px; padding: 6px 8px;
+    }
+    .btn-sell-bulk {
+      padding: 6px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: bold; cursor: pointer; border: 1px solid;
+    }
+    .btn-sell-eq { background: rgba(245, 158, 11, 0.15); border-color: #f59e0b; color: #fbbf24; }
+    .btn-sell-eq:hover { background: #f59e0b; color: #05070c; }
+    .btn-sell-lap { background: rgba(56, 189, 248, 0.15); border-color: #38bdf8; color: #7dd3fc; }
+    .btn-sell-lap:hover { background: #38bdf8; color: #05070c; }
+
     .bag-tabs-bar {
-      display: flex; gap: 5px; background: #090d16; padding: 6px; border-radius: 8px; border: 1px solid #1e293b;
+      display: flex; gap: 5px; background: #090d16; padding: 5px; border-radius: 8px; border: 1px solid #1e293b;
     }
     .bag-tab {
-      flex: 1; padding: 6px 4px; border: 1px solid #263248; background: #121927;
-      color: #94a3b8; border-radius: 6px; font-size: 0.74rem; font-weight: bold; cursor: pointer;
+      flex: 1; padding: 5px 4px; border: 1px solid #263248; background: #121927;
+      color: #94a3b8; border-radius: 6px; font-size: 0.72rem; font-weight: bold; cursor: pointer;
     }
     .bag-tab.active { border-color: #fbbf24; color: #fbbf24; background: #1c263b; }
     .bag-cells-grid {
       display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
-      background: #090d16; border: 1px solid #1e293b; border-radius: 9px; padding: 8px; min-height: 230px;
+      background: #090d16; border: 1px solid #1e293b; border-radius: 9px; padding: 8px; min-height: 220px;
     }
     .bag-cell {
       aspect-ratio: 1 / 1; background: #111827; border: 1.5px solid #263248;
@@ -497,10 +522,18 @@
     .cell-qty { position: absolute; bottom: 2px; right: 4px; font-size: 0.62rem; font-weight: bold; color: #e2e8f0; }
     .cell-sockets { position: absolute; top: 2px; left: 3px; display: flex; gap: 2px; }
     .cell-dot { width: 5px; height: 5px; border-radius: 50%; border: 1px solid #94a3b8; }
+    .cmp-arrow {
+      position: absolute; top: 1px; right: 3px; font-size: 0.72rem; font-weight: bold; text-shadow: 0 1px 2px #000;
+    }
+    .cmp-up { color: #10b981; }
+    .cmp-down { color: #f43f5e; }
+    .cell-elem-corner {
+      position: absolute; bottom: 1px; left: 3px; font-size: 0.64rem;
+    }
 
     .item-tooltip-box {
       background: #090d16; border: 1.5px solid #334155; border-radius: 9px;
-      padding: 10px 12px; min-height: 140px; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 10px 12px; min-height: 145px; display: flex; flex-direction: column; justify-content: space-between;
     }
     .tooltip-actions { display: flex; gap: 8px; margin-top: 8px; }
     .btn-act {
@@ -510,86 +543,69 @@
     .btn-act-equip:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
     .btn-act-sell { background: #f59e0b; color: #05070c; }
 
-    /* ================= JANELA DO FERREIRO EP 4.5 (TECLA F) ================= */
-    #smith-modal { width: 1040px; }
-    .smith-tabs {
-      display: flex; gap: 8px; padding: 10px 14px 0; background: #0d131f;
+    /* ================= FERREIRO SIMPLIFICADO EM 3 PASSOS ================= */
+    #smith-modal { width: 1020px; }
+    .smith-top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 14px; background: #111827; border-bottom: 1px solid #1e293b; flex-wrap: wrap; gap: 8px;
     }
+    .smith-mode-switch { display: flex; gap: 6px; }
     .smith-tab-btn {
-      flex: 1; padding: 9px; border-radius: 8px 8px 0 0; border: 1.5px solid #263248;
-      border-bottom: none; background: #121927; color: #94a3b8; font-weight: bold; font-size: 0.82rem; cursor: pointer;
+      padding: 7px 14px; border-radius: 7px; border: 1.5px solid #334155;
+      background: #161f30; color: #94a3b8; font-weight: bold; font-size: 0.8rem; cursor: pointer;
     }
-    .smith-tab-btn.active {
-      border-color: #38bdf8; color: #38bdf8; background: #172338;
-    }
+    .smith-tab-btn.active { border-color: #38bdf8; color: #fff; background: #0c4a6e; }
+
     .smith-body {
       padding: 12px 14px 14px; display: flex; gap: 12px; overflow-y: auto; flex-wrap: wrap;
-      border-top: 1.5px solid #38bdf8;
     }
-    .smith-col-left {
-      width: 245px; background: #090d16; border: 1px solid #1e293b; border-radius: 9px; padding: 9px;
-      max-height: 450px; overflow-y: auto;
+    .smith-step-box {
+      background: #090d16; border: 1px solid #1e293b; border-radius: 10px; padding: 10px; display: flex; flex-direction: column;
     }
+    .step-badge {
+      display: inline-block; background: #fbbf24; color: #05070c; font-weight: bold;
+      font-size: 0.66rem; padding: 1px 6px; border-radius: 4px; margin-right: 5px;
+    }
+    .smith-col-1 { width: 235px; max-height: 440px; overflow-y: auto; }
+    .smith-col-2 { flex: 1.15; min-width: 300px; justify-content: space-between; }
+    .smith-col-3 { flex: 1.15; min-width: 290px; justify-content: space-between; }
+
     .smith-eq-btn {
       width: 100%; text-align: left; background: #121927; border: 1.5px solid #263248;
-      color: #e2e8f0; padding: 7px 9px; border-radius: 7px; margin-bottom: 6px; cursor: pointer; font-size: 0.76rem;
+      color: #e2e8f0; padding: 7px 9px; border-radius: 7px; margin-bottom: 6px; cursor: pointer; font-size: 0.75rem;
     }
-    .smith-eq-btn.selected {
-      background: #1a2842; border-color: #fbbf24 !important; box-shadow: 0 0 10px rgba(251, 191, 36, 0.25);
-    }
-    .smith-col-center {
-      flex: 1.25; min-width: 310px; background: #090d16; border: 1px solid #1e293b;
-      border-radius: 9px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;
-    }
-    .smith-col-right {
-      flex: 1.15; min-width: 280px; background: #090d16; border: 1px solid #1e293b;
-      border-radius: 9px; padding: 10px; display: flex; flex-direction: column; gap: 8px;
-    }
-    .socket-slots-bar {
+    .smith-eq-btn.selected { background: #1a2842; border-color: #fbbf24 !important; }
+
+    .socket-visual-row {
       display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0;
     }
-    .socket-circle {
-      width: 36px; height: 36px; border-radius: 50%; border: 2px dashed #475569;
-      background: #121927; display: flex; align-items: center; justify-content: center;
-      font-size: 0.64rem; font-weight: bold; color: #64748b;
+    .socket-slot-card {
+      width: 72px; padding: 6px 4px; border-radius: 8px; border: 1.5px dashed #475569;
+      background: #111827; text-align: center; font-size: 0.66rem;
     }
-    .socket-circle.filled {
-      border-style: solid; box-shadow: 0 0 10px currentColor; color: #fff;
+    .socket-slot-card.filled { border-style: solid; background: #162033; }
+    .btn-extract-mini {
+      margin-top: 4px; width: 100%; padding: 3px 2px; border-radius: 4px; border: 1px solid #fbbf24;
+      background: rgba(251, 191, 36, 0.16); color: #fbbf24; font-size: 0.62rem; font-weight: bold; cursor: pointer;
     }
-    .linked-row {
-      display: flex; justify-content: space-between; align-items: center;
-      background: #111827; border: 1px solid #1e293b; border-radius: 7px; padding: 5px 8px; margin-bottom: 5px; font-size: 0.72rem;
-    }
-    .btn-extract {
-      background: rgba(251, 191, 36, 0.16); border: 1px solid #fbbf24; color: #fbbf24;
-      border-radius: 5px; padding: 3px 7px; font-size: 0.66rem; font-weight: bold; cursor: pointer;
-    }
-    .btn-extract:hover:not(:disabled) { background: #fbbf24; color: #05070c; }
-    .btn-extract:disabled { border-color: #334155; color: #64748b; background: transparent; cursor: not-allowed; }
+    .btn-extract-mini:hover:not(:disabled) { background: #fbbf24; color: #05070c; }
+    .btn-extract-mini:disabled { border-color: #334155; color: #64748b; background: transparent; cursor: not-allowed; }
 
-    .support-check-box {
-      background: #111827; border: 1px solid #263248; border-radius: 8px; padding: 8px 10px; font-size: 0.75rem;
-    }
-    .support-check-box label { display: flex; align-items: center; gap: 7px; cursor: pointer; margin-bottom: 4px; }
-    .lapis-bag-list {
-      max-height: 230px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
-    }
-    .lapis-card-row {
+    .lapis-select-list { max-height: 225px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+    .lapis-choice-card {
       display: flex; justify-content: space-between; align-items: center;
-      background: #111827; border: 1.5px solid #263248; border-radius: 8px; padding: 7px 9px; font-size: 0.74rem;
+      background: #111827; border: 1.5px solid #263248; border-radius: 8px; padding: 7px 9px; font-size: 0.73rem;
     }
-    .btn-do-link {
+    .btn-link-now {
       background: #38bdf8; color: #05070c; border: none; border-radius: 6px;
-      padding: 5px 9px; font-weight: bold; font-size: 0.7rem; cursor: pointer;
+      padding: 6px 10px; font-weight: bold; font-size: 0.72rem; cursor: pointer;
     }
-    .btn-do-link:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    .btn-link-now:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
 
-    .shop-mini-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px;
-    }
+    .shop-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 6px; }
     .btn-buy-supply {
       background: #131c2e; border: 1px solid #334155; color: #e2e8f0;
-      border-radius: 7px; padding: 6px; text-align: left; cursor: pointer; font-size: 0.68rem;
+      border-radius: 6px; padding: 5px 6px; text-align: left; cursor: pointer; font-size: 0.67rem;
     }
     .btn-buy-supply:hover { border-color: #fbbf24; }
     #smith-banner {
@@ -600,10 +616,10 @@
 </head>
 <body>
 
-  <!-- ================= TELA DE CRIAÇÃO / SELEÇÃO (ESTILO EP 4.5) ================= -->
+  <!-- ================= TELA DE CRIAÇÃO E SELEÇÃO ================= -->
   <div id="char-screen">
     <h1>⚔️ Aethelgard: Crônicas de Teos ⚔️</h1>
-    <p class="subtitle">Edição Clássica EP 4.5 em 2.5D • Escolha sua Facção, Classe e Modo de Dificuldade</p>
+    <p class="subtitle">Edição Clássica EP3 / EP 4.5 • 6 Skills por Classe • Patentes de Kill • Lapis & Encantamento</p>
 
     <div class="ep-box">
       <h2>1. Criar Novo Personagem</h2>
@@ -628,7 +644,7 @@
         </div>
         <div class="mode-card selected-hm" id="mode-hm" onclick="selectMode('hm')">
           <div class="mode-title" style="color:#c084fc;">📙 Modo Difícil (HM)</div>
-          <div class="mode-desc"><b>7 pts/nível</b> • Acesso a itens Heroicos/Lendários. Ideal para PvP e Chefes.</div>
+          <div class="mode-desc"><b>7 pts/nível</b> • Acesso a itens Heroicos e Lendários (Leg).</div>
         </div>
         <div class="mode-card" id="mode-um" onclick="selectMode('um')">
           <div class="mode-title" style="color:#fb7185;">📕 Modo Extremo (UM)</div>
@@ -655,12 +671,16 @@
     <div class="hud-portrait" id="hud-portrait">⚔️<span class="hud-lvl-pill" id="hud-lvl">Nv.1</span></div>
     <div class="hud-bars-col">
       <div class="hud-name-line">
-        <span id="hud-name">Herói</span>
+        <span style="display:flex; align-items:center; gap:5px;">
+          <span class="kill-rank-pill" id="hud-kill-rank" title="Patente de Kills">⭐ 0</span>
+          <span id="hud-name">Herói</span>
+        </span>
         <span class="mode-badge" id="hud-mode-badge">HM</span>
       </div>
       <div class="vital-bar"><div class="fill-hp" id="bar-hp"></div><div class="vital-txt" id="txt-hp">HP 100/100</div></div>
       <div class="vital-bar"><div class="fill-mp" id="bar-mp"></div><div class="vital-txt" id="txt-mp">MP 50/50</div></div>
       <div class="vital-bar"><div class="fill-sp" id="bar-sp"></div><div class="vital-txt" id="txt-sp">SP 50/50</div></div>
+      <div class="hud-buffs-row" id="hud-buffs-row"></div>
     </div>
   </div>
 
@@ -677,7 +697,7 @@
       <div class="zone-card">
         <div class="zone-title" id="hud-zone">🌲 Floresta de Erina (Nv. 1-15)</div>
         <div class="zone-sub">💰 Ouro: <span id="hud-gold">0</span> &nbsp;|&nbsp; 🔥 BR: <span id="hud-br">0</span></div>
-        <div style="font-size:0.68rem; color:#94a3b8; margin-top:2px;" id="hud-coords">Pos: (1400, 1400)</div>
+        <div style="font-size:0.68rem; color:#94a3b8; margin-top:2px;" id="hud-kill-info">Patente: Recruta (0 Kills)</div>
       </div>
       <div class="minimap-box">
         <canvas id="minimapCanvas" width="124" height="124"></canvas>
@@ -685,15 +705,15 @@
     </div>
     <div class="hud-btn-row">
       <button type="button" class="btn-ep" id="btn-hud-status" onclick="toggleWindow('status-modal')">📊 Status (C)</button>
-      <button type="button" class="btn-ep" onclick="toggleWindow('bag-modal')">🎒 Inventário (B)</button>
+      <button type="button" class="btn-ep" onclick="toggleWindow('bag-modal')">🎒 Mochila (B)</button>
       <button type="button" class="btn-ep smith-btn" onclick="toggleWindow('smith-modal')">🔨 Ferreiro (F)</button>
       <button type="button" class="btn-ep" onclick="returnToCharSelect()">👥 Personagens</button>
     </div>
   </div>
 
   <div id="controls-hint">
-    🖱️ <b>Clique:</b> Mover / Selecionar Alvo &nbsp;|&nbsp; <b>WASD:</b> Mover<br>
-    ⌨️ <b>1-4:</b> Skills | <b>5:</b> Poção HP | <b>6:</b> Poção SP/MP | <b>A:</b> Auto | <b>C:</b> Status | <b>B:</b> Mochila | <b>F:</b> Ferreiro
+    🖱️ <b>Clique:</b> Mover / Selecionar &nbsp;|&nbsp; <b>WASD:</b> Mover<br>
+    ⌨️ <b>1-6:</b> 6 Skills | <b>7:</b> Poção HP | <b>8:</b> Elixir | <b>A:</b> Auto | <b>C:</b> Status | <b>B:</b> Mochila | <b>F:</b> Ferreiro
   </div>
 
   <div id="hud-bottom">
@@ -707,14 +727,14 @@
   <!-- ================= JANELA DE STATUS (TECLA C) ================= -->
   <div class="ep-window" id="status-modal">
     <div class="ep-win-header">
-      <h3>📊 Status do Personagem (FOR • DES • REC • INT • SAB • SOR)</h3>
+      <h3>📊 Status do Personagem & Patente de Kills</h3>
       <button type="button" class="btn-x" onclick="closeAllWindows()">X</button>
     </div>
     <div class="status-body">
       <div class="status-top-summary">
         <div>
           <b id="st-hero-title" style="color:#fff; font-size:0.95rem;">Herói</b><br>
-          <span id="st-hero-sub" style="color:#94a3b8; font-size:0.76rem;">Classe • Modo</span>
+          <span id="st-hero-sub" style="color:#94a3b8; font-size:0.75rem;">Classe • Modo</span>
         </div>
         <div class="pts-avail-box">Pontos Livres: <span id="st-free-pts">0</span></div>
       </div>
@@ -727,22 +747,22 @@
         </div>
 
         <div class="stat-derived-col">
-          <div class="stat-col-title">Atributos de Combate</div>
+          <div class="stat-col-title">Atributos de Combate & Elemento</div>
           <div id="derived-stats-list"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= JANELA DE INVENTÁRIO EP 4.5 (TECLA B / I) ================= -->
+  <!-- ================= JANELA DE INVENTÁRIO (TECLA B) ================= -->
   <div class="ep-window" id="bag-modal">
     <div class="ep-win-header">
-      <h3>🎒 Inventário Clássico (12 Slots Equipáveis • 5 Abas de Mochila)</h3>
+      <h3>🎒 Inventário Clássico (Setas ▲/▼ de Comparação • Venda Rápida)</h3>
       <button type="button" class="btn-x" onclick="closeAllWindows()">X</button>
     </div>
     <div class="inv-layout">
       <div class="paperdoll-panel">
-        <div style="font-size:0.75rem; color:#94a3b8; font-weight:bold; text-transform:uppercase;">Equipamentos do Herói</div>
+        <div style="font-size:0.74rem; color:#94a3b8; font-weight:bold; text-transform:uppercase;">Equipamentos do Herói</div>
         <div class="paperdoll-grid">
           <div class="pd-col">
             <div class="pd-slot" id="pd-helm" onclick="inspectEquipped('helm')" title="Elmo"><span class="pd-slot-ico">🪖</span><span class="pd-slot-lbl">Elmo</span></div>
@@ -752,11 +772,12 @@
             <div class="pd-slot" id="pd-boots" onclick="inspectEquipped('boots')" title="Botas"><span class="pd-slot-ico">👢</span><span class="pd-slot-lbl">Botas</span></div>
           </div>
 
-          <div class="pd-center-figure" id="pd-figure-box">
-            <div style="font-size:3rem; margin-bottom:6px;" id="pd-hero-ico">⚔️</div>
+          <div class="pd-center-figure">
+            <div style="font-size:2.9rem; margin-bottom:4px;" id="pd-hero-ico">⚔️</div>
             <div style="font-weight:bold; font-size:0.86rem; color:#fbbf24;" id="pd-hero-name">Herói</div>
-            <div style="font-size:0.7rem; color:#94a3b8; margin-top:4px;" id="pd-hero-elem">Elemento: Neutro</div>
-            <div style="font-size:0.72rem; color:#34d399; margin-top:8px; font-weight:bold;" id="pd-hero-br">BR: 0</div>
+            <div style="margin-top:6px;" id="pd-hero-elem"></div>
+            <div style="margin-top:4px;" id="pd-hero-def-elem"></div>
+            <div style="font-size:0.74rem; color:#34d399; margin-top:8px; font-weight:bold;" id="pd-hero-br">BR: 0</div>
           </div>
 
           <div class="pd-col">
@@ -770,12 +791,20 @@
 
         <div class="pd-bottom-row">
           <div class="pd-slot" id="pd-weapon" onclick="inspectEquipped('weapon')" title="Arma"><span class="pd-slot-ico">⚔️</span><span class="pd-slot-lbl">Arma</span></div>
-          <div class="pd-slot" id="pd-shield" onclick="inspectEquipped('shield')" title="Escudo / Secundária"><span class="pd-slot-ico">🛡️</span><span class="pd-slot-lbl">Escudo</span></div>
+          <div class="pd-slot" id="pd-shield" onclick="inspectEquipped('shield')" title="Escudo"><span class="pd-slot-ico">🛡️</span><span class="pd-slot-lbl">Escudo</span></div>
           <div class="pd-slot" id="pd-loop2" onclick="inspectEquipped('loop2')" title="Bracelete 2"><span class="pd-slot-ico">🧿</span><span class="pd-slot-lbl">Brac. 2</span></div>
         </div>
       </div>
 
       <div class="bag-right-panel">
+        <div class="bag-top-actions">
+          <span style="font-size:0.74rem; color:#94a3b8;">💰 Ouro: <b style="color:#fbbf24;" id="bag-gold-lbl">0</b></span>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-sell-bulk btn-sell-eq" onclick="sellAllEquipsInBag()">💰 Vender Todos Equips</button>
+            <button type="button" class="btn-sell-bulk btn-sell-lap" onclick="sellAllLapisInBag()">💎 Vender Todas Lapis</button>
+          </div>
+        </div>
+
         <div class="bag-tabs-bar">
           <button type="button" class="bag-tab active" id="btab-0" onclick="switchBagPage(0)">Aba 1</button>
           <button type="button" class="bag-tab" id="btab-1" onclick="switchBagPage(1)">Aba 2</button>
@@ -788,58 +817,47 @@
 
         <div class="item-tooltip-box" id="item-tooltip-box">
           <div style="color:#64748b; font-size:0.8rem; text-align:center; margin:auto;">
-            Clique em qualquer item equipado ou na mochila para ver atributos, slots de Lapis e opções.
+            Clique em um item para comparar (<span style="color:#10b981;">▲ Melhor</span> / <span style="color:#f43f5e;">▼ Pior</span>), equipar ou vender.
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ================= JANELA DO FERREIRO EP 4.5 (TECLA F) ================= -->
+  <!-- ================= JANELA DO FERREIRO SIMPLIFICADA (TECLA F) ================= -->
   <div class="ep-window" id="smith-modal">
     <div class="ep-win-header">
-      <h3>🔨 Ferreiro de Apulune / Iris — Linkagem de Lapis & Encantamento [1] a [20]</h3>
+      <h3>🔨 Ferreiro de Apulune / Iris — Linkar, Extrair & Encantar</h3>
       <button type="button" class="btn-x" onclick="closeAllWindows()">X</button>
     </div>
 
-    <div class="smith-tabs">
-      <button type="button" class="smith-tab-btn active" id="stab-link" onclick="switchSmithTab('link')">💎 Linkar & Extrair Lapis</button>
-      <button type="button" class="smith-tab-btn" id="stab-enchant" onclick="switchSmithTab('enchant')">✨ Encantar [1] a [20] (Lapisias)</button>
+    <div class="smith-top-bar">
+      <div class="smith-mode-switch">
+        <button type="button" class="smith-tab-btn active" id="stab-link" onclick="switchSmithTab('link')">💎 1. Linkar & Extrair Lapis</button>
+        <button type="button" class="smith-tab-btn" id="stab-enchant" onclick="switchSmithTab('enchant')">✨ 2. Encantar Item [1] a [20]</button>
+      </div>
+      <div style="font-size:0.84rem; font-weight:bold; color:#fbbf24;">💰 Seu Ouro: $<span id="smith-gold-val">0</span></div>
     </div>
 
     <div id="smith-banner"></div>
 
     <div class="smith-body">
-      <!-- Coluna Esquerda: Lista de Itens Equipados -->
-      <div class="smith-col-left">
-        <div class="stat-col-title">Equipamentos em Uso</div>
+      <!-- PASSO 1 -->
+      <div class="smith-step-box smith-col-1">
+        <div class="stat-col-title"><span class="step-badge">PASSO 1</span>Escolha o Item</div>
         <div id="smith-eq-list"></div>
       </div>
 
-      <!-- Coluna Central: Bigorna / Engastes do Item Selecionado -->
-      <div class="smith-col-center" id="smith-center-panel"></div>
+      <!-- PASSO 2 -->
+      <div class="smith-step-box smith-col-2" id="smith-center-panel"></div>
 
-      <!-- Coluna Direita: Lapis na Mochila + Mercador de Pedras/Lapisias -->
-      <div class="smith-col-right">
-        <div class="stat-col-title">Lapis na Mochila (<span id="smith-lapis-count">0</span>)</div>
-        <div class="lapis-bag-list" id="smith-lapis-list"></div>
-
-        <div style="border-top:1px solid #1e293b; padding-top:8px; margin-top:auto;">
-          <div style="font-size:0.72rem; color:#fbbf24; font-weight:bold; margin-bottom:4px;">🏪 Suprimentos do Ferreiro (Ouro: <span id="smith-gold-val">0</span>)</div>
-          <div class="shop-mini-grid">
-            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('link_stone', 150)">🔷 <b>Pedra Linkagem</b><br><span style="color:#94a3b8;">+25% Chance • $150</span></button>
-            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('ext_hammer', 180)">🔨 <b>Martelo Extração</b><br><span style="color:#94a3b8;">+30% Chance • $180</span></button>
-            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('lapisia_atk', 220)">⚔️ <b>Lapisia Ataque</b><br><span style="color:#94a3b8;">Encanta Arma • $220</span></button>
-            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('lapisia_def', 220)">🛡️ <b>Lapisia Defesa</b><br><span style="color:#94a3b8;">Encanta Armad. • $220</span></button>
-            <button type="button" class="btn-buy-supply" style="grid-column:1/-1;" onclick="buySmithSupply('prot_rune', 300)">📜 <b>Runa de Proteção (Encantamento)</b> — <span style="color:#34d399;">Evita perder nível se falhar • $300</span></button>
-          </div>
-        </div>
-      </div>
+      <!-- PASSO 3 -->
+      <div class="smith-step-box smith-col-3" id="smith-right-panel"></div>
     </div>
   </div>
 
 <script>
-  var STORAGE_KEY_EP45 = 'aethelgard_ep45_slots_v1';
+  var STORAGE_KEY_EP45 = 'aethelgard_ep45_slots_v2';
   var WORLD_W = 2800;
   var WORLD_H = 2800;
   var keysPressed = {};
@@ -879,7 +897,7 @@
   var minimapCanvas = document.getElementById('minimapCanvas');
   var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
 
-  // ================= ÁUDIO DE FORJA (SUCESSO & QUEBRA DE CRISTAL) =================
+  // ================= ÁUDIO DE FORJA & SKILLS =================
   var audioCtx = null;
   function getAudioCtx() {
     if (!audioCtx) {
@@ -928,7 +946,7 @@
     } catch (e) {}
   }
 
-  // ================= CARREGADOR DE TEXTURAS EXTERNAS (PASTA assets/) =================
+  // ================= TEXTURAS DE TERRENO =================
   var WORLD_TEXTURES = {
     grama:   { src: 'assets/grama.png',   img: null, loaded: false, pattern: null },
     estrada: { src: 'assets/estrada.png', img: null, loaded: false, pattern: null },
@@ -973,13 +991,33 @@
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
 
-  // ================= ELEMENTOS EP 4.5 (FOGO, ÁGUA, TERRA, VENTO) =================
+  // ================= PATENTES DE KILL ESTILO SHAIYA EP3 =================
+  var KILL_RANKS = [
+    { min: 0,    icon: '⭐',     title: 'Recruta',          color: '#94a3b8' },
+    { min: 15,   icon: '🌟',     title: 'Soldado de Teos',  color: '#38bdf8' },
+    { min: 40,   icon: '🗡️',     title: 'Veterano',         color: '#34d399' },
+    { min: 90,   icon: '⚔️',     title: 'Cavaleiro',        color: '#a855f7' },
+    { min: 180,  icon: '🛡️',     title: 'Comandante',       color: '#f59e0b' },
+    { min: 350,  icon: '🔱',     title: 'General de Guerra',color: '#f43f5e' },
+    { min: 650,  icon: '👑',     title: 'Lenda de Teos',    color: '#fbbf24' }
+  ];
+
+  function getKillRank(kills) {
+    var k = kills || 0;
+    var best = KILL_RANKS[0];
+    for (var i = 0; i < KILL_RANKS.length; i++) {
+      if (k >= KILL_RANKS[i].min) best = KILL_RANKS[i];
+    }
+    return best;
+  }
+
+  // ================= ELEMENTOS DINÂMICOS (FOGO, ÁGUA, TERRA, VENTO) =================
   var ELEMENTS = {
-    none:  { label: 'Neutro', color: '#94a3b8', bg: '#1e293b', beats: null },
-    fire:  { label: '🔥 Fogo',  color: '#fb7185', bg: '#4c0519', beats: 'wind' },
-    wind:  { label: '🌪️ Vento', color: '#34d399', bg: '#064e3b', beats: 'earth' },
-    earth: { label: '🪨 Terra', color: '#fbbf24', bg: '#451a03', beats: 'water' },
-    water: { label: '💧 Água',  color: '#38bdf8', bg: '#0c4a6e', beats: 'fire' }
+    none:  { icon: '⚪', short: 'Neutro', label: '⚪ Neutro', color: '#94a3b8', bg: '#1e293b', beats: null },
+    fire:  { icon: '🔥', short: 'Fogo',   label: '🔥 Fogo',   color: '#fb7185', bg: '#4c0519', beats: 'wind' },
+    wind:  { icon: '🌪️', short: 'Vento',  label: '🌪️ Vento',  color: '#34d399', bg: '#064e3b', beats: 'earth' },
+    earth: { icon: '🪨', short: 'Terra',  label: '🪨 Terra',  color: '#fbbf24', bg: '#451a03', beats: 'water' },
+    water: { icon: '💧', short: 'Água',   label: '💧 Água',   color: '#38bdf8', bg: '#0c4a6e', beats: 'fire' }
   };
 
   function getElementMultiplier(atkElem, defElem) {
@@ -989,9 +1027,8 @@
     return 1.0;
   }
 
-  // ================= LAPIS CLÁSSICAS EP 4.5 (STATUS, DUPLAS E ELEMENTAIS) =================
+  // ================= LAPIS CLÁSSICAS =================
   var LAPIS_CATALOG = {
-    // Lapis de Status (Nv. 1 a 6)
     str: { code: 'FOR', name: 'Lapis de Força',     color: '#f87171', kind: 'stat', stats: { str: [0, 3, 7, 12, 20, 32, 50] } },
     dex: { code: 'DES', name: 'Lapis de Destreza',  color: '#34d399', kind: 'stat', stats: { dex: [0, 3, 7, 12, 20, 32, 50] } },
     rec: { code: 'REC', name: 'Lapis de Vigor',     color: '#fbbf24', kind: 'stat', stats: { rec: [0, 3, 7, 12, 20, 32, 50] } },
@@ -999,26 +1036,22 @@
     wis: { code: 'SAB', name: 'Lapis Sabedoria',    color: '#c084fc', kind: 'stat', stats: { wis: [0, 3, 7, 12, 20, 32, 50] } },
     luc: { code: 'SOR', name: 'Lapis da Sorte',     color: '#f472b6', kind: 'stat', stats: { luc: [0, 3, 7, 12, 20, 32, 50] } },
 
-    // Lapis Duplas Clássicas
-    dual_duel:  { code: 'DUO', name: 'Lapis Duelo (FOR+DES)',    color: '#fb923c', kind: 'dual', stats: { str: [0, 4, 9, 15, 22, 30, 40], dex: [0, 4, 9, 15, 22, 30, 40] } },
-    dual_vital: { code: 'VIT', name: 'Lapis Vital (REC+SOR)',    color: '#fde047', kind: 'dual', stats: { rec: [0, 4, 9, 15, 22, 30, 40], luc: [0, 4, 9, 15, 22, 30, 40] } },
-    dual_myst:  { code: 'MYS', name: 'Lapis Mística (INT+SAB)',  color: '#818cf8', kind: 'dual', stats: { int: [0, 4, 9, 15, 22, 30, 40], wis: [0, 4, 9, 15, 22, 30, 40] } },
+    dual_duel:  { code: 'DUO', name: 'Lapis Duelo (FOR+DES)',   color: '#fb923c', kind: 'dual', stats: { str: [0, 4, 9, 15, 22, 30, 40], dex: [0, 4, 9, 15, 22, 30, 40] } },
+    dual_vital: { code: 'VIT', name: 'Lapis Vital (REC+SOR)',   color: '#fde047', kind: 'dual', stats: { rec: [0, 4, 9, 15, 22, 30, 40], luc: [0, 4, 9, 15, 22, 30, 40] } },
+    dual_myst:  { code: 'MYS', name: 'Lapis Mística (INT+SAB)', color: '#818cf8', kind: 'dual', stats: { int: [0, 4, 9, 15, 22, 30, 40], wis: [0, 4, 9, 15, 22, 30, 40] } },
 
-    // Lapis Elementais (Alteram elemento da Arma ou Peitoral)
     elem_fire:  { code: 'FOG', name: 'Lapis Elemental Fogo',  color: '#fb7185', kind: 'elem', element: 'fire' },
     elem_water: { code: 'AGU', name: 'Lapis Elemental Água',  color: '#38bdf8', kind: 'elem', element: 'water' },
     elem_earth: { code: 'TER', name: 'Lapis Elemental Terra', color: '#fbbf24', kind: 'elem', element: 'earth' },
     elem_wind:  { code: 'VEN', name: 'Lapis Elemental Vento', color: '#34d399', kind: 'elem', element: 'wind' }
   };
 
-  var LAPIS_BASE_LINK_CHANCE = [0, 85, 72, 58, 42, 28, 18];
+  var LAPIS_BASE_LINK_CHANCE = [0, 88, 76, 62, 46, 32, 20];
 
   function formatLapisEffect(lapis) {
     var meta = LAPIS_CATALOG[lapis.lapisKey];
     if (!meta) return '';
-    if (meta.kind === 'elem') {
-      return 'Concede Elemento ' + ELEMENTS[meta.element].label + ' (+35% Dano Elemental)';
-    }
+    if (meta.kind === 'elem') return 'Elemento ' + ELEMENTS[meta.element].label + ' (+35% Dano)';
     var parts = [];
     var lvl = lapis.level || 1;
     Object.keys(meta.stats).forEach(function(k) {
@@ -1036,11 +1069,10 @@
     var lvl = 1;
     if (meta.kind !== 'elem') {
       var r = Math.random();
-      if (tier === 'boss') lvl = r > 0.75 ? 6 : (r > 0.45 ? 5 : 4);
-      else if (tier === 'miniboss') lvl = r > 0.75 ? 5 : (r > 0.40 ? 4 : 3);
+      if (tier === 'boss') lvl = r > 0.72 ? 6 : (r > 0.40 ? 5 : 4);
+      else if (tier === 'miniboss') lvl = r > 0.72 ? 5 : (r > 0.35 ? 4 : 3);
       else lvl = r > 0.88 ? 3 : (r > 0.55 ? 2 : 1);
     }
-
     return {
       id: 'lap_' + Math.random().toString(36).slice(2, 10),
       name: meta.kind === 'elem' ? meta.name : (meta.name + ' Nv.' + lvl),
@@ -1054,7 +1086,7 @@
     };
   }
 
-  // ================= 6 ARQUÉTIPOS CLÁSSICOS EP 4.5 =================
+  // ================= 6 SKILLS PRINCIPAIS ESTILO SHAIYA POR CLASSE =================
   var ARCHETYPES = {
     fighter: {
       lightName: 'Lutador', furyName: 'Guerreiro', raceLight: 'Humano', raceFury: 'Nordein',
@@ -1062,12 +1094,14 @@
       atkStyle: 'phys', resourceType: 'sp', range: 95,
       autoStat: 'str', autoStatLabel: '+1 FOR / Nível',
       baseStats: { str: 14, dex: 10, rec: 11, int: 6, wis: 6, luc: 9 },
-      desc: 'Dano físico explosivo de perto com espadas de 1 ou 2 mãos.',
+      desc: '6 Skills de Combate: Corte Mortal, Sangramento, Grito de Batalha, Redemoinho, Quebra-Armadura e Fúria.',
       skills: [
-        { name: 'Golpe Brutal',    icon: '⚔️', mult: 1.35, cost: 10, res: 'sp', cd: 1.2, range: 100, color: '#f87171', proj: false },
-        { name: 'Grito de Guerra', icon: '📯', mult: 0, heal: 0.25, cost: 20, res: 'sp', cd: 6.0, range: 0, color: '#fbbf24', proj: false },
-        { name: 'Redemoinho',      icon: '🌪️', mult: 2.00, cost: 25, res: 'sp', cd: 5.0, range: 140, aoe: true, color: '#ef4444', proj: false },
-        { name: 'Fúria de Teos',   icon: '💥', mult: 3.10, cost: 40, res: 'sp', cd: 9.0, range: 115, color: '#fbbf24', proj: false }
+        { name: 'Corte Mortal',       icon: '⚔️', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 100, color: '#f87171', vfx: 'slash' },
+        { name: 'Corte Sangrento',    icon: '🩸', mult: 1.55, cost: 18, res: 'sp', cd: 4.0, range: 100, color: '#dc2626', vfx: 'bleed', dot: 0.45 },
+        { name: 'Grito de Batalha',   icon: '📯', mult: 0,    cost: 22, res: 'sp', cd: 7.5, range: 0,   color: '#fbbf24', vfx: 'aura', heal: 0.22, buff: { id: 'atk', label: '⚔️ +25% ATQ', dur: 10 } },
+        { name: 'Redemoinho',         icon: '🌪️', mult: 2.05, cost: 28, res: 'sp', cd: 5.5, range: 145, color: '#ef4444', vfx: 'whirl', aoe: true },
+        { name: 'Quebra-Armadura',    icon: '🔨', mult: 2.35, cost: 32, res: 'sp', cd: 6.5, range: 105, color: '#f59e0b', vfx: 'smash', stun: 1.8 },
+        { name: 'Fúria de Teos',      icon: '💥', mult: 3.45, cost: 45, res: 'sp', cd: 10.0,range: 115, color: '#fbbf24', vfx: 'nova' }
       ]
     },
     defender: {
@@ -1076,12 +1110,14 @@
       atkStyle: 'phys', resourceType: 'sp', range: 95,
       autoStat: 'rec', autoStatLabel: '+1 REC / Nível',
       baseStats: { str: 10, dex: 8, rec: 16, int: 6, wis: 8, luc: 8 },
-      desc: 'Tanque blindado com HP massivo e escudo para segurar Chefes.',
+      desc: '6 Skills de Tanque: Golpe de Escudo, Provocação, Muralha de Aço, Terremoto, Barreira Divina e Bastilha.',
       skills: [
-        { name: 'Impacto de Escudo', icon: '🛡️', mult: 1.30, cost: 10, res: 'sp', cd: 1.3, range: 95, color: '#fbbf24', proj: false },
-        { name: 'Muralha de Ferro',  icon: '🏰', mult: 0, heal: 0.35, cost: 22, res: 'sp', cd: 6.5, range: 0, color: '#38bdf8', proj: false },
-        { name: 'Terremoto',         icon: '🌋', mult: 1.90, cost: 25, res: 'sp', cd: 5.5, range: 145, aoe: true, color: '#f59e0b', proj: false },
-        { name: 'Bastilha Divina',   icon: '☀️', mult: 2.65, cost: 35, res: 'sp', cd: 9.0, range: 110, color: '#fde047', proj: false }
+        { name: 'Golpe de Escudo',    icon: '🛡️', mult: 1.30, cost: 10, res: 'sp', cd: 1.2, range: 95,  color: '#fbbf24', vfx: 'slash' },
+        { name: 'Provocação Sísmica', icon: '💢', mult: 1.45, cost: 16, res: 'sp', cd: 4.5, range: 120, color: '#f97316', vfx: 'smash', stun: 2.2 },
+        { name: 'Muralha de Aço',     icon: '🏰', mult: 0,    cost: 22, res: 'sp', cd: 8.0, range: 0,   color: '#38bdf8', vfx: 'aura', heal: 0.25, buff: { id: 'def', label: '🛡️ +40% DEF', dur: 12 } },
+        { name: 'Terremoto',          icon: '🌋', mult: 1.95, cost: 28, res: 'sp', cd: 5.5, range: 150, color: '#f59e0b', vfx: 'whirl', aoe: true },
+        { name: 'Barreira Divina',    icon: '💠', mult: 0,    cost: 30, res: 'sp', cd: 9.0, range: 0,   color: '#60a5fa', vfx: 'aura', heal: 0.42 },
+        { name: 'Bastilha de Etain',  icon: '☀️', mult: 2.95, cost: 40, res: 'sp', cd: 10.0,range: 115, color: '#fde047', vfx: 'nova' }
       ]
     },
     ranger: {
@@ -1090,54 +1126,62 @@
       atkStyle: 'phys', resourceType: 'sp', range: 90,
       autoStat: 'dex', autoStatLabel: '+1 DES / Nível',
       baseStats: { str: 11, dex: 15, rec: 8, int: 6, wis: 6, luc: 12 },
-      desc: 'Mestre da esquiva e críticos fulminantes com adagas gêmeas.',
+      desc: '6 Skills Furtivas: Corte Venenoso, Passo das Sombras, Chuva de Adagas, Evasão, Golpe Fantasma e Execução.',
       skills: [
-        { name: 'Corte Venenoso',   icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.1, range: 95, color: '#c084fc', proj: false },
-        { name: 'Passo das Sombras',icon: '👤', mult: 1.85, cost: 18, res: 'sp', cd: 4.0, range: 230, dash: true, color: '#a855f7', proj: false },
-        { name: 'Chuva de Adagas',  icon: '🌀', mult: 2.15, cost: 25, res: 'sp', cd: 5.5, range: 130, aoe: true, color: '#f43f5e', proj: false },
-        { name: 'Execução Fatal',   icon: '💀', mult: 3.55, cost: 38, res: 'sp', cd: 8.5, range: 100, color: '#fbbf24', proj: false }
+        { name: 'Corte Venenoso',     icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.0, range: 95,  color: '#c084fc', vfx: 'slash', dot: 0.35 },
+        { name: 'Passo das Sombras',  icon: '👤', mult: 1.85, cost: 18, res: 'sp', cd: 4.0, range: 240, color: '#a855f7', vfx: 'dash', dash: true },
+        { name: 'Evasão Sombria',     icon: '💨', mult: 0,    cost: 20, res: 'sp', cd: 8.0, range: 0,   color: '#34d399', vfx: 'aura', buff: { id: 'eva', label: '💨 +25% Esquiva', dur: 10 } },
+        { name: 'Chuva de Adagas',    icon: '🌀', mult: 2.15, cost: 26, res: 'sp', cd: 5.5, range: 135, color: '#f43f5e', vfx: 'whirl', aoe: true },
+        { name: 'Golpe Fantasma',     icon: '👻', mult: 2.65, cost: 32, res: 'sp', cd: 6.5, range: 105, color: '#e879f9', vfx: 'smash', stun: 1.5 },
+        { name: 'Execução Fatal',     icon: '💀', mult: 3.70, cost: 42, res: 'sp', cd: 9.5, range: 100, color: '#fbbf24', vfx: 'nova' }
       ]
     },
     archer: {
       lightName: 'Arqueiro', furyName: 'Caçador', raceLight: 'Elfo', raceFury: 'Nordein',
       icon: '🏹', color: '#34d399', armorColor: '#065f46', trimColor: '#34d399',
-      atkStyle: 'phys', resourceType: 'sp', range: 350,
+      atkStyle: 'phys', resourceType: 'sp', range: 360,
       autoStat: 'luc', autoStatLabel: '+1 SOR / Nível',
       baseStats: { str: 10, dex: 12, rec: 8, int: 6, wis: 6, luc: 16 },
-      desc: 'Atirador de longo alcance com chuva de flechas e alto crítico.',
+      desc: '6 Skills de Precisão: Disparo Preciso, Flecha Tóxica, Olho de Falcão, Saraivada, Tiro Perfuro e Destino.',
       skills: [
-        { name: 'Disparo Preciso',   icon: '🏹', mult: 1.35, cost: 10, res: 'sp', cd: 1.15, range: 360, color: '#34d399', proj: true },
-        { name: 'Flecha Tóxica',     icon: '🧪', mult: 1.80, cost: 18, res: 'sp', cd: 4.0,  range: 360, color: '#a3e635', proj: true },
-        { name: 'Saraivada Mortal',  icon: '🌧️', mult: 2.10, cost: 26, res: 'sp', cd: 5.5,  range: 360, aoe: true, color: '#fbbf24', proj: true },
-        { name: 'Flecha do Destino', icon: '🎯', mult: 3.30, cost: 38, res: 'sp', cd: 9.0,  range: 380, color: '#38bdf8', proj: true }
+        { name: 'Disparo Preciso',    icon: '🏹', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 365, color: '#34d399', vfx: 'proj', proj: true },
+        { name: 'Flecha Tóxica',      icon: '🧪', mult: 1.75, cost: 18, res: 'sp', cd: 4.0, range: 365, color: '#a3e635', vfx: 'proj', proj: true, dot: 0.45 },
+        { name: 'Olho de Falcão',     icon: '🦅', mult: 0,    cost: 22, res: 'sp', cd: 8.0, range: 0,   color: '#fbbf24', vfx: 'aura', buff: { id: 'crit', label: '💥 +25% Crítico', dur: 11 } },
+        { name: 'Saraivada Mortal',   icon: '🌧️', mult: 2.15, cost: 28, res: 'sp', cd: 5.5, range: 365, color: '#fbbf24', vfx: 'whirl', proj: true, aoe: true },
+        { name: 'Tiro Atordoante',    icon: '⚡', mult: 2.45, cost: 32, res: 'sp', cd: 6.5, range: 370, color: '#38bdf8', vfx: 'proj', proj: true, stun: 2.0 },
+        { name: 'Flecha do Destino',  icon: '🎯', mult: 3.50, cost: 42, res: 'sp', cd: 9.5, range: 390, color: '#f43f5e', vfx: 'nova', proj: true }
       ]
     },
     mage: {
       lightName: 'Mago', furyName: 'Pagão', raceLight: 'Elfo', raceFury: 'Vail',
       icon: '🔮', color: '#38bdf8', armorColor: '#1e1b4b', trimColor: '#38bdf8',
-      atkStyle: 'magic', resourceType: 'mp', range: 315,
+      atkStyle: 'magic', resourceType: 'mp', range: 320,
       autoStat: 'int', autoStatLabel: '+1 INT / Nível',
       baseStats: { str: 6, dex: 8, rec: 8, int: 17, wis: 11, luc: 8 },
-      desc: 'Poder elemental devastador em área com magias de Fogo, Água e Vento.',
+      desc: '6 Magias Elementais: Bola de Fogo, Lança de Gelo, Escudo Arcano, Tempestade, Nova Etérea e Meteoro.',
       skills: [
-        { name: 'Bola de Fogo',      icon: '🔥', mult: 1.45, cost: 12, res: 'mp', cd: 1.25, range: 320, color: '#fb7185', proj: true },
-        { name: 'Lança de Gelo',     icon: '❄️', mult: 1.90, cost: 22, res: 'mp', cd: 4.0,  range: 320, color: '#38bdf8', proj: true },
-        { name: 'Tempestade Etérea', icon: '⚡', mult: 2.35, cost: 34, res: 'mp', cd: 6.0,  range: 320, aoe: true, color: '#c084fc', proj: false },
-        { name: 'Meteoro de Apulune',icon: '☄️', mult: 3.65, cost: 52, res: 'mp', cd: 10.0, range: 340, aoe: true, color: '#f97316', proj: true }
+        { name: 'Bola de Fogo',       icon: '🔥', mult: 1.45, cost: 12, res: 'mp', cd: 1.2, range: 325, color: '#fb7185', vfx: 'proj', proj: true },
+        { name: 'Lança de Gelo',      icon: '❄️', mult: 1.85, cost: 20, res: 'mp', cd: 4.0, range: 325, color: '#38bdf8', vfx: 'proj', proj: true, stun: 1.8 },
+        { name: 'Poder Arcano',       icon: '🔮', mult: 0,    cost: 24, res: 'mp', cd: 8.5, range: 0,   color: '#c084fc', vfx: 'aura', buff: { id: 'atk', label: '🔮 +30% Magia', dur: 10 } },
+        { name: 'Tempestade Etérea',  icon: '⚡', mult: 2.35, cost: 34, res: 'mp', cd: 6.0, range: 325, color: '#c084fc', vfx: 'whirl', aoe: true },
+        { name: 'Chama Infernal',     icon: '🌋', mult: 2.75, cost: 40, res: 'mp', cd: 7.0, range: 330, color: '#f97316', vfx: 'nova', dot: 0.5 },
+        { name: 'Meteoro de Apulune', icon: '☄️', mult: 3.85, cost: 55, res: 'mp', cd: 10.5,range: 345, color: '#fbbf24', vfx: 'nova', proj: true, aoe: true }
       ]
     },
     priest: {
       lightName: 'Sacerdote', furyName: 'Oráculo', raceLight: 'Humano', raceFury: 'Vail',
       icon: '✨', color: '#fde047', armorColor: '#0369a1', trimColor: '#fde047',
-      atkStyle: 'magic', resourceType: 'mp', range: 295,
+      atkStyle: 'magic', resourceType: 'mp', range: 300,
       autoStat: 'wis', autoStatLabel: '+1 SAB / Nível',
       baseStats: { str: 6, dex: 8, rec: 9, int: 11, wis: 17, luc: 7 },
-      desc: 'Curandeiro sagrado com alta resistência mágica e luz purificadora.',
+      desc: '6 Skills Sagradas: Raio Sagrado, Cura Maior, Bênção de Etain, Julgamento, Luz Purificadora e Ira Celestial.',
       skills: [
-        { name: 'Raio Sagrado',      icon: '✨', mult: 1.30, cost: 10, res: 'mp', cd: 1.3, range: 300, color: '#fde047', proj: true },
-        { name: 'Cura Maior',        icon: '💚', mult: 0, heal: 0.48, cost: 24, res: 'mp', cd: 4.5, range: 0, color: '#34d399', proj: false },
-        { name: 'Julgamento Divino', icon: '☀️', mult: 2.10, cost: 30, res: 'mp', cd: 6.0, range: 300, aoe: true, color: '#fbbf24', proj: false },
-        { name: 'Ira Celestial',     icon: '🌟', mult: 3.10, cost: 45, res: 'mp', cd: 9.0, range: 310, color: '#38bdf8', proj: true }
+        { name: 'Raio Sagrado',       icon: '✨', mult: 1.35, cost: 10, res: 'mp', cd: 1.2, range: 305, color: '#fde047', vfx: 'proj', proj: true },
+        { name: 'Cura Maior',         icon: '💚', mult: 0,    cost: 24, res: 'mp', cd: 4.5, range: 0,   color: '#34d399', vfx: 'aura', heal: 0.48 },
+        { name: 'Bênção de Etain',    icon: '🌟', mult: 0,    cost: 26, res: 'mp', cd: 9.0, range: 0,   color: '#38bdf8', vfx: 'aura', buff: { id: 'def', label: '🌟 +35% DEF/ATQ', dur: 12 } },
+        { name: 'Julgamento Divino',  icon: '☀️', mult: 2.15, cost: 32, res: 'mp', cd: 6.0, range: 305, color: '#fbbf24', vfx: 'whirl', aoe: true },
+        { name: 'Prisão de Luz',      icon: '⛓️', mult: 2.40, cost: 36, res: 'mp', cd: 7.0, range: 310, color: '#fef08a', vfx: 'smash', stun: 2.2 },
+        { name: 'Ira Celestial',      icon: '👼', mult: 3.35, cost: 48, res: 'mp', cd: 9.5, range: 315, color: '#38bdf8', vfx: 'nova', proj: true }
       ]
     }
   };
@@ -1148,13 +1192,14 @@
     um: { label: 'Extremo (UM)', short: 'UM', ptsPerLvl: 9, color: '#fb7185', badgeBg: '#881337' }
   };
 
+  // ================= RARIDADES (COMUM/NOBRE FÁCIL -> LEG/DEUSA DIFÍCIL) =================
   var RARITIES = {
-    comum:     { label: 'Comum',     color: '#ffffff', slots: 0, mult: 1.0,  price: 18 },
+    comum:     { label: 'Normal',    color: '#ffffff', slots: 0, mult: 1.0,  price: 18 },
     nobre:     { label: 'Nobre',     color: '#38bdf8', slots: 1, mult: 1.35, price: 50 },
     veneravel: { label: 'Venerável', color: '#3b82f6', slots: 2, mult: 1.75, price: 120 },
     heroico:   { label: 'Heroico',   color: '#a855f7', slots: 3, mult: 2.25, price: 280 },
-    lendario:  { label: 'Lendário',  color: '#10b981', slots: 4, mult: 2.90, price: 620 },
-    deusa:     { label: 'Deusa',     color: '#fbbf24', slots: 6, mult: 3.85, price: 1500 }
+    lendario:  { label: 'Lendário (Leg)', color: '#10b981', slots: 4, mult: 2.95, price: 650 },
+    deusa:     { label: 'Deusa',     color: '#fbbf24', slots: 6, mult: 3.90, price: 1600 }
   };
 
   var SLOT_META = {
@@ -1178,6 +1223,7 @@
     return faction === 'fury' ? a.furyName : a.lightName;
   }
 
+  // ================= PROGRESSÃO DE DROP DAS ARMADURAS & ARMAS =================
   function generateDropItem(lvl, tier) {
     var slotKeys = ['weapon', 'shield', 'helm', 'armor', 'pants', 'gloves', 'boots', 'cape', 'amulet', 'ring1', 'loop1'];
     var slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
@@ -1185,11 +1231,22 @@
     var roll = Math.random();
     var rKey = 'comum';
     if (tier === 'boss') {
-      rKey = roll > 0.65 ? 'deusa' : (roll > 0.30 ? 'lendario' : 'heroico');
+      // Chefes: chance rara de Deusa e Lendário (Leg), garantido no mínimo Heroico
+      if (roll > 0.86) rKey = 'deusa';
+      else if (roll > 0.56) rKey = 'lendario';
+      else rKey = 'heroico';
     } else if (tier === 'miniboss') {
-      rKey = roll > 0.72 ? 'lendario' : (roll > 0.35 ? 'heroico' : 'veneravel');
+      // Mini-Boss: difícil dropar Leg, bom para Venerável e Heroico
+      if (roll > 0.90) rKey = 'lendario';
+      else if (roll > 0.58) rKey = 'heroico';
+      else if (roll > 0.25) rKey = 'veneravel';
+      else rKey = 'nobre';
     } else {
-      rKey = roll > 0.94 ? 'heroico' : (roll > 0.80 ? 'veneravel' : (roll > 0.52 ? 'nobre' : 'comum'));
+      // Mobs normais: Normal e Nobre dropam fácil, Venerável raro, Heroico muito raro
+      if (roll > 0.97) rKey = 'heroico';
+      else if (roll > 0.87) rKey = 'veneravel';
+      else if (roll > 0.52) rKey = 'nobre';
+      else rKey = 'comum';
     }
 
     var r = RARITIES[rKey];
@@ -1233,7 +1290,31 @@
     return item.reqMode === 'nm';
   }
 
-  // ================= CÁLCULO COMPLETO (ATRIBUTOS + LAPIS + ENCANTAMENTO [1..20]) =================
+  // ================= COMPARAÇÃO DE ITENS (SETAS VERDE ▲ / VERMELHA ▼) =================
+  function getItemPowerScore(item) {
+    if (!item) return 0;
+    var plusMult = 1 + (item.plus || 0) * 0.10;
+    var score = ((item.physAtk || 0) + (item.magAtk || 0) + (item.physDef || 0) + (item.magDef || 0)) * plusMult;
+    score += ((item.bonusStr || 0) + (item.bonusDex || 0) + (item.bonusRec || 0) + (item.bonusInt || 0) + (item.bonusWis || 0) + (item.bonusLuc || 0)) * 3;
+    if (Array.isArray(item.sockets)) {
+      score += item.sockets.length * 4;
+      item.sockets.forEach(function(s) { if (s) score += (s.level || 1) * 8; });
+    }
+    if (item.element && item.element !== 'none') score += 10;
+    return score;
+  }
+
+  function compareBagItemToEquipped(item) {
+    if (!item || item.slot === 'consumable' || item.slot === 'lapis') return 0;
+    var eq = player.equipped[item.slot];
+    if (!eq) return 1; // Slot vazio -> é melhoria
+    var diff = getItemPowerScore(item) - getItemPowerScore(eq);
+    if (diff > 0.5) return 1;
+    if (diff < -0.5) return -1;
+    return 0;
+  }
+
+  // ================= CÁLCULO COMPLETO DE STATUS + BUFFS =================
   function computeFullStats(p) {
     var arch = ARCHETYPES[p.archKey];
     var totalStr = p.stats.str;
@@ -1248,7 +1329,6 @@
     Object.keys(p.equipped).forEach(function(slotKey) {
       var it = p.equipped[slotKey];
       if (!it) return;
-      // Encantamento [1] a [20] concede +10% por nível no item
       var plusMult = 1 + (it.plus || 0) * 0.10;
       eqPhysAtk += Math.round((it.physAtk || 0) * plusMult);
       eqMagAtk  += Math.round((it.magAtk  || 0) * plusMult);
@@ -1262,7 +1342,6 @@
       totalWis += (it.bonusWis || 0);
       totalLuc += (it.bonusLuc || 0);
 
-      // Soma todas as Lapis linkadas nos sockets do item
       if (Array.isArray(it.sockets)) {
         it.sockets.forEach(function(sock) {
           if (!sock || !LAPIS_CATALOG[sock.lapisKey]) return;
@@ -1288,12 +1367,21 @@
     var magAtk  = Math.round(totalInt * 2.3 + totalWis * 0.5 + eqMagAtk);
     var physDef = Math.round(totalRec * 1.6 + eqPhysDef);
     var magDef  = Math.round(totalWis * 1.7 + eqMagDef);
-
     var critChance = Math.min(85, Math.round((5 + totalLuc * 0.35) * 10) / 10);
     var evaChance  = Math.min(65, Math.round((3 + totalDex * 0.28) * 10) / 10);
 
+    // Buffs ativos das skills
+    if (Array.isArray(p.activeBuffs)) {
+      p.activeBuffs.forEach(function(b) {
+        if (b.id === 'atk') { physAtk = Math.round(physAtk * 1.25); magAtk = Math.round(magAtk * 1.28); }
+        if (b.id === 'def') { physDef = Math.round(physDef * 1.38); magDef = Math.round(magDef * 1.38); }
+        if (b.id === 'crit') critChance = Math.min(95, critChance + 25);
+        if (b.id === 'eva') evaChance = Math.min(80, evaChance + 25);
+      });
+    }
+
     var primaryAtk = arch.atkStyle === 'magic' ? magAtk : physAtk;
-    var br = Math.round(maxHp * 0.4 + primaryAtk * 4 + (physDef + magDef) * 2 + (critChance + evaChance) * 7 + p.level * 25);
+    var br = Math.round(maxHp * 0.4 + primaryAtk * 4 + (physDef + magDef) * 2 + (critChance + evaChance) * 7 + p.level * 25 + (p.kills || 0) * 2);
 
     var atkElem = (p.equipped.weapon && p.equipped.weapon.element) || 'none';
     var defElem = (p.equipped.armor  && p.equipped.armor.element)  || 'none';
@@ -1378,9 +1466,10 @@
       archKey: selectedArchKey,
       mode: selectedMode,
       level: 1,
+      kills: 0,
       xp: 0,
       maxXp: 100,
-      gold: 800,
+      gold: 900,
       freePoints: MODES[selectedMode].ptsPerLvl,
       stats: { str: b.str, dex: b.dex, rec: b.rec, int: b.int, wis: b.wis, luc: b.luc },
       allocated: { str: 0, dex: 0, rec: 0, int: 0, wis: 0, luc: 0 },
@@ -1389,7 +1478,8 @@
       facing: 1, attackAnimTimer: 0, walkCycle: 0,
       hp: 9999, mp: 9999, sp: 9999,
       speed: selectedArchKey === 'ranger' ? 235 : 200,
-      cooldowns: [0, 0, 0, 0, 0, 0],
+      cooldowns: [0, 0, 0, 0, 0, 0, 0, 0],
+      activeBuffs: [],
       equipped: {
         weapon: null, shield: null, helm: null, armor: null, pants: null,
         gloves: null, boots: null, cape: null, amulet: null,
@@ -1407,7 +1497,6 @@
     startWeapon.sockets = [null, null];
     newHero.equipped.weapon = startWeapon;
 
-    // Kit inicial de Lapis e suprimentos do Ferreiro para testar na hora
     var mainLapis = arch.atkStyle === 'magic' ? 'int' : 'str';
     newHero.bag.push({
       id: 'lap_init1', name: LAPIS_CATALOG[mainLapis].name + ' Nv.2', icon: '💎',
@@ -1419,8 +1508,8 @@
       slot: 'lapis', lapisKey: 'elem_fire', level: 1, rarity: 'heroico', sellPrice: 150,
       desc: formatLapisEffect({ lapisKey: 'elem_fire', level: 1 })
     });
-    addBagItem(newHero.bag, { id: 'sup_ls', stackKey: 'link_stone', name: 'Pedra de Linkagem', icon: '🔷', slot: 'consumable', rarity: 'nobre', qty: 2, sellPrice: 50, desc: '+25% de chance de linkar e protege a Lapis contra quebra.' });
-    addBagItem(newHero.bag, { id: 'sup_la', stackKey: 'lapisia_atk', name: 'Lapisia de Ataque', icon: '⚔️', slot: 'consumable', rarity: 'veneravel', qty: 2, sellPrice: 80, desc: 'Usada no Ferreiro para encantar Armas e Acessórios.' });
+    addBagItem(newHero.bag, { id: 'sup_ls', stackKey: 'link_stone', name: 'Pedra de Linkagem', icon: '🔷', slot: 'consumable', rarity: 'nobre', qty: 2, sellPrice: 50, desc: '+25% de chance de linkar e protege a Lapis.' });
+    addBagItem(newHero.bag, { id: 'sup_la', stackKey: 'lapisia_atk', name: 'Lapisia de Ataque', icon: '⚔️', slot: 'consumable', rarity: 'veneravel', qty: 2, sellPrice: 80, desc: 'Encanta Armas e Acessórios no Ferreiro.' });
 
     if (selectedMode === 'um') {
       addBagItem(newHero.bag, {
@@ -1471,6 +1560,7 @@
         var arch = ARCHETYPES[p.archKey];
         var mInfo = MODES[p.mode] || MODES.hm;
         var st = computeFullStats(p);
+        var kr = getKillRank(p.kills || 0);
         var facTxt = p.faction === 'fury' ? '🔥 União da Fúria' : '☀️ Aliança da Luz';
 
         card.className = 'slot-card occupied';
@@ -1478,9 +1568,9 @@
           '<span class="slot-tag">SLOT ' + (i + 1) + '</span>' +
           '<button type="button" class="btn-del" onclick="deleteHeroSlot(' + i + ')">Excluir</button>' +
           '<div style="font-size:2rem; margin-bottom:4px;">' + arch.icon + '</div>' +
-          '<div style="font-weight:bold; font-size:1.05rem; color:#fff;">' + p.name + '</div>' +
+          '<div style="font-weight:bold; font-size:1.05rem; color:#fff;"><span style="color:' + kr.color + '">' + kr.icon + '</span> ' + p.name + '</div>' +
           '<div style="font-size:0.78rem; color:' + arch.color + '; font-weight:bold;">' + getArchetypeDisplayName(p.archKey, p.faction) + ' • Nv.' + p.level + '</div>' +
-          '<div style="font-size:0.7rem; color:#94a3b8; margin-top:2px;">' + facTxt + ' • <b style="color:' + mInfo.color + ';">' + mInfo.short + '</b></div>' +
+          '<div style="font-size:0.7rem; color:#94a3b8; margin-top:2px;">' + facTxt + ' • <b style="color:' + mInfo.color + ';">' + mInfo.short + '</b> • Kills: <b style="color:' + kr.color + '">' + (p.kills || 0) + '</b></div>' +
           '<div style="font-size:0.76rem; color:#fbbf24; margin-top:4px; font-weight:bold;">🔥 BR: ' + st.br + '</div>' +
           '<button type="button" class="btn-play-slot" onclick="playHeroSlot(' + i + ')">▶ Jogar</button>';
       } else {
@@ -1503,7 +1593,9 @@
     if (!characterSlots[idx]) return;
     activeSlotIndex = idx;
     player = characterSlots[idx];
-    player.cooldowns = [0, 0, 0, 0, 0, 0];
+    if (typeof player.kills !== 'number') player.kills = 0;
+    if (!Array.isArray(player.activeBuffs)) player.activeBuffs = [];
+    player.cooldowns = [0, 0, 0, 0, 0, 0, 0, 0];
     player.targetX = player.x;
     player.targetY = player.y;
     enterWorld();
@@ -1531,13 +1623,13 @@
     renderSlotsGrid();
   }
 
-  // ================= MAPA 2.5D & MONSTROS ELEMENTAIS =================
+  // ================= MAPA 2.5D & MONSTROS =================
   var MONSTER_POOL = [
-    { name: 'Raposa das Folhas',             kind: 'wolf',   lvl: 2,  hp: 85,  atk: 10, elem: 'wind',  xp: 28,  gold: 18,  scale: 1.0,  tier: 'normal' },
-    { name: 'Slime Ácido de Erina',          kind: 'slime',  lvl: 4,  hp: 120, atk: 14, elem: 'water', xp: 42,  gold: 25,  scale: 1.05, tier: 'normal' },
-    { name: 'Batedor Goblin',                kind: 'goblin', lvl: 7,  hp: 165, atk: 20, elem: 'earth', xp: 65,  gold: 38,  scale: 1.1,  tier: 'normal' },
-    { name: 'Guardião de Rocha (Mini-Boss)', kind: 'golem',  lvl: 12, hp: 420, atk: 34, elem: 'earth', xp: 180, gold: 140, scale: 1.4,  tier: 'miniboss' },
-    { name: 'Kimuraku Infernal (BOSS)',      kind: 'dragon', lvl: 15, hp: 880, atk: 52, elem: 'fire',  xp: 480, gold: 400, scale: 1.65, tier: 'boss' }
+    { name: 'Raposa das Folhas',             kind: 'wolf',   lvl: 2,  hp: 85,  atk: 10, elem: 'wind',  xp: 28,  gold: 18,  killsGain: 1, scale: 1.0,  tier: 'normal' },
+    { name: 'Slime Ácido de Erina',          kind: 'slime',  lvl: 4,  hp: 120, atk: 14, elem: 'water', xp: 42,  gold: 25,  killsGain: 1, scale: 1.05, tier: 'normal' },
+    { name: 'Batedor Goblin',                kind: 'goblin', lvl: 7,  hp: 165, atk: 20, elem: 'earth', xp: 65,  gold: 38,  killsGain: 1, scale: 1.1,  tier: 'normal' },
+    { name: 'Guardião de Rocha (Mini-Boss)', kind: 'golem',  lvl: 12, hp: 420, atk: 34, elem: 'earth', xp: 180, gold: 140, killsGain: 3, scale: 1.4,  tier: 'miniboss' },
+    { name: 'Kimuraku Infernal (BOSS)',      kind: 'dragon', lvl: 15, hp: 880, atk: 52, elem: 'fire',  xp: 480, gold: 400, killsGain: 8, scale: 1.65, tier: 'boss' }
   ];
 
   function buildWorldProps() {
@@ -1588,11 +1680,12 @@
     enemies.push({
       id: Math.random(), name: m.name, kind: m.kind, level: m.lvl,
       x: wx, y: wy, hp: m.hp, maxHp: m.hp, atk: m.atk, elem: m.elem,
-      xp: m.xp, gold: m.gold, scale: m.scale, tier: m.tier, atkTimer: 0
+      xp: m.xp, gold: m.gold, killsGain: m.killsGain, scale: m.scale, tier: m.tier,
+      atkTimer: 0, stunTimer: 0, dotTimer: 0, dotDmg: 0
     });
   }
 
-  // ================= CONTROLES & COMBATE =================
+  // ================= CONTROLES & 6 SKILLS DINÂMICAS =================
   canvas.addEventListener('mousedown', function(e) {
     if (!gameRunning) return;
     getAudioCtx();
@@ -1625,8 +1718,10 @@
     if (e.key === '2') useSkill(1);
     if (e.key === '3') useSkill(2);
     if (e.key === '4') useSkill(3);
-    if (e.key === '5') useHpPotion();
-    if (e.key === '6') useSpMpPotion();
+    if (e.key === '5') useSkill(4);
+    if (e.key === '6') useSkill(5);
+    if (e.key === '7') useHpPotion();
+    if (e.key === '8') useSpMpPotion();
     if (k === 'a') toggleAuto();
     if (k === 'c') toggleWindow('status-modal');
     if (k === 'b' || k === 'i') toggleWindow('bag-modal');
@@ -1650,22 +1745,28 @@
 
   function useHpPotion() {
     var st = computeFullStats(player);
-    if (player.cooldowns[4] > 0 || player.hp >= st.maxHp) return;
+    if (player.cooldowns[6] > 0 || player.hp >= st.maxHp) return;
     var heal = Math.round(st.maxHp * 0.5);
     player.hp = Math.min(st.maxHp, player.hp + heal);
-    player.cooldowns[4] = 4.0;
+    player.cooldowns[6] = 4.0;
     addFloatingText(player.x, player.y - 38, '+' + heal + ' HP', '#f87171');
     updateHUD();
   }
 
   function useSpMpPotion() {
     var st = computeFullStats(player);
-    if (player.cooldowns[5] > 0) return;
+    if (player.cooldowns[7] > 0) return;
     player.mp = Math.min(st.maxMp, player.mp + Math.round(st.maxMp * 0.5));
     player.sp = Math.min(st.maxSp, player.sp + Math.round(st.maxSp * 0.5));
-    player.cooldowns[5] = 4.0;
+    player.cooldowns[7] = 4.0;
     addFloatingText(player.x, player.y - 38, '+50% MP / SP', '#38bdf8');
     updateHUD();
+  }
+
+  function applyPlayerBuff(buffObj) {
+    if (!Array.isArray(player.activeBuffs)) player.activeBuffs = [];
+    player.activeBuffs = player.activeBuffs.filter(function(b) { return b.id !== buffObj.id; });
+    player.activeBuffs.push({ id: buffObj.id, label: buffObj.label, timer: buffObj.dur });
   }
 
   function useSkill(idx) {
@@ -1683,15 +1784,23 @@
       return;
     }
 
-    player.attackAnimTimer = 0.32;
+    player.attackAnimTimer = 0.34;
 
-    if (sk.heal) {
+    // Skills de Buff / Cura Própria
+    if (sk.mult === 0 && (sk.heal || sk.buff)) {
       if (sk.res === 'sp') player.sp -= sk.cost; else player.mp -= sk.cost;
       player.cooldowns[idx] = sk.cd;
-      var heal = Math.round(st.maxHp * sk.heal);
-      player.hp = Math.min(st.maxHp, player.hp + heal);
-      addFloatingText(player.x, player.y - 44, '+' + heal + ' HP', '#34d399');
-      effects.push({ x: player.x, y: player.y, radius: 75, color: sk.color, timer: 0.4 });
+
+      if (sk.heal) {
+        var heal = Math.round(st.maxHp * sk.heal);
+        player.hp = Math.min(st.maxHp, player.hp + heal);
+        addFloatingText(player.x, player.y - 45, '+' + heal + ' HP', '#34d399');
+      }
+      if (sk.buff) {
+        applyPlayerBuff(sk.buff);
+        addFloatingText(player.x, player.y - 66, sk.buff.label, sk.color);
+      }
+      effects.push({ x: player.x, y: player.y, radius: 85, color: sk.color, vfx: 'aura', timer: 0.55, maxTimer: 0.55 });
       updateHUD();
       return;
     }
@@ -1712,7 +1821,8 @@
     player.cooldowns[idx] = sk.cd;
 
     if (sk.dash) {
-      player.x = target.x - 30 * player.facing;
+      effects.push({ x: player.x, y: player.y, radius: 45, color: sk.color, vfx: 'aura', timer: 0.35, maxTimer: 0.35 });
+      player.x = target.x - 32 * player.facing;
       player.y = target.y;
       player.targetX = player.x;
       player.targetY = player.y;
@@ -1721,12 +1831,15 @@
     if (sk.proj) {
       projectiles.push({
         x: player.x, y: player.y - 12, tx: target.x, ty: target.y - 10,
-        color: sk.color, isArrow: player.archKey === 'archer', timer: 0.24, maxTimer: 0.24
+        color: sk.color, icon: sk.icon, timer: 0.24, maxTimer: 0.24
       });
     }
 
-    var targets = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 135; }) : [target];
-    effects.push({ x: target.x, y: target.y, radius: sk.aoe ? 130 : 58, color: sk.color, timer: 0.35 });
+    var targets = sk.aoe ? enemies.filter(function(en) { return getDist(target, en) <= 145; }) : [target];
+    effects.push({
+      x: target.x, y: target.y, radius: sk.aoe ? 140 : 64,
+      color: sk.color, vfx: sk.vfx || 'slash', timer: 0.42, maxTimer: 0.42
+    });
 
     targets.forEach(function(en) {
       var elemMult = getElementMultiplier(st.atkElem, en.elem);
@@ -1734,6 +1847,16 @@
       var dmg = Math.round(st.primaryAtk * sk.mult * elemMult * (0.92 + Math.random() * 0.16));
       if (isCrit) dmg = Math.round(dmg * 1.65);
       en.hp -= dmg;
+
+      if (sk.stun) {
+        en.stunTimer = Math.max(en.stunTimer || 0, sk.stun);
+        addFloatingText(en.x, en.y - 52 * en.scale, '💫 ATORDOADO!', '#fde047');
+      }
+      if (sk.dot) {
+        en.dotTimer = 4.0;
+        en.dotDmg = Math.max(4, Math.round(st.primaryAtk * sk.dot));
+        addFloatingText(en.x, en.y - 52 * en.scale, '🩸 VENENO / SANGRAMENTO', '#fb7185');
+      }
 
       var tag = elemMult > 1 ? '⚡ ' : '';
       addFloatingText(en.x, en.y - 30 * en.scale, isCrit ? '💥 ' + tag + dmg + '!' : '-' + tag + dmg, isCrit ? '#fbbf24' : '#ffffff');
@@ -1751,20 +1874,29 @@
       updateTargetHUD();
     }
 
+    var prevRank = getKillRank(player.kills || 0);
+    player.kills = (player.kills || 0) + (en.killsGain || 1);
+    var newRank = getKillRank(player.kills);
+
     player.xp += en.xp;
     player.gold += en.gold;
-    addFloatingText(en.x, en.y - 45, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#fbbf24');
+    addFloatingText(en.x, en.y - 45, '+' + en.xp + ' XP  +' + en.gold + ' Ouro  +' + (en.killsGain || 1) + ' Kill', '#fbbf24');
 
-    // Drop de Equipamento
-    var dropChance = en.tier === 'boss' ? 0.95 : (en.tier === 'miniboss' ? 0.70 : 0.36);
+    if (newRank.min > prevRank.min) {
+      addFloatingText(player.x, player.y - 84, '🎖️ NOVA PATENTE: ' + newRank.icon + ' ' + newRank.title + '!', newRank.color);
+      playSuccessChime();
+    }
+
+    // Drop de Equipamentos (Normal/Nobre fácil -> Leg/Deusa raro)
+    var dropChance = en.tier === 'boss' ? 0.95 : (en.tier === 'miniboss' ? 0.72 : 0.44);
     if (player.bag.length < 120 && Math.random() < dropChance) {
       var item = generateDropItem(player.level, en.tier);
       player.bag.push(item);
       addFloatingText(en.x, en.y - 70, '🎁 ' + item.name + '!', RARITIES[item.rarity].color);
     }
 
-    // Drop de Lapis (Status, Duplas e Elementais)
-    var lapisChance = en.tier === 'boss' ? 0.90 : (en.tier === 'miniboss' ? 0.60 : 0.28);
+    // Drop de Lapis
+    var lapisChance = en.tier === 'boss' ? 0.90 : (en.tier === 'miniboss' ? 0.58 : 0.30);
     if (player.bag.length < 120 && Math.random() < lapisChance) {
       var lap = generateRandomLapisItem(en.tier);
       player.bag.push(lap);
@@ -1772,7 +1904,7 @@
       addFloatingText(en.x, en.y - 94, '💎 ' + lap.name + '!', lMeta ? lMeta.color : '#38bdf8');
     }
 
-    // Drop ocasional de Lapisia / Pedra de Linkagem de Chefes
+    // Drop de Lapisia de Chefes
     if ((en.tier === 'boss' || en.tier === 'miniboss') && Math.random() < 0.65) {
       var isAtk = Math.random() > 0.5;
       addBagItem(player.bag, {
@@ -1804,7 +1936,7 @@
     }
 
     saveSlots();
-    setTimeout(function() { if (gameRunning) spawnEnemy(); }, 2500);
+    setTimeout(function() { if (gameRunning) spawnEnemy(); }, 2400);
   }
 
   function handlePlayerDeath() {
@@ -1844,7 +1976,7 @@
     floatingTexts.push({ x: x, y: y, text: text, color: color, timer: 1.35 });
   }
 
-  // ================= LOOP 2.5D & RENDERIZAÇÃO =================
+  // ================= LOOP 2.5D & EFEITOS VISUAIS DAS SKILLS =================
   function enterWorld() {
     document.getElementById('char-screen').style.display = 'none';
     document.getElementById('hud-top-left').style.display = 'flex';
@@ -1885,6 +2017,11 @@
     player.hp = Math.min(st.maxHp, player.hp + st.maxHp * 0.015 * dt);
     player.mp = Math.min(st.maxMp, player.mp + st.maxMp * 0.04 * dt);
     player.sp = Math.min(st.maxSp, player.sp + st.maxSp * 0.05 * dt);
+
+    if (Array.isArray(player.activeBuffs) && player.activeBuffs.length > 0) {
+      player.activeBuffs.forEach(function(b) { b.timer -= dt; });
+      player.activeBuffs = player.activeBuffs.filter(function(b) { return b.timer > 0; });
+    }
 
     for (var i = 0; i < player.cooldowns.length; i++) {
       if (player.cooldowns[i] > 0) {
@@ -1929,7 +2066,7 @@
             player.targetX = near.x; player.targetY = near.y;
           } else {
             player.targetX = player.x; player.targetY = player.y;
-            for (var s = 3; s >= 0; s--) {
+            for (var s = 5; s >= 0; s--) {
               var sk = arch.skills[s];
               var hasRes = sk.res === 'sp' ? player.sp >= sk.cost : player.mp >= sk.cost;
               if (player.cooldowns[s] <= 0 && hasRes) { useSkill(s); break; }
@@ -1950,7 +2087,20 @@
     player.x = Math.max(70, Math.min(WORLD_W - 70, player.x));
     player.y = Math.max(70, Math.min(WORLD_H - 70, player.y));
 
-    enemies.forEach(function(en) {
+    enemies.slice().forEach(function(en) {
+      if (en.dotTimer > 0) {
+        en.dotTimer -= dt;
+        if (Math.floor((en.dotTimer + dt)) !== Math.floor(en.dotTimer)) {
+          en.hp -= (en.dotDmg || 5);
+          addFloatingText(en.x, en.y - 25 * en.scale, '-' + (en.dotDmg || 5) + ' 🩸', '#fb7185');
+          if (en.hp <= 0) { killEnemy(en); return; }
+        }
+      }
+      if (en.stunTimer > 0) {
+        en.stunTimer -= dt;
+        return;
+      }
+
       var d = getDist(player, en);
       if (d < 310 && d > 62) {
         en.x += ((player.x - en.x) / d) * 85 * dt;
@@ -2069,15 +2219,44 @@
       var prog = 1 - (p.timer / p.maxTimer);
       var px = p.x + (p.tx - p.x) * prog - camX;
       var py = p.y + (p.ty - p.y) * prog - camY;
+      ctx.save();
       ctx.fillStyle = p.color;
-      ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowColor = p.color; ctx.shadowBlur = 12;
+      ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
     });
 
+    // Efeitos visuais dinâmicos das skills
     effects.forEach(function(ef) {
-      ctx.fillStyle = ef.color + '44';
-      ctx.strokeStyle = ef.color; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.ellipse(ef.x - camX, ef.y - camY, ef.radius, ef.radius * 0.65, 0, 0, Math.PI * 2);
-      ctx.fill(); ctx.stroke();
+      var sx = ef.x - camX, sy = ef.y - camY;
+      var prog = 1 - (ef.timer / (ef.maxTimer || 0.4));
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - prog * 0.85);
+      ctx.strokeStyle = ef.color;
+      ctx.fillStyle = ef.color + '33';
+
+      if (ef.vfx === 'whirl') {
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.ellipse(sx, sy, ef.radius * (0.5 + prog * 0.6), ef.radius * 0.65 * (0.5 + prog * 0.6), prog * 6, 0, Math.PI * 1.65);
+        ctx.stroke();
+      } else if (ef.vfx === 'nova') {
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.ellipse(sx, sy, ef.radius * (0.3 + prog * 0.9), ef.radius * 0.65 * (0.3 + prog * 0.9), 0, 0, Math.PI * 2);
+        ctx.fill(); ctx.stroke();
+      } else if (ef.vfx === 'aura') {
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(sx, sy + 10 - prog * 35, 36, 15, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(sx, sy - 10, ef.radius * (0.6 + prog * 0.4), -0.8 + prog, 1.4 + prog);
+        ctx.stroke();
+      }
+      ctx.restore();
     });
 
     floatingTexts.forEach(function(ft) {
@@ -2116,11 +2295,11 @@
     var bob = Math.sin(player.walkCycle || 0) * 3;
     var facColor = player.faction === 'fury' ? '#f43f5e' : '#38bdf8';
     var wPlus = (player.equipped.weapon && player.equipped.weapon.plus) || 0;
+    var kr = getKillRank(player.kills || 0);
 
     ctx.save();
     ctx.translate(px, py);
 
-    // Aura de encantamento [10]+
     if (wPlus >= 10) {
       ctx.strokeStyle = wPlus >= 15 ? 'rgba(251, 191, 36, 0.7)' : 'rgba(56, 189, 248, 0.6)';
       ctx.lineWidth = 3;
@@ -2138,11 +2317,15 @@
     ctx.fillStyle = '#fde68a';
     ctx.beginPath(); ctx.arc(0, -25 + bob * 0.5, 10, 0, Math.PI * 2); ctx.fill();
 
-    ctx.fillStyle = '#fff';
+    // Nome + Símbolo de Patente de Kill estilo Shaiya EP3 ao lado esquerdo
     ctx.font = 'bold 12px Segoe UI';
     ctx.textAlign = 'center';
     var plusTag = wPlus > 0 ? ' [' + wPlus + ']' : '';
-    ctx.fillText('[Nv.' + player.level + '] ' + player.name + plusTag, 0, -43);
+    var fullLabel = kr.icon + ' [Nv.' + player.level + '] ' + player.name + plusTag;
+    ctx.fillStyle = '#000';
+    ctx.fillText(fullLabel, 1, -43);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(fullLabel, 0, -44);
     ctx.restore();
   }
 
@@ -2159,15 +2342,25 @@
       ctx.beginPath(); ctx.ellipse(0, 11 * s, 26 * s, 12 * s, 0, 0, Math.PI * 2); ctx.stroke();
     }
 
+    // Aura elemental pulsante ao redor do monstro
+    if (en.elem && en.elem !== 'none') {
+      var pulse = 1 + Math.sin(worldAnimTime * 5 + en.id * 10) * 0.12;
+      ctx.strokeStyle = elMeta.color + '88';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0, -10 * s, 22 * s * pulse, 0, Math.PI * 2); ctx.stroke();
+    }
+
     ctx.fillStyle = elMeta.color;
     ctx.beginPath(); ctx.arc(0, -10 * s, 18 * s, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2; ctx.stroke();
 
-    ctx.fillStyle = '#fff';
+    // Badge de Elemento bem visível ao lado do nome do monstro
     ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
-    ctx.fillText('Nv.' + en.level + ' ' + en.name, 0, -24 * s - 12);
+    var mobTitle = elMeta.icon + ' Nv.' + en.level + ' ' + en.name;
+    ctx.fillStyle = '#000'; ctx.fillText(mobTitle, 1, -24 * s - 12);
+    ctx.fillStyle = '#fff'; ctx.fillText(mobTitle, 0, -24 * s - 13);
 
-    var barW = 52 * Math.min(1.4, s);
+    var barW = 54 * Math.min(1.4, s);
     ctx.fillStyle = '#1e293b'; ctx.fillRect(-barW / 2, -24 * s - 7, barW, 5);
     ctx.fillStyle = '#ef4444'; ctx.fillRect(-barW / 2, -24 * s - 7, barW * Math.max(0, en.hp / en.maxHp), 5);
     ctx.restore();
@@ -2191,15 +2384,21 @@
     mCtx.beginPath(); mCtx.arc(player.x * sx, player.y * sy, 3.2, 0, Math.PI * 2); mCtx.fill();
   }
 
-  // ================= HUD & BARRA DE SKILLS =================
+  // ================= HUD & BARRA DE 6 SKILLS =================
   function updateHUD() {
     var arch = ARCHETYPES[player.archKey];
     var mInfo = MODES[player.mode] || MODES.hm;
     var st = computeFullStats(player);
+    var kr = getKillRank(player.kills || 0);
 
     document.getElementById('hud-portrait').childNodes[0].textContent = arch.icon;
     document.getElementById('hud-lvl').textContent = 'Nv.' + player.level;
-    document.getElementById('hud-name').textContent = player.name + ' (' + getArchetypeDisplayName(player.archKey, player.faction) + ')';
+    document.getElementById('hud-name').textContent = player.name;
+
+    var rankPill = document.getElementById('hud-kill-rank');
+    rankPill.textContent = kr.icon + ' ' + (player.kills || 0);
+    rankPill.style.color = kr.color;
+    rankPill.title = 'Patente: ' + kr.title + ' (' + (player.kills || 0) + ' Kills)';
 
     var badge = document.getElementById('hud-mode-badge');
     badge.textContent = mInfo.short;
@@ -2213,10 +2412,19 @@
     document.getElementById('bar-sp').style.width = Math.min(100, (player.sp / st.maxSp) * 100) + '%';
     document.getElementById('txt-sp').textContent = 'SP ' + Math.ceil(player.sp) + ' / ' + st.maxSp;
 
+    var buffsEl = document.getElementById('hud-buffs-row');
+    if (Array.isArray(player.activeBuffs) && player.activeBuffs.length > 0) {
+      buffsEl.innerHTML = player.activeBuffs.map(function(b) {
+        return '<span class="buff-chip">' + b.label + ' (' + Math.ceil(b.timer) + 's)</span>';
+      }).join('');
+    } else {
+      buffsEl.innerHTML = '';
+    }
+
     document.getElementById('hud-zone').textContent = player.faction === 'fury' ? '🔥 Floresta de Iris (Nv. 1-15)' : '🌲 Floresta de Erina (Nv. 1-15)';
     document.getElementById('hud-gold').textContent = player.gold;
     document.getElementById('hud-br').textContent = st.br;
-    document.getElementById('hud-coords').textContent = 'Pos: (' + Math.round(player.x) + ', ' + Math.round(player.y) + ')';
+    document.getElementById('hud-kill-info').innerHTML = 'Patente: <b style="color:' + kr.color + '">' + kr.icon + ' ' + kr.title + ' (' + (player.kills || 0) + ' Kills)</b>';
 
     var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
     document.getElementById('bar-xp').style.width = xpPct + '%';
@@ -2258,6 +2466,7 @@
       var resColor = sk.res === 'sp' ? '#facc15' : '#60a5fa';
       var slot = document.createElement('div');
       slot.className = 'sk-slot';
+      slot.style.borderColor = sk.color + '88';
       slot.title = sk.name + ' (' + sk.cost + ' ' + sk.res.toUpperCase() + ')';
       slot.innerHTML =
         '<span class="sk-key">' + (idx + 1) + '</span>' +
@@ -2271,14 +2480,14 @@
     var potHp = document.createElement('div');
     potHp.className = 'sk-slot';
     potHp.title = 'Poção de Vida (50% HP)';
-    potHp.innerHTML = '<span class="sk-key">5</span><span class="sk-ico">🧪</span><div class="sk-cd" id="sk-cd-4"></div>';
+    potHp.innerHTML = '<span class="sk-key">7</span><span class="sk-ico">🧪</span><div class="sk-cd" id="sk-cd-6"></div>';
     potHp.onclick = useHpPotion;
     dock.appendChild(potHp);
 
     var potRes = document.createElement('div');
     potRes.className = 'sk-slot';
     potRes.title = 'Elixir de Energia (50% MP e SP)';
-    potRes.innerHTML = '<span class="sk-key">6</span><span class="sk-ico">⚗️</span><div class="sk-cd" id="sk-cd-5"></div>';
+    potRes.innerHTML = '<span class="sk-key">8</span><span class="sk-ico">⚗️</span><div class="sk-cd" id="sk-cd-7"></div>';
     potRes.onclick = useSpMpPotion;
     dock.appendChild(potRes);
 
@@ -2319,9 +2528,10 @@
     var arch = ARCHETYPES[player.archKey];
     var mInfo = MODES[player.mode] || MODES.hm;
     var st = computeFullStats(player);
+    var kr = getKillRank(player.kills || 0);
 
-    document.getElementById('st-hero-title').textContent = player.name + ' (Nv. ' + player.level + ')';
-    document.getElementById('st-hero-sub').textContent = getArchetypeDisplayName(player.archKey, player.faction) + ' • ' + mInfo.label + ' • Auto: ' + arch.autoStatLabel;
+    document.getElementById('st-hero-title').innerHTML = '<span style="color:' + kr.color + '">' + kr.icon + '</span> ' + player.name + ' (Nv. ' + player.level + ')';
+    document.getElementById('st-hero-sub').textContent = getArchetypeDisplayName(player.archKey, player.faction) + ' • ' + mInfo.label + ' • Patente: ' + kr.title + ' (' + (player.kills || 0) + ' Kills)';
     document.getElementById('st-free-pts').textContent = player.freePoints;
 
     var attrs = [
@@ -2362,8 +2572,8 @@
       '<div class="derived-row"><span>💠 DEF Mágica:</span><b>' + st.magDef + '</b></div>' +
       '<div class="derived-row"><span>💥 Chance Crítico:</span><b style="color:#fbbf24;">' + st.critChance + '%</b></div>' +
       '<div class="derived-row"><span>💨 Esquiva:</span><b style="color:#34d399;">' + st.evaChance + '%</b></div>' +
-      '<div class="derived-row"><span>🔥 Elem. Ataque:</span><b style="color:' + atkElMeta.color + ';">' + atkElMeta.label + '</b></div>' +
-      '<div class="derived-row"><span>🛡️ Elem. Defesa:</span><b style="color:' + defElMeta.color + ';">' + defElMeta.label + '</b></div>';
+      '<div class="derived-row"><span>⚔️ Elem. Arma:</span><b style="color:' + atkElMeta.color + ';">' + atkElMeta.label + '</b></div>' +
+      '<div class="derived-row"><span>🛡️ Elem. Armadura:</span><b style="color:' + defElMeta.color + ';">' + defElMeta.label + '</b></div>';
   }
 
   function allocateStat(statKey) {
@@ -2392,7 +2602,7 @@
     }
   }
 
-  // ================= INVENTÁRIO CLÁSSICO EP 4.5 (12 SLOTS + 5 ABAS) =================
+  // ================= INVENTÁRIO COM SETAS ▲/▼ & VENDER TUDO =================
   function switchBagPage(page) {
     currentBagPage = page;
     for (var i = 0; i < 5; i++) document.getElementById('btab-' + i).classList.toggle('active', i === page);
@@ -2403,10 +2613,13 @@
     var arch = ARCHETYPES[player.archKey];
     var st = computeFullStats(player);
     var atkElMeta = ELEMENTS[st.atkElem] || ELEMENTS.none;
+    var defElMeta = ELEMENTS[st.defElem] || ELEMENTS.none;
 
+    document.getElementById('bag-gold-lbl').textContent = player.gold;
     document.getElementById('pd-hero-ico').textContent = arch.icon;
     document.getElementById('pd-hero-name').textContent = player.name;
-    document.getElementById('pd-hero-elem').innerHTML = 'Elemento: <b style="color:' + atkElMeta.color + '">' + atkElMeta.label + '</b>';
+    document.getElementById('pd-hero-elem').innerHTML = '<span class="elem-tag" style="background:' + atkElMeta.bg + '; color:' + atkElMeta.color + ';">Arma: ' + atkElMeta.label + '</span>';
+    document.getElementById('pd-hero-def-elem').innerHTML = '<span class="elem-tag" style="background:' + defElMeta.bg + '; color:' + defElMeta.color + ';">Armad.: ' + defElMeta.label + '</span>';
     document.getElementById('pd-hero-br').textContent = 'BR: ' + st.br;
 
     Object.keys(SLOT_META).forEach(function(slotKey) {
@@ -2415,10 +2628,12 @@
       var eq = player.equipped[slotKey];
       if (eq) {
         var r = RARITIES[eq.rarity] || RARITIES.comum;
+        var elIcon = (eq.element && eq.element !== 'none' && ELEMENTS[eq.element]) ? ELEMENTS[eq.element].icon : '';
         el.style.borderColor = r.color;
         el.style.background = r.color + '18';
         el.innerHTML =
           (eq.plus > 0 ? '<span class="pd-plus-tag">[' + eq.plus + ']</span>' : '') +
+          (elIcon ? '<span class="pd-elem-badge">' + elIcon + '</span>' : '') +
           '<span class="pd-slot-ico">' + eq.icon + '</span>' +
           '<span class="pd-slot-lbl" style="color:' + r.color + '">' + SLOT_META[slotKey].label + '</span>';
       } else {
@@ -2458,8 +2673,24 @@
           dotsHtml += '</div>';
         }
 
+        // Setas de comparação Verde (▲) ou Vermelha (▼)
+        var cmp = compareBagItemToEquipped(item);
+        var arrowHtml = '';
+        if (cmp > 0) arrowHtml = '<span class="cmp-arrow cmp-up" title="Melhor que o equipado">▲</span>';
+        else if (cmp < 0) arrowHtml = '<span class="cmp-arrow cmp-down" title="Inferior ao equipado">▼</span>';
+
+        // Ícone do elemento no canto inferior esquerdo
+        var elemCorner = '';
+        if (item.element && item.element !== 'none' && ELEMENTS[item.element]) {
+          elemCorner = '<span class="cell-elem-corner">' + ELEMENTS[item.element].icon + '</span>';
+        } else if (item.slot === 'lapis' && LAPIS_CATALOG[item.lapisKey] && LAPIS_CATALOG[item.lapisKey].kind === 'elem') {
+          elemCorner = '<span class="cell-elem-corner">' + ELEMENTS[LAPIS_CATALOG[item.lapisKey].element].icon + '</span>';
+        }
+
         cell.innerHTML =
           dotsHtml +
+          arrowHtml +
+          elemCorner +
           '<span>' + item.icon + '</span>' +
           (item.qty > 1 ? '<span class="cell-qty">x' + item.qty + '</span>' : '');
         cell.onclick = (function(idx) { return function() { inspectBagItem(idx); }; })(realIdx);
@@ -2492,6 +2723,13 @@
     var allowed = canEquipInMode(item);
     var plusTxt = item.plus > 0 ? ' [' + item.plus + ']' : '';
 
+    var cmpBadge = '';
+    if (fromBag && item.slot !== 'consumable' && item.slot !== 'lapis') {
+      var cmp = compareBagItemToEquipped(item);
+      if (cmp > 0) cmpBadge = '<span style="color:#10b981; font-weight:bold; font-size:0.74rem;">▲ MELHOR QUE O EQUIPADO</span>';
+      else if (cmp < 0) cmpBadge = '<span style="color:#f43f5e; font-weight:bold; font-size:0.74rem;">▼ INFERIOR AO EQUIPADO</span>';
+    }
+
     var lines = [];
     if (item.physAtk > 0) lines.push('ATQ Físico: +' + Math.round(item.physAtk * (1 + (item.plus || 0) * 0.10)));
     if (item.magAtk > 0)  lines.push('ATQ Mágico: +' + Math.round(item.magAtk  * (1 + (item.plus || 0) * 0.10)));
@@ -2507,9 +2745,7 @@
 
     if (Array.isArray(item.sockets)) {
       item.sockets.forEach(function(sk) {
-        if (sk && LAPIS_CATALOG[sk.lapisKey]) {
-          lines.push('💎 ' + formatLapisEffect(sk));
-        }
+        if (sk && LAPIS_CATALOG[sk.lapisKey]) lines.push('💎 ' + formatLapisEffect(sk));
       });
     }
 
@@ -2524,7 +2760,7 @@
     } else if (fromBag && item.slot === 'lapis') {
       actionsHtml =
         '<div class="tooltip-actions">' +
-          '<button type="button" class="btn-act btn-act-equip" style="background:#38bdf8;" onclick="toggleWindow(\'smith-modal\')">🔨 Abrir Ferreiro para Linkar</button>' +
+          '<button type="button" class="btn-act btn-act-equip" style="background:#38bdf8;" onclick="toggleWindow(\'smith-modal\')">🔨 Linkar no Ferreiro</button>' +
           '<button type="button" class="btn-act btn-act-sell" onclick="sellSelectedBagItem()">Vender (+$' + item.sellPrice + ')</button>' +
         '</div>';
     } else if (!fromBag) {
@@ -2537,11 +2773,14 @@
     box.style.borderColor = r.color;
     box.innerHTML =
       '<div>' +
-        '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; gap:6px; flex-wrap:wrap;">' +
           '<b style="color:' + r.color + '; font-size:0.92rem;">' + item.icon + ' ' + item.name + plusTxt + '</b>' +
-          '<span style="font-size:0.7rem; color:' + elMeta.color + '; font-weight:bold;">' + elMeta.label + '</span>' +
+          '<span class="elem-tag" style="background:' + elMeta.bg + '; color:' + elMeta.color + ';">' + elMeta.label + '</span>' +
         '</div>' +
-        '<div style="font-size:0.7rem; color:#94a3b8; margin:3px 0;">Raridade: <b style="color:' + r.color + '">' + r.label + '</b>' + (Array.isArray(item.sockets) ? ' • Slots Lapis: ' + item.sockets.length : '') + '</div>' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.7rem; color:#94a3b8; margin:3px 0;">' +
+          '<span>Raridade: <b style="color:' + r.color + '">' + r.label + '</b>' + (Array.isArray(item.sockets) ? ' • Slots Lapis: ' + item.sockets.length : '') + '</span>' +
+          cmpBadge +
+        '</div>' +
         '<div style="font-size:0.75rem; color:#e2e8f0; line-height:1.42; margin-top:4px;">' + lines.join(' &nbsp;|&nbsp; ') + '</div>' +
       '</div>' +
       actionsHtml;
@@ -2595,7 +2834,58 @@
     document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#fbbf24; font-size:0.8rem; text-align:center; margin:auto;">Item vendido por +' + item.sellPrice + ' Ouro!</div>';
   }
 
-  // ================= FERREIRO CLÁSSICO EP 4.5 (LINKAGEM, EXTRAÇÃO & [1]..[20]) =================
+  // ================= BOTÕES "VENDER TUDO" (EQUIPS E LAPIS) =================
+  function sellAllEquipsInBag() {
+    var totalGold = 0, count = 0;
+    var kept = [];
+    for (var i = 0; i < player.bag.length; i++) {
+      var it = player.bag[i];
+      if (it.slot !== 'consumable' && it.slot !== 'lapis') {
+        totalGold += (it.sellPrice || 15);
+        count++;
+      } else {
+        kept.push(it);
+      }
+    }
+    if (count === 0) {
+      document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#94a3b8; font-size:0.8rem; text-align:center; margin:auto;">Não há equipamentos soltos na mochila para vender.</div>';
+      return;
+    }
+    player.bag = kept;
+    player.gold += totalGold;
+    selectedBagIndex = -1;
+    saveSlots();
+    updateHUD();
+    renderInventoryWindow();
+    document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#fbbf24; font-size:0.82rem; text-align:center; margin:auto;">💰 Vendidos <b>' + count + '</b> equipamentos por <b>+$' + totalGold + ' Ouro</b>!</div>';
+  }
+
+  function sellAllLapisInBag() {
+    var totalGold = 0, count = 0;
+    var kept = [];
+    for (var i = 0; i < player.bag.length; i++) {
+      var it = player.bag[i];
+      if (it.slot === 'lapis') {
+        totalGold += (it.sellPrice || 45);
+        count++;
+      } else {
+        kept.push(it);
+      }
+    }
+    if (count === 0) {
+      document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#94a3b8; font-size:0.8rem; text-align:center; margin:auto;">Não há Lapis na mochila para vender.</div>';
+      return;
+    }
+    player.bag = kept;
+    player.gold += totalGold;
+    selectedBagIndex = -1;
+    saveSlots();
+    updateHUD();
+    renderInventoryWindow();
+    document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#38bdf8; font-size:0.82rem; text-align:center; margin:auto;">💎 Vendidas <b>' + count + '</b> Lapis por <b>+$' + totalGold + ' Ouro</b>!</div>';
+  }
+
+  // ================= FERREIRO SIMPLIFICADO (PASSO 1 -> PASSO 2 -> PASSO 3) =================
   function switchSmithTab(tab) {
     currentSmithTab = tab;
     document.getElementById('stab-link').classList.toggle('active', tab === 'link');
@@ -2662,7 +2952,7 @@
   function renderSmithWindow() {
     document.getElementById('smith-gold-val').textContent = player.gold;
 
-    // 1. Lista de equipamentos vestidos
+    // PASSO 1: Equipamentos vestidos
     var eqList = document.getElementById('smith-eq-list');
     eqList.innerHTML = '';
     var firstOccupied = null;
@@ -2676,8 +2966,9 @@
         if (!firstOccupied) firstOccupied = slotKey;
         var r = RARITIES[eq.rarity] || RARITIES.comum;
         var plusStr = eq.plus > 0 ? ' [' + eq.plus + ']' : '';
+        var elIcon = (eq.element && eq.element !== 'none' && ELEMENTS[eq.element]) ? (' ' + ELEMENTS[eq.element].icon) : '';
         btn.style.borderColor = smithSelectedSlot === slotKey ? '#fbbf24' : r.color;
-        btn.innerHTML = '<b style="color:' + r.color + '">' + eq.icon + ' ' + eq.name + plusStr + '</b><br><span style="font-size:0.65rem; color:#94a3b8;">' + SLOT_META[slotKey].label + ' • Slots: ' + (eq.sockets ? eq.sockets.length : 0) + '</span>';
+        btn.innerHTML = '<b style="color:' + r.color + '">' + eq.icon + ' ' + eq.name + plusStr + elIcon + '</b><br><span style="font-size:0.65rem; color:#94a3b8;">' + SLOT_META[slotKey].label + ' • Engastes: ' + (eq.sockets ? eq.sockets.length : 0) + '</span>';
       } else {
         btn.innerHTML = '<span style="color:#64748b;">' + SLOT_META[slotKey].icon + ' ' + SLOT_META[slotKey].label + ' (Vazio)</span>';
       }
@@ -2689,54 +2980,22 @@
 
     var item = player.equipped[smithSelectedSlot];
     var center = document.getElementById('smith-center-panel');
+    var right = document.getElementById('smith-right-panel');
 
     if (!item) {
-      center.innerHTML = '<div style="margin:auto; text-align:center; color:#64748b;">Equipe um item pela Mochila (B) para trabalhar na Bigorna do Ferreiro.</div>';
-    } else if (currentSmithTab === 'link') {
-      renderSmithLinkCenter(item, center);
-    } else {
-      renderSmithEnchantCenter(item, center);
+      center.innerHTML = '<div style="margin:auto; text-align:center; color:#64748b;">Equipe um item pela Mochila (B) primeiro.</div>';
+      right.innerHTML = '';
+      return;
     }
 
-    // 3. Lista de Lapis disponíveis na mochila
-    var lapisListEl = document.getElementById('smith-lapis-list');
-    lapisListEl.innerHTML = '';
-    var lapisEntries = [];
-    for (var i = 0; i < player.bag.length; i++) {
-      if (player.bag[i].slot === 'lapis') lapisEntries.push({ bagIdx: i, item: player.bag[i] });
-    }
-    document.getElementById('smith-lapis-count').textContent = lapisEntries.length;
-
-    var hasFreeSocket = item && Array.isArray(item.sockets) && item.sockets.indexOf(null) >= 0;
-
-    if (lapisEntries.length === 0) {
-      lapisListEl.innerHTML = '<div style="text-align:center; color:#64748b; padding:18px 8px; font-size:0.75rem;">Nenhuma Lapis na mochila.<br>Derrote monstros e chefes para dropar Lapis!</div>';
+    if (currentSmithTab === 'link') {
+      renderSmithLinkColumns(item, center, right);
     } else {
-      lapisEntries.forEach(function(entry) {
-        var lap = entry.item;
-        var meta = LAPIS_CATALOG[lap.lapisKey] || { color: '#38bdf8', kind: 'stat' };
-        var baseCh = meta.kind === 'elem' ? 65 : (LAPIS_BASE_LINK_CHANCE[lap.level] || 50);
-        var finalCh = Math.min(100, baseCh + (useLinkStone && getSupplyCount('link_stone') > 0 ? 25 : 0));
-        var goldCost = (lap.level || 1) * 60;
-        var elemAllowed = meta.kind !== 'elem' || (item && (item.slot === 'weapon' || item.slot === 'armor'));
-        var canLink = hasFreeSocket && elemAllowed && player.gold >= goldCost && currentSmithTab === 'link';
-
-        var row = document.createElement('div');
-        row.className = 'lapis-card-row';
-        row.style.borderColor = meta.color;
-        row.innerHTML =
-          '<div>' +
-            '<b style="color:' + meta.color + ';">💎 ' + lap.name + '</b><br>' +
-            '<span style="font-size:0.67rem; color:#cbd5e1;">' + formatLapisEffect(lap) + '</span><br>' +
-            '<span style="font-size:0.64rem; color:#94a3b8;">Chance: <b style="color:#fbbf24;">' + finalCh + '%</b> • Ouro: <b>$' + goldCost + '</b></span>' +
-          '</div>' +
-          '<button type="button" class="btn-do-link" ' + (canLink ? '' : 'disabled') + ' onclick="doLinkLapis(' + entry.bagIdx + ')">Linkar</button>';
-        lapisListEl.appendChild(row);
-      });
+      renderSmithEnchantColumns(item, center, right);
     }
   }
 
-  function renderSmithLinkCenter(item, container) {
+  function renderSmithLinkColumns(item, center, right) {
     var r = RARITIES[item.rarity] || RARITIES.comum;
     var elMeta = ELEMENTS[item.element || 'none'] || ELEMENTS.none;
     var lsCount = getSupplyCount('link_stone');
@@ -2744,45 +3003,151 @@
     if (lsCount === 0) useLinkStone = false;
     if (hmCount === 0) useExtHammer = false;
 
+    // PASSO 2: Visualização clara dos Engastes + Botão de Extrair em cada Lapis encaixada
     var socketsHtml = '';
-    var linkedListHtml = '';
-
     if (!item.sockets || item.sockets.length === 0) {
-      socketsHtml = '<div style="font-size:0.76rem; color:#64748b; margin:12px 0;">Equipamento Comum (0 engastes disponíveis).</div>';
+      socketsHtml = '<div style="color:#94a3b8; font-size:0.78rem; padding:16px; text-align:center;">Este item Normal não possui engastes para Lapis.</div>';
     } else {
-      socketsHtml = '<div class="socket-slots-bar">';
+      socketsHtml = '<div class="socket-visual-row">';
       for (var i = 0; i < item.sockets.length; i++) {
         var sk = item.sockets[i];
         if (sk && LAPIS_CATALOG[sk.lapisKey]) {
           var meta = LAPIS_CATALOG[sk.lapisKey];
-          var baseExt = meta.kind === 'elem' ? 60 : Math.max(25, 85 - (sk.level || 1) * 10);
+          var baseExt = meta.kind === 'elem' ? 65 : Math.max(25, 85 - (sk.level || 1) * 10);
           var finalExt = Math.min(100, baseExt + (useExtHammer && hmCount > 0 ? 30 : 0));
           var extGold = (sk.level || 1) * 85;
 
-          socketsHtml += '<div class="socket-circle filled" style="border-color:' + meta.color + '; color:' + meta.color + ';">' + meta.code + '</div>';
-          linkedListHtml +=
-            '<div class="linked-row" style="border-left:3px solid ' + meta.color + ';">' +
-              '<div><b style="color:' + meta.color + ';">' + sk.name + '</b><br><span style="font-size:0.65rem; color:#94a3b8;">' + formatLapisEffect(sk) + ' • Chance Extrair: <b>' + finalExt + '%</b></span></div>' +
-              '<button type="button" class="btn-extract" ' + (player.gold >= extGold ? '' : 'disabled') + ' onclick="doExtractLapis(' + i + ')">Extrair ($' + extGold + ')</button>' +
+          socketsHtml +=
+            '<div class="socket-slot-card filled" style="border-color:' + meta.color + ';">' +
+              '<div style="font-weight:bold; color:' + meta.color + ';">💎 ' + meta.code + (meta.kind !== 'elem' ? ' Nv.' + sk.level : '') + '</div>' +
+              '<div style="font-size:0.58rem; color:#cbd5e1; margin:2px 0;">Chance: ' + finalExt + '%</div>' +
+              '<button type="button" class="btn-extract-mini" ' + (player.gold >= extGold ? '' : 'disabled') + ' onclick="doExtractLapis(' + i + ')">🔧 Extrair<br>($' + extGold + ')</button>' +
             '</div>';
         } else {
-          socketsHtml += '<div class="socket-circle" style="border-color:' + r.color + ';">Livre</div>';
+          socketsHtml +=
+            '<div class="socket-slot-card" style="border-color:' + r.color + ';">' +
+              '<div style="color:#64748b; padding:14px 0;">Engaste<br>Livre</div>' +
+            '</div>';
         }
       }
       socketsHtml += '</div>';
     }
 
-    container.innerHTML =
-      '<div style="text-align:center;">' +
-        '<div style="font-size:2rem;">' + item.icon + '</div>' +
-        '<div style="color:' + r.color + '; font-weight:bold; font-size:0.98rem;">' + item.name + (item.plus > 0 ? ' [' + item.plus + ']' : '') + '</div>' +
-        '<div style="font-size:0.72rem; color:#94a3b8;">Elemento Atual: <b style="color:' + elMeta.color + '">' + elMeta.label + '</b></div>' +
+    center.innerHTML =
+      '<div>' +
+        '<div class="stat-col-title"><span class="step-badge">PASSO 2</span>Engastes & Extração de Lapis</div>' +
+        '<div style="text-align:center; margin-top:6px;">' +
+          '<div style="font-size:1.9rem;">' + item.icon + '</div>' +
+          '<div style="color:' + r.color + '; font-weight:bold; font-size:0.95rem;">' + item.name + (item.plus > 0 ? ' [' + item.plus + ']' : '') + '</div>' +
+          '<div style="margin-top:4px;"><span class="elem-tag" style="background:' + elMeta.bg + '; color:' + elMeta.color + ';">' + elMeta.label + '</span></div>' +
+        '</div>' +
         socketsHtml +
       '</div>' +
-      '<div style="max-height:145px; overflow-y:auto;">' + linkedListHtml + '</div>' +
-      '<div class="support-check-box">' +
-        '<label><input type="checkbox" ' + (useLinkStone ? 'checked' : '') + ' ' + (lsCount > 0 ? '' : 'disabled') + ' onchange="useLinkStone=this.checked; renderSmithWindow()"> 🔷 Usar <b>Pedra de Linkagem</b> (+25% Chance + Proteção) [Possui: ' + lsCount + ']</label>' +
-        '<label><input type="checkbox" ' + (useExtHammer ? 'checked' : '') + ' ' + (hmCount > 0 ? '' : 'disabled') + ' onchange="useExtHammer=this.checked; renderSmithWindow()"> 🔨 Usar <b>Martelo de Extração</b> (+30% Chance Extrair) [Possui: ' + hmCount + ']</label>' +
+      '<div style="background:#111827; border:1px solid #263248; border-radius:8px; padding:8px; font-size:0.73rem;">' +
+        '<label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin-bottom:5px;">' +
+          '<input type="checkbox" ' + (useLinkStone ? 'checked' : '') + ' ' + (lsCount > 0 ? '' : 'disabled') + ' onchange="useLinkStone=this.checked; renderSmithWindow()">' +
+          '🔷 <b>Pedra de Linkagem</b> (+25% Chance + Não quebra) [<b>' + lsCount + '</b>]' +
+        '</label>' +
+        '<label style="display:flex; align-items:center; gap:6px; cursor:pointer;">' +
+          '<input type="checkbox" ' + (useExtHammer ? 'checked' : '') + ' ' + (hmCount > 0 ? '' : 'disabled') + ' onchange="useExtHammer=this.checked; renderSmithWindow()">' +
+          '🔨 <b>Martelo de Extração</b> (+30% Chance de recuperar) [<b>' + hmCount + '</b>]' +
+        '</label>' +
+      '</div>';
+
+    // PASSO 3: Escolher Lapis na Mochila e clicar em Linkar
+    var lapisEntries = [];
+    for (var j = 0; j < player.bag.length; j++) {
+      if (player.bag[j].slot === 'lapis') lapisEntries.push({ bagIdx: j, item: player.bag[j] });
+    }
+    var hasFreeSocket = Array.isArray(item.sockets) && item.sockets.indexOf(null) >= 0;
+
+    var listHtml = '';
+    if (lapisEntries.length === 0) {
+      listHtml = '<div style="text-align:center; color:#64748b; padding:18px 6px; font-size:0.74rem;">Você não tem Lapis na mochila.<br>Mate monstros para dropar Lapis!</div>';
+    } else {
+      lapisEntries.forEach(function(entry) {
+        var lap = entry.item;
+        var meta = LAPIS_CATALOG[lap.lapisKey] || { color: '#38bdf8', kind: 'stat' };
+        var baseCh = meta.kind === 'elem' ? 70 : (LAPIS_BASE_LINK_CHANCE[lap.level] || 50);
+        var finalCh = Math.min(100, baseCh + (useLinkStone && lsCount > 0 ? 25 : 0));
+        var goldCost = (lap.level || 1) * 60;
+        var elemAllowed = meta.kind !== 'elem' || (item.slot === 'weapon' || item.slot === 'armor');
+        var canLink = hasFreeSocket && elemAllowed && player.gold >= goldCost;
+
+        listHtml +=
+          '<div class="lapis-choice-card" style="border-color:' + meta.color + ';">' +
+            '<div>' +
+              '<b style="color:' + meta.color + ';">💎 ' + lap.name + '</b><br>' +
+              '<span style="font-size:0.66rem; color:#cbd5e1;">' + formatLapisEffect(lap) + '</span><br>' +
+              '<span style="font-size:0.64rem; color:#94a3b8;">Chance: <b style="color:#fbbf24;">' + finalCh + '%</b> • Custo: <b>$' + goldCost + ' Ouro</b></span>' +
+            '</div>' +
+            '<button type="button" class="btn-link-now" ' + (canLink ? '' : 'disabled') + ' onclick="doLinkLapis(' + entry.bagIdx + ')">💎 Linkar</button>' +
+          '</div>';
+      });
+    }
+
+    right.innerHTML =
+      '<div>' +
+        '<div class="stat-col-title"><span class="step-badge">PASSO 3</span>Clique em Linkar na Lapis</div>' +
+        '<div class="lapis-select-list">' + listHtml + '</div>' +
+      '</div>' +
+      '<div style="border-top:1px solid #1e293b; padding-top:6px;">' +
+        '<div style="font-size:0.7rem; color:#fbbf24; font-weight:bold; margin-bottom:4px;">🏪 Comprar Pedras de Apoio:</div>' +
+        '<div class="shop-mini-grid">' +
+          '<button type="button" class="btn-buy-supply" onclick="buySmithSupply(\'link_stone\', 150)">🔷 <b>Pedra Linkagem</b> ($150)</button>' +
+          '<button type="button" class="btn-buy-supply" onclick="buySmithSupply(\'ext_hammer\', 180)">🔨 <b>Martelo Extração</b> ($180)</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderSmithEnchantColumns(item, center, right) {
+    var r = RARITIES[item.rarity] || RARITIES.comum;
+    var plus = item.plus || 0;
+    var isWeaponSide = ['weapon', 'ring1', 'ring2', 'amulet', 'loop1', 'loop2'].indexOf(item.slot) >= 0;
+    var reqKey = isWeaponSide ? 'lapisia_atk' : 'lapisia_def';
+    var reqName = isWeaponSide ? 'Lapisia de Ataque' : 'Lapisia de Defesa';
+    var lapCount = getSupplyCount(reqKey);
+    var runeCount = getSupplyCount('prot_rune');
+    if (runeCount === 0) useProtRune = false;
+
+    var cfg = getEnchantConfig(plus);
+    var canDo = plus < 20 && lapCount > 0 && player.gold >= cfg.gold;
+
+    center.innerHTML =
+      '<div>' +
+        '<div class="stat-col-title"><span class="step-badge">PASSO 2</span>Nível de Encantamento</div>' +
+        '<div style="text-align:center; margin-top:12px;">' +
+          '<div style="font-size:2.4rem;">' + item.icon + '</div>' +
+          '<div style="color:' + r.color + '; font-weight:bold; font-size:1rem;">' + item.name + ' <span style="color:#fbbf24;">[' + plus + '] ➔ [' + Math.min(20, plus + 1) + ']</span></div>' +
+          '<div style="font-size:0.76rem; color:#34d399; margin-top:4px;">Poder do Item: +' + (plus * 10) + '% ➔ +' + (Math.min(20, plus + 1) * 10) + '%</div>' +
+        '</div>' +
+        '<div style="background:#111827; border:1px solid #263248; border-radius:8px; padding:10px; margin-top:12px; font-size:0.78rem; line-height:1.7;">' +
+          '<div>🎲 Chance de Sucesso: <b style="color:#fbbf24;">' + (plus >= 20 ? 'MÁXIMO' : cfg.chance + '%') + '</b></div>' +
+          '<div>💎 Requer: <b style="color:' + (lapCount > 0 ? '#38bdf8' : '#fb7185') + ';">1x ' + reqName + ' (Tem: ' + lapCount + ')</b></div>' +
+          '<div>💰 Custo em Ouro: <b style="color:' + (player.gold >= cfg.gold ? '#fbbf24' : '#fb7185') + ';">$' + cfg.gold + ' Ouro</b></div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="background:#111827; border:1px solid #263248; border-radius:8px; padding:8px; font-size:0.74rem;">' +
+        '<label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin-bottom:7px;">' +
+          '<input type="checkbox" ' + (useProtRune ? 'checked' : '') + ' ' + (runeCount > 0 ? '' : 'disabled') + ' onchange="useProtRune=this.checked; renderSmithWindow()">' +
+          '📜 <b>Runa de Proteção</b> (Não perde nível se falhar) [<b>' + runeCount + '</b>]' +
+        '</label>' +
+        '<button type="button" class="btn-act btn-act-equip" style="width:100%; background:linear-gradient(135deg,#0284c7,#38bdf8);" ' + (canDo ? '' : 'disabled') + ' onclick="doEnchantItem()">✨ Encantar para [' + Math.min(20, plus + 1) + '] ($' + cfg.gold + ')</button>' +
+      '</div>';
+
+    right.innerHTML =
+      '<div>' +
+        '<div class="stat-col-title"><span class="step-badge">PASSO 3</span>Loja de Lapisias & Runas</div>' +
+        '<p style="font-size:0.73rem; color:#94a3b8; line-height:1.45; margin-bottom:8px;">' +
+          '• <b>Armas e Acessórios</b> usam <b>Lapisia de Ataque</b>.<br>' +
+          '• <b>Armaduras e Escudos</b> usam <b>Lapisia de Defesa</b>.<br>' +
+          '• Cada nível de encantamento aumenta <b>+10%</b> nos atributos base do item.' +
+        '</p>' +
+        '<div class="shop-mini-grid">' +
+          '<button type="button" class="btn-buy-supply" onclick="buySmithSupply(\'lapisia_atk\', 220)">⚔️ <b>Lapisia Ataque</b><br><span style="color:#fbbf24;">$220 Ouro</span></button>' +
+          '<button type="button" class="btn-buy-supply" onclick="buySmithSupply(\'lapisia_def\', 220)">🛡️ <b>Lapisia Defesa</b><br><span style="color:#fbbf24;">$220 Ouro</span></button>' +
+          '<button type="button" class="btn-buy-supply" style="grid-column:1/-1;" onclick="buySmithSupply(\'prot_rune\', 300)">📜 <b>Runa de Proteção</b> — <span style="color:#fbbf24;">$300 Ouro</span></button>' +
+        '</div>' +
       '</div>';
   }
 
@@ -2803,10 +3168,13 @@
     }
 
     var goldCost = (lap.level || 1) * 60;
-    if (player.gold < goldCost) return;
+    if (player.gold < goldCost) {
+      showSmithBanner('Ouro insuficiente para linkar esta Lapis!', false);
+      return;
+    }
 
     var hasStone = useLinkStone && consumeSupply('link_stone');
-    var baseCh = meta.kind === 'elem' ? 65 : (LAPIS_BASE_LINK_CHANCE[lap.level] || 50);
+    var baseCh = meta.kind === 'elem' ? 70 : (LAPIS_BASE_LINK_CHANCE[lap.level] || 50);
     var chance = Math.min(100, baseCh + (hasStone ? 25 : 0));
 
     player.gold -= goldCost;
@@ -2816,14 +3184,14 @@
       item.sockets[freeIdx] = { lapisKey: lap.lapisKey, level: lap.level, name: lap.name };
       if (meta.kind === 'elem') item.element = meta.element;
       playSuccessChime();
-      showSmithBanner('✨ SUCESSO! ' + lap.name + ' foi linkada em ' + item.name + '!', true);
+      showSmithBanner('✨ SUCESSO! ' + lap.name + ' linkada em ' + item.name + ' (-$' + goldCost + ' Ouro)!', true);
     } else {
       playBreakSound();
       if (hasStone) {
-        showSmithBanner('🛡️ FALHOU, mas a Pedra de Linkagem salvou sua ' + lap.name + ' de quebrar!', false);
+        showSmithBanner('🛡️ FALHOU, mas a Pedra de Linkagem salvou sua ' + lap.name + ' (-$' + goldCost + ' Ouro)!', false);
       } else {
         player.bag.splice(bagIdx, 1);
-        showSmithBanner('💥 FALHOU! ' + lap.name + ' estilhaçou durante a linkagem!', false);
+        showSmithBanner('💥 FALHOU! ' + lap.name + ' quebrou durante a linkagem (-$' + goldCost + ' Ouro)!', false);
       }
     }
 
@@ -2840,10 +3208,17 @@
     var sk = item.sockets[socketIdx];
     var meta = LAPIS_CATALOG[sk.lapisKey];
     var extGold = (sk.level || 1) * 85;
-    if (player.gold < extGold || player.bag.length >= 120) return;
+    if (player.gold < extGold) {
+      showSmithBanner('Ouro insuficiente para extrair esta Lapis!', false);
+      return;
+    }
+    if (player.bag.length >= 120) {
+      showSmithBanner('Mochila cheia! Libere espaço antes de extrair.', false);
+      return;
+    }
 
     var hasHammer = useExtHammer && consumeSupply('ext_hammer');
-    var baseExt = meta && meta.kind === 'elem' ? 60 : Math.max(25, 85 - (sk.level || 1) * 10);
+    var baseExt = meta && meta.kind === 'elem' ? 65 : Math.max(25, 85 - (sk.level || 1) * 10);
     var chance = Math.min(100, baseExt + (hasHammer ? 30 : 0));
 
     player.gold -= extGold;
@@ -2867,10 +3242,10 @@
         sellPrice: (sk.level || 1) * 45, desc: formatLapisEffect(sk)
       });
       playSuccessChime();
-      showSmithBanner('✨ EXTRAÇÃO PERFEITA! ' + sk.name + ' voltou para sua mochila!', true);
+      showSmithBanner('✨ EXTRAÍDA! ' + sk.name + ' voltou para sua mochila (-$' + extGold + ' Ouro)!', true);
     } else {
       playBreakSound();
-      showSmithBanner('💥 QUEBROU! ' + sk.name + ' foi destruída durante a extração!', false);
+      showSmithBanner('💥 QUEBROU! ' + sk.name + ' estilhaçou na extração (-$' + extGold + ' Ouro)!', false);
     }
 
     saveSlots();
@@ -2878,51 +3253,10 @@
     renderSmithWindow();
   }
 
-  // ================= ENCANTAMENTO [1] A [20] COM LAPISIAS =================
   function getEnchantConfig(plus) {
     var chance = Math.max(15, 95 - plus * 4);
     var gold = (plus + 1) * 90;
     return { chance: chance, gold: gold };
-  }
-
-  function renderSmithEnchantCenter(item, container) {
-    var r = RARITIES[item.rarity] || RARITIES.comum;
-    var plus = item.plus || 0;
-    var isWeaponSide = ['weapon', 'ring1', 'ring2', 'amulet', 'loop1', 'loop2'].indexOf(item.slot) >= 0;
-    var reqKey = isWeaponSide ? 'lapisia_atk' : 'lapisia_def';
-    var reqName = isWeaponSide ? 'Lapisia de Ataque' : 'Lapisia de Defesa';
-    var lapCount = getSupplyCount(reqKey);
-    var runeCount = getSupplyCount('prot_rune');
-    if (runeCount === 0) useProtRune = false;
-
-    if (plus >= 20) {
-      container.innerHTML =
-        '<div style="margin:auto; text-align:center;">' +
-          '<div style="font-size:2.6rem;">' + item.icon + '</div>' +
-          '<h3 style="color:#fbbf24; margin-top:6px;">' + item.name + ' [20]</h3>' +
-          '<p style="color:#34d399; font-size:0.84rem; margin-top:6px;">Encantamento Máximo de Teos Atingido (+200% Atributos Base)!</p>' +
-        '</div>';
-      return;
-    }
-
-    var cfg = getEnchantConfig(plus);
-    var canDo = lapCount > 0 && player.gold >= cfg.gold;
-
-    container.innerHTML =
-      '<div style="text-align:center;">' +
-        '<div style="font-size:2.3rem;">' + item.icon + '</div>' +
-        '<div style="color:' + r.color + '; font-weight:bold; font-size:1rem;">' + item.name + ' <span style="color:#fbbf24;">[' + plus + '] ➔ [' + (plus + 1) + ']</span></div>' +
-        '<div style="font-size:0.75rem; color:#34d399; margin-top:4px;">Bônus Atual: +' + (plus * 10) + '% ➔ Próximo: +' + ((plus + 1) * 10) + '%</div>' +
-      '</div>' +
-      '<div style="background:#111827; border:1px solid #263248; border-radius:8px; padding:10px; font-size:0.78rem; line-height:1.65;">' +
-        '<div>🎲 Chance de Sucesso: <b style="color:#fbbf24;">' + cfg.chance + '%</b></div>' +
-        '<div>💎 Material Necessário: <b style="color:' + (lapCount > 0 ? '#38bdf8' : '#fb7185') + ';">1x ' + reqName + ' (Possui: ' + lapCount + ')</b></div>' +
-        '<div>💰 Custo em Ouro: <b style="color:' + (player.gold >= cfg.gold ? '#fbbf24' : '#fb7185') + ';">$' + cfg.gold + '</b></div>' +
-      '</div>' +
-      '<div class="support-check-box">' +
-        '<label><input type="checkbox" ' + (useProtRune ? 'checked' : '') + ' ' + (runeCount > 0 ? '' : 'disabled') + ' onchange="useProtRune=this.checked; renderSmithWindow()"> 📜 Usar <b>Runa de Proteção</b> (Não perde nível se falhar) [Possui: ' + runeCount + ']</label>' +
-        '<button type="button" class="btn-act btn-act-equip" style="width:100%; margin-top:6px; background:linear-gradient(135deg,#0284c7,#38bdf8);" ' + (canDo ? '' : 'disabled') + ' onclick="doEnchantItem()">🔨 Encantar para [' + (plus + 1) + ']</button>' +
-      '</div>';
   }
 
   function doEnchantItem() {
