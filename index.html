@@ -220,6 +220,41 @@
       color: #05070c; font-weight: bold; font-size: 0.85rem; cursor: pointer; text-transform: uppercase;
     }
 
+    /* ================= EMBLEMA OFICIAL DE KILL RANK SHAIYA ================= */
+    .shaiya-rank-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 16px;
+      padding: 0 6px;
+      border-radius: 999px;
+      font-family: 'Arial Black', 'Segoe UI', sans-serif;
+      font-weight: 900;
+      font-size: 10px;
+      letter-spacing: 0.6px;
+      line-height: 1;
+      vertical-align: middle;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.55);
+      text-shadow: 0 1px 1px rgba(0,0,0,0.65);
+    }
+    .sr-blue {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 55%, #0369a1 100%);
+      border: 1.5px solid #0c4a6e;
+      color: #fef08a;
+    }
+    .sr-yellow {
+      background: linear-gradient(180deg, #fef08a 0%, #facc15 55%, #eab308 100%);
+      border: 1.5px solid #854d0e;
+      color: #dc2626;
+      text-shadow: 0 0 1px rgba(0,0,0,0.35);
+    }
+    .sr-purple {
+      background: linear-gradient(180deg, #e879f9 0%, #c026d3 55%, #86198f 100%);
+      border: 1.5px solid #4a044e;
+      color: #fef9c3;
+    }
+
     /* ================= CANVAS & HUD ================= */
     #gameCanvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
 
@@ -252,11 +287,6 @@
     .hud-name-line {
       display: flex; justify-content: space-between; align-items: center; gap: 6px;
       font-size: 0.84rem; font-weight: bold; margin-bottom: 4px;
-    }
-    .kill-rank-pill {
-      display: inline-flex; align-items: center; gap: 3px;
-      font-size: 0.72rem; padding: 1px 6px; border-radius: 6px;
-      border: 1px solid currentColor; background: rgba(0,0,0,0.45);
     }
     .mode-badge {
       font-size: 0.66rem; padding: 1px 6px; border-radius: 5px; font-weight: bold;
@@ -415,7 +445,7 @@
     }
 
     /* JANELA DE STATUS (C) */
-    #status-modal { width: 550px; }
+    #status-modal { width: 570px; }
     .status-body { padding: 14px; overflow-y: auto; }
     .status-top-summary {
       display: flex; justify-content: space-between; align-items: center;
@@ -619,7 +649,7 @@
   <!-- ================= TELA DE CRIAÇÃO E SELEÇÃO ================= -->
   <div id="char-screen">
     <h1>⚔️ Aethelgard: Crônicas de Teos ⚔️</h1>
-    <p class="subtitle">Edição Clássica EP3 / EP 4.5 • 6 Skills por Classe • Patentes de Kill • Lapis & Encantamento</p>
+    <p class="subtitle">Edição Clássica EP3 / EP 4.5 • 6 Skills por Classe • 31 Ranks Oficiais de Kill • Lapis & Encantamento</p>
 
     <div class="ep-box">
       <h2>1. Criar Novo Personagem</h2>
@@ -640,15 +670,15 @@
       <div class="mode-row">
         <div class="mode-card" id="mode-nm" onclick="selectMode('nm')">
           <div class="mode-title" style="color:#38bdf8;">📘 Modo Normal (NM)</div>
-          <div class="mode-desc"><b>5 pts/nível</b> • Progressão equilibrada. Sem perda de personagem ao morrer.</div>
+          <div class="mode-desc"><b>5 pts/nível</b> + até <b>508 pts</b> por Rank de Kill. Sem morte permanente.</div>
         </div>
         <div class="mode-card selected-hm" id="mode-hm" onclick="selectMode('hm')">
           <div class="mode-title" style="color:#c084fc;">📙 Modo Difícil (HM)</div>
-          <div class="mode-desc"><b>7 pts/nível</b> • Acesso a itens Heroicos e Lendários (Leg).</div>
+          <div class="mode-desc"><b>7 pts/nível</b> + até <b>637 pts</b> por Rank de Kill. Itens Heroicos e Leg.</div>
         </div>
         <div class="mode-card" id="mode-um" onclick="selectMode('um')">
           <div class="mode-title" style="color:#fb7185;">📕 Modo Extremo (UM)</div>
-          <div class="mode-desc"><b>9 pts/nível</b> • Acesso a itens <b>Deusa (6 slots)</b>. ⚠️ Morte permanente sem Runa!</div>
+          <div class="mode-desc"><b>9 pts/nível</b> + até <b>734 pts</b> por Rank de Kill. Itens <b>Deusa (6 slots)</b>.</div>
         </div>
       </div>
 
@@ -671,8 +701,8 @@
     <div class="hud-portrait" id="hud-portrait">⚔️<span class="hud-lvl-pill" id="hud-lvl">Nv.1</span></div>
     <div class="hud-bars-col">
       <div class="hud-name-line">
-        <span style="display:flex; align-items:center; gap:5px;">
-          <span class="kill-rank-pill" id="hud-kill-rank" title="Patente de Kills">⭐ 0</span>
+        <span style="display:flex; align-items:center; gap:6px;">
+          <span id="hud-kill-emblem"></span>
           <span id="hud-name">Herói</span>
         </span>
         <span class="mode-badge" id="hud-mode-badge">HM</span>
@@ -697,7 +727,7 @@
       <div class="zone-card">
         <div class="zone-title" id="hud-zone">🌲 Floresta de Erina (Nv. 1-15)</div>
         <div class="zone-sub">💰 Ouro: <span id="hud-gold">0</span> &nbsp;|&nbsp; 🔥 BR: <span id="hud-br">0</span></div>
-        <div style="font-size:0.68rem; color:#94a3b8; margin-top:2px;" id="hud-kill-info">Patente: Recruta (0 Kills)</div>
+        <div style="font-size:0.7rem; color:#cbd5e1; margin-top:3px; display:flex; align-items:center; justify-content:flex-end; gap:5px;" id="hud-kill-info">Kills: 0</div>
       </div>
       <div class="minimap-box">
         <canvas id="minimapCanvas" width="124" height="124"></canvas>
@@ -727,7 +757,7 @@
   <!-- ================= JANELA DE STATUS (TECLA C) ================= -->
   <div class="ep-window" id="status-modal">
     <div class="ep-win-header">
-      <h3>📊 Status do Personagem & Patente de Kills</h3>
+      <h3>📊 Status do Personagem & Rank de Kills</h3>
       <button type="button" class="btn-x" onclick="closeAllWindows()">X</button>
     </div>
     <div class="status-body">
@@ -842,22 +872,19 @@
     <div id="smith-banner"></div>
 
     <div class="smith-body">
-      <!-- PASSO 1 -->
       <div class="smith-step-box smith-col-1">
         <div class="stat-col-title"><span class="step-badge">PASSO 1</span>Escolha o Item</div>
         <div id="smith-eq-list"></div>
       </div>
 
-      <!-- PASSO 2 -->
       <div class="smith-step-box smith-col-2" id="smith-center-panel"></div>
 
-      <!-- PASSO 3 -->
       <div class="smith-step-box smith-col-3" id="smith-right-panel"></div>
     </div>
   </div>
 
 <script>
-  var STORAGE_KEY_EP45 = 'aethelgard_ep45_slots_v2';
+  var STORAGE_KEY_EP45 = 'aethelgard_ep45_slots_v3';
   var WORLD_W = 2800;
   var WORLD_H = 2800;
   var keysPressed = {};
@@ -896,6 +923,135 @@
   var ctx = canvas.getContext('2d');
   var minimapCanvas = document.getElementById('minimapCanvas');
   var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
+
+  // ================= TABELA OFICIAL DE 31 RANKS DE KILL DO SHAIYA (SUA IMAGEM) =================
+  // Coluna 1: kills | Colunas 2-4: pts bônus (NM/HM/UM) | Coluna 5: tier (blue/yellow/purple) & symbol
+  var SHAIYA_KILL_RANKS = [
+    { kills: 1,       nm: 1,  hm: 1,  um: 1,  tier: 'blue',   sym: 'I' },
+    { kills: 50,      nm: 2,  hm: 3,  um: 3,  tier: 'blue',   sym: 'II' },
+    { kills: 300,     nm: 3,  hm: 5,  um: 5,  tier: 'blue',   sym: 'III' },
+    { kills: 1000,    nm: 5,  hm: 7,  um: 7,  tier: 'blue',   sym: '>' },
+    { kills: 5000,    nm: 10, hm: 12, um: 12, tier: 'blue',   sym: '>>' },
+    { kills: 10000,   nm: 15, hm: 15, um: 18, tier: 'blue',   sym: '>>>' },
+    { kills: 20000,   nm: 16, hm: 18, um: 20, tier: 'blue',   sym: '♦' },
+    { kills: 30000,   nm: 16, hm: 21, um: 22, tier: 'blue',   sym: '♦♦' },
+    { kills: 40000,   nm: 16, hm: 21, um: 24, tier: 'blue',   sym: '♦♦♦' },
+    { kills: 50000,   nm: 17, hm: 22, um: 26, tier: 'blue',   sym: '✿' },
+    { kills: 70000,   nm: 17, hm: 22, um: 26, tier: 'blue',   sym: '✿✿' },
+    { kills: 90000,   nm: 17, hm: 22, um: 26, tier: 'blue',   sym: '✿✿✿' },
+    { kills: 110000,  nm: 18, hm: 23, um: 27, tier: 'blue',   sym: '★' },
+    { kills: 130000,  nm: 18, hm: 23, um: 27, tier: 'blue',   sym: '★★' },
+    { kills: 150000,  nm: 18, hm: 23, um: 27, tier: 'blue',   sym: '★★★' },
+    { kills: 200000,  nm: 19, hm: 24, um: 28, tier: 'yellow', sym: 'I' },
+    { kills: 250000,  nm: 19, hm: 24, um: 28, tier: 'yellow', sym: 'II' },
+    { kills: 300000,  nm: 19, hm: 24, um: 28, tier: 'yellow', sym: 'III' },
+    { kills: 350000,  nm: 19, hm: 24, um: 28, tier: 'yellow', sym: '>' },
+    { kills: 400000,  nm: 19, hm: 24, um: 28, tier: 'yellow', sym: '>>' },
+    { kills: 450000,  nm: 19, hm: 24, um: 28, tier: 'yellow', sym: '>>>' },
+    { kills: 500000,  nm: 20, hm: 25, um: 29, tier: 'yellow', sym: '♦' },
+    { kills: 550000,  nm: 20, hm: 25, um: 29, tier: 'yellow', sym: '♦♦' },
+    { kills: 600000,  nm: 20, hm: 25, um: 29, tier: 'yellow', sym: '♦♦♦' },
+    { kills: 650000,  nm: 20, hm: 25, um: 29, tier: 'yellow', sym: '✿' },
+    { kills: 700000,  nm: 20, hm: 25, um: 29, tier: 'yellow', sym: '✿✿' },
+    { kills: 750000,  nm: 21, hm: 26, um: 30, tier: 'yellow', sym: '✿✿✿' },
+    { kills: 800000,  nm: 21, hm: 26, um: 30, tier: 'yellow', sym: '★' },
+    { kills: 850000,  nm: 21, hm: 26, um: 30, tier: 'yellow', sym: '★★' },
+    { kills: 900000,  nm: 21, hm: 26, um: 30, tier: 'yellow', sym: '★★★' },
+    { kills: 1000000, nm: 21, hm: 26, um: 30, tier: 'purple', sym: '★' }
+  ];
+
+  // Retorna null quando kills === 0 (sem símbolo nenhum!)
+  function getKillRankInfo(kills) {
+    var k = kills || 0;
+    if (k < 1) return null;
+    var current = null;
+    var rankNum = 0;
+    for (var i = 0; i < SHAIYA_KILL_RANKS.length; i++) {
+      if (k >= SHAIYA_KILL_RANKS[i].kills) {
+        current = SHAIYA_KILL_RANKS[i];
+        rankNum = i + 1;
+      } else {
+        break;
+      }
+    }
+    return current ? { rankNum: rankNum, data: current } : null;
+  }
+
+  // Gera o HTML idêntico da plaquinha do Shaiya (ou string vazia se 0 kills)
+  function renderKillRankBadgeHTML(kills) {
+    var info = getKillRankInfo(kills);
+    if (!info) return '';
+    var d = info.data;
+    var cls = d.tier === 'purple' ? 'sr-purple' : (d.tier === 'yellow' ? 'sr-yellow' : 'sr-blue');
+    return '<span class="shaiya-rank-pill ' + cls + '" title="Rank ' + info.rankNum + ' (' + d.kills.toLocaleString('pt-BR') + '+ Kills)">' + d.sym + '</span>';
+  }
+
+  // Desenha no Canvas 2.5D a plaquinha oval exata do Shaiya ao lado do nome do personagem
+  function drawShaiyaRankBadgeOnCanvas(ctx, rankInfo, rightX, centerY) {
+    if (!rankInfo) return 0;
+    var d = rankInfo.data;
+    var sym = d.sym;
+
+    ctx.save();
+    ctx.font = 'bold 9px Arial, sans-serif';
+    var txtW = ctx.measureText(sym).width;
+    var pillW = Math.max(26, txtW + 11);
+    var pillH = 14;
+    var x = rightX - pillW;
+    var y = centerY - pillH / 2;
+
+    var grad = ctx.createLinearGradient(0, y, 0, y + pillH);
+    var strokeCol = '#0c4a6e';
+    var textCol = '#fef08a';
+
+    if (d.tier === 'blue') {
+      grad.addColorStop(0, '#38bdf8');
+      grad.addColorStop(0.55, '#0284c7');
+      grad.addColorStop(1, '#0369a1');
+      strokeCol = '#0c4a6e';
+      textCol = '#fef08a';
+    } else if (d.tier === 'yellow') {
+      grad.addColorStop(0, '#fef08a');
+      grad.addColorStop(0.55, '#facc15');
+      grad.addColorStop(1, '#eab308');
+      strokeCol = '#854d0e';
+      textCol = '#dc2626';
+    } else {
+      grad.addColorStop(0, '#e879f9');
+      grad.addColorStop(0.55, '#c026d3');
+      grad.addColorStop(1, '#86198f');
+      strokeCol = '#4a044e';
+      textCol = '#fef9c3';
+    }
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, pillW, pillH, 7);
+    ctx.fill();
+
+    ctx.strokeStyle = strokeCol;
+    ctx.lineWidth = 1.4;
+    ctx.stroke();
+
+    // Brilho superior interno
+    ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.roundRect(x + 1, y + 1, pillW - 2, pillH / 2, 6);
+    ctx.stroke();
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (d.tier !== 'yellow') {
+      ctx.fillStyle = 'rgba(0,0,0,0.65)';
+      ctx.fillText(sym, x + pillW / 2 + 0.6, centerY + 0.8);
+    }
+    ctx.fillStyle = textCol;
+    ctx.fillText(sym, x + pillW / 2, centerY + 0.2);
+    ctx.restore();
+
+    return pillW;
+  }
 
   // ================= ÁUDIO DE FORJA & SKILLS =================
   var audioCtx = null;
@@ -990,26 +1146,6 @@
   }
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
-
-  // ================= PATENTES DE KILL ESTILO SHAIYA EP3 =================
-  var KILL_RANKS = [
-    { min: 0,    icon: '⭐',     title: 'Recruta',          color: '#94a3b8' },
-    { min: 15,   icon: '🌟',     title: 'Soldado de Teos',  color: '#38bdf8' },
-    { min: 40,   icon: '🗡️',     title: 'Veterano',         color: '#34d399' },
-    { min: 90,   icon: '⚔️',     title: 'Cavaleiro',        color: '#a855f7' },
-    { min: 180,  icon: '🛡️',     title: 'Comandante',       color: '#f59e0b' },
-    { min: 350,  icon: '🔱',     title: 'General de Guerra',color: '#f43f5e' },
-    { min: 650,  icon: '👑',     title: 'Lenda de Teos',    color: '#fbbf24' }
-  ];
-
-  function getKillRank(kills) {
-    var k = kills || 0;
-    var best = KILL_RANKS[0];
-    for (var i = 0; i < KILL_RANKS.length; i++) {
-      if (k >= KILL_RANKS[i].min) best = KILL_RANKS[i];
-    }
-    return best;
-  }
 
   // ================= ELEMENTOS DINÂMICOS (FOGO, ÁGUA, TERRA, VENTO) =================
   var ELEMENTS = {
@@ -1192,14 +1328,14 @@
     um: { label: 'Extremo (UM)', short: 'UM', ptsPerLvl: 9, color: '#fb7185', badgeBg: '#881337' }
   };
 
-  // ================= RARIDADES (COMUM/NOBRE FÁCIL -> LEG/DEUSA DIFÍCIL) =================
+  // ================= RARIDADES (NORMAL/NOBRE FÁCIL -> LEG/DEUSA DIFÍCIL) =================
   var RARITIES = {
-    comum:     { label: 'Normal',    color: '#ffffff', slots: 0, mult: 1.0,  price: 18 },
-    nobre:     { label: 'Nobre',     color: '#38bdf8', slots: 1, mult: 1.35, price: 50 },
-    veneravel: { label: 'Venerável', color: '#3b82f6', slots: 2, mult: 1.75, price: 120 },
-    heroico:   { label: 'Heroico',   color: '#a855f7', slots: 3, mult: 2.25, price: 280 },
+    comum:     { label: 'Normal',         color: '#ffffff', slots: 0, mult: 1.0,  price: 18 },
+    nobre:     { label: 'Nobre',          color: '#38bdf8', slots: 1, mult: 1.35, price: 50 },
+    veneravel: { label: 'Venerável',      color: '#3b82f6', slots: 2, mult: 1.75, price: 120 },
+    heroico:   { label: 'Heroico',        color: '#a855f7', slots: 3, mult: 2.25, price: 280 },
     lendario:  { label: 'Lendário (Leg)', color: '#10b981', slots: 4, mult: 2.95, price: 650 },
-    deusa:     { label: 'Deusa',     color: '#fbbf24', slots: 6, mult: 3.90, price: 1600 }
+    deusa:     { label: 'Deusa',          color: '#fbbf24', slots: 6, mult: 3.90, price: 1600 }
   };
 
   var SLOT_META = {
@@ -1223,7 +1359,6 @@
     return faction === 'fury' ? a.furyName : a.lightName;
   }
 
-  // ================= PROGRESSÃO DE DROP DAS ARMADURAS & ARMAS =================
   function generateDropItem(lvl, tier) {
     var slotKeys = ['weapon', 'shield', 'helm', 'armor', 'pants', 'gloves', 'boots', 'cape', 'amulet', 'ring1', 'loop1'];
     var slot = slotKeys[Math.floor(Math.random() * slotKeys.length)];
@@ -1231,18 +1366,15 @@
     var roll = Math.random();
     var rKey = 'comum';
     if (tier === 'boss') {
-      // Chefes: chance rara de Deusa e Lendário (Leg), garantido no mínimo Heroico
       if (roll > 0.86) rKey = 'deusa';
       else if (roll > 0.56) rKey = 'lendario';
       else rKey = 'heroico';
     } else if (tier === 'miniboss') {
-      // Mini-Boss: difícil dropar Leg, bom para Venerável e Heroico
       if (roll > 0.90) rKey = 'lendario';
       else if (roll > 0.58) rKey = 'heroico';
       else if (roll > 0.25) rKey = 'veneravel';
       else rKey = 'nobre';
     } else {
-      // Mobs normais: Normal e Nobre dropam fácil, Venerável raro, Heroico muito raro
       if (roll > 0.97) rKey = 'heroico';
       else if (roll > 0.87) rKey = 'veneravel';
       else if (roll > 0.52) rKey = 'nobre';
@@ -1290,7 +1422,6 @@
     return item.reqMode === 'nm';
   }
 
-  // ================= COMPARAÇÃO DE ITENS (SETAS VERDE ▲ / VERMELHA ▼) =================
   function getItemPowerScore(item) {
     if (!item) return 0;
     var plusMult = 1 + (item.plus || 0) * 0.10;
@@ -1307,14 +1438,13 @@
   function compareBagItemToEquipped(item) {
     if (!item || item.slot === 'consumable' || item.slot === 'lapis') return 0;
     var eq = player.equipped[item.slot];
-    if (!eq) return 1; // Slot vazio -> é melhoria
+    if (!eq) return 1;
     var diff = getItemPowerScore(item) - getItemPowerScore(eq);
     if (diff > 0.5) return 1;
     if (diff < -0.5) return -1;
     return 0;
   }
 
-  // ================= CÁLCULO COMPLETO DE STATUS + BUFFS =================
   function computeFullStats(p) {
     var arch = ARCHETYPES[p.archKey];
     var totalStr = p.stats.str;
@@ -1370,7 +1500,6 @@
     var critChance = Math.min(85, Math.round((5 + totalLuc * 0.35) * 10) / 10);
     var evaChance  = Math.min(65, Math.round((3 + totalDex * 0.28) * 10) / 10);
 
-    // Buffs ativos das skills
     if (Array.isArray(p.activeBuffs)) {
       p.activeBuffs.forEach(function(b) {
         if (b.id === 'atk') { physAtk = Math.round(physAtk * 1.25); magAtk = Math.round(magAtk * 1.28); }
@@ -1381,7 +1510,7 @@
     }
 
     var primaryAtk = arch.atkStyle === 'magic' ? magAtk : physAtk;
-    var br = Math.round(maxHp * 0.4 + primaryAtk * 4 + (physDef + magDef) * 2 + (critChance + evaChance) * 7 + p.level * 25 + (p.kills || 0) * 2);
+    var br = Math.round(maxHp * 0.4 + primaryAtk * 4 + (physDef + magDef) * 2 + (critChance + evaChance) * 7 + p.level * 25 + Math.floor((p.kills || 0) / 10));
 
     var atkElem = (p.equipped.weapon && p.equipped.weapon.element) || 'none';
     var defElem = (p.equipped.armor  && p.equipped.armor.element)  || 'none';
@@ -1466,7 +1595,8 @@
       archKey: selectedArchKey,
       mode: selectedMode,
       level: 1,
-      kills: 0,
+      kills: 0, // Todo personagem começa com 0 kills e sem símbolo!
+      claimedRankIdx: 0,
       xp: 0,
       maxXp: 100,
       gold: 900,
@@ -1560,7 +1690,7 @@
         var arch = ARCHETYPES[p.archKey];
         var mInfo = MODES[p.mode] || MODES.hm;
         var st = computeFullStats(p);
-        var kr = getKillRank(p.kills || 0);
+        var rankBadge = renderKillRankBadgeHTML(p.kills || 0);
         var facTxt = p.faction === 'fury' ? '🔥 União da Fúria' : '☀️ Aliança da Luz';
 
         card.className = 'slot-card occupied';
@@ -1568,9 +1698,9 @@
           '<span class="slot-tag">SLOT ' + (i + 1) + '</span>' +
           '<button type="button" class="btn-del" onclick="deleteHeroSlot(' + i + ')">Excluir</button>' +
           '<div style="font-size:2rem; margin-bottom:4px;">' + arch.icon + '</div>' +
-          '<div style="font-weight:bold; font-size:1.05rem; color:#fff;"><span style="color:' + kr.color + '">' + kr.icon + '</span> ' + p.name + '</div>' +
+          '<div style="font-weight:bold; font-size:1.05rem; color:#fff; display:flex; align-items:center; gap:6px;">' + rankBadge + '<span>' + p.name + '</span></div>' +
           '<div style="font-size:0.78rem; color:' + arch.color + '; font-weight:bold;">' + getArchetypeDisplayName(p.archKey, p.faction) + ' • Nv.' + p.level + '</div>' +
-          '<div style="font-size:0.7rem; color:#94a3b8; margin-top:2px;">' + facTxt + ' • <b style="color:' + mInfo.color + ';">' + mInfo.short + '</b> • Kills: <b style="color:' + kr.color + '">' + (p.kills || 0) + '</b></div>' +
+          '<div style="font-size:0.7rem; color:#94a3b8; margin-top:2px;">' + facTxt + ' • <b style="color:' + mInfo.color + ';">' + mInfo.short + '</b> • Kills: <b>' + (p.kills || 0).toLocaleString('pt-BR') + '</b></div>' +
           '<div style="font-size:0.76rem; color:#fbbf24; margin-top:4px; font-weight:bold;">🔥 BR: ' + st.br + '</div>' +
           '<button type="button" class="btn-play-slot" onclick="playHeroSlot(' + i + ')">▶ Jogar</button>';
       } else {
@@ -1594,6 +1724,7 @@
     activeSlotIndex = idx;
     player = characterSlots[idx];
     if (typeof player.kills !== 'number') player.kills = 0;
+    if (typeof player.claimedRankIdx !== 'number') player.claimedRankIdx = 0;
     if (!Array.isArray(player.activeBuffs)) player.activeBuffs = [];
     player.cooldowns = [0, 0, 0, 0, 0, 0, 0, 0];
     player.targetX = player.x;
@@ -1623,13 +1754,13 @@
     renderSlotsGrid();
   }
 
-  // ================= MAPA 2.5D & MONSTROS =================
+  // ================= MAPA 2.5D & MONSTROS (KILLS ESCALADAS PARA OS 31 RANKS) =================
   var MONSTER_POOL = [
-    { name: 'Raposa das Folhas',             kind: 'wolf',   lvl: 2,  hp: 85,  atk: 10, elem: 'wind',  xp: 28,  gold: 18,  killsGain: 1, scale: 1.0,  tier: 'normal' },
-    { name: 'Slime Ácido de Erina',          kind: 'slime',  lvl: 4,  hp: 120, atk: 14, elem: 'water', xp: 42,  gold: 25,  killsGain: 1, scale: 1.05, tier: 'normal' },
-    { name: 'Batedor Goblin',                kind: 'goblin', lvl: 7,  hp: 165, atk: 20, elem: 'earth', xp: 65,  gold: 38,  killsGain: 1, scale: 1.1,  tier: 'normal' },
-    { name: 'Guardião de Rocha (Mini-Boss)', kind: 'golem',  lvl: 12, hp: 420, atk: 34, elem: 'earth', xp: 180, gold: 140, killsGain: 3, scale: 1.4,  tier: 'miniboss' },
-    { name: 'Kimuraku Infernal (BOSS)',      kind: 'dragon', lvl: 15, hp: 880, atk: 52, elem: 'fire',  xp: 480, gold: 400, killsGain: 8, scale: 1.65, tier: 'boss' }
+    { name: 'Raposa das Folhas',             kind: 'wolf',   lvl: 2,  hp: 85,  atk: 10, elem: 'wind',  xp: 28,  gold: 18,  killsGain: 15,   scale: 1.0,  tier: 'normal' },
+    { name: 'Slime Ácido de Erina',          kind: 'slime',  lvl: 4,  hp: 120, atk: 14, elem: 'water', xp: 42,  gold: 25,  killsGain: 25,   scale: 1.05, tier: 'normal' },
+    { name: 'Batedor Goblin',                kind: 'goblin', lvl: 7,  hp: 165, atk: 20, elem: 'earth', xp: 65,  gold: 38,  killsGain: 45,   scale: 1.1,  tier: 'normal' },
+    { name: 'Guardião de Rocha (Mini-Boss)', kind: 'golem',  lvl: 12, hp: 420, atk: 34, elem: 'earth', xp: 180, gold: 140, killsGain: 250,  scale: 1.4,  tier: 'miniboss' },
+    { name: 'Kimuraku Infernal (BOSS)',      kind: 'dragon', lvl: 15, hp: 880, atk: 52, elem: 'fire',  xp: 480, gold: 400, killsGain: 1200, scale: 1.65, tier: 'boss' }
   ];
 
   function buildWorldProps() {
@@ -1786,7 +1917,6 @@
 
     player.attackAnimTimer = 0.34;
 
-    // Skills de Buff / Cura Própria
     if (sk.mult === 0 && (sk.heal || sk.buff)) {
       if (sk.res === 'sp') player.sp -= sk.cost; else player.mp -= sk.cost;
       player.cooldowns[idx] = sk.cd;
@@ -1874,20 +2004,26 @@
       updateTargetHUD();
     }
 
-    var prevRank = getKillRank(player.kills || 0);
-    player.kills = (player.kills || 0) + (en.killsGain || 1);
-    var newRank = getKillRank(player.kills);
-
+    var gainK = en.killsGain || 15;
+    player.kills = (player.kills || 0) + gainK;
     player.xp += en.xp;
     player.gold += en.gold;
-    addFloatingText(en.x, en.y - 45, '+' + en.xp + ' XP  +' + en.gold + ' Ouro  +' + (en.killsGain || 1) + ' Kill', '#fbbf24');
+    addFloatingText(en.x, en.y - 45, '+' + en.xp + ' XP  +' + en.gold + ' Ouro  +' + gainK + ' Kills', '#fbbf24');
 
-    if (newRank.min > prevRank.min) {
-      addFloatingText(player.x, player.y - 84, '🎖️ NOVA PATENTE: ' + newRank.icon + ' ' + newRank.title + '!', newRank.color);
+    // Concede os pontos extras da tabela oficial (colunas NM, HM, UM) ao atingir cada novo Rank!
+    var rankInfo = getKillRankInfo(player.kills);
+    if (rankInfo && rankInfo.rankNum > (player.claimedRankIdx || 0)) {
+      var bonusPtsTotal = 0;
+      for (var r = (player.claimedRankIdx || 0); r < rankInfo.rankNum; r++) {
+        var row = SHAIYA_KILL_RANKS[r];
+        bonusPtsTotal += (row[player.mode] || row.hm);
+      }
+      player.claimedRankIdx = rankInfo.rankNum;
+      player.freePoints += bonusPtsTotal;
+      addFloatingText(player.x, player.y - 86, '🎖️ RANK ' + rankInfo.rankNum + ' [' + rankInfo.data.sym + '] ALCANÇADO! (+' + bonusPtsTotal + ' Pts Status)', '#38bdf8');
       playSuccessChime();
     }
 
-    // Drop de Equipamentos (Normal/Nobre fácil -> Leg/Deusa raro)
     var dropChance = en.tier === 'boss' ? 0.95 : (en.tier === 'miniboss' ? 0.72 : 0.44);
     if (player.bag.length < 120 && Math.random() < dropChance) {
       var item = generateDropItem(player.level, en.tier);
@@ -1895,7 +2031,6 @@
       addFloatingText(en.x, en.y - 70, '🎁 ' + item.name + '!', RARITIES[item.rarity].color);
     }
 
-    // Drop de Lapis
     var lapisChance = en.tier === 'boss' ? 0.90 : (en.tier === 'miniboss' ? 0.58 : 0.30);
     if (player.bag.length < 120 && Math.random() < lapisChance) {
       var lap = generateRandomLapisItem(en.tier);
@@ -1904,7 +2039,6 @@
       addFloatingText(en.x, en.y - 94, '💎 ' + lap.name + '!', lMeta ? lMeta.color : '#38bdf8');
     }
 
-    // Drop de Lapisia de Chefes
     if ((en.tier === 'boss' || en.tier === 'miniboss') && Math.random() < 0.65) {
       var isAtk = Math.random() > 0.5;
       addBagItem(player.bag, {
@@ -2226,7 +2360,6 @@
       ctx.restore();
     });
 
-    // Efeitos visuais dinâmicos das skills
     effects.forEach(function(ef) {
       var sx = ef.x - camX, sy = ef.y - camY;
       var prog = 1 - (ef.timer / (ef.maxTimer || 0.4));
@@ -2295,7 +2428,7 @@
     var bob = Math.sin(player.walkCycle || 0) * 3;
     var facColor = player.faction === 'fury' ? '#f43f5e' : '#38bdf8';
     var wPlus = (player.equipped.weapon && player.equipped.weapon.plus) || 0;
-    var kr = getKillRank(player.kills || 0);
+    var rankInfo = getKillRankInfo(player.kills || 0);
 
     ctx.save();
     ctx.translate(px, py);
@@ -2317,15 +2450,29 @@
     ctx.fillStyle = '#fde68a';
     ctx.beginPath(); ctx.arc(0, -25 + bob * 0.5, 10, 0, Math.PI * 2); ctx.fill();
 
-    // Nome + Símbolo de Patente de Kill estilo Shaiya EP3 ao lado esquerdo
+    // Nome + Plaquinha Oficial do Shaiya ao lado (0 kills = sem nada!)
     ctx.font = 'bold 12px Segoe UI';
-    ctx.textAlign = 'center';
     var plusTag = wPlus > 0 ? ' [' + wPlus + ']' : '';
-    var fullLabel = kr.icon + ' [Nv.' + player.level + '] ' + player.name + plusTag;
-    ctx.fillStyle = '#000';
-    ctx.fillText(fullLabel, 1, -43);
-    ctx.fillStyle = '#fff';
-    ctx.fillText(fullLabel, 0, -44);
+    var nameStr = '[Nv.' + player.level + '] ' + player.name + plusTag;
+    var nameW = ctx.measureText(nameStr).width;
+
+    if (rankInfo) {
+      var pillW = Math.max(26, ctx.measureText(rankInfo.data.sym).width + 11);
+      var totalW = pillW + 5 + nameW;
+      var startX = -totalW / 2;
+      drawShaiyaRankBadgeOnCanvas(ctx, rankInfo, startX + pillW, -47);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#000';
+      ctx.fillText(nameStr, startX + pillW + 6, -43);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(nameStr, startX + pillW + 5, -44);
+    } else {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#000';
+      ctx.fillText(nameStr, 1, -43);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(nameStr, 0, -44);
+    }
     ctx.restore();
   }
 
@@ -2342,7 +2489,6 @@
       ctx.beginPath(); ctx.ellipse(0, 11 * s, 26 * s, 12 * s, 0, 0, Math.PI * 2); ctx.stroke();
     }
 
-    // Aura elemental pulsante ao redor do monstro
     if (en.elem && en.elem !== 'none') {
       var pulse = 1 + Math.sin(worldAnimTime * 5 + en.id * 10) * 0.12;
       ctx.strokeStyle = elMeta.color + '88';
@@ -2354,7 +2500,6 @@
     ctx.beginPath(); ctx.arc(0, -10 * s, 18 * s, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2; ctx.stroke();
 
-    // Badge de Elemento bem visível ao lado do nome do monstro
     ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
     var mobTitle = elMeta.icon + ' Nv.' + en.level + ' ' + en.name;
     ctx.fillStyle = '#000'; ctx.fillText(mobTitle, 1, -24 * s - 12);
@@ -2389,16 +2534,13 @@
     var arch = ARCHETYPES[player.archKey];
     var mInfo = MODES[player.mode] || MODES.hm;
     var st = computeFullStats(player);
-    var kr = getKillRank(player.kills || 0);
+    var rankBadge = renderKillRankBadgeHTML(player.kills || 0);
+    var rInfo = getKillRankInfo(player.kills || 0);
 
     document.getElementById('hud-portrait').childNodes[0].textContent = arch.icon;
     document.getElementById('hud-lvl').textContent = 'Nv.' + player.level;
     document.getElementById('hud-name').textContent = player.name;
-
-    var rankPill = document.getElementById('hud-kill-rank');
-    rankPill.textContent = kr.icon + ' ' + (player.kills || 0);
-    rankPill.style.color = kr.color;
-    rankPill.title = 'Patente: ' + kr.title + ' (' + (player.kills || 0) + ' Kills)';
+    document.getElementById('hud-kill-emblem').innerHTML = rankBadge;
 
     var badge = document.getElementById('hud-mode-badge');
     badge.textContent = mInfo.short;
@@ -2424,7 +2566,9 @@
     document.getElementById('hud-zone').textContent = player.faction === 'fury' ? '🔥 Floresta de Iris (Nv. 1-15)' : '🌲 Floresta de Erina (Nv. 1-15)';
     document.getElementById('hud-gold').textContent = player.gold;
     document.getElementById('hud-br').textContent = st.br;
-    document.getElementById('hud-kill-info').innerHTML = 'Patente: <b style="color:' + kr.color + '">' + kr.icon + ' ' + kr.title + ' (' + (player.kills || 0) + ' Kills)</b>';
+    document.getElementById('hud-kill-info').innerHTML =
+      (rInfo ? 'Rank ' + rInfo.rankNum + ' ' + rankBadge : 'Sem Rank') +
+      ' &nbsp;•&nbsp; Kills: <b style="color:#fbbf24;">' + (player.kills || 0).toLocaleString('pt-BR') + '</b>';
 
     var xpPct = Math.min(100, (player.xp / player.maxXp) * 100);
     document.getElementById('bar-xp').style.width = xpPct + '%';
@@ -2528,10 +2672,13 @@
     var arch = ARCHETYPES[player.archKey];
     var mInfo = MODES[player.mode] || MODES.hm;
     var st = computeFullStats(player);
-    var kr = getKillRank(player.kills || 0);
+    var rankBadge = renderKillRankBadgeHTML(player.kills || 0);
+    var rInfo = getKillRankInfo(player.kills || 0);
 
-    document.getElementById('st-hero-title').innerHTML = '<span style="color:' + kr.color + '">' + kr.icon + '</span> ' + player.name + ' (Nv. ' + player.level + ')';
-    document.getElementById('st-hero-sub').textContent = getArchetypeDisplayName(player.archKey, player.faction) + ' • ' + mInfo.label + ' • Patente: ' + kr.title + ' (' + (player.kills || 0) + ' Kills)';
+    document.getElementById('st-hero-title').innerHTML = rankBadge + ' ' + player.name + ' (Nv. ' + player.level + ')';
+    document.getElementById('st-hero-sub').textContent =
+      getArchetypeDisplayName(player.archKey, player.faction) + ' • ' + mInfo.label +
+      ' • ' + (rInfo ? 'Rank ' + rInfo.rankNum : 'Sem Rank') + ' (' + (player.kills || 0).toLocaleString('pt-BR') + ' Kills)';
     document.getElementById('st-free-pts').textContent = player.freePoints;
 
     var attrs = [
@@ -2673,13 +2820,11 @@
           dotsHtml += '</div>';
         }
 
-        // Setas de comparação Verde (▲) ou Vermelha (▼)
         var cmp = compareBagItemToEquipped(item);
         var arrowHtml = '';
         if (cmp > 0) arrowHtml = '<span class="cmp-arrow cmp-up" title="Melhor que o equipado">▲</span>';
         else if (cmp < 0) arrowHtml = '<span class="cmp-arrow cmp-down" title="Inferior ao equipado">▼</span>';
 
-        // Ícone do elemento no canto inferior esquerdo
         var elemCorner = '';
         if (item.element && item.element !== 'none' && ELEMENTS[item.element]) {
           elemCorner = '<span class="cell-elem-corner">' + ELEMENTS[item.element].icon + '</span>';
@@ -2834,7 +2979,6 @@
     document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#fbbf24; font-size:0.8rem; text-align:center; margin:auto;">Item vendido por +' + item.sellPrice + ' Ouro!</div>';
   }
 
-  // ================= BOTÕES "VENDER TUDO" (EQUIPS E LAPIS) =================
   function sellAllEquipsInBag() {
     var totalGold = 0, count = 0;
     var kept = [];
@@ -2952,7 +3096,6 @@
   function renderSmithWindow() {
     document.getElementById('smith-gold-val').textContent = player.gold;
 
-    // PASSO 1: Equipamentos vestidos
     var eqList = document.getElementById('smith-eq-list');
     eqList.innerHTML = '';
     var firstOccupied = null;
@@ -3003,7 +3146,6 @@
     if (lsCount === 0) useLinkStone = false;
     if (hmCount === 0) useExtHammer = false;
 
-    // PASSO 2: Visualização clara dos Engastes + Botão de Extrair em cada Lapis encaixada
     var socketsHtml = '';
     if (!item.sockets || item.sockets.length === 0) {
       socketsHtml = '<div style="color:#94a3b8; font-size:0.78rem; padding:16px; text-align:center;">Este item Normal não possui engastes para Lapis.</div>';
@@ -3054,7 +3196,6 @@
         '</label>' +
       '</div>';
 
-    // PASSO 3: Escolher Lapis na Mochila e clicar em Linkar
     var lapisEntries = [];
     for (var j = 0; j < player.bag.length; j++) {
       if (player.bag[j].slot === 'lapis') lapisEntries.push({ bagIdx: j, item: player.bag[j] });
