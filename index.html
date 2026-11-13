@@ -65,7 +65,6 @@
       padding-bottom: 8px;
     }
 
-    /* Seletor de Facção */
     .faction-row {
       display: flex;
       gap: 14px;
@@ -98,7 +97,6 @@
       color: #fff;
     }
 
-    /* Grid das 6 Classes Clássicas */
     .class-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
@@ -129,7 +127,6 @@
     .class-card .auto-stat { font-size: 0.7rem; color: #34d399; font-weight: bold; margin-bottom: 4px; }
     .class-card .desc { font-size: 0.7rem; color: #cbd5e1; line-height: 1.25; }
 
-    /* Seletor de Modo (NM / HM / UM) */
     .mode-row {
       display: flex;
       gap: 10px;
@@ -188,7 +185,6 @@
     .btn-create:hover { filter: brightness(1.1); }
     .btn-create:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; filter: none; }
 
-    /* Slots Salvos */
     .slots-grid {
       display: flex;
       gap: 14px;
@@ -227,7 +223,6 @@
     /* ================= CANVAS & HUD ESTILO EP 4.5 ================= */
     #gameCanvas { display: block; width: 100vw; height: 100vh; cursor: crosshair; }
 
-    /* HUD Superior Esquerdo: 3 Barras (HP, MP, SP) */
     #hud-top-left {
       position: fixed;
       top: 12px; left: 12px;
@@ -273,7 +268,6 @@
       line-height: 10px; font-weight: bold; text-shadow: 1px 1px 2px #000;
     }
 
-    /* HUD Alvo Selecionado (Topo Centro) */
     #hud-target-box {
       position: fixed;
       top: 12px; left: 50%; transform: translateX(-50%);
@@ -299,7 +293,6 @@
     }
     .target-hp-fill { height: 100%; background: linear-gradient(90deg, #b91c1c, #ef4444); width: 100%; }
 
-    /* HUD Superior Direito: Minimapa + Botões Clássicos */
     #hud-top-right {
       position: fixed;
       top: 12px; right: 12px;
@@ -330,12 +323,12 @@
     .hud-btn-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
     .btn-ep {
       background: #161f30; border: 1px solid #475569; color: #f1f5f9;
-      padding: 6px 11px; border-radius: 7px; font-size: 0.78rem; font-weight: bold; cursor: pointer;
+      padding: 6px 10px; border-radius: 7px; font-size: 0.76rem; font-weight: bold; cursor: pointer;
     }
     .btn-ep:hover { border-color: #fbbf24; color: #fbbf24; }
     .btn-ep.stat-alert { border-color: #fbbf24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.45); color: #fbbf24; }
+    .btn-ep.smith-btn { border-color: #38bdf8; color: #7dd3fc; }
 
-    /* Barra de Skills Inferior */
     #hud-bottom {
       position: fixed;
       bottom: 12px; left: 50%; transform: translateX(-50%);
@@ -376,10 +369,10 @@
     #controls-hint {
       position: fixed; bottom: 12px; left: 12px;
       background: rgba(11, 16, 27, 0.88); border: 1px solid #263248;
-      padding: 7px 11px; border-radius: 8px; font-size: 0.71rem; color: #94a3b8; line-height: 1.5; display: none; z-index: 15;
+      padding: 7px 11px; border-radius: 8px; font-size: 0.7rem; color: #94a3b8; line-height: 1.5; display: none; z-index: 15;
     }
 
-    /* ================= JANELA DE STATUS DO PERSONAGEM (TECLA C) ================= */
+    /* ================= JANELAS FLUTUANTES (STATUS, INVENTÁRIO E FERREIRO) ================= */
     .ep-window {
       position: fixed;
       top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -390,8 +383,8 @@
       flex-direction: column;
       z-index: 100;
       box-shadow: 0 22px 60px rgba(0,0,0,0.92);
-      max-width: 96vw;
-      max-height: 92vh;
+      max-width: 97vw;
+      max-height: 93vh;
     }
     .ep-win-header {
       padding: 10px 16px;
@@ -408,6 +401,7 @@
       width: 26px; height: 26px; border-radius: 6px; font-weight: bold; cursor: pointer;
     }
 
+    /* JANELA DE STATUS (C) */
     #status-modal { width: 540px; }
     .status-body { padding: 14px; overflow-y: auto; }
     .status-top-summary {
@@ -450,36 +444,24 @@
     }
     .btn-reset-stats:hover { border-color: #fbbf24; color: #fbbf24; }
 
-    /* ================= INVENTÁRIO CLÁSSICO EP 4.5 (TECLA B / I) ================= */
-    #bag-modal { width: 980px; }
+    /* JANELA DE INVENTÁRIO (B) */
+    #bag-modal { width: 990px; }
     .inv-layout {
       display: flex; gap: 12px; padding: 12px; overflow-y: auto; flex-wrap: wrap;
     }
-    /* Paperdoll (Silhueta com 12 Slots ao redor) */
     .paperdoll-panel {
       width: 320px; background: #090d16; border: 1px solid #1e293b;
       border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center;
     }
     .paperdoll-grid {
-      display: grid;
-      grid-template-columns: 62px 1fr 62px;
-      gap: 6px;
-      width: 100%;
-      align-items: center;
-      margin: 6px 0;
+      display: grid; grid-template-columns: 62px 1fr 62px;
+      gap: 6px; width: 100%; align-items: center; margin: 6px 0;
     }
     .pd-col { display: flex; flex-direction: column; gap: 6px; align-items: center; }
     .pd-center-figure {
-      height: 250px;
-      background: radial-gradient(circle at center, #182338 0%, #090d16 75%);
-      border: 1px dashed #263248;
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 6px;
+      height: 250px; background: radial-gradient(circle at center, #182338 0%, #090d16 75%);
+      border: 1px dashed #263248; border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 6px;
     }
     .pd-slot {
       width: 56px; height: 56px; background: #121927; border: 1.5px solid #334155;
@@ -489,17 +471,10 @@
     .pd-slot:hover { border-color: #fbbf24; transform: scale(1.04); }
     .pd-slot-lbl { font-size: 0.56rem; color: #64748b; text-transform: uppercase; margin-top: 2px; }
     .pd-slot-ico { font-size: 1.35rem; }
-    .pd-plus-tag {
-      position: absolute; top: 1px; right: 3px; font-size: 0.58rem; font-weight: bold; color: #fbbf24;
-    }
-    .pd-bottom-row {
-      display: flex; gap: 8px; justify-content: center; margin-top: 4px;
-    }
+    .pd-plus-tag { position: absolute; top: 1px; right: 3px; font-size: 0.58rem; font-weight: bold; color: #fbbf24; }
+    .pd-bottom-row { display: flex; gap: 8px; justify-content: center; margin-top: 4px; }
 
-    /* Mochila de 5 Abas + Inspetor */
-    .bag-right-panel {
-      flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px;
-    }
+    .bag-right-panel { flex: 1; min-width: 340px; display: flex; flex-direction: column; gap: 10px; }
     .bag-tabs-bar {
       display: flex; gap: 5px; background: #090d16; padding: 6px; border-radius: 8px; border: 1px solid #1e293b;
     }
@@ -507,46 +482,25 @@
       flex: 1; padding: 6px 4px; border: 1px solid #263248; background: #121927;
       color: #94a3b8; border-radius: 6px; font-size: 0.74rem; font-weight: bold; cursor: pointer;
     }
-    .bag-tab.active {
-      border-color: #fbbf24; color: #fbbf24; background: #1c263b;
-    }
+    .bag-tab.active { border-color: #fbbf24; color: #fbbf24; background: #1c263b; }
     .bag-cells-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 6px;
-      background: #090d16;
-      border: 1px solid #1e293b;
-      border-radius: 9px;
-      padding: 8px;
-      min-height: 230px;
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
+      background: #090d16; border: 1px solid #1e293b; border-radius: 9px; padding: 8px; min-height: 230px;
     }
     .bag-cell {
-      aspect-ratio: 1 / 1;
-      background: #111827;
-      border: 1.5px solid #263248;
-      border-radius: 7px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      position: relative;
-      font-size: 1.35rem;
+      aspect-ratio: 1 / 1; background: #111827; border: 1.5px solid #263248;
+      border-radius: 7px; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; cursor: pointer; position: relative; font-size: 1.35rem;
     }
     .bag-cell:hover { border-color: #fbbf24; background: #182236; }
     .bag-cell.selected-cell { box-shadow: 0 0 12px rgba(251, 191, 36, 0.5); border-color: #fbbf24 !important; }
-    .cell-qty {
-      position: absolute; bottom: 2px; right: 4px; font-size: 0.62rem; font-weight: bold; color: #e2e8f0;
-    }
-    .cell-sockets {
-      position: absolute; top: 2px; left: 3px; display: flex; gap: 2px;
-    }
+    .cell-qty { position: absolute; bottom: 2px; right: 4px; font-size: 0.62rem; font-weight: bold; color: #e2e8f0; }
+    .cell-sockets { position: absolute; top: 2px; left: 3px; display: flex; gap: 2px; }
     .cell-dot { width: 5px; height: 5px; border-radius: 50%; border: 1px solid #94a3b8; }
 
-    /* Caixa de Detalhes do Item Selecionado */
     .item-tooltip-box {
       background: #090d16; border: 1.5px solid #334155; border-radius: 9px;
-      padding: 10px 12px; min-height: 135px; display: flex; flex-direction: column; justify-content: space-between;
+      padding: 10px 12px; min-height: 140px; display: flex; flex-direction: column; justify-content: space-between;
     }
     .tooltip-actions { display: flex; gap: 8px; margin-top: 8px; }
     .btn-act {
@@ -555,6 +509,93 @@
     .btn-act-equip { background: #10b981; color: #05070c; }
     .btn-act-equip:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
     .btn-act-sell { background: #f59e0b; color: #05070c; }
+
+    /* ================= JANELA DO FERREIRO EP 4.5 (TECLA F) ================= */
+    #smith-modal { width: 1040px; }
+    .smith-tabs {
+      display: flex; gap: 8px; padding: 10px 14px 0; background: #0d131f;
+    }
+    .smith-tab-btn {
+      flex: 1; padding: 9px; border-radius: 8px 8px 0 0; border: 1.5px solid #263248;
+      border-bottom: none; background: #121927; color: #94a3b8; font-weight: bold; font-size: 0.82rem; cursor: pointer;
+    }
+    .smith-tab-btn.active {
+      border-color: #38bdf8; color: #38bdf8; background: #172338;
+    }
+    .smith-body {
+      padding: 12px 14px 14px; display: flex; gap: 12px; overflow-y: auto; flex-wrap: wrap;
+      border-top: 1.5px solid #38bdf8;
+    }
+    .smith-col-left {
+      width: 245px; background: #090d16; border: 1px solid #1e293b; border-radius: 9px; padding: 9px;
+      max-height: 450px; overflow-y: auto;
+    }
+    .smith-eq-btn {
+      width: 100%; text-align: left; background: #121927; border: 1.5px solid #263248;
+      color: #e2e8f0; padding: 7px 9px; border-radius: 7px; margin-bottom: 6px; cursor: pointer; font-size: 0.76rem;
+    }
+    .smith-eq-btn.selected {
+      background: #1a2842; border-color: #fbbf24 !important; box-shadow: 0 0 10px rgba(251, 191, 36, 0.25);
+    }
+    .smith-col-center {
+      flex: 1.25; min-width: 310px; background: #090d16; border: 1px solid #1e293b;
+      border-radius: 9px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .smith-col-right {
+      flex: 1.15; min-width: 280px; background: #090d16; border: 1px solid #1e293b;
+      border-radius: 9px; padding: 10px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .socket-slots-bar {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0;
+    }
+    .socket-circle {
+      width: 36px; height: 36px; border-radius: 50%; border: 2px dashed #475569;
+      background: #121927; display: flex; align-items: center; justify-content: center;
+      font-size: 0.64rem; font-weight: bold; color: #64748b;
+    }
+    .socket-circle.filled {
+      border-style: solid; box-shadow: 0 0 10px currentColor; color: #fff;
+    }
+    .linked-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #111827; border: 1px solid #1e293b; border-radius: 7px; padding: 5px 8px; margin-bottom: 5px; font-size: 0.72rem;
+    }
+    .btn-extract {
+      background: rgba(251, 191, 36, 0.16); border: 1px solid #fbbf24; color: #fbbf24;
+      border-radius: 5px; padding: 3px 7px; font-size: 0.66rem; font-weight: bold; cursor: pointer;
+    }
+    .btn-extract:hover:not(:disabled) { background: #fbbf24; color: #05070c; }
+    .btn-extract:disabled { border-color: #334155; color: #64748b; background: transparent; cursor: not-allowed; }
+
+    .support-check-box {
+      background: #111827; border: 1px solid #263248; border-radius: 8px; padding: 8px 10px; font-size: 0.75rem;
+    }
+    .support-check-box label { display: flex; align-items: center; gap: 7px; cursor: pointer; margin-bottom: 4px; }
+    .lapis-bag-list {
+      max-height: 230px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
+    }
+    .lapis-card-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: #111827; border: 1.5px solid #263248; border-radius: 8px; padding: 7px 9px; font-size: 0.74rem;
+    }
+    .btn-do-link {
+      background: #38bdf8; color: #05070c; border: none; border-radius: 6px;
+      padding: 5px 9px; font-weight: bold; font-size: 0.7rem; cursor: pointer;
+    }
+    .btn-do-link:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+
+    .shop-mini-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 6px;
+    }
+    .btn-buy-supply {
+      background: #131c2e; border: 1px solid #334155; color: #e2e8f0;
+      border-radius: 7px; padding: 6px; text-align: left; cursor: pointer; font-size: 0.68rem;
+    }
+    .btn-buy-supply:hover { border-color: #fbbf24; }
+    #smith-banner {
+      display: none; padding: 8px 12px; margin: 8px 14px 0; border-radius: 8px;
+      font-size: 0.78rem; font-weight: bold; text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -567,7 +608,6 @@
     <div class="ep-box">
       <h2>1. Criar Novo Personagem</h2>
 
-      <!-- Facção -->
       <div class="faction-row">
         <button type="button" class="faction-btn active-light" id="fac-light" onclick="selectFaction('light')">
           <div style="font-weight:bold; font-size:0.95rem; color:#38bdf8;">☀️ Aliança da Luz</div>
@@ -579,10 +619,8 @@
         </button>
       </div>
 
-      <!-- 6 Classes Clássicas EP 4.5 -->
       <div class="class-grid" id="class-grid"></div>
 
-      <!-- Modos de Dificuldade (NM / HM / UM) -->
       <div class="mode-row">
         <div class="mode-card" id="mode-nm" onclick="selectMode('nm')">
           <div class="mode-title" style="color:#38bdf8;">📘 Modo Normal (NM)</div>
@@ -613,7 +651,6 @@
   <!-- ================= CANVAS 2.5D & HUD ================= -->
   <canvas id="gameCanvas"></canvas>
 
-  <!-- HUD Superior Esquerdo (HP / MP / SP) -->
   <div id="hud-top-left">
     <div class="hud-portrait" id="hud-portrait">⚔️<span class="hud-lvl-pill" id="hud-lvl">Nv.1</span></div>
     <div class="hud-bars-col">
@@ -627,7 +664,6 @@
     </div>
   </div>
 
-  <!-- HUD Alvo Selecionado (Topo Centro) -->
   <div id="hud-target-box">
     <div class="target-header">
       <span id="target-name">Alvo</span>
@@ -636,7 +672,6 @@
     <div class="target-hp-bg"><div class="target-hp-fill" id="target-hp-fill"></div><div class="vital-txt" id="target-hp-txt">100 / 100</div></div>
   </div>
 
-  <!-- HUD Superior Direito (Minimapa + Botões EP 4.5) -->
   <div id="hud-top-right">
     <div class="radar-wrap">
       <div class="zone-card">
@@ -651,16 +686,16 @@
     <div class="hud-btn-row">
       <button type="button" class="btn-ep" id="btn-hud-status" onclick="toggleWindow('status-modal')">📊 Status (C)</button>
       <button type="button" class="btn-ep" onclick="toggleWindow('bag-modal')">🎒 Inventário (B)</button>
+      <button type="button" class="btn-ep smith-btn" onclick="toggleWindow('smith-modal')">🔨 Ferreiro (F)</button>
       <button type="button" class="btn-ep" onclick="returnToCharSelect()">👥 Personagens</button>
     </div>
   </div>
 
   <div id="controls-hint">
     🖱️ <b>Clique:</b> Mover / Selecionar Alvo &nbsp;|&nbsp; <b>WASD:</b> Mover<br>
-    ⌨️ <b>1-4:</b> Skills | <b>5:</b> Poção HP | <b>6:</b> Poção SP/MP | <b>A:</b> Auto | <b>C:</b> Status | <b>B:</b> Inventário
+    ⌨️ <b>1-4:</b> Skills | <b>5:</b> Poção HP | <b>6:</b> Poção SP/MP | <b>A:</b> Auto | <b>C:</b> Status | <b>B:</b> Mochila | <b>F:</b> Ferreiro
   </div>
 
-  <!-- Barra de Skills & XP -->
   <div id="hud-bottom">
     <div class="skill-dock" id="skill-dock"></div>
     <div class="xp-strip">
@@ -706,7 +741,6 @@
       <button type="button" class="btn-x" onclick="closeAllWindows()">X</button>
     </div>
     <div class="inv-layout">
-      <!-- Silhueta do Personagem com 12 Slots -->
       <div class="paperdoll-panel">
         <div style="font-size:0.75rem; color:#94a3b8; font-weight:bold; text-transform:uppercase;">Equipamentos do Herói</div>
         <div class="paperdoll-grid">
@@ -741,7 +775,6 @@
         </div>
       </div>
 
-      <!-- Mochila de 5 Abas + Detalhes do Item -->
       <div class="bag-right-panel">
         <div class="bag-tabs-bar">
           <button type="button" class="bag-tab active" id="btab-0" onclick="switchBagPage(0)">Aba 1</button>
@@ -756,6 +789,49 @@
         <div class="item-tooltip-box" id="item-tooltip-box">
           <div style="color:#64748b; font-size:0.8rem; text-align:center; margin:auto;">
             Clique em qualquer item equipado ou na mochila para ver atributos, slots de Lapis e opções.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= JANELA DO FERREIRO EP 4.5 (TECLA F) ================= -->
+  <div class="ep-window" id="smith-modal">
+    <div class="ep-win-header">
+      <h3>🔨 Ferreiro de Apulune / Iris — Linkagem de Lapis & Encantamento [1] a [20]</h3>
+      <button type="button" class="btn-x" onclick="closeAllWindows()">X</button>
+    </div>
+
+    <div class="smith-tabs">
+      <button type="button" class="smith-tab-btn active" id="stab-link" onclick="switchSmithTab('link')">💎 Linkar & Extrair Lapis</button>
+      <button type="button" class="smith-tab-btn" id="stab-enchant" onclick="switchSmithTab('enchant')">✨ Encantar [1] a [20] (Lapisias)</button>
+    </div>
+
+    <div id="smith-banner"></div>
+
+    <div class="smith-body">
+      <!-- Coluna Esquerda: Lista de Itens Equipados -->
+      <div class="smith-col-left">
+        <div class="stat-col-title">Equipamentos em Uso</div>
+        <div id="smith-eq-list"></div>
+      </div>
+
+      <!-- Coluna Central: Bigorna / Engastes do Item Selecionado -->
+      <div class="smith-col-center" id="smith-center-panel"></div>
+
+      <!-- Coluna Direita: Lapis na Mochila + Mercador de Pedras/Lapisias -->
+      <div class="smith-col-right">
+        <div class="stat-col-title">Lapis na Mochila (<span id="smith-lapis-count">0</span>)</div>
+        <div class="lapis-bag-list" id="smith-lapis-list"></div>
+
+        <div style="border-top:1px solid #1e293b; padding-top:8px; margin-top:auto;">
+          <div style="font-size:0.72rem; color:#fbbf24; font-weight:bold; margin-bottom:4px;">🏪 Suprimentos do Ferreiro (Ouro: <span id="smith-gold-val">0</span>)</div>
+          <div class="shop-mini-grid">
+            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('link_stone', 150)">🔷 <b>Pedra Linkagem</b><br><span style="color:#94a3b8;">+25% Chance • $150</span></button>
+            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('ext_hammer', 180)">🔨 <b>Martelo Extração</b><br><span style="color:#94a3b8;">+30% Chance • $180</span></button>
+            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('lapisia_atk', 220)">⚔️ <b>Lapisia Ataque</b><br><span style="color:#94a3b8;">Encanta Arma • $220</span></button>
+            <button type="button" class="btn-buy-supply" onclick="buySmithSupply('lapisia_def', 220)">🛡️ <b>Lapisia Defesa</b><br><span style="color:#94a3b8;">Encanta Armad. • $220</span></button>
+            <button type="button" class="btn-buy-supply" style="grid-column:1/-1;" onclick="buySmithSupply('prot_rune', 300)">📜 <b>Runa de Proteção (Encantamento)</b> — <span style="color:#34d399;">Evita perder nível se falhar • $300</span></button>
           </div>
         </div>
       </div>
@@ -792,10 +868,65 @@
   var selectedBagIndex = -1;
   var selectedEquippedSlot = null;
 
+  var currentSmithTab = 'link';
+  var smithSelectedSlot = 'weapon';
+  var useLinkStone = false;
+  var useExtHammer = false;
+  var useProtRune = false;
+
   var canvas = document.getElementById('gameCanvas');
   var ctx = canvas.getContext('2d');
   var minimapCanvas = document.getElementById('minimapCanvas');
   var mCtx = minimapCanvas ? minimapCanvas.getContext('2d') : null;
+
+  // ================= ÁUDIO DE FORJA (SUCESSO & QUEBRA DE CRISTAL) =================
+  var audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) audioCtx = new Ctx();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playSuccessChime() {
+    try {
+      var c = getAudioCtx();
+      if (!c) return;
+      var now = c.currentTime;
+      [587.33, 880, 1174.66, 1760].forEach(function(freq, i) {
+        var osc = c.createOscillator();
+        var g = c.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.06);
+        g.gain.setValueAtTime(0.001, now + i * 0.06);
+        g.gain.exponentialRampToValueAtTime(0.15, now + i * 0.06 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.06 + 0.42);
+        osc.connect(g); g.connect(c.destination);
+        osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.44);
+      });
+    } catch (e) {}
+  }
+
+  function playBreakSound() {
+    try {
+      var c = getAudioCtx();
+      if (!c) return;
+      var now = c.currentTime;
+      var len = Math.floor(c.sampleRate * 0.4);
+      var buf = c.createBuffer(1, len, c.sampleRate);
+      var data = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2) * (Math.random() > 0.7 ? 1 : 0.25);
+      }
+      var src = c.createBufferSource(); src.buffer = buf;
+      var flt = c.createBiquadFilter(); flt.type = 'highpass'; flt.frequency.setValueAtTime(1750, now);
+      var g = c.createGain(); g.gain.setValueAtTime(0.3, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      src.connect(flt); flt.connect(g); g.connect(c.destination);
+      src.start(now);
+    } catch (e) {}
+  }
 
   // ================= CARREGADOR DE TEXTURAS EXTERNAS (PASTA assets/) =================
   var WORLD_TEXTURES = {
@@ -819,7 +950,6 @@
   }
   initWorldTextures();
 
-  // Fallback procedural do gramado
   var grassPatternCanvas = document.createElement('canvas');
   grassPatternCanvas.width = 256;
   grassPatternCanvas.height = 256;
@@ -854,9 +984,74 @@
 
   function getElementMultiplier(atkElem, defElem) {
     if (!atkElem || atkElem === 'none' || !defElem || defElem === 'none') return 1.0;
-    if (ELEMENTS[atkElem] && ELEMENTS[atkElem].beats === defElem) return 1.35; // Vantagem elemental!
-    if (ELEMENTS[defElem] && ELEMENTS[defElem].beats === atkElem) return 0.75; // Desvantagem elemental
+    if (ELEMENTS[atkElem] && ELEMENTS[atkElem].beats === defElem) return 1.35;
+    if (ELEMENTS[defElem] && ELEMENTS[defElem].beats === atkElem) return 0.75;
     return 1.0;
+  }
+
+  // ================= LAPIS CLÁSSICAS EP 4.5 (STATUS, DUPLAS E ELEMENTAIS) =================
+  var LAPIS_CATALOG = {
+    // Lapis de Status (Nv. 1 a 6)
+    str: { code: 'FOR', name: 'Lapis de Força',     color: '#f87171', kind: 'stat', stats: { str: [0, 3, 7, 12, 20, 32, 50] } },
+    dex: { code: 'DES', name: 'Lapis de Destreza',  color: '#34d399', kind: 'stat', stats: { dex: [0, 3, 7, 12, 20, 32, 50] } },
+    rec: { code: 'REC', name: 'Lapis de Vigor',     color: '#fbbf24', kind: 'stat', stats: { rec: [0, 3, 7, 12, 20, 32, 50] } },
+    int: { code: 'INT', name: 'Lapis Inteligência', color: '#38bdf8', kind: 'stat', stats: { int: [0, 3, 7, 12, 20, 32, 50] } },
+    wis: { code: 'SAB', name: 'Lapis Sabedoria',    color: '#c084fc', kind: 'stat', stats: { wis: [0, 3, 7, 12, 20, 32, 50] } },
+    luc: { code: 'SOR', name: 'Lapis da Sorte',     color: '#f472b6', kind: 'stat', stats: { luc: [0, 3, 7, 12, 20, 32, 50] } },
+
+    // Lapis Duplas Clássicas
+    dual_duel:  { code: 'DUO', name: 'Lapis Duelo (FOR+DES)',    color: '#fb923c', kind: 'dual', stats: { str: [0, 4, 9, 15, 22, 30, 40], dex: [0, 4, 9, 15, 22, 30, 40] } },
+    dual_vital: { code: 'VIT', name: 'Lapis Vital (REC+SOR)',    color: '#fde047', kind: 'dual', stats: { rec: [0, 4, 9, 15, 22, 30, 40], luc: [0, 4, 9, 15, 22, 30, 40] } },
+    dual_myst:  { code: 'MYS', name: 'Lapis Mística (INT+SAB)',  color: '#818cf8', kind: 'dual', stats: { int: [0, 4, 9, 15, 22, 30, 40], wis: [0, 4, 9, 15, 22, 30, 40] } },
+
+    // Lapis Elementais (Alteram elemento da Arma ou Peitoral)
+    elem_fire:  { code: 'FOG', name: 'Lapis Elemental Fogo',  color: '#fb7185', kind: 'elem', element: 'fire' },
+    elem_water: { code: 'AGU', name: 'Lapis Elemental Água',  color: '#38bdf8', kind: 'elem', element: 'water' },
+    elem_earth: { code: 'TER', name: 'Lapis Elemental Terra', color: '#fbbf24', kind: 'elem', element: 'earth' },
+    elem_wind:  { code: 'VEN', name: 'Lapis Elemental Vento', color: '#34d399', kind: 'elem', element: 'wind' }
+  };
+
+  var LAPIS_BASE_LINK_CHANCE = [0, 85, 72, 58, 42, 28, 18];
+
+  function formatLapisEffect(lapis) {
+    var meta = LAPIS_CATALOG[lapis.lapisKey];
+    if (!meta) return '';
+    if (meta.kind === 'elem') {
+      return 'Concede Elemento ' + ELEMENTS[meta.element].label + ' (+35% Dano Elemental)';
+    }
+    var parts = [];
+    var lvl = lapis.level || 1;
+    Object.keys(meta.stats).forEach(function(k) {
+      var val = meta.stats[k][lvl] || 0;
+      var lbl = { str: 'FOR', dex: 'DES', rec: 'REC', int: 'INT', wis: 'SAB', luc: 'SOR' }[k];
+      if (val > 0) parts.push('+' + val + ' ' + lbl);
+    });
+    return parts.join(' & ');
+  }
+
+  function generateRandomLapisItem(tier) {
+    var keys = Object.keys(LAPIS_CATALOG);
+    var k = keys[Math.floor(Math.random() * keys.length)];
+    var meta = LAPIS_CATALOG[k];
+    var lvl = 1;
+    if (meta.kind !== 'elem') {
+      var r = Math.random();
+      if (tier === 'boss') lvl = r > 0.75 ? 6 : (r > 0.45 ? 5 : 4);
+      else if (tier === 'miniboss') lvl = r > 0.75 ? 5 : (r > 0.40 ? 4 : 3);
+      else lvl = r > 0.88 ? 3 : (r > 0.55 ? 2 : 1);
+    }
+
+    return {
+      id: 'lap_' + Math.random().toString(36).slice(2, 10),
+      name: meta.kind === 'elem' ? meta.name : (meta.name + ' Nv.' + lvl),
+      icon: '💎',
+      slot: 'lapis',
+      lapisKey: k,
+      level: lvl,
+      rarity: lvl >= 5 || meta.kind === 'elem' ? 'heroico' : (lvl >= 3 ? 'veneravel' : 'nobre'),
+      sellPrice: lvl * 45,
+      desc: formatLapisEffect({ lapisKey: k, level: lvl })
+    };
   }
 
   // ================= 6 ARQUÉTIPOS CLÁSSICOS EP 4.5 =================
@@ -897,10 +1092,10 @@
       baseStats: { str: 11, dex: 15, rec: 8, int: 6, wis: 6, luc: 12 },
       desc: 'Mestre da esquiva e críticos fulminantes com adagas gêmeas.',
       skills: [
-        { name: 'Corte Venenoso',  icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.1, range: 95, color: '#c084fc', proj: false },
+        { name: 'Corte Venenoso',   icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.1, range: 95, color: '#c084fc', proj: false },
         { name: 'Passo das Sombras',icon: '👤', mult: 1.85, cost: 18, res: 'sp', cd: 4.0, range: 230, dash: true, color: '#a855f7', proj: false },
-        { name: 'Chuva de Adagas', icon: '🌀', mult: 2.15, cost: 25, res: 'sp', cd: 5.5, range: 130, aoe: true, color: '#f43f5e', proj: false },
-        { name: 'Execução Fatal',  icon: '💀', mult: 3.55, cost: 38, res: 'sp', cd: 8.5, range: 100, color: '#fbbf24', proj: false }
+        { name: 'Chuva de Adagas',  icon: '🌀', mult: 2.15, cost: 25, res: 'sp', cd: 5.5, range: 130, aoe: true, color: '#f43f5e', proj: false },
+        { name: 'Execução Fatal',   icon: '💀', mult: 3.55, cost: 38, res: 'sp', cd: 8.5, range: 100, color: '#fbbf24', proj: false }
       ]
     },
     archer: {
@@ -953,7 +1148,6 @@
     um: { label: 'Extremo (UM)', short: 'UM', ptsPerLvl: 9, color: '#fb7185', badgeBg: '#881337' }
   };
 
-  // ================= RARIDADES & ITENS EP 4.5 =================
   var RARITIES = {
     comum:     { label: 'Comum',     color: '#ffffff', slots: 0, mult: 1.0,  price: 18 },
     nobre:     { label: 'Nobre',     color: '#38bdf8', slots: 1, mult: 1.35, price: 50 },
@@ -1001,7 +1195,7 @@
     var r = RARITIES[rKey];
     var scale = 1 + (lvl - 1) * 0.22;
     var elemKeys = ['none', 'fire', 'water', 'earth', 'wind'];
-    var elem = (slot === 'weapon' || slot === 'armor') && Math.random() > 0.45
+    var elem = (slot === 'weapon' || slot === 'armor') && Math.random() > 0.55
       ? elemKeys[1 + Math.floor(Math.random() * 4)]
       : 'none';
 
@@ -1039,7 +1233,7 @@
     return item.reqMode === 'nm';
   }
 
-  // ================= CÁLCULO DE ATRIBUTOS EP 4.5 (FOR / DES / REC / INT / SAB / SOR) =================
+  // ================= CÁLCULO COMPLETO (ATRIBUTOS + LAPIS + ENCANTAMENTO [1..20]) =================
   function computeFullStats(p) {
     var arch = ARCHETYPES[p.archKey];
     var totalStr = p.stats.str;
@@ -1054,20 +1248,38 @@
     Object.keys(p.equipped).forEach(function(slotKey) {
       var it = p.equipped[slotKey];
       if (!it) return;
-      var plusMult = 1 + (it.plus || 0) * 0.12;
+      // Encantamento [1] a [20] concede +10% por nível no item
+      var plusMult = 1 + (it.plus || 0) * 0.10;
       eqPhysAtk += Math.round((it.physAtk || 0) * plusMult);
       eqMagAtk  += Math.round((it.magAtk  || 0) * plusMult);
       eqPhysDef += Math.round((it.physDef || 0) * plusMult);
       eqMagDef  += Math.round((it.magDef  || 0) * plusMult);
+
       totalStr += (it.bonusStr || 0);
       totalDex += (it.bonusDex || 0);
       totalRec += (it.bonusRec || 0);
       totalInt += (it.bonusInt || 0);
       totalWis += (it.bonusWis || 0);
       totalLuc += (it.bonusLuc || 0);
+
+      // Soma todas as Lapis linkadas nos sockets do item
+      if (Array.isArray(it.sockets)) {
+        it.sockets.forEach(function(sock) {
+          if (!sock || !LAPIS_CATALOG[sock.lapisKey]) return;
+          var meta = LAPIS_CATALOG[sock.lapisKey];
+          if (meta.kind !== 'elem' && meta.stats) {
+            var lvl = sock.level || 1;
+            if (meta.stats.str) totalStr += (meta.stats.str[lvl] || 0);
+            if (meta.stats.dex) totalDex += (meta.stats.dex[lvl] || 0);
+            if (meta.stats.rec) totalRec += (meta.stats.rec[lvl] || 0);
+            if (meta.stats.int) totalInt += (meta.stats.int[lvl] || 0);
+            if (meta.stats.wis) totalWis += (meta.stats.wis[lvl] || 0);
+            if (meta.stats.luc) totalLuc += (meta.stats.luc[lvl] || 0);
+          }
+        });
+      }
     });
 
-    // Matemática clássica estilo EP 4.5
     var maxHp = Math.round(120 + p.level * 24 + totalRec * 14);
     var maxMp = Math.round(70  + p.level * 14 + totalWis * 12);
     var maxSp = Math.round(80  + p.level * 12 + totalDex * 10);
@@ -1132,6 +1344,20 @@
     document.getElementById('mode-um').className = 'mode-card' + (m === 'um' ? ' selected-um' : '');
   }
 
+  function addBagItem(bag, itemObj) {
+    if (itemObj.stackKey) {
+      for (var i = 0; i < bag.length; i++) {
+        if (bag[i].stackKey === itemObj.stackKey) {
+          bag[i].qty = (bag[i].qty || 1) + (itemObj.qty || 1);
+          return true;
+        }
+      }
+    }
+    if (bag.length >= 120) return false;
+    bag.push(itemObj);
+    return true;
+  }
+
   function createHero() {
     var freeIdx = -1;
     for (var i = 0; i < 3; i++) {
@@ -1154,7 +1380,7 @@
       level: 1,
       xp: 0,
       maxXp: 100,
-      gold: 500,
+      gold: 800,
       freePoints: MODES[selectedMode].ptsPerLvl,
       stats: { str: b.str, dex: b.dex, rec: b.rec, int: b.int, wis: b.wis, luc: b.luc },
       allocated: { str: 0, dex: 0, rec: 0, int: 0, wis: 0, luc: 0 },
@@ -1169,23 +1395,36 @@
         gloves: null, boots: null, cape: null, amulet: null,
         ring1: null, ring2: null, loop1: null, loop2: null
       },
-      bag: [] // Até 120 slots (5 abas x 24)
+      bag: []
     };
 
-    // Item inicial equipado conforme a classe
     var startWeapon = generateDropItem(1, 'normal');
     startWeapon.slot = 'weapon';
     startWeapon.name = 'Arma de Treino (' + getArchetypeDisplayName(selectedArchKey, selectedFaction) + ')';
     startWeapon.icon = arch.icon;
-    startWeapon.rarity = 'nobre';
+    startWeapon.rarity = 'veneravel';
     startWeapon.reqMode = 'nm';
-    startWeapon.sockets = [null];
+    startWeapon.sockets = [null, null];
     newHero.equipped.weapon = startWeapon;
 
-    // Runa de Ressurreição inicial para jogadores do Modo Extremo (UM)
+    // Kit inicial de Lapis e suprimentos do Ferreiro para testar na hora
+    var mainLapis = arch.atkStyle === 'magic' ? 'int' : 'str';
+    newHero.bag.push({
+      id: 'lap_init1', name: LAPIS_CATALOG[mainLapis].name + ' Nv.2', icon: '💎',
+      slot: 'lapis', lapisKey: mainLapis, level: 2, rarity: 'nobre', sellPrice: 90,
+      desc: formatLapisEffect({ lapisKey: mainLapis, level: 2 })
+    });
+    newHero.bag.push({
+      id: 'lap_init2', name: 'Lapis Elemental Fogo', icon: '💎',
+      slot: 'lapis', lapisKey: 'elem_fire', level: 1, rarity: 'heroico', sellPrice: 150,
+      desc: formatLapisEffect({ lapisKey: 'elem_fire', level: 1 })
+    });
+    addBagItem(newHero.bag, { id: 'sup_ls', stackKey: 'link_stone', name: 'Pedra de Linkagem', icon: '🔷', slot: 'consumable', rarity: 'nobre', qty: 2, sellPrice: 50, desc: '+25% de chance de linkar e protege a Lapis contra quebra.' });
+    addBagItem(newHero.bag, { id: 'sup_la', stackKey: 'lapisia_atk', name: 'Lapisia de Ataque', icon: '⚔️', slot: 'consumable', rarity: 'veneravel', qty: 2, sellPrice: 80, desc: 'Usada no Ferreiro para encantar Armas e Acessórios.' });
+
     if (selectedMode === 'um') {
-      newHero.bag.push({
-        id: 'rune_res_1', name: 'Runa de Ressurreição', icon: '🔮',
+      addBagItem(newHero.bag, {
+        id: 'rune_res_1', stackKey: 'rune_res', name: 'Runa de Ressurreição', icon: '🔮',
         slot: 'consumable', rarity: 'heroico', qty: 1, sellPrice: 0,
         desc: 'Protege contra a morte permanente no Modo Extremo (UM) uma vez.'
       });
@@ -1294,11 +1533,11 @@
 
   // ================= MAPA 2.5D & MONSTROS ELEMENTAIS =================
   var MONSTER_POOL = [
-    { name: 'Raposa das Folhas',      kind: 'wolf',   lvl: 2,  hp: 85,  atk: 10, elem: 'wind',  xp: 28,  gold: 15,  scale: 1.0,  tier: 'normal' },
-    { name: 'Slime Ácido de Erina',   kind: 'slime',  lvl: 4,  hp: 120, atk: 14, elem: 'water', xp: 42,  gold: 22,  scale: 1.05, tier: 'normal' },
-    { name: 'Batedor Goblin',         kind: 'goblin', lvl: 7,  hp: 165, atk: 20, elem: 'earth', xp: 65,  gold: 35,  scale: 1.1,  tier: 'normal' },
-    { name: 'Guardião de Rocha (Mini-Boss)', kind: 'golem', lvl: 12, hp: 420, atk: 34, elem: 'earth', xp: 180, gold: 130, scale: 1.4, tier: 'miniboss' },
-    { name: 'Kimuraku Infernal (BOSS)',      kind: 'dragon',lvl: 15, hp: 880, atk: 52, elem: 'fire',  xp: 480, gold: 380, scale: 1.65,tier: 'boss' }
+    { name: 'Raposa das Folhas',             kind: 'wolf',   lvl: 2,  hp: 85,  atk: 10, elem: 'wind',  xp: 28,  gold: 18,  scale: 1.0,  tier: 'normal' },
+    { name: 'Slime Ácido de Erina',          kind: 'slime',  lvl: 4,  hp: 120, atk: 14, elem: 'water', xp: 42,  gold: 25,  scale: 1.05, tier: 'normal' },
+    { name: 'Batedor Goblin',                kind: 'goblin', lvl: 7,  hp: 165, atk: 20, elem: 'earth', xp: 65,  gold: 38,  scale: 1.1,  tier: 'normal' },
+    { name: 'Guardião de Rocha (Mini-Boss)', kind: 'golem',  lvl: 12, hp: 420, atk: 34, elem: 'earth', xp: 180, gold: 140, scale: 1.4,  tier: 'miniboss' },
+    { name: 'Kimuraku Infernal (BOSS)',      kind: 'dragon', lvl: 15, hp: 880, atk: 52, elem: 'fire',  xp: 480, gold: 400, scale: 1.65, tier: 'boss' }
   ];
 
   function buildWorldProps() {
@@ -1356,6 +1595,7 @@
   // ================= CONTROLES & COMBATE =================
   canvas.addEventListener('mousedown', function(e) {
     if (!gameRunning) return;
+    getAudioCtx();
     var rect = canvas.getBoundingClientRect();
     var camX = player.x - canvas.width / 2;
     var camY = player.y - canvas.height / 2;
@@ -1390,6 +1630,7 @@
     if (k === 'a') toggleAuto();
     if (k === 'c') toggleWindow('status-modal');
     if (k === 'b' || k === 'i') toggleWindow('bag-modal');
+    if (k === 'f') toggleWindow('smith-modal');
     if (e.key === 'Escape') closeAllWindows();
   });
 
@@ -1514,11 +1755,35 @@
     player.gold += en.gold;
     addFloatingText(en.x, en.y - 45, '+' + en.xp + ' XP  +' + en.gold + ' Ouro', '#fbbf24');
 
-    var dropChance = en.tier === 'boss' ? 0.95 : (en.tier === 'miniboss' ? 0.70 : 0.40);
+    // Drop de Equipamento
+    var dropChance = en.tier === 'boss' ? 0.95 : (en.tier === 'miniboss' ? 0.70 : 0.36);
     if (player.bag.length < 120 && Math.random() < dropChance) {
       var item = generateDropItem(player.level, en.tier);
       player.bag.push(item);
-      addFloatingText(en.x, en.y - 72, '🎁 ' + item.name + '!', RARITIES[item.rarity].color);
+      addFloatingText(en.x, en.y - 70, '🎁 ' + item.name + '!', RARITIES[item.rarity].color);
+    }
+
+    // Drop de Lapis (Status, Duplas e Elementais)
+    var lapisChance = en.tier === 'boss' ? 0.90 : (en.tier === 'miniboss' ? 0.60 : 0.28);
+    if (player.bag.length < 120 && Math.random() < lapisChance) {
+      var lap = generateRandomLapisItem(en.tier);
+      player.bag.push(lap);
+      var lMeta = LAPIS_CATALOG[lap.lapisKey];
+      addFloatingText(en.x, en.y - 94, '💎 ' + lap.name + '!', lMeta ? lMeta.color : '#38bdf8');
+    }
+
+    // Drop ocasional de Lapisia / Pedra de Linkagem de Chefes
+    if ((en.tier === 'boss' || en.tier === 'miniboss') && Math.random() < 0.65) {
+      var isAtk = Math.random() > 0.5;
+      addBagItem(player.bag, {
+        id: 'lap_drop_' + Math.random().toString(36).slice(2, 8),
+        stackKey: isAtk ? 'lapisia_atk' : 'lapisia_def',
+        name: isAtk ? 'Lapisia de Ataque' : 'Lapisia de Defesa',
+        icon: isAtk ? '⚔️' : '🛡️',
+        slot: 'consumable', rarity: 'heroico', qty: 1, sellPrice: 90,
+        desc: isAtk ? 'Encanta Armas e Acessórios.' : 'Encanta Armaduras e Escudos.'
+      });
+      addFloatingText(en.x, en.y - 116, '✨ +1 Lapisia!', '#c084fc');
     }
 
     while (player.xp >= player.maxXp) {
@@ -1528,9 +1793,7 @@
       player.level += 1;
       player.maxXp = Math.round(player.maxXp * 1.35);
 
-      // +1 ponto automático na stat principal da classe (igual ao EP 4.5!)
       player.stats[arch.autoStat] += 1;
-      // Pontos livres conforme o modo (NM: +5, HM: +7, UM: +9)
       player.freePoints += mInfo.ptsPerLvl;
 
       var st = computeFullStats(player);
@@ -1547,13 +1810,13 @@
   function handlePlayerDeath() {
     var st = computeFullStats(player);
     if (player.mode === 'um') {
-      // Verifica se possui Runa de Ressurreição na mochila
       var runeIdx = -1;
       for (var i = 0; i < player.bag.length; i++) {
-        if (player.bag[i].name === 'Runa de Ressurreição') { runeIdx = i; break; }
+        if (player.bag[i].stackKey === 'rune_res' || player.bag[i].name === 'Runa de Ressurreição') { runeIdx = i; break; }
       }
       if (runeIdx >= 0) {
-        player.bag.splice(runeIdx, 1);
+        if ((player.bag[runeIdx].qty || 1) > 1) player.bag[runeIdx].qty -= 1;
+        else player.bag.splice(runeIdx, 1);
         player.hp = st.maxHp;
         player.x = WORLD_W / 2; player.y = WORLD_H / 2;
         player.targetX = player.x; player.targetY = player.y;
@@ -1571,7 +1834,6 @@
       }
     }
 
-    // NM / HM: Renasce na praça central
     player.hp = st.maxHp;
     player.x = WORLD_W / 2; player.y = WORLD_H / 2;
     player.targetX = player.x; player.targetY = player.y;
@@ -1730,7 +1992,6 @@
       fallbackGrassPattern = ctx.createPattern(grassPatternCanvas, 'repeat');
     }
 
-    // Gramado (usa assets/grama.png se disponível)
     ctx.save();
     ctx.translate(-camX, -camY);
     if (WORLD_TEXTURES.grama.loaded && WORLD_TEXTURES.grama.pattern) {
@@ -1744,7 +2005,6 @@
     }
     ctx.restore();
 
-    // Estrada (usa assets/estrada.png se disponível)
     ctx.save();
     ctx.lineCap = 'round';
     if (WORLD_TEXTURES.estrada.loaded && WORLD_TEXTURES.estrada.pattern) {
@@ -1767,7 +2027,6 @@
     }
     ctx.restore();
 
-    // Praça Central (Apulune / Iris)
     var cx = WORLD_W / 2 - camX, cy = WORLD_H / 2 - camY;
     ctx.save();
     ctx.fillStyle = 'rgba(30, 41, 59, 0.78)';
@@ -1777,7 +2036,6 @@
     ctx.beginPath(); ctx.arc(cx, cy, 130, 0, Math.PI * 2); ctx.stroke();
     ctx.restore();
 
-    // Lago (usa assets/agua.png se disponível)
     var lx = 760 - camX, ly = 2080 - camY;
     ctx.save();
     if (WORLD_TEXTURES.agua.loaded && WORLD_TEXTURES.agua.pattern) {
@@ -1795,7 +2053,6 @@
       ctx.beginPath(); ctx.ellipse(clickMarker.x - camX, clickMarker.y - camY, 18, 9, 0, 0, Math.PI * 2); ctx.stroke();
     }
 
-    // Ordenação de profundidade 2.5D (Y-Sorting)
     var queue = [];
     worldProps.forEach(function(pr) { queue.push({ kind: 'prop', y: pr.y, data: pr }); });
     enemies.forEach(function(en) { queue.push({ kind: 'enemy', y: en.y, data: en }); });
@@ -1858,9 +2115,18 @@
     var arch = ARCHETYPES[player.archKey];
     var bob = Math.sin(player.walkCycle || 0) * 3;
     var facColor = player.faction === 'fury' ? '#f43f5e' : '#38bdf8';
+    var wPlus = (player.equipped.weapon && player.equipped.weapon.plus) || 0;
 
     ctx.save();
     ctx.translate(px, py);
+
+    // Aura de encantamento [10]+
+    if (wPlus >= 10) {
+      ctx.strokeStyle = wPlus >= 15 ? 'rgba(251, 191, 36, 0.7)' : 'rgba(56, 189, 248, 0.6)';
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(0, 14, 29, 13, 0, 0, Math.PI * 2); ctx.stroke();
+    }
+
     ctx.fillStyle = facColor + '28';
     ctx.beginPath(); ctx.ellipse(0, 14, 23, 10, 0, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = facColor; ctx.lineWidth = 1.8; ctx.stroke();
@@ -1875,7 +2141,8 @@
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 12px Segoe UI';
     ctx.textAlign = 'center';
-    ctx.fillText('[Nv.' + player.level + '] ' + player.name, 0, -43);
+    var plusTag = wPlus > 0 ? ' [' + wPlus + ']' : '';
+    ctx.fillText('[Nv.' + player.level + '] ' + player.name + plusTag, 0, -43);
     ctx.restore();
   }
 
@@ -2031,7 +2298,7 @@
     addFloatingText(player.x, player.y - 38, autoCombat ? 'AUTO ATIVADO' : 'AUTO DESLIGADO', autoCombat ? '#34d399' : '#fb7185');
   }
 
-  // ================= JANELAS DE STATUS (C) & INVENTÁRIO EP 4.5 (B) =================
+  // ================= JANELAS FLUTUANTES =================
   function toggleWindow(winId) {
     var el = document.getElementById(winId);
     var isOpen = el.style.display === 'flex';
@@ -2040,6 +2307,7 @@
       el.style.display = 'flex';
       if (winId === 'status-modal') renderStatusWindow();
       if (winId === 'bag-modal') renderInventoryWindow();
+      if (winId === 'smith-modal') renderSmithWindow();
     }
   }
 
@@ -2127,9 +2395,7 @@
   // ================= INVENTÁRIO CLÁSSICO EP 4.5 (12 SLOTS + 5 ABAS) =================
   function switchBagPage(page) {
     currentBagPage = page;
-    for (var i = 0; i < 5; i++) {
-      document.getElementById('btab-' + i).classList.toggle('active', i === page);
-    }
+    for (var i = 0; i < 5; i++) document.getElementById('btab-' + i).classList.toggle('active', i === page);
     renderBagCells();
   }
 
@@ -2143,7 +2409,6 @@
     document.getElementById('pd-hero-elem').innerHTML = 'Elemento: <b style="color:' + atkElMeta.color + '">' + atkElMeta.label + '</b>';
     document.getElementById('pd-hero-br').textContent = 'BR: ' + st.br;
 
-    // Atualiza cada um dos 12 slots da silhueta
     Object.keys(SLOT_META).forEach(function(slotKey) {
       var el = document.getElementById('pd-' + slotKey);
       if (!el) return;
@@ -2186,7 +2451,9 @@
         if (Array.isArray(item.sockets) && item.sockets.length > 0) {
           dotsHtml = '<div class="cell-sockets">';
           for (var s = 0; s < item.sockets.length; s++) {
-            dotsHtml += '<span class="cell-dot" style="border-color:' + r.color + ';"></span>';
+            var sk = item.sockets[s];
+            var dotCol = sk && LAPIS_CATALOG[sk.lapisKey] ? LAPIS_CATALOG[sk.lapisKey].color : 'transparent';
+            dotsHtml += '<span class="cell-dot" style="border-color:' + r.color + '; background:' + dotCol + ';"></span>';
           }
           dotsHtml += '</div>';
         }
@@ -2206,8 +2473,7 @@
     selectedEquippedSlot = null;
     renderBagCells();
     var item = player.bag[idx];
-    if (!item) return;
-    renderItemTooltip(item, true);
+    if (item) renderItemTooltip(item, true);
   }
 
   function inspectEquipped(slotKey) {
@@ -2224,12 +2490,13 @@
     var r = RARITIES[item.rarity] || RARITIES.comum;
     var elMeta = ELEMENTS[item.element || 'none'] || ELEMENTS.none;
     var allowed = canEquipInMode(item);
+    var plusTxt = item.plus > 0 ? ' [' + item.plus + ']' : '';
 
     var lines = [];
-    if (item.physAtk > 0) lines.push('ATQ Físico: +' + item.physAtk);
-    if (item.magAtk > 0)  lines.push('ATQ Mágico: +' + item.magAtk);
-    if (item.physDef > 0) lines.push('DEF Física: +' + item.physDef);
-    if (item.magDef > 0)  lines.push('DEF Mágica: +' + item.magDef);
+    if (item.physAtk > 0) lines.push('ATQ Físico: +' + Math.round(item.physAtk * (1 + (item.plus || 0) * 0.10)));
+    if (item.magAtk > 0)  lines.push('ATQ Mágico: +' + Math.round(item.magAtk  * (1 + (item.plus || 0) * 0.10)));
+    if (item.physDef > 0) lines.push('DEF Física: +' + Math.round(item.physDef * (1 + (item.plus || 0) * 0.10)));
+    if (item.magDef > 0)  lines.push('DEF Mágica: +' + Math.round(item.magDef  * (1 + (item.plus || 0) * 0.10)));
     if (item.bonusStr > 0) lines.push('FOR +' + item.bonusStr);
     if (item.bonusDex > 0) lines.push('DES +' + item.bonusDex);
     if (item.bonusRec > 0) lines.push('REC +' + item.bonusRec);
@@ -2238,14 +2505,26 @@
     if (item.bonusLuc > 0) lines.push('SOR +' + item.bonusLuc);
     if (item.desc) lines.push(item.desc);
 
-    var modeReqLabel = item.reqMode === 'um' ? 'Modo Extremo (UM)' : (item.reqMode === 'hm' ? 'Difícil (HM) / Extremo (UM)' : 'Todos os Modos');
-    var slotInfoTxt = Array.isArray(item.sockets) ? ' • Engastes Lapis: ' + item.sockets.length + ' slots' : '';
+    if (Array.isArray(item.sockets)) {
+      item.sockets.forEach(function(sk) {
+        if (sk && LAPIS_CATALOG[sk.lapisKey]) {
+          lines.push('💎 ' + formatLapisEffect(sk));
+        }
+      });
+    }
 
+    var isEquippable = item.slot !== 'consumable' && item.slot !== 'lapis';
     var actionsHtml = '';
-    if (fromBag && item.slot !== 'consumable') {
+    if (fromBag && isEquippable) {
       actionsHtml =
         '<div class="tooltip-actions">' +
           '<button type="button" class="btn-act btn-act-equip" ' + (allowed ? '' : 'disabled') + ' onclick="equipSelectedBagItem()">' + (allowed ? 'Equipar' : 'Requer ' + item.reqMode.toUpperCase()) + '</button>' +
+          '<button type="button" class="btn-act btn-act-sell" onclick="sellSelectedBagItem()">Vender (+$' + item.sellPrice + ')</button>' +
+        '</div>';
+    } else if (fromBag && item.slot === 'lapis') {
+      actionsHtml =
+        '<div class="tooltip-actions">' +
+          '<button type="button" class="btn-act btn-act-equip" style="background:#38bdf8;" onclick="toggleWindow(\'smith-modal\')">🔨 Abrir Ferreiro para Linkar</button>' +
           '<button type="button" class="btn-act btn-act-sell" onclick="sellSelectedBagItem()">Vender (+$' + item.sellPrice + ')</button>' +
         '</div>';
     } else if (!fromBag) {
@@ -2259,12 +2538,11 @@
     box.innerHTML =
       '<div>' +
         '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-          '<b style="color:' + r.color + '; font-size:0.92rem;">' + item.icon + ' ' + item.name + '</b>' +
+          '<b style="color:' + r.color + '; font-size:0.92rem;">' + item.icon + ' ' + item.name + plusTxt + '</b>' +
           '<span style="font-size:0.7rem; color:' + elMeta.color + '; font-weight:bold;">' + elMeta.label + '</span>' +
         '</div>' +
-        '<div style="font-size:0.7rem; color:#94a3b8; margin:3px 0;">Raridade: <b style="color:' + r.color + '">' + r.label + '</b>' + slotInfoTxt + '</div>' +
-        '<div style="font-size:0.7rem; color:' + (allowed ? '#34d399' : '#fb7185') + '; margin-bottom:5px;">Requisito: ' + modeReqLabel + '</div>' +
-        '<div style="font-size:0.76rem; color:#e2e8f0; line-height:1.4;">' + lines.join(' &nbsp;|&nbsp; ') + '</div>' +
+        '<div style="font-size:0.7rem; color:#94a3b8; margin:3px 0;">Raridade: <b style="color:' + r.color + '">' + r.label + '</b>' + (Array.isArray(item.sockets) ? ' • Slots Lapis: ' + item.sockets.length : '') + '</div>' +
+        '<div style="font-size:0.75rem; color:#e2e8f0; line-height:1.42; margin-top:4px;">' + lines.join(' &nbsp;|&nbsp; ') + '</div>' +
       '</div>' +
       actionsHtml;
   }
@@ -2275,7 +2553,6 @@
     if (!item || !canEquipInMode(item)) return;
 
     var targetSlot = item.slot;
-    // Se for anel ou bracelete e o 1 já estiver ocupado, tenta o 2
     if (targetSlot === 'ring1' && player.equipped.ring1 && !player.equipped.ring2) targetSlot = 'ring2';
     if (targetSlot === 'loop1' && player.equipped.loop1 && !player.equipped.loop2) targetSlot = 'loop2';
 
@@ -2316,6 +2593,371 @@
     updateHUD();
     renderInventoryWindow();
     document.getElementById('item-tooltip-box').innerHTML = '<div style="color:#fbbf24; font-size:0.8rem; text-align:center; margin:auto;">Item vendido por +' + item.sellPrice + ' Ouro!</div>';
+  }
+
+  // ================= FERREIRO CLÁSSICO EP 4.5 (LINKAGEM, EXTRAÇÃO & [1]..[20]) =================
+  function switchSmithTab(tab) {
+    currentSmithTab = tab;
+    document.getElementById('stab-link').classList.toggle('active', tab === 'link');
+    document.getElementById('stab-enchant').classList.toggle('active', tab === 'enchant');
+    renderSmithWindow();
+  }
+
+  function showSmithBanner(msg, ok) {
+    var b = document.getElementById('smith-banner');
+    b.style.display = 'block';
+    b.style.background = ok ? 'rgba(16, 185, 129, 0.18)' : 'rgba(244, 63, 94, 0.22)';
+    b.style.border = ok ? '1px solid #10b981' : '1px solid #f43f5e';
+    b.style.color = ok ? '#34d399' : '#fda4af';
+    b.textContent = msg;
+  }
+
+  function getSupplyCount(stackKey) {
+    var total = 0;
+    for (var i = 0; i < player.bag.length; i++) {
+      if (player.bag[i].stackKey === stackKey) total += (player.bag[i].qty || 1);
+    }
+    return total;
+  }
+
+  function consumeSupply(stackKey) {
+    for (var i = 0; i < player.bag.length; i++) {
+      if (player.bag[i].stackKey === stackKey) {
+        if ((player.bag[i].qty || 1) > 1) player.bag[i].qty -= 1;
+        else player.bag.splice(i, 1);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function buySmithSupply(type, price) {
+    if (player.gold < price) {
+      showSmithBanner('Ouro insuficiente para comprar este suprimento!', false);
+      return;
+    }
+    var map = {
+      link_stone:  { name: 'Pedra de Linkagem', icon: '🔷', rarity: 'nobre', desc: '+25% de chance na linkagem e protege a Lapis.' },
+      ext_hammer:  { name: 'Martelo de Extração', icon: '🔨', rarity: 'nobre', desc: '+30% de chance na extração de Lapis.' },
+      lapisia_atk: { name: 'Lapisia de Ataque', icon: '⚔️', rarity: 'veneravel', desc: 'Encanta Armas e Acessórios.' },
+      lapisia_def: { name: 'Lapisia de Defesa', icon: '🛡️', rarity: 'veneravel', desc: 'Encanta Armaduras e Escudos.' },
+      prot_rune:   { name: 'Runa de Proteção', icon: '📜', rarity: 'heroico', desc: 'Protege o nível de encantamento se falhar.' }
+    };
+    var info = map[type];
+    if (!info) return;
+    if (!addBagItem(player.bag, {
+      id: 'sup_' + Math.random().toString(36).slice(2, 8),
+      stackKey: type, name: info.name, icon: info.icon, slot: 'consumable', rarity: info.rarity, qty: 1, sellPrice: Math.round(price * 0.4), desc: info.desc
+    })) {
+      showSmithBanner('Sua mochila está cheia!', false);
+      return;
+    }
+    player.gold -= price;
+    saveSlots();
+    updateHUD();
+    renderSmithWindow();
+    showSmithBanner('Comprado: ' + info.name + '!', true);
+  }
+
+  function renderSmithWindow() {
+    document.getElementById('smith-gold-val').textContent = player.gold;
+
+    // 1. Lista de equipamentos vestidos
+    var eqList = document.getElementById('smith-eq-list');
+    eqList.innerHTML = '';
+    var firstOccupied = null;
+
+    Object.keys(SLOT_META).forEach(function(slotKey) {
+      var eq = player.equipped[slotKey];
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'smith-eq-btn' + (smithSelectedSlot === slotKey ? ' selected' : '');
+      if (eq) {
+        if (!firstOccupied) firstOccupied = slotKey;
+        var r = RARITIES[eq.rarity] || RARITIES.comum;
+        var plusStr = eq.plus > 0 ? ' [' + eq.plus + ']' : '';
+        btn.style.borderColor = smithSelectedSlot === slotKey ? '#fbbf24' : r.color;
+        btn.innerHTML = '<b style="color:' + r.color + '">' + eq.icon + ' ' + eq.name + plusStr + '</b><br><span style="font-size:0.65rem; color:#94a3b8;">' + SLOT_META[slotKey].label + ' • Slots: ' + (eq.sockets ? eq.sockets.length : 0) + '</span>';
+      } else {
+        btn.innerHTML = '<span style="color:#64748b;">' + SLOT_META[slotKey].icon + ' ' + SLOT_META[slotKey].label + ' (Vazio)</span>';
+      }
+      btn.onclick = function() { smithSelectedSlot = slotKey; renderSmithWindow(); };
+      eqList.appendChild(btn);
+    });
+
+    if (!player.equipped[smithSelectedSlot] && firstOccupied) smithSelectedSlot = firstOccupied;
+
+    var item = player.equipped[smithSelectedSlot];
+    var center = document.getElementById('smith-center-panel');
+
+    if (!item) {
+      center.innerHTML = '<div style="margin:auto; text-align:center; color:#64748b;">Equipe um item pela Mochila (B) para trabalhar na Bigorna do Ferreiro.</div>';
+    } else if (currentSmithTab === 'link') {
+      renderSmithLinkCenter(item, center);
+    } else {
+      renderSmithEnchantCenter(item, center);
+    }
+
+    // 3. Lista de Lapis disponíveis na mochila
+    var lapisListEl = document.getElementById('smith-lapis-list');
+    lapisListEl.innerHTML = '';
+    var lapisEntries = [];
+    for (var i = 0; i < player.bag.length; i++) {
+      if (player.bag[i].slot === 'lapis') lapisEntries.push({ bagIdx: i, item: player.bag[i] });
+    }
+    document.getElementById('smith-lapis-count').textContent = lapisEntries.length;
+
+    var hasFreeSocket = item && Array.isArray(item.sockets) && item.sockets.indexOf(null) >= 0;
+
+    if (lapisEntries.length === 0) {
+      lapisListEl.innerHTML = '<div style="text-align:center; color:#64748b; padding:18px 8px; font-size:0.75rem;">Nenhuma Lapis na mochila.<br>Derrote monstros e chefes para dropar Lapis!</div>';
+    } else {
+      lapisEntries.forEach(function(entry) {
+        var lap = entry.item;
+        var meta = LAPIS_CATALOG[lap.lapisKey] || { color: '#38bdf8', kind: 'stat' };
+        var baseCh = meta.kind === 'elem' ? 65 : (LAPIS_BASE_LINK_CHANCE[lap.level] || 50);
+        var finalCh = Math.min(100, baseCh + (useLinkStone && getSupplyCount('link_stone') > 0 ? 25 : 0));
+        var goldCost = (lap.level || 1) * 60;
+        var elemAllowed = meta.kind !== 'elem' || (item && (item.slot === 'weapon' || item.slot === 'armor'));
+        var canLink = hasFreeSocket && elemAllowed && player.gold >= goldCost && currentSmithTab === 'link';
+
+        var row = document.createElement('div');
+        row.className = 'lapis-card-row';
+        row.style.borderColor = meta.color;
+        row.innerHTML =
+          '<div>' +
+            '<b style="color:' + meta.color + ';">💎 ' + lap.name + '</b><br>' +
+            '<span style="font-size:0.67rem; color:#cbd5e1;">' + formatLapisEffect(lap) + '</span><br>' +
+            '<span style="font-size:0.64rem; color:#94a3b8;">Chance: <b style="color:#fbbf24;">' + finalCh + '%</b> • Ouro: <b>$' + goldCost + '</b></span>' +
+          '</div>' +
+          '<button type="button" class="btn-do-link" ' + (canLink ? '' : 'disabled') + ' onclick="doLinkLapis(' + entry.bagIdx + ')">Linkar</button>';
+        lapisListEl.appendChild(row);
+      });
+    }
+  }
+
+  function renderSmithLinkCenter(item, container) {
+    var r = RARITIES[item.rarity] || RARITIES.comum;
+    var elMeta = ELEMENTS[item.element || 'none'] || ELEMENTS.none;
+    var lsCount = getSupplyCount('link_stone');
+    var hmCount = getSupplyCount('ext_hammer');
+    if (lsCount === 0) useLinkStone = false;
+    if (hmCount === 0) useExtHammer = false;
+
+    var socketsHtml = '';
+    var linkedListHtml = '';
+
+    if (!item.sockets || item.sockets.length === 0) {
+      socketsHtml = '<div style="font-size:0.76rem; color:#64748b; margin:12px 0;">Equipamento Comum (0 engastes disponíveis).</div>';
+    } else {
+      socketsHtml = '<div class="socket-slots-bar">';
+      for (var i = 0; i < item.sockets.length; i++) {
+        var sk = item.sockets[i];
+        if (sk && LAPIS_CATALOG[sk.lapisKey]) {
+          var meta = LAPIS_CATALOG[sk.lapisKey];
+          var baseExt = meta.kind === 'elem' ? 60 : Math.max(25, 85 - (sk.level || 1) * 10);
+          var finalExt = Math.min(100, baseExt + (useExtHammer && hmCount > 0 ? 30 : 0));
+          var extGold = (sk.level || 1) * 85;
+
+          socketsHtml += '<div class="socket-circle filled" style="border-color:' + meta.color + '; color:' + meta.color + ';">' + meta.code + '</div>';
+          linkedListHtml +=
+            '<div class="linked-row" style="border-left:3px solid ' + meta.color + ';">' +
+              '<div><b style="color:' + meta.color + ';">' + sk.name + '</b><br><span style="font-size:0.65rem; color:#94a3b8;">' + formatLapisEffect(sk) + ' • Chance Extrair: <b>' + finalExt + '%</b></span></div>' +
+              '<button type="button" class="btn-extract" ' + (player.gold >= extGold ? '' : 'disabled') + ' onclick="doExtractLapis(' + i + ')">Extrair ($' + extGold + ')</button>' +
+            '</div>';
+        } else {
+          socketsHtml += '<div class="socket-circle" style="border-color:' + r.color + ';">Livre</div>';
+        }
+      }
+      socketsHtml += '</div>';
+    }
+
+    container.innerHTML =
+      '<div style="text-align:center;">' +
+        '<div style="font-size:2rem;">' + item.icon + '</div>' +
+        '<div style="color:' + r.color + '; font-weight:bold; font-size:0.98rem;">' + item.name + (item.plus > 0 ? ' [' + item.plus + ']' : '') + '</div>' +
+        '<div style="font-size:0.72rem; color:#94a3b8;">Elemento Atual: <b style="color:' + elMeta.color + '">' + elMeta.label + '</b></div>' +
+        socketsHtml +
+      '</div>' +
+      '<div style="max-height:145px; overflow-y:auto;">' + linkedListHtml + '</div>' +
+      '<div class="support-check-box">' +
+        '<label><input type="checkbox" ' + (useLinkStone ? 'checked' : '') + ' ' + (lsCount > 0 ? '' : 'disabled') + ' onchange="useLinkStone=this.checked; renderSmithWindow()"> 🔷 Usar <b>Pedra de Linkagem</b> (+25% Chance + Proteção) [Possui: ' + lsCount + ']</label>' +
+        '<label><input type="checkbox" ' + (useExtHammer ? 'checked' : '') + ' ' + (hmCount > 0 ? '' : 'disabled') + ' onchange="useExtHammer=this.checked; renderSmithWindow()"> 🔨 Usar <b>Martelo de Extração</b> (+30% Chance Extrair) [Possui: ' + hmCount + ']</label>' +
+      '</div>';
+  }
+
+  function doLinkLapis(bagIdx) {
+    getAudioCtx();
+    var item = player.equipped[smithSelectedSlot];
+    var lap = player.bag[bagIdx];
+    if (!item || !lap || lap.slot !== 'lapis') return;
+
+    var freeIdx = item.sockets ? item.sockets.indexOf(null) : -1;
+    if (freeIdx < 0) return;
+
+    var meta = LAPIS_CATALOG[lap.lapisKey];
+    if (!meta) return;
+    if (meta.kind === 'elem' && item.slot !== 'weapon' && item.slot !== 'armor') {
+      showSmithBanner('Lapis Elementais só podem ser linkadas em Armas ou Peitorais!', false);
+      return;
+    }
+
+    var goldCost = (lap.level || 1) * 60;
+    if (player.gold < goldCost) return;
+
+    var hasStone = useLinkStone && consumeSupply('link_stone');
+    var baseCh = meta.kind === 'elem' ? 65 : (LAPIS_BASE_LINK_CHANCE[lap.level] || 50);
+    var chance = Math.min(100, baseCh + (hasStone ? 25 : 0));
+
+    player.gold -= goldCost;
+
+    if (Math.random() * 100 <= chance) {
+      player.bag.splice(bagIdx, 1);
+      item.sockets[freeIdx] = { lapisKey: lap.lapisKey, level: lap.level, name: lap.name };
+      if (meta.kind === 'elem') item.element = meta.element;
+      playSuccessChime();
+      showSmithBanner('✨ SUCESSO! ' + lap.name + ' foi linkada em ' + item.name + '!', true);
+    } else {
+      playBreakSound();
+      if (hasStone) {
+        showSmithBanner('🛡️ FALHOU, mas a Pedra de Linkagem salvou sua ' + lap.name + ' de quebrar!', false);
+      } else {
+        player.bag.splice(bagIdx, 1);
+        showSmithBanner('💥 FALHOU! ' + lap.name + ' estilhaçou durante a linkagem!', false);
+      }
+    }
+
+    saveSlots();
+    updateHUD();
+    renderSmithWindow();
+  }
+
+  function doExtractLapis(socketIdx) {
+    getAudioCtx();
+    var item = player.equipped[smithSelectedSlot];
+    if (!item || !item.sockets || !item.sockets[socketIdx]) return;
+
+    var sk = item.sockets[socketIdx];
+    var meta = LAPIS_CATALOG[sk.lapisKey];
+    var extGold = (sk.level || 1) * 85;
+    if (player.gold < extGold || player.bag.length >= 120) return;
+
+    var hasHammer = useExtHammer && consumeSupply('ext_hammer');
+    var baseExt = meta && meta.kind === 'elem' ? 60 : Math.max(25, 85 - (sk.level || 1) * 10);
+    var chance = Math.min(100, baseExt + (hasHammer ? 30 : 0));
+
+    player.gold -= extGold;
+    item.sockets[socketIdx] = null;
+
+    if (meta && meta.kind === 'elem') {
+      item.element = 'none';
+      for (var i = 0; i < item.sockets.length; i++) {
+        var rem = item.sockets[i];
+        if (rem && LAPIS_CATALOG[rem.lapisKey] && LAPIS_CATALOG[rem.lapisKey].kind === 'elem') {
+          item.element = LAPIS_CATALOG[rem.lapisKey].element;
+        }
+      }
+    }
+
+    if (Math.random() * 100 <= chance) {
+      player.bag.push({
+        id: 'lap_' + Math.random().toString(36).slice(2, 10),
+        name: sk.name, icon: '💎', slot: 'lapis', lapisKey: sk.lapisKey, level: sk.level,
+        rarity: sk.level >= 5 || (meta && meta.kind === 'elem') ? 'heroico' : 'veneravel',
+        sellPrice: (sk.level || 1) * 45, desc: formatLapisEffect(sk)
+      });
+      playSuccessChime();
+      showSmithBanner('✨ EXTRAÇÃO PERFEITA! ' + sk.name + ' voltou para sua mochila!', true);
+    } else {
+      playBreakSound();
+      showSmithBanner('💥 QUEBROU! ' + sk.name + ' foi destruída durante a extração!', false);
+    }
+
+    saveSlots();
+    updateHUD();
+    renderSmithWindow();
+  }
+
+  // ================= ENCANTAMENTO [1] A [20] COM LAPISIAS =================
+  function getEnchantConfig(plus) {
+    var chance = Math.max(15, 95 - plus * 4);
+    var gold = (plus + 1) * 90;
+    return { chance: chance, gold: gold };
+  }
+
+  function renderSmithEnchantCenter(item, container) {
+    var r = RARITIES[item.rarity] || RARITIES.comum;
+    var plus = item.plus || 0;
+    var isWeaponSide = ['weapon', 'ring1', 'ring2', 'amulet', 'loop1', 'loop2'].indexOf(item.slot) >= 0;
+    var reqKey = isWeaponSide ? 'lapisia_atk' : 'lapisia_def';
+    var reqName = isWeaponSide ? 'Lapisia de Ataque' : 'Lapisia de Defesa';
+    var lapCount = getSupplyCount(reqKey);
+    var runeCount = getSupplyCount('prot_rune');
+    if (runeCount === 0) useProtRune = false;
+
+    if (plus >= 20) {
+      container.innerHTML =
+        '<div style="margin:auto; text-align:center;">' +
+          '<div style="font-size:2.6rem;">' + item.icon + '</div>' +
+          '<h3 style="color:#fbbf24; margin-top:6px;">' + item.name + ' [20]</h3>' +
+          '<p style="color:#34d399; font-size:0.84rem; margin-top:6px;">Encantamento Máximo de Teos Atingido (+200% Atributos Base)!</p>' +
+        '</div>';
+      return;
+    }
+
+    var cfg = getEnchantConfig(plus);
+    var canDo = lapCount > 0 && player.gold >= cfg.gold;
+
+    container.innerHTML =
+      '<div style="text-align:center;">' +
+        '<div style="font-size:2.3rem;">' + item.icon + '</div>' +
+        '<div style="color:' + r.color + '; font-weight:bold; font-size:1rem;">' + item.name + ' <span style="color:#fbbf24;">[' + plus + '] ➔ [' + (plus + 1) + ']</span></div>' +
+        '<div style="font-size:0.75rem; color:#34d399; margin-top:4px;">Bônus Atual: +' + (plus * 10) + '% ➔ Próximo: +' + ((plus + 1) * 10) + '%</div>' +
+      '</div>' +
+      '<div style="background:#111827; border:1px solid #263248; border-radius:8px; padding:10px; font-size:0.78rem; line-height:1.65;">' +
+        '<div>🎲 Chance de Sucesso: <b style="color:#fbbf24;">' + cfg.chance + '%</b></div>' +
+        '<div>💎 Material Necessário: <b style="color:' + (lapCount > 0 ? '#38bdf8' : '#fb7185') + ';">1x ' + reqName + ' (Possui: ' + lapCount + ')</b></div>' +
+        '<div>💰 Custo em Ouro: <b style="color:' + (player.gold >= cfg.gold ? '#fbbf24' : '#fb7185') + ';">$' + cfg.gold + '</b></div>' +
+      '</div>' +
+      '<div class="support-check-box">' +
+        '<label><input type="checkbox" ' + (useProtRune ? 'checked' : '') + ' ' + (runeCount > 0 ? '' : 'disabled') + ' onchange="useProtRune=this.checked; renderSmithWindow()"> 📜 Usar <b>Runa de Proteção</b> (Não perde nível se falhar) [Possui: ' + runeCount + ']</label>' +
+        '<button type="button" class="btn-act btn-act-equip" style="width:100%; margin-top:6px; background:linear-gradient(135deg,#0284c7,#38bdf8);" ' + (canDo ? '' : 'disabled') + ' onclick="doEnchantItem()">🔨 Encantar para [' + (plus + 1) + ']</button>' +
+      '</div>';
+  }
+
+  function doEnchantItem() {
+    getAudioCtx();
+    var item = player.equipped[smithSelectedSlot];
+    if (!item || (item.plus || 0) >= 20) return;
+
+    var isWeaponSide = ['weapon', 'ring1', 'ring2', 'amulet', 'loop1', 'loop2'].indexOf(item.slot) >= 0;
+    var reqKey = isWeaponSide ? 'lapisia_atk' : 'lapisia_def';
+    var cfg = getEnchantConfig(item.plus || 0);
+
+    if (player.gold < cfg.gold || !consumeSupply(reqKey)) return;
+    var protectedRun = useProtRune && consumeSupply('prot_rune');
+
+    player.gold -= cfg.gold;
+
+    if (Math.random() * 100 <= cfg.chance) {
+      item.plus = (item.plus || 0) + 1;
+      playSuccessChime();
+      showSmithBanner('✨ SUCESSO! ' + item.name + ' encantado para [' + item.plus + ']!', true);
+    } else {
+      playBreakSound();
+      if (protectedRun) {
+        showSmithBanner('🛡️ FALHOU, mas a Runa de Proteção manteve ' + item.name + ' em [' + (item.plus || 0) + ']!', false);
+      } else if ((item.plus || 0) > 0) {
+        item.plus -= 1;
+        showSmithBanner('💥 FALHOU! O encantamento caiu para [' + item.plus + ']!', false);
+      } else {
+        showSmithBanner('💥 FALHOU! O encantamento permaneceu em [0].', false);
+      }
+    }
+
+    saveSlots();
+    updateHUD();
+    renderSmithWindow();
   }
 
   // Inicialização
