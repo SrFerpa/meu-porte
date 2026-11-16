@@ -5,12 +5,14 @@ var SPRITE_SHEETS_CONFIG = {
   // 1. CLASSES JOGÁVEIS (assets/)
   classes: {
     fighter: {
-      src: 'assets/fighter.png', // Caminho exato onde você salvou no GitHub
+      src: 'assets/fighter.png',
       cols: 6,
-      rows: 4.18, // Ignora a tirinha cortada bem embaixo da 4ª linha
+      rows: 4.62, // Altura exata de cada fileira sem pegar o topo da fileira de baixo
+      topOffsetRatio: 0.015, // Pequena margem no topo para não cortar o penacho do elmo
+      bottomTrimRatio: 0.08, // Corta os últimos 8% da célula para nunca vazar a linha de baixo
       labelColRatio: 0,
-      removeSolidBg: true, // Remove automaticamente o fundo cinza sólido da imagem
-      drawHeight: 115,
+      removeSolidBg: true,
+      drawHeight: 112,
       anims: {
         idle:   { row: 0, startCol: 0, frames: 4, fps: 5  },
         run:    { row: 1, startCol: 0, frames: 3, fps: 10 },
@@ -20,11 +22,11 @@ var SPRITE_SHEETS_CONFIG = {
       }
     }
     // Quando subir as outras classes em assets/, basta descomentar e ajustar:
-    // defender: { src: 'assets/defender.png', cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // ranger:   { src: 'assets/ranger.png',   cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 12 }, attack: { row: 2, startCol: 0, frames: 6, fps: 16 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // archer:   { src: 'assets/archer.png',   cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 11 }, attack: { row: 2, startCol: 0, frames: 6, fps: 15 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // mage:     { src: 'assets/mage.png',     cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // priest:   { src: 'assets/priest.png',   cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } }
+    // defender: { src: 'assets/defender.png', cols: 6, rows: 4.62, topOffsetRatio: 0.015, bottomTrimRatio: 0.08, labelColRatio: 0, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // ranger:   { src: 'assets/ranger.png',   cols: 6, rows: 4.62, topOffsetRatio: 0.015, bottomTrimRatio: 0.08, labelColRatio: 0, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 12 }, attack: { row: 2, startCol: 0, frames: 6, fps: 16 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // archer:   { src: 'assets/archer.png',   cols: 6, rows: 4.62, topOffsetRatio: 0.015, bottomTrimRatio: 0.08, labelColRatio: 0, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 11 }, attack: { row: 2, startCol: 0, frames: 6, fps: 15 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // mage:     { src: 'assets/mage.png',     cols: 6, rows: 4.62, topOffsetRatio: 0.015, bottomTrimRatio: 0.08, labelColRatio: 0, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // priest:   { src: 'assets/priest.png',   cols: 6, rows: 4.62, topOffsetRatio: 0.015, bottomTrimRatio: 0.08, labelColRatio: 0, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } }
   },
 
   // 2. MONSTROS E BOSSES (assets/) — chave = nome exato do monstro em data-mobs.js
@@ -48,7 +50,6 @@ function stripBackgroundPixels(img) {
     var imgData = g.getImageData(0, 0, c.width, c.height);
     var d = imgData.data;
 
-    // Amostra a cor do canto superior esquerdo (pixel 2,2) como cor de fundo principal
     var sampleIdx = (2 * c.width + 2) * 4;
     var bgR = d[sampleIdx], bgG = d[sampleIdx + 1], bgB = d[sampleIdx + 2];
 
@@ -56,14 +57,12 @@ function stripBackgroundPixels(img) {
       var r = d[i], gr = d[i + 1], b = d[i + 2], a = d[i + 3];
       if (a === 0) continue;
 
-      // 1. Remove pixels próximos da cor do fundo sólido (ex: cinza #808080)
       var distBg = Math.abs(r - bgR) + Math.abs(gr - bgG) + Math.abs(b - bgB);
       if (distBg <= 34) {
         d[i + 3] = 0;
         continue;
       }
 
-      // 2. Remove também eventuais quadriculados neutros sem saturação
       var maxC = Math.max(r, gr, b);
       var minC = Math.min(r, gr, b);
       var sat = maxC - minC;
@@ -112,6 +111,7 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
   if (!anim) return false;
 
   var leftMargin = W * (cfg.labelColRatio || 0);
+  var topOffset = H * (cfg.topOffsetRatio || 0);
   var gridW = W - leftMargin;
   var cellW = gridW / (cfg.cols || 1);
   var cellH = H / (cfg.rows || 1);
@@ -121,14 +121,14 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
   var rowIdx = anim.row || 0;
 
   var padX = Math.max(2, cellW * 0.02);
-  var padY = Math.max(2, cellH * 0.02);
+  var trimBottom = cellH * (cfg.bottomTrimRatio || 0);
 
   var sx = leftMargin + colIdx * cellW + padX;
-  var sy = rowIdx * cellH + padY;
+  var sy = topOffset + rowIdx * cellH;
   var sw = cellW - padX * 2;
-  var sh = cellH - padY * 2;
+  var sh = Math.max(10, cellH - trimBottom);
 
-  var drawH = cfg.drawHeight || 115;
+  var drawH = cfg.drawHeight || 112;
   var drawW = drawH * (sw / sh);
 
   ctx.save();
@@ -140,7 +140,7 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
     ctx.shadowBlur = 13;
   }
 
-  ctx.drawImage(srcCanvas, sx, sy, sw, sh, -drawW * 0.45, -drawH * 0.78, drawW, drawH);
+  ctx.drawImage(srcCanvas, sx, sy, sw, sh, -drawW * 0.45, -drawH * 0.80, drawW, drawH);
   ctx.restore();
   return true;
 }
