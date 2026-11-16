@@ -2,42 +2,42 @@
 // Sempre que adicionar uma imagem nova na pasta assets/, basta preencher a linha dela aqui!
 
 var SPRITE_SHEETS_CONFIG = {
-  // 1. CLASSES JOGÁVEIS (assets/chars/)
+  // 1. CLASSES JOGÁVEIS (assets/)
   classes: {
     fighter: {
-  src: 'assets/chars/fighter.png',
-  cols: 6,
-  rows: 5,
-  labelColRatio: 0,
-  removeCheckerBg: false,
-  drawHeight: 112,
-  anims: {
-    idle:   { row: 0, frames: 3, fps: 5  },
-    run:    { row: 1, frames: 6, fps: 11 },
-    jump:   { row: 2, frames: 3, fps: 8  },
-    attack: { row: 3, frames: 6, fps: 15 },
-    hurt:   { row: 4, frames: 4, fps: 10 }
-  }
-}
-    // Quando subir as outras classes, basta descomentar e ajustar:
-    // defender: { src: 'assets/chars/defender.png', cols: 4, rows: 4, labelColRatio: 0, removeCheckerBg: true, drawHeight: 104, anims: { idle: { row: 0, frames: 4, fps: 5 }, run: { row: 1, frames: 4, fps: 10 }, attack: { row: 2, frames: 4, fps: 14 }, hurt: { row: 3, frames: 4, fps: 10 } } },
-    // ranger:   { src: 'assets/chars/ranger.png',   cols: 6, rows: 5, labelColRatio: 0.148, removeCheckerBg: true, drawHeight: 108, anims: { idle: { row: 0, frames: 3, fps: 5 }, run: { row: 1, frames: 6, fps: 12 }, attack: { row: 3, frames: 6, fps: 16 }, hurt: { row: 4, frames: 4, fps: 10 } } },
-    // archer:   { src: 'assets/chars/archer.png',   cols: 6, rows: 5, labelColRatio: 0.148, removeCheckerBg: true, drawHeight: 108, anims: { idle: { row: 0, frames: 3, fps: 5 }, run: { row: 1, frames: 6, fps: 11 }, attack: { row: 3, frames: 6, fps: 15 }, hurt: { row: 4, frames: 4, fps: 10 } } },
-    // mage:     { src: 'assets/chars/mage.png',     cols: 6, rows: 5, labelColRatio: 0.148, removeCheckerBg: true, drawHeight: 108, anims: { idle: { row: 0, frames: 3, fps: 5 }, run: { row: 1, frames: 6, fps: 10 }, attack: { row: 3, frames: 6, fps: 14 }, hurt: { row: 4, frames: 4, fps: 10 } } },
-    // priest:   { src: 'assets/chars/priest.png',   cols: 6, rows: 5, labelColRatio: 0.148, removeCheckerBg: true, drawHeight: 108, anims: { idle: { row: 0, frames: 3, fps: 5 }, run: { row: 1, frames: 6, fps: 10 }, attack: { row: 3, frames: 6, fps: 14 }, hurt: { row: 4, frames: 4, fps: 10 } } }
+      src: 'assets/fighter.png', // Caminho exato onde você salvou no GitHub
+      cols: 6,
+      rows: 4.18, // Ignora a tirinha cortada bem embaixo da 4ª linha
+      labelColRatio: 0,
+      removeSolidBg: true, // Remove automaticamente o fundo cinza sólido da imagem
+      drawHeight: 115,
+      anims: {
+        idle:   { row: 0, startCol: 0, frames: 4, fps: 5  },
+        run:    { row: 1, startCol: 0, frames: 3, fps: 10 },
+        jump:   { row: 1, startCol: 3, frames: 3, fps: 8  },
+        attack: { row: 2, startCol: 0, frames: 6, fps: 15 },
+        hurt:   { row: 3, startCol: 0, frames: 3, fps: 10 }
+      }
+    }
+    // Quando subir as outras classes em assets/, basta descomentar e ajustar:
+    // defender: { src: 'assets/defender.png', cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // ranger:   { src: 'assets/ranger.png',   cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 12 }, attack: { row: 2, startCol: 0, frames: 6, fps: 16 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // archer:   { src: 'assets/archer.png',   cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 11 }, attack: { row: 2, startCol: 0, frames: 6, fps: 15 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // mage:     { src: 'assets/mage.png',     cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
+    // priest:   { src: 'assets/priest.png',   cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 110, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } }
   },
 
-  // 2. MONSTROS E BOSSES (assets/mobs/) — chave = nome exato do monstro em data-mobs.js
+  // 2. MONSTROS E BOSSES (assets/) — chave = nome exato do monstro em data-mobs.js
   mobs: {
     // Exemplo:
-    // 'Guardião Abissal': { src: 'assets/mobs/boss_abissal.png', cols: 6, rows: 4, labelColRatio: 0, removeCheckerBg: true, drawHeight: 135, anims: { idle: { row: 0, frames: 4, fps: 5 }, run: { row: 1, frames: 6, fps: 9 }, attack: { row: 2, frames: 6, fps: 12 } } }
+    // 'Guardião Abissal': { src: 'assets/boss_abissal.png', cols: 6, rows: 4, labelColRatio: 0, removeSolidBg: true, drawHeight: 140, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 9 }, attack: { row: 2, startCol: 0, frames: 6, fps: 12 } } }
   }
 };
 
 // ================= MOTOR LEVE DE PRÉ-CARREGAMENTO, LIMPEZA DE FUNDO E DESENHO =================
 var LOADED_SPRITE_IMAGES = {};
 
-function stripCheckerboardBackground(img) {
+function stripBackgroundPixels(img) {
   try {
     var c = document.createElement('canvas');
     c.width = img.naturalWidth;
@@ -48,18 +48,27 @@ function stripCheckerboardBackground(img) {
     var imgData = g.getImageData(0, 0, c.width, c.height);
     var d = imgData.data;
 
+    // Amostra a cor do canto superior esquerdo (pixel 2,2) como cor de fundo principal
+    var sampleIdx = (2 * c.width + 2) * 4;
+    var bgR = d[sampleIdx], bgG = d[sampleIdx + 1], bgB = d[sampleIdx + 2];
+
     for (var i = 0; i < d.length; i += 4) {
       var r = d[i], gr = d[i + 1], b = d[i + 2], a = d[i + 3];
       if (a === 0) continue;
 
-      // Detecta pixels neutros (cinza escuro, cinza médio e linhas finas de grade) do fundo quadriculado
+      // 1. Remove pixels próximos da cor do fundo sólido (ex: cinza #808080)
+      var distBg = Math.abs(r - bgR) + Math.abs(gr - bgG) + Math.abs(b - bgB);
+      if (distBg <= 34) {
+        d[i + 3] = 0;
+        continue;
+      }
+
+      // 2. Remove também eventuais quadriculados neutros sem saturação
       var maxC = Math.max(r, gr, b);
       var minC = Math.min(r, gr, b);
       var sat = maxC - minC;
       var lum = (r + gr + b) / 3;
-
-      // Fundo quadriculado típico fica entre lum 28 e 115 com saturação muito baixa (<= 10)
-      if (sat <= 10 && lum >= 26 && lum <= 118) {
+      if (sat <= 8 && lum >= 115 && lum <= 145) {
         d[i + 3] = 0;
       }
     }
@@ -80,7 +89,7 @@ function preloadAllConfiguredSprites() {
       var img = new Image();
       var entry = { source: img, loaded: false, cfg: cfg };
       img.onload = function() {
-        entry.source = cfg.removeCheckerBg ? stripCheckerboardBackground(img) : img;
+        entry.source = cfg.removeSolidBg ? stripBackgroundPixels(img) : img;
         entry.loaded = true;
       };
       img.src = cfg.src;
@@ -107,18 +116,19 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
   var cellW = gridW / (cfg.cols || 1);
   var cellH = H / (cfg.rows || 1);
 
-  var colIdx = frameIndex % (anim.frames || 1);
+  var startCol = anim.startCol || 0;
+  var colIdx = startCol + (frameIndex % (anim.frames || 1));
   var rowIdx = anim.row || 0;
 
-  var padX = Math.max(4, cellW * 0.04);
-  var padY = Math.max(4, cellH * 0.04);
+  var padX = Math.max(2, cellW * 0.02);
+  var padY = Math.max(2, cellH * 0.02);
 
   var sx = leftMargin + colIdx * cellW + padX;
   var sy = rowIdx * cellH + padY;
   var sw = cellW - padX * 2;
   var sh = cellH - padY * 2;
 
-  var drawH = cfg.drawHeight || 108;
+  var drawH = cfg.drawHeight || 115;
   var drawW = drawH * (sw / sh);
 
   ctx.save();
