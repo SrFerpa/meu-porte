@@ -557,3 +557,116 @@ body, html {
 .val-row b { color: #e6e2d3; }
 .status-footer-kd { display: flex; justify-content: space-around; background: #161820; }
 .kd-box { text-align: center; font-size: 0.75rem; }
+
+/* ESTILO DO INVENTÁRIO CLÁSSICO DO SHAIYA (IMAGEM 3) */
+.shaiya-inv-modal {
+  background: #111216 !important;
+  border: 2px solid #544833 !important;
+  width: 400px !important;
+  max-width: 96vw !important;
+}
+.shaiya-inv-body {
+  padding: 8px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.equipment-layout-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #161820;
+  border: 1px solid #2d313d;
+  padding: 8px;
+  border-radius: 4px;
+}
+.eq-col-left, .eq-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.eq-slot {
+  width: 36px;
+  height: 36px;
+  background: #0c0d12;
+  border: 1px solid #363b4e;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.eq-slot:hover { border-color: #f3c669; background: #1c1a14; }
+.eq-slot-double { display: flex; gap: 4px; }
+.character-doll-box {
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.doll-avatar-icon { font-size: 52px; margin-bottom: 2px; }
+.doll-name-tag { font-size: 0.75rem; color: #f3c669; font-weight: bold; }
+
+.bag-tabs-bar {
+  display: flex;
+  gap: 4px;
+}
+.bag-tab {
+  background: #161820;
+  border: 1px solid #2d313d;
+  color: #aaa;
+  padding: 3px 12px;
+  font-size: 0.75rem;
+  border-radius: 2px 2px 0 0;
+  cursor: pointer;
+}
+.bag-tab.active {
+  background: #252833;
+  color: #f3c669;
+  border-color: #544833;
+  border-bottom: none;
+}
+
+.shaiya-inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  background: #161820;
+  border: 1px solid #2d313d;
+  padding: 6px;
+  border-radius: 3px;
+  min-height: 140px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.inv-item-slot {
+  aspect-ratio: 1;
+  background: #0c0d12;
+  border: 1px solid #2a2e3d;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  position: relative;
+}
+.inv-item-slot:hover { border-color: #f3c669; }
+.inv-item-slot.rarity-deusa { border-color: #9c27b0; background: #1a0f24; }
+.inv-item-slot.rarity-lapis { border-color: #2e7d32; background: #0f1c12; }
+
+.shaiya-inv-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #161820;
+  border: 1px solid #2d313d;
+  padding: 6px 10px;
+  border-radius: 3px;
+  font-size: 0.78rem;
+}
+.gold-display-box b { color: #f3c669; }
