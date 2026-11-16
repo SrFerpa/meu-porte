@@ -150,34 +150,72 @@
     </div>
 
     <!-- MODAL: ATRIBUTOS (STR, DEX, REC, INT, WIS, LUK) -->
-    <div id="modal-stats" class="game-modal hidden">
-      <div class="modal-header">
-        <h3>Atributos & Equipamentos</h3>
+   <!-- MODAL: STATUS CLÁSSICO DO SHAIYA (IMAGEM 2) -->
+    <div id="modal-stats" class="game-modal hidden shaiya-status-modal">
+      <div class="modal-header shaiya-header">
+        <h3>Status (T)</h3>
         <button class="close-btn" onclick="Game.toggleModal('modal-stats')">✖</button>
       </div>
-      <div class="modal-body stats-layout">
-        <div class="equip-paperdoll">
-          <h4>Equipado</h4>
-          <div class="equip-slot" id="eq-weapon" onclick="Game.unequipItem('weapon')">Arma: <span>Vazio</span></div>
-          <div class="equip-slot" id="eq-helmet" onclick="Game.unequipItem('helmet')">Elmo: <span>Vazio</span></div>
-          <div class="equip-slot" id="eq-armor" onclick="Game.unequipItem('armor')">Peitoral: <span>Vazio</span></div>
-          <div class="equip-slot" id="eq-gauntlets" onclick="Game.unequipItem('gauntlets')">Luvas: <span>Vazio</span></div>
-          <div class="equip-slot" id="eq-boots" onclick="Game.unequipItem('boots')">Botas: <span>Vazio</span></div>
-          <div class="equip-slot" id="eq-accessory" onclick="Game.unequipItem('accessory')">Acessório: <span>Vazio</span></div>
-          <div class="equip-slot" id="eq-mount" onclick="Game.unequipItem('mount')">Montaria: <span>Vazio</span></div>
+      <div class="modal-body shaiya-body">
+        <!-- Linha do Nome e Nível -->
+        <div class="status-top-bar">
+          <div class="field-box"><span>Class</span> <b id="ui-class-name">Guerreiro</b></div>
+          <div class="field-box"><span>Mode</span> <b>ULTIMATE</b></div>
         </div>
-        <div class="stats-distribution">
-          <div class="points-banner">Pontos Disponíveis: <b id="ui-stat-points">0</b></div>
-          <div class="stat-row"><span>FOR (STR):</span> <b id="ui-str">10</b> <button onclick="Game.addStat('str')">+</button></div>
-          <div class="stat-row"><span>DES (DEX):</span> <b id="ui-dex">10</b> <button onclick="Game.addStat('dex')">+</button></div>
-          <div class="stat-row"><span>RES (REC):</span> <b id="ui-rec">10</b> <button onclick="Game.addStat('rec')">+</button></div>
-          <div class="stat-row"><span>INT (INT):</span> <b id="ui-int">10</b> <button onclick="Game.addStat('int')">+</button></div>
-          <div class="stat-row"><span>SAB (WIS):</span> <b id="ui-wis">10</b> <button onclick="Game.addStat('wis')">+</button></div>
-          <div class="stat-row"><span>SOR (LUK):</span> <b id="ui-luk">10</b> <button onclick="Game.addStat('luk')">+</button></div>
-          <hr />
-          <div class="derived-stats" id="ui-derived-stats">
-            <!-- Atk, Def, Crit, Vel -->
+        <div class="status-row-full" style="margin-top: 6px;">
+          <span>Title</span> <div class="shaiya-input-box" id="ui-title">Herói de Teos</div>
+        </div>
+
+        <!-- Barra de Experiência -->
+        <div class="status-exp-box" style="margin-top: 8px;">
+          <span>EXP</span>
+          <div class="exp-numbers"><b id="ui-exp-current">0</b> / <b id="ui-exp-max">100</b></div>
+        </div>
+
+        <!-- Grade de Atributos em 2 Colunas (Base + Bônus) -->
+        <div class="attributes-grid-shaiya">
+          <div class="attr-col">
+            <div class="shaiya-attr-row"><span>STR</span> <div class="val-box"><b id="ui-str">10</b> + <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>REC</span> <div class="val-box"><b id="ui-rec">10</b> + <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>INT</span> <div class="val-box"><b id="ui-int">10</b> + <span class="bonus">+0</span></div></div>
           </div>
+          <div class="attr-col">
+            <div class="shaiya-attr-row"><span>WIS</span> <div class="val-box"><b id="ui-wis">10</b> + <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>DEX</span> <div class="val-box"><b id="ui-dex">10</b> + <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>LUC</span> <div class="val-box"><b id="ui-luk">10</b> + <span class="bonus">+0</span></div></div>
+          </div>
+        </div>
+
+        <!-- Pontos Disponíveis -->
+        <div class="usable-points-row">
+          <span>Usable Points</span> <b id="ui-stat-points" class="gold-text">0 Point</b>
+          <button class="btn btn-gold btn-sm" style="padding: 2px 8px; font-size: 0.7rem;" onclick="Game.distributeAllPoints()">Distribuir +</button>
+        </div>
+
+        <!-- Barras e Painel de Combate -->
+        <div class="combat-stats-grid">
+          <div class="combat-bars-col">
+            <div class="c-bar hp"><label>HP</label><div class="inner" id="ui-bar-hp" style="width:100%"></div><span id="ui-txt-hp">150</span></div>
+            <div class="c-bar mp"><label>MP</label><div class="inner" id="ui-bar-mp" style="width:100%"></div><span id="ui-txt-mp">120</span></div>
+            <div class="c-bar sp"><label>SP</label><div class="inner" id="ui-bar-sp" style="width:100%"></div><span id="ui-txt-sp">100</span></div>
+            <div class="stat-element-row"><span>Stat</span> <b id="ui-element-type">non-elemental</b></div>
+            <div class="speed-indicator"><span id="ui-atk-speed">a bit slow</span> <span id="ui-mov-speed">fast</span></div>
+          </div>
+
+          <div class="combat-values-col">
+            <div class="val-row"><span>ATK</span> <b id="ui-val-atk">15 - 25</b></div>
+            <div class="val-row"><span>Magic</span> <b id="ui-val-magic">15 - 25</b></div>
+            <div class="val-row"><span>DEF</span> <b id="ui-val-def">20</b></div>
+            <div class="val-row"><span>Resist</span> <b id="ui-val-resist">10</b></div>
+            <div class="val-row"><span>ATK Speed</span> <b>Normal</b></div>
+            <div class="val-row"><span>MOV Speed</span> <b>Rápido</b></div>
+          </div>
+        </div>
+
+        <!-- Rodapé com Kills e Deaths -->
+        <div class="status-footer-kd">
+          <div class="kd-box"><span>Kill</span> <b id="ui-kills">0</b></div>
+          <div class="kd-box"><span>Death</span> <b id="ui-deaths">0</b></div>
         </div>
       </div>
     </div>
