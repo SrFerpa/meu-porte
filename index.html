@@ -79,11 +79,11 @@
           </div>
           <div class="bar-container hp-bar">
             <div id="hud-hp-fill" class="bar-fill" style="width: 100%;"></div>
-            <span id="hud-hp-text">100 / 100</span>
+            <span id="hud-hp-text">150 / 150</span>
           </div>
           <div class="bar-container mp-bar">
             <div id="hud-mp-fill" class="bar-fill" style="width: 100%;"></div>
-            <span id="hud-mp-text">100 / 100</span>
+            <span id="hud-mp-text">120 / 120</span>
           </div>
           <div class="bar-container sp-bar">
             <div id="hud-sp-fill" class="bar-fill" style="width: 100%;"></div>
@@ -95,10 +95,9 @@
           </div>
         </div>
       </div>
-      <div class="buffs-row" id="hud-buffs"></div>
     </div>
 
-    <!-- HUD SUPERIOR CENTRO: ALVO SELECIONADO (MOB / MINI-BOSS / BOSS) -->
+    <!-- HUD SUPERIOR CENTRO: ALVO SELECIONADO -->
     <div id="hud-target" class="hud-top-center hidden">
       <div class="target-header">
         <span id="target-rank" class="target-rank">NORMAL</span>
@@ -118,8 +117,8 @@
         <span title="Pontos Ap (Loja)">💎 <b id="hud-ap">5000</b></span>
       </div>
       <div class="hud-menu-buttons">
-        <button class="hud-btn" onclick="Game.toggleModal('modal-stats')">📊 Status <span id="stat-points-alert" class="dot hidden">!</span></button>
-        <button class="hud-btn" onclick="Game.toggleModal('modal-inventory')">🎒 Bolsa</button>
+        <button class="hud-btn" onclick="Game.toggleModal('modal-stats')">📊 Status (T)</button>
+        <button class="hud-btn" onclick="Game.toggleModal('modal-inventory')">🎒 Bolsa (I)</button>
         <button class="hud-btn btn-shop-glow" onclick="Game.toggleModal('modal-shop')">🛒 Loja Fawkes</button>
         <button class="hud-btn btn-exit" onclick="Game.returnToCharSelect()">🚪 Trocar Char</button>
       </div>
@@ -130,17 +129,15 @@
 
     <!-- BARRA DE HABILIDADES INFERIOR (6 SKILLS + POÇÕES) -->
     <div class="hud-bottom-bar">
-      <div id="skill-bar" class="skill-bar">
-        <!-- 6 Skills geradas dinamicamente -->
-      </div>
+      <div id="skill-bar" class="skill-bar"></div>
       <div class="quick-items">
         <button class="skill-slot potion-slot" onclick="Game.usePotion('hp')" title="Poção de Vida (Tecla Q)">
           <span>🧪</span>
-          <small id="qty-pot-hp">10</small>
+          <small id="qty-pot-hp">15</small>
         </button>
-        <button class="skill-slot potion-slot" onclick="Game.usePotion('mp')" title="Poção de Mana/Energia (Tecla E)">
+        <button class="skill-slot potion-slot" onclick="Game.usePotion('mp')" title="Poção de Mana (Tecla E)">
           <span>⚗️</span>
-          <small id="qty-pot-mp">10</small>
+          <small id="qty-pot-mp">15</small>
         </button>
         <button class="skill-slot mount-slot" onclick="Game.toggleMount()" title="Montaria (Tecla M)">
           <span id="hud-mount-icon">🐎</span>
@@ -149,15 +146,13 @@
       </div>
     </div>
 
-    <!-- MODAL: ATRIBUTOS (STR, DEX, REC, INT, WIS, LUK) -->
-   <!-- MODAL: STATUS CLÁSSICO DO SHAIYA (IMAGEM 2) -->
+    <!-- MODAL: STATUS CLÁSSICO DO SHAIYA (IMAGEM 2)[cite: 9] -->
     <div id="modal-stats" class="game-modal hidden shaiya-status-modal">
       <div class="modal-header shaiya-header">
         <h3>Status (T)</h3>
         <button class="close-btn" onclick="Game.toggleModal('modal-stats')">✖</button>
       </div>
       <div class="modal-body shaiya-body">
-        <!-- Linha do Nome e Nível -->
         <div class="status-top-bar">
           <div class="field-box"><span>Class</span> <b id="ui-class-name">Guerreiro</b></div>
           <div class="field-box"><span>Mode</span> <b>ULTIMATE</b></div>
@@ -166,40 +161,36 @@
           <span>Title</span> <div class="shaiya-input-box" id="ui-title">Herói de Teos</div>
         </div>
 
-        <!-- Barra de Experiência -->
         <div class="status-exp-box" style="margin-top: 8px;">
           <span>EXP</span>
           <div class="exp-numbers"><b id="ui-exp-current">0</b> / <b id="ui-exp-max">100</b></div>
         </div>
 
-        <!-- Grade de Atributos em 2 Colunas (Base + Bônus) -->
         <div class="attributes-grid-shaiya">
           <div class="attr-col">
-            <div class="shaiya-attr-row"><span>STR</span> <div class="val-box"><b id="ui-str">10</b> + <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>REC</span> <div class="val-box"><b id="ui-rec">10</b> + <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>INT</span> <div class="val-box"><b id="ui-int">10</b> + <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>STR</span> <div class="val-box"><b id="ui-str">10</b> <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>REC</span> <div class="val-box"><b id="ui-rec">10</b> <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>INT</span> <div class="val-box"><b id="ui-int">10</b> <span class="bonus">+0</span></div></div>
           </div>
           <div class="attr-col">
-            <div class="shaiya-attr-row"><span>WIS</span> <div class="val-box"><b id="ui-wis">10</b> + <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>DEX</span> <div class="val-box"><b id="ui-dex">10</b> + <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>LUC</span> <div class="val-box"><b id="ui-luk">10</b> + <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>WIS</span> <div class="val-box"><b id="ui-wis">10</b> <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>DEX</span> <div class="val-box"><b id="ui-dex">10</b> <span class="bonus">+0</span></div></div>
+            <div class="shaiya-attr-row"><span>LUC</span> <div class="val-box"><b id="ui-luk">10</b> <span class="bonus">+0</span></div></div>
           </div>
         </div>
 
-        <!-- Pontos Disponíveis -->
         <div class="usable-points-row">
           <span>Usable Points</span> <b id="ui-stat-points" class="gold-text">0 Point</b>
           <button class="btn btn-gold btn-sm" style="padding: 2px 8px; font-size: 0.7rem;" onclick="Game.distributeAllPoints()">Distribuir +</button>
         </div>
 
-        <!-- Barras e Painel de Combate -->
         <div class="combat-stats-grid">
           <div class="combat-bars-col">
             <div class="c-bar hp"><label>HP</label><div class="inner" id="ui-bar-hp" style="width:100%"></div><span id="ui-txt-hp">150</span></div>
             <div class="c-bar mp"><label>MP</label><div class="inner" id="ui-bar-mp" style="width:100%"></div><span id="ui-txt-mp">120</span></div>
             <div class="c-bar sp"><label>SP</label><div class="inner" id="ui-bar-sp" style="width:100%"></div><span id="ui-txt-sp">100</span></div>
-            <div class="stat-element-row"><span>Stat</span> <b id="ui-element-type">non-elemental</b></div>
-            <div class="speed-indicator"><span id="ui-atk-speed">a bit slow</span> <span id="ui-mov-speed">fast</span></div>
+            <div class="stat-element-row"><span>Stat</span> <b>non-elemental</b></div>
+            <div class="speed-indicator"><span>a bit slow</span> <span>fast</span></div>
           </div>
 
           <div class="combat-values-col">
@@ -212,7 +203,6 @@
           </div>
         </div>
 
-        <!-- Rodapé com Kills e Deaths -->
         <div class="status-footer-kd">
           <div class="kd-box"><span>Kill</span> <b id="ui-kills">0</b></div>
           <div class="kd-box"><span>Death</span> <b id="ui-deaths">0</b></div>
@@ -220,7 +210,7 @@
       </div>
     </div>
 
-    <!-- MODAL: INVENTÁRIO (COM VENDER TUDO E ENCAIXE DE LAPIS) -->
+    <!-- MODAL: INVENTÁRIO -->
     <div id="modal-inventory" class="game-modal hidden">
       <div class="modal-header">
         <h3>Inventário (<span id="inv-count">0</span>/40)</h3>
@@ -228,16 +218,14 @@
       </div>
       <div class="modal-body">
         <div class="inv-toolbar">
-          <button class="btn btn-danger btn-sm" onclick="Game.sellAllJunk()">💰 Vender Tudo (Não Equipados)</button>
-          <span class="inv-tip">Clique para Equipar / Usar Lapis</span>
+          <button class="btn btn-danger btn-sm" onclick="Game.sellAllJunk()">💰 Vender Tudo</button>
+          <span class="inv-tip">Clique para Equipar</span>
         </div>
-        <div id="inventory-grid" class="inventory-grid">
-          <!-- Itens gerados via JS -->
-        </div>
+        <div id="inventory-grid" class="inventory-grid"></div>
       </div>
     </div>
 
-    <!-- MODAL: LOJA EXCLUSIVA (PACK DEUSA, ELEMENTOS 2, SÔNICO, VELOZ, MONTARIAS) -->
+    <!-- MODAL: LOJA FAWKES -->
     <div id="modal-shop" class="game-modal hidden">
       <div class="modal-header">
         <h3>Loja Exclusiva Shayenor (AP: <span id="shop-ap-display">5000</span>)</h3>
@@ -245,18 +233,15 @@
       </div>
       <div class="modal-body">
         <div class="shop-tabs">
-          <button class="shop-tab active" onclick="Game.renderShop('packs')">Packs Deusa</button>
-          <button class="shop-tab" onclick="Game.renderShop('lapis')">Lapis & Elementos</button>
-          <button class="shop-tab" onclick="Game.renderShop('mounts')">Montarias</button>
+          <button class="shop-tab active" onclick="Game.renderShop('packs')">Pacotes</button>
+          <button class="shop-tab" onclick="Game.renderShop('lapis')">Lapis</button>
         </div>
-        <div id="shop-items-grid" class="shop-grid">
-          <!-- Itens da loja gerados via JS -->
-        </div>
+        <div id="shop-items-grid" class="shop-grid"></div>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPTS MODULARES SEPARADOS -->
+  <!-- SCRIPTS -->
   <script src="js/data-classes.js"></script>
   <script src="js/data-items.js"></script>
   <script src="js/data-mobs.js"></script>
