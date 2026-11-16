@@ -17,14 +17,70 @@ var monsters = [];
 var projectiles = [];
 var vfxList = [];
 var floatingTexts = [];
-var groundDrops = [];
 var keys = {};
 var bagPage = 0;
 var selectedBagIndex = -1;
 var smithTab = 'link';
 var smithSlot = 'weapon';
-var selectedLapisBagIdx = -1;
 var shopCategory = 'sets';
+
+// ================= SISTEMA DE ANIMAÇÃO CONECTADO AO data-sprites.js =================
+var playerAnim = {
+  state: 'idle',
+  frame: 0,
+  timer: 0,
+  attackTimer: 0,
+  hurtTimer: 0
+};
+
+function triggerPlayerAnim(stateName, duration) {
+  if (stateName === 'attack') {
+    playerAnim.attackTimer = duration || 0.42;
+    playerAnim.state = 'attack';
+    playerAnim.frame = 0;
+    playerAnim.timer = 0;
+  } else if (stateName === 'hurt' && playerAnim.attackTimer <= 0) {
+    playerAnim.hurtTimer = duration || 0.28;
+    playerAnim.state = 'hurt';
+    playerAnim.frame = 0;
+    playerAnim.timer = 0;
+  }
+}
+
+function updatePlayerAnimation(dt, isMoving) {
+  if (playerAnim.attackTimer > 0) {
+    playerAnim.attackTimer -= dt;
+    playerAnim.state = 'attack';
+  } else if (playerAnim.hurtTimer > 0) {
+    playerAnim.hurtTimer -= dt;
+    playerAnim.state = 'hurt';
+  } else {
+    playerAnim.state = isMoving ? 'run' : 'idle';
+  }
+
+  if (typeof SPRITE_SHEETS_CONFIG === 'undefined') return;
+  var cfg = SPRITE_SHEETS_CONFIG.classes[player.archKey];
+  if (!cfg || !cfg.anims) return;
+  var anim = cfg.anims[playerAnim.state] || cfg.anims.idle;
+  playerAnim.timer += dt;
+  var frameDur = 1 / (anim.fps || 8);
+  if (playerAnim.timer >= frameDur) {
+    playerAnim.timer -= frameDur;
+    playerAnim.frame = (playerAnim.frame + 1) % (anim.frames || 1);
+  }
+}
+
+function drawAnimatedCharacter(ctx, archKey, x, y, facing) {
+  if (typeof drawConfiguredSprite !== 'function') return false;
+  var glowColor = null;
+  var weap = player.equip ? player.equip.weapon : null;
+  if (weap && weap.element && weap.element !== 'none' && ELEMENTS[weap.element]) {
+    glowColor = ELEMENTS[weap.element].color;
+  } else if (weap && weap.plus >= 10) {
+    glowColor = '#fbbf24';
+  }
+  return drawConfiguredSprite(ctx, 'classes', archKey, playerAnim.state, playerAnim.frame, x, y, facing, glowColor);
+}
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
@@ -156,7 +212,6 @@ function renderSlotsGrid() {
     toggleBtn.style.display = hasFree ? 'inline-block' : 'none';
   }
 
-  // Se já existe personagem criado e não foi pedido explicitamente para abrir o criador, foca nos slots primeiro
   if (occupiedCount > 0 && !hasFree) {
     creatorVisible = false;
   }
@@ -169,9 +224,7 @@ function renderSlotsGrid() {
 
     if (!hero) {
       card.className = 'slot-card empty';
-      card.onclick = (function() {
-        return function() { toggleCreatorPanel(true); document.getElementById('hero-name-input').focus(); };
-      })();
+      card.onclick = function() { toggleCreatorPanel(true); document.getElementById('hero-name-input').focus(); };
       card.innerHTML =
         '<div style="font-size:1.8rem; margin-bottom:4px;">➕</div>' +
         '<div style="font-weight:bold; font-size:0.86rem;">Slot ' + (i + 1) + ' — Vazio</div>' +
@@ -327,7 +380,6 @@ function startWithSlot(idx) {
   currentSlotIdx = idx;
   player = slots[idx];
 
-  // Garantir compatibilidade de propriedades
   if (!player.allocStats) player.allocStats = { str: 0, dex: 0, rec: 0, int: 0, wis: 0, luc: 0 };
   if (!player.buffs) player.buffs = [];
   if (!player.debuffs) player.debuffs = [];
@@ -354,7 +406,7 @@ function startWithSlot(idx) {
 function returnToCharSelect() {
   saveCurrentHero();
   closeAllWindows();
-  player.autoCombat = false;
+  if (player) player.autoCombat = false;
   document.getElementById('char-screen').style.display = 'flex';
   document.getElementById('hud-top-left').style.display = 'none';
   document.getElementById('hud-target-box').style.display = 'none';
@@ -454,7 +506,6 @@ function getPlayerDerivedStats() {
     }
   });
 
-  // Bônus de Kill Rank
   var rk = getKillRankInfo(player.kills || 0);
   if (rk) {
     var rkBonus = rk.data.pts;
@@ -471,7 +522,6 @@ function getPlayerDerivedStats() {
   var physDef = Math.round(total.rec * 1.9 + total.dex * 0.5 + eqPhysDef);
   var magDef  = Math.round(total.wis * 2.0 + total.rec * 0.6 + eqMagDef);
 
-  // Buffs ativos
   player.buffs.forEach(function(b) {
     if (b.id === 'atk') { physAtk = Math.round(physAtk * 1.25); magAtk = Math.round(magAtk * 1.30); }
     if (b.id === 'def') { physDef = Math.round(physDef * 1.40); magDef = Math.round(magDef * 1.40); }
@@ -543,6 +593,10 @@ function spawnOneMonster(seedIdx) {
     color: tpl.color || '#ef4444',
     x: mx, y: my,
     homeX: mx, homeY: my,
+    facing: 1,
+    animState: 'idle',
+    animFrame: 0,
+    animTimer: 0,
     atkCd: 0,
     stunTimer: 0,
     dotTimer: 0,
@@ -569,7 +623,6 @@ function buildSkillDock() {
     dock.appendChild(slot);
   });
 
-  // Botões 7 e 8 (Poções)
   var potHp = document.createElement('div');
   potHp.className = 'sk-slot';
   potHp.title = 'Usar Poção de Vida (Tecla 7)';
@@ -584,7 +637,6 @@ function buildSkillDock() {
   potMp.innerHTML = '<span class="sk-key">8</span><span class="sk-ico">⚗️</span><span id="dock-mp-qty" class="sk-cost-dot" style="color:#60a5fa;">0</span>';
   dock.appendChild(potMp);
 
-  // Botão Auto-Combate (A)
   var autoBtn = document.createElement('button');
   autoBtn.type = 'button';
   autoBtn.id = 'btn-auto-combat';
@@ -644,10 +696,10 @@ function useClassSkill(idx) {
   var st = getPlayerDerivedStats();
   var target = getSelectedTarget();
 
-  // Skills de cura/buff próprio não precisam de alvo
   if (sk.range === 0) {
     if (sk.res === 'mp') player.mp -= sk.cost; else player.sp -= sk.cost;
     skillCooldowns[idx] = sk.cd * (1 - st.cdrPct / 100);
+    triggerPlayerAnim('attack', 0.36);
 
     if (sk.heal) {
       var healAmt = Math.round(st.maxHp * sk.heal);
@@ -681,6 +733,7 @@ function useClassSkill(idx) {
   if (sk.res === 'mp') player.mp -= sk.cost; else player.sp -= sk.cost;
   skillCooldowns[idx] = sk.cd * (1 - st.cdrPct / 100);
   player.facing = target.x >= player.x ? 1 : -1;
+  triggerPlayerAnim('attack', 0.42);
 
   if (sk.dash) {
     player.x = target.x - player.facing * 42;
@@ -741,7 +794,6 @@ function handleMonsterDeath(m) {
   player.gold += m.gold;
   addFloatingText(player.x, player.y - 52, '+' + m.xp + ' XP  +$' + m.gold, '#34d399');
 
-  // Chance de dropar item ou Lapis do Shaiya Fawkes
   if (Math.random() < (m.tier === 'normal' ? 0.42 : 0.95)) {
     var dropItem = (Math.random() < 0.32) ? generateRandomLapisItem(m.tier) : generateDropItem(m.lvl, m.tier);
     if (player.bag.length < 120) {
@@ -755,7 +807,7 @@ function handleMonsterDeath(m) {
     player.xp -= player.nextXp;
     player.lvl += 1;
     player.nextXp = Math.round(player.nextXp * 1.32);
-    player.freePts += EXTREME_MODE.ptsPerLvl; // +9 Pontos no Modo Extremo
+    player.freePts += EXTREME_MODE.ptsPerLvl;
     var st = getPlayerDerivedStats();
     player.hp = st.maxHp;
     player.mp = st.maxMp;
@@ -786,7 +838,6 @@ function equipBestItemsFromBag() {
     if (!check.ok) continue;
 
     var targetSlot = item.slot;
-    // Se for anel ou bracelete, verifica o slot mais fraco entre 1 e 2
     if (targetSlot === 'ring1' || targetSlot === 'ring2') {
       var s1 = getItemPowerScore(player.equip.ring1);
       var s2 = getItemPowerScore(player.equip.ring2);
@@ -823,9 +874,7 @@ function sellAllLooseItemsInBag() {
 
   for (var i = player.bag.length - 1; i >= 0; i--) {
     var it = player.bag[i];
-    if (!it) continue;
-    // Preserva poções, runas e pedras de linkagem
-    if (it.slot === 'consumable') continue;
+    if (!it || it.slot === 'consumable') continue;
     totalGold += (it.sellPrice || 15) * (it.qty || 1);
     soldCount++;
     player.bag.splice(i, 1);
@@ -869,7 +918,6 @@ function equipItemFromBag(bagIdx, forcedSlot, silent) {
     if (player.equip[targetSlot] && !player.equip[altSlot]) targetSlot = altSlot;
   }
 
-  // Lógica do Escudo + Arma 2 Mãos
   if (targetSlot === 'weapon' && item.is2H && player.equip.shield) {
     player.bag.push(player.equip.shield);
     player.equip.shield = null;
@@ -1156,7 +1204,6 @@ function renderSmithWindow() {
     return;
   }
 
-  // ABA DE LINKAGEM DE LAPIS
   var sockets = targetItem.sockets || [];
   var slotsHtml = '<div class="socket-visual-row">';
   if (sockets.length === 0) {
@@ -1190,7 +1237,6 @@ function renderSmithWindow() {
       '<button type="button" class="btn-buy-supply" onclick="buySmithSupply(\'extract_hammer\', 180)">🔨 Martelo Extração ($180)</button>' +
     '</div>';
 
-  // Coluna 3: Lapis disponíveis na mochila
   var lapisInBag = [];
   player.bag.forEach(function(it, bIdx) {
     if (it && it.slot === 'lapis') lapisInBag.push({ item: it, bagIdx: bIdx });
@@ -1280,8 +1326,6 @@ function linkLapisIntoEquipment(bagIdx) {
 
   var rate = Math.min(100, (LAPIS_BASE_LINK_CHANCE[lap.level || 1] || 50) + (usedStone ? 25 : 0));
   var roll = Math.random() * 100;
-
-  // Recalcular índice da Lapis caso a pedra de linkagem tenha sido removida antes dela
   var curLapIdx = player.bag.indexOf(lap);
 
   if (roll <= rate) {
@@ -1604,7 +1648,6 @@ function showShopBanner(msg, ok) {
 function renderStatusWindow() {
   if (!player) return;
   var st = getPlayerDerivedStats();
-  var arch = ARCHETYPES[player.archKey];
   var cName = getArchetypeDisplayName(player.archKey, player.faction);
 
   document.getElementById('st-hero-title').innerHTML = renderKillRankBadgeHTML(player.kills || 0) + ' ' + player.name + ' (Nv.' + player.lvl + ')';
@@ -1821,12 +1864,10 @@ function gameLoop(now) {
 function updateSimulation(dt) {
   var st = getPlayerDerivedStats();
 
-  // Regeneração natural
   player.hp = Math.min(st.maxHp, player.hp + st.maxHp * 0.015 * dt);
   player.mp = Math.min(st.maxMp, player.mp + st.maxMp * 0.04 * dt);
   player.sp = Math.min(st.maxSp, player.sp + st.maxSp * 0.05 * dt);
 
-  // Cooldowns & Buffs
   for (var i = 0; i < 6; i++) {
     if (skillCooldowns[i] > 0) {
       skillCooldowns[i] = Math.max(0, skillCooldowns[i] - dt);
@@ -1842,13 +1883,15 @@ function updateSimulation(dt) {
     if (player.buffs[b].timer <= 0) player.buffs.splice(b, 1);
   }
 
-  // Movimento WASD / Setas ou Clique
   var vx = 0, vy = 0;
   if (keys['w'] || keys['arrowup'])    vy -= 1;
   if (keys['s'] || keys['arrowdown'])  vy += 1;
+  if (keys['a'] || keys['arrowleft'])  vx -= 1;
   if (keys['d'] || keys['arrowright']) vx += 1;
 
+  var isMovingNow = false;
   if (vx !== 0 || vy !== 0) {
+    isMovingNow = true;
     var len = Math.hypot(vx, vy);
     player.x = Math.max(60, Math.min(WORLD_SIZE - 60, player.x + (vx / len) * st.moveSpeed * dt));
     player.y = Math.max(60, Math.min(WORLD_SIZE - 60, player.y + (vy / len) * st.moveSpeed * dt));
@@ -1859,13 +1902,15 @@ function updateSimulation(dt) {
     var dx = player.tx - player.x, dy = player.ty - player.y;
     var d = Math.hypot(dx, dy);
     if (d > 6) {
+      isMovingNow = true;
       player.x += (dx / d) * st.moveSpeed * dt;
       player.y += (dy / d) * st.moveSpeed * dt;
       player.facing = dx >= 0 ? 1 : -1;
     }
   }
 
-  // Auto-Combate Inteligente
+  updatePlayerAnimation(dt, isMovingNow);
+
   if (player.autoCombat) {
     autoAttackTimer -= dt;
     var tgt = getSelectedTarget() || findNearestMonster();
@@ -1888,7 +1933,6 @@ function updateSimulation(dt) {
     }
   }
 
-  // Atualização dos Monstros
   monsters.forEach(function(m) {
     if (m.hp <= 0) return;
     if (m.stunTimer > 0) { m.stunTimer -= dt; return; }
@@ -1898,13 +1942,19 @@ function updateSimulation(dt) {
     }
 
     var dPlayer = Math.hypot(player.x - m.x, player.y - m.y);
+    var mobMoving = false;
     if (dPlayer < 290 && dPlayer > 48) {
+      mobMoving = true;
+      m.facing = player.x >= m.x ? 1 : -1;
       m.x += ((player.x - m.x) / dPlayer) * 105 * dt;
       m.y += ((player.y - m.y) / dPlayer) * 105 * dt;
     } else if (dPlayer <= 54) {
+      m.facing = player.x >= m.x ? 1 : -1;
       m.atkCd -= dt;
       if (m.atkCd <= 0) {
         m.atkCd = 1.65;
+        m.animState = 'attack';
+        m.animFrame = 0;
         if (Math.random() * 100 < st.evaChance) {
           addFloatingText(player.x, player.y - 36, '💨 Esquivou!', '#34d399');
         } else if (Math.random() * 100 < st.blockChance) {
@@ -1913,14 +1963,22 @@ function updateSimulation(dt) {
           var eMult = getElementMultiplier(m.elem, st.defElem);
           var dmgTaken = Math.max(1, Math.round((m.atk - st.physDef * 0.45) * eMult) - st.absDamage);
           player.hp -= dmgTaken;
+          triggerPlayerAnim('hurt', 0.28);
           addFloatingText(player.x, player.y - 34, '-' + dmgTaken, '#f43f5e');
           if (player.hp <= 0) handlePlayerExtremeDeath();
         }
       }
     }
+
+    if (m.animState !== 'attack') m.animState = mobMoving ? 'run' : 'idle';
+    m.animTimer = (m.animTimer || 0) + dt;
+    if (m.animTimer >= 0.14) {
+      m.animTimer = 0;
+      m.animFrame = (m.animFrame || 0) + 1;
+      if (m.animState === 'attack' && m.animFrame >= 4) m.animState = 'idle';
+    }
   });
 
-  // Projéteis, VFX & Textos Flutuantes
   for (var p = projectiles.length - 1; p >= 0; p--) {
     projectiles[p].life -= dt;
     if (projectiles[p].life <= 0) projectiles.splice(p, 1);
@@ -1974,7 +2032,6 @@ function renderWorld() {
   ctx.save();
   ctx.translate(-camX, -camY);
 
-  // Grade do terreno
   ctx.strokeStyle = isFury ? 'rgba(244, 63, 94, 0.08)' : 'rgba(52, 211, 153, 0.08)';
   ctx.lineWidth = 1;
   var startX = Math.floor(camX / 80) * 80;
@@ -1986,12 +2043,10 @@ function renderWorld() {
     ctx.beginPath(); ctx.moveTo(camX, gy); ctx.lineTo(camX + canvas.width, gy); ctx.stroke();
   }
 
-  // Borda do mapa
   ctx.strokeStyle = '#fbbf24';
   ctx.lineWidth = 4;
   ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80);
 
-  // Monstros
   monsters.forEach(function(m) {
     if (m.hp <= 0) return;
     var isSelected = selectedTargetId === m.id;
@@ -2001,49 +2056,61 @@ function renderWorld() {
       ctx.beginPath(); ctx.ellipse(m.x, m.y + 16, 26, 11, 0, 0, Math.PI * 2); ctx.stroke();
     }
 
-    ctx.fillStyle = m.color;
-    ctx.beginPath(); ctx.arc(m.x, m.y, m.tier === 'boss' ? 26 : 19, 0, Math.PI * 2); ctx.fill();
-    ctx.font = (m.tier === 'boss' ? '26px' : '20px') + ' Segoe UI';
-    ctx.textAlign = 'center';
-    ctx.fillText(m.icon, m.x, m.y + 7);
+    var drewMob = (typeof drawConfiguredSprite === 'function')
+      ? drawConfiguredSprite(ctx, 'mobs', m.name, m.animState || 'idle', m.animFrame || 0, m.x, m.y, m.facing || 1, null)
+      : false;
+
+    if (!drewMob) {
+      ctx.fillStyle = m.color;
+      ctx.beginPath(); ctx.arc(m.x, m.y, m.tier === 'boss' ? 26 : 19, 0, Math.PI * 2); ctx.fill();
+      ctx.font = (m.tier === 'boss' ? '26px' : '20px') + ' Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.fillText(m.icon, m.x, m.y + 7);
+    }
 
     var el = ELEMENTS[m.elem] || ELEMENTS.none;
+    var mobTopY = drewMob ? -58 : -30;
     ctx.font = 'bold 11px Segoe UI';
+    ctx.textAlign = 'center';
     ctx.fillStyle = '#fff';
-    ctx.fillText(el.icon + ' [Nv.' + m.lvl + '] ' + m.name, m.x, m.y - 30);
+    ctx.fillText(el.icon + ' [Nv.' + m.lvl + '] ' + m.name, m.x, m.y + mobTopY);
 
-    // Barra de vida do monstro
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(m.x - 24, m.y - 24, 48, 5);
+    ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48, 5);
     ctx.fillStyle = '#ef4444';
-    ctx.fillRect(m.x - 24, m.y - 24, 48 * (m.hp / m.maxHp), 5);
+    ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48 * (m.hp / m.maxHp), 5);
   });
 
-  // Personagem Jogador
   var arch = ARCHETYPES[player.archKey];
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.beginPath(); ctx.ellipse(player.x, player.y + 18, 20, 8, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,0.48)';
+  ctx.beginPath(); ctx.ellipse(player.x, player.y + 18, 24, 9, 0, 0, Math.PI * 2); ctx.fill();
 
-  ctx.fillStyle = arch.armorColor;
-  ctx.strokeStyle = arch.trimColor;
-  ctx.lineWidth = 3;
-  ctx.beginPath(); ctx.arc(player.x, player.y, 20, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  var drewSprite = drawAnimatedCharacter(ctx, player.archKey, player.x, player.y, player.facing);
+  if (!drewSprite) {
+    ctx.fillStyle = arch.armorColor;
+    ctx.strokeStyle = arch.trimColor;
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(player.x, player.y, 20, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.font = '21px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(player.equip.mount ? player.equip.mount.icon : arch.icon, player.x, player.y + 7);
+  } else if (player.equip.mount) {
+    ctx.font = '18px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(player.equip.mount.icon, player.x, player.y + 24);
+  }
 
-  ctx.font = '21px Segoe UI';
-  ctx.textAlign = 'center';
-  ctx.fillText(player.equip.mount ? player.equip.mount.icon : arch.icon, player.x, player.y + 7);
-
-  // Nome + Medalhão de Rank no Canvas
+  var nameOffsetY = drewSprite ? -68 : -28;
   ctx.font = 'bold 12px Segoe UI';
+  ctx.textAlign = 'center';
   var nameW = ctx.measureText(player.name).width;
   var rkInfo = getKillRankInfo(player.kills || 0);
   if (rkInfo) {
-    drawShaiyaRankBadgeOnCanvas(ctx, rkInfo, player.x - nameW / 2 - 4, player.y - 32);
+    drawShaiyaRankBadgeOnCanvas(ctx, rkInfo, player.x - nameW / 2 - 4, player.y + nameOffsetY - 4);
   }
   ctx.fillStyle = '#fde047';
-  ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y - 28);
+  ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
 
-  // Projéteis & VFX
   projectiles.forEach(function(p) {
     ctx.strokeStyle = p.color;
     ctx.lineWidth = 4;
