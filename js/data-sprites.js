@@ -1,79 +1,52 @@
 // ================= CONFIGURAÇÃO CENTRAL DE SPRITES (CLASSES, MOBS & BOSSES) =================
-// Sempre que adicionar uma imagem nova na pasta assets/, basta preencher a linha dela aqui!
+// Suporta folha única (src no topo) OU arquivos separados por animação (src dentro de idle/run/attack/hurt)!
 
 var SPRITE_SHEETS_CONFIG = {
   // 1. CLASSES JOGÁVEIS (assets/)
   classes: {
-   fighter2: {
-  src: 'assets/fighter2.png',
-  cols: 4,
-  rows: 4, // Exato para essa imagem
-  labelColRatio: 0,
-  removeCheckerBg: false, // Não precisa mais de filtro automático
-  drawHeight: 112,
-  anims: {
-    idle:   { row: 0, frames: 4, fps: 5  },
-    run:    { row: 1, frames: 4, fps: 11 },
-    jump:   { row: 2, frames: 4, fps: 8  },
-    attack: { row: 3, frames: 4, fps: 15 }
-  }
-}
-    // Quando subir as outras classes em assets/, basta descomentar e ajustar:
-    // defender: { src: 'assets/defender.png', cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // ranger:   { src: 'assets/ranger.png',   cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 12 }, attack: { row: 2, startCol: 0, frames: 6, fps: 16 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // archer:   { src: 'assets/archer.png',   cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 11 }, attack: { row: 2, startCol: 0, frames: 6, fps: 15 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // mage:     { src: 'assets/mage.png',     cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
-    // priest:   { src: 'assets/priest.png',   cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } }
+    fighter: {
+      drawHeight: 118,
+      anims: {
+        idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 8  },
+        run:    { src: 'assets/f6_greatwhitenorth_run.png',    fps: 12 },
+        attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 14 },
+        hurt:   { src: 'assets/f6_greatwhitenorth_hit.png',    fps: 10 }
+      }
+    }
+    // Para adicionar as próximas classes, mobs ou bosses no mesmo formato, basta copiar o bloco acima!
   },
 
   // 2. MONSTROS E BOSSES (assets/) — chave = nome exato do monstro em data-mobs.js
   mobs: {
     // Exemplo:
-    // 'Guardião Abissal': { src: 'assets/boss_abissal.png', cols: 6, rows: 4, removeSolidBg: true, drawHeight: 140, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 4, fps: 9 }, attack: { row: 2, startCol: 0, frames: 6, fps: 12 } } }
+    // 'Guardião Abissal': {
+    //   drawHeight: 140,
+    //   anims: {
+    //     idle:   { src: 'assets/boss_idle.png',   fps: 8  },
+    //     run:    { src: 'assets/boss_run.png',    fps: 10 },
+    //     attack: { src: 'assets/boss_attack.png', fps: 13 }
+    //   }
+    // }
   }
 };
 
-// ================= MOTOR LEVE DE PRÉ-CARREGAMENTO, LIMPEZA DE FUNDO E DESENHO =================
+// ================= MOTOR LEVE DE PRÉ-CARREGAMENTO E DESENHO DE SPRITES =================
 var LOADED_SPRITE_IMAGES = {};
 
-function stripBackgroundPixels(img) {
-  try {
-    var c = document.createElement('canvas');
-    c.width = img.naturalWidth;
-    c.height = img.naturalHeight;
-    var g = c.getContext('2d');
-    g.drawImage(img, 0, 0);
-
-    var imgData = g.getImageData(0, 0, c.width, c.height);
-    var d = imgData.data;
-
-    var sampleIdx = (2 * c.width + 2) * 4;
-    var bgR = d[sampleIdx], bgG = d[sampleIdx + 1], bgB = d[sampleIdx + 2];
-
-    for (var i = 0; i < d.length; i += 4) {
-      var r = d[i], gr = d[i + 1], b = d[i + 2], a = d[i + 3];
-      if (a === 0) continue;
-
-      var distBg = Math.abs(r - bgR) + Math.abs(gr - bgG) + Math.abs(b - bgB);
-      if (distBg <= 36) {
-        d[i + 3] = 0;
-        continue;
-      }
-
-      var maxC = Math.max(r, gr, b);
-      var minC = Math.min(r, gr, b);
-      var sat = maxC - minC;
-      var lum = (r + gr + b) / 3;
-      if (sat <= 8 && lum >= 115 && lum <= 145) {
-        d[i + 3] = 0;
-      }
+function registerSpriteImage(cacheKey, src, cfg) {
+  if (!src || LOADED_SPRITE_IMAGES[cacheKey]) return;
+  var img = new Image();
+  var entry = { source: img, loaded: false, cfg: cfg, autoCols: 1 };
+  img.onload = function() {
+    entry.source = img;
+    // Em tiras horizontais (1 linha), calcula quantos quadros quadrados cabem na largura automaticamente
+    if (img.naturalHeight > 0 && img.naturalWidth >= img.naturalHeight) {
+      entry.autoCols = Math.max(1, Math.round(img.naturalWidth / img.naturalHeight));
     }
-
-    g.putImageData(imgData, 0, 0);
-    return c;
-  } catch (e) {
-    return img;
-  }
+    entry.loaded = true;
+  };
+  img.src = src;
+  LOADED_SPRITE_IMAGES[cacheKey] = entry;
 }
 
 function preloadAllConfiguredSprites() {
@@ -81,57 +54,56 @@ function preloadAllConfiguredSprites() {
     var dict = SPRITE_SHEETS_CONFIG[group] || {};
     Object.keys(dict).forEach(function(key) {
       var cfg = dict[key];
-      if (!cfg || !cfg.src) return;
-      var img = new Image();
-      var entry = { source: img, loaded: false, cfg: cfg };
-      img.onload = function() {
-        entry.source = cfg.removeSolidBg ? stripBackgroundPixels(img) : img;
-        entry.loaded = true;
-      };
-      img.src = cfg.src;
-      LOADED_SPRITE_IMAGES[group + ':' + key] = entry;
+      if (!cfg) return;
+      if (cfg.src) {
+        registerSpriteImage(group + ':' + key, cfg.src, cfg);
+      }
+      if (cfg.anims) {
+        Object.keys(cfg.anims).forEach(function(animName) {
+          var a = cfg.anims[animName];
+          if (a && a.src) {
+            registerSpriteImage(group + ':' + key + ':' + animName, a.src, cfg);
+          }
+        });
+      }
     });
   });
 }
 
 function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, facing, glowColor) {
-  var entry = LOADED_SPRITE_IMAGES[group + ':' + key];
-  if (!entry || !entry.loaded || !entry.source) return false;
+  var cfg = (SPRITE_SHEETS_CONFIG[group] || {})[key];
+  if (!cfg || !cfg.anims) return false;
 
-  var srcCanvas = entry.source;
-  var W = srcCanvas.width || srcCanvas.naturalWidth;
-  var H = srcCanvas.height || srcCanvas.naturalHeight;
-  if (!W || !H) return false;
-
-  var cfg = entry.cfg;
-  var anim = (cfg.anims && cfg.anims[animState]) ? cfg.anims[animState] : cfg.anims.idle;
+  var anim = cfg.anims[animState] ? cfg.anims[animState] : cfg.anims.idle;
+  var usedState = cfg.anims[animState] ? animState : 'idle';
   if (!anim) return false;
 
-  var leftMargin = W * (cfg.labelColRatio || 0);
-  var gridW = W - leftMargin;
-  var cellW = gridW / (cfg.cols || 1);
+  var entry = anim.src
+    ? LOADED_SPRITE_IMAGES[group + ':' + key + ':' + usedState]
+    : LOADED_SPRITE_IMAGES[group + ':' + key];
 
-  var startCol = anim.startCol || 0;
-  var colIdx = startCol + (frameIndex % (anim.frames || 1));
+  if (!entry || !entry.loaded || !entry.source) return false;
+
+  var srcImg = entry.source;
+  var W = srcImg.naturalWidth || srcImg.width;
+  var H = srcImg.naturalHeight || srcImg.height;
+  if (!W || !H) return false;
+
+  var cols = anim.cols || cfg.cols || entry.autoCols || 1;
+  var rows = anim.rows || cfg.rows || 1;
+  var totalFrames = anim.frames || cols;
+
+  var cellW = W / cols;
+  var cellH = H / rows;
+  var colIdx = (anim.startCol || 0) + (frameIndex % totalFrames);
   var rowIdx = anim.row || 0;
 
-  // Calcula corte vertical usando rowBands (exato) ou rows (uniforme)
-  var sy, sh;
-  if (cfg.rowBands && cfg.rowBands[rowIdx]) {
-    sy = H * cfg.rowBands[rowIdx].y0;
-    sh = H * (cfg.rowBands[rowIdx].y1 - cfg.rowBands[rowIdx].y0);
-  } else {
-    var cellH = H / (cfg.rows || 1);
-    sy = rowIdx * cellH;
-    sh = cellH;
-  }
+  var sx = colIdx * cellW;
+  var sy = rowIdx * cellH;
+  var sw = cellW;
+  var sh = cellH;
 
-  // Expande levemente a largura de recorte para não cortar a ponta de espadas/cajados/arcos
-  var extraW = cellW * (anim.expandX || 0);
-  var sx = Math.max(0, leftMargin + colIdx * cellW - extraW * 0.5);
-  var sw = Math.min(W - sx, cellW + extraW);
-
-  var drawH = cfg.drawHeight || 114;
+  var drawH = cfg.drawHeight || 118;
   var drawW = drawH * (sw / sh);
 
   ctx.save();
@@ -145,7 +117,7 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
     ctx.shadowBlur = 13;
   }
 
-  ctx.drawImage(srcCanvas, sx, sy, sw, sh, -drawW * 0.48, -drawH * 0.82, drawW, drawH);
+  ctx.drawImage(srcImg, sx, sy, sw, sh, -drawW * 0.50, -drawH * 0.80, drawW, drawH);
   ctx.restore();
   return true;
 }
