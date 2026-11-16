@@ -5,20 +5,20 @@ var SPRITE_SHEETS_CONFIG = {
   // 1. CLASSES JOGÁVEIS (assets/chars/)
   classes: {
     fighter: {
-      src: 'assets/chars/fighter.png',
-      cols: 6,
-      rows: 5,
-      labelColRatio: 0.148, // Pula exatamente a coluna escrita IDLE/RUN/ATTACK à esquerda
-      removeCheckerBg: true, // Remove automaticamente fundo quadriculado falso (cinza/preto)
-      drawHeight: 112,
-      anims: {
-        idle:   { row: 0, frames: 3, fps: 5  },
-        run:    { row: 1, frames: 6, fps: 11 },
-        jump:   { row: 2, frames: 3, fps: 8  },
-        attack: { row: 3, frames: 6, fps: 15 },
-        hurt:   { row: 4, frames: 4, fps: 10 }
-      }
-    }
+  src: 'assets/chars/fighter.png',
+  cols: 6,
+  rows: 5,
+  labelColRatio: 0,
+  removeCheckerBg: false,
+  drawHeight: 112,
+  anims: {
+    idle:   { row: 0, frames: 3, fps: 5  },
+    run:    { row: 1, frames: 6, fps: 11 },
+    jump:   { row: 2, frames: 3, fps: 8  },
+    attack: { row: 3, frames: 6, fps: 15 },
+    hurt:   { row: 4, frames: 4, fps: 10 }
+  }
+}
     // Quando subir as outras classes, basta descomentar e ajustar:
     // defender: { src: 'assets/chars/defender.png', cols: 4, rows: 4, labelColRatio: 0, removeCheckerBg: true, drawHeight: 104, anims: { idle: { row: 0, frames: 4, fps: 5 }, run: { row: 1, frames: 4, fps: 10 }, attack: { row: 2, frames: 4, fps: 14 }, hurt: { row: 3, frames: 4, fps: 10 } } },
     // ranger:   { src: 'assets/chars/ranger.png',   cols: 6, rows: 5, labelColRatio: 0.148, removeCheckerBg: true, drawHeight: 108, anims: { idle: { row: 0, frames: 3, fps: 5 }, run: { row: 1, frames: 6, fps: 12 }, attack: { row: 3, frames: 6, fps: 16 }, hurt: { row: 4, frames: 4, fps: 10 } } },
