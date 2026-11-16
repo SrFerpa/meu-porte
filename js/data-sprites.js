@@ -1,30 +1,17 @@
 // ================= CONFIGURAÇÃO CENTRAL DE SPRITES (CLASSES, MOBS & BOSSES) =================
-// Suporta folha única (src no topo) OU arquivos separados por animação (src dentro de idle/run/attack/hurt)!
-
 var SPRITE_SHEETS_CONFIG = {
-  // 1. CLASSES JOGÁVEIS (assets/)
- classes: {
-  fighter: {
-  drawHeight: 118,
-  anims: {
-    idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 8  },
-    run:    { src: 'assets/f6_greatwhitenorth_run.png',    fps: 12 },
-    attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 14 },
-    hurt:   { src: 'assets/f6_greatwhitenorth_hit.png',    fps: 10 }
-  }
-}
-  // 2. MONSTROS E BOSSES (assets/) — chave = nome exato do monstro em data-mobs.js
-  mobs: {
-    // Exemplo:
-    // 'Guardião Abissal': {
-    //   drawHeight: 140,
-    //   anims: {
-    //     idle:   { src: 'assets/boss_idle.png',   fps: 8  },
-    //     run:    { src: 'assets/boss_run.png',    fps: 10 },
-    //     attack: { src: 'assets/boss_attack.png', fps: 13 }
-    //   }
-    // }
-  }
+  classes: {
+    fighter: {
+      drawHeight: 118,
+      anims: {
+        idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 8  },
+        run:    { src: 'assets/f6_greatwhitenorth_run.png',    fps: 12 },
+        attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 14 },
+        hurt:   { src: 'assets/f6_greatwhitenorth_hit.png',    fps: 10 }
+      }
+    }
+  },
+  mobs: {}
 };
 
 // ================= MOTOR LEVE DE PRÉ-CARREGAMENTO E DESENHO DE SPRITES =================
@@ -36,11 +23,13 @@ function registerSpriteImage(cacheKey, src, cfg) {
   var entry = { source: img, loaded: false, cfg: cfg, autoCols: 1 };
   img.onload = function() {
     entry.source = img;
-    // Em tiras horizontais (1 linha), calcula quantos quadros quadrados cabem na largura automaticamente
     if (img.naturalHeight > 0 && img.naturalWidth >= img.naturalHeight) {
       entry.autoCols = Math.max(1, Math.round(img.naturalWidth / img.naturalHeight));
     }
     entry.loaded = true;
+  };
+  img.onerror = function() {
+    console.warn('Sprite não encontrado no caminho:', src);
   };
   img.src = src;
   LOADED_SPRITE_IMAGES[cacheKey] = entry;
@@ -52,15 +41,11 @@ function preloadAllConfiguredSprites() {
     Object.keys(dict).forEach(function(key) {
       var cfg = dict[key];
       if (!cfg) return;
-      if (cfg.src) {
-        registerSpriteImage(group + ':' + key, cfg.src, cfg);
-      }
+      if (cfg.src) registerSpriteImage(group + ':' + key, cfg.src, cfg);
       if (cfg.anims) {
         Object.keys(cfg.anims).forEach(function(animName) {
           var a = cfg.anims[animName];
-          if (a && a.src) {
-            registerSpriteImage(group + ':' + key + ':' + animName, a.src, cfg);
-          }
+          if (a && a.src) registerSpriteImage(group + ':' + key + ':' + animName, a.src, cfg);
         });
       }
     });
@@ -71,8 +56,8 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
   var cfg = (SPRITE_SHEETS_CONFIG[group] || {})[key];
   if (!cfg || !cfg.anims) return false;
 
-  var anim = cfg.anims[animState] ? cfg.anims[animState] : cfg.anims.idle;
   var usedState = cfg.anims[animState] ? animState : 'idle';
+  var anim = cfg.anims[usedState];
   if (!anim) return false;
 
   var entry = anim.src
