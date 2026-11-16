@@ -2,11 +2,11 @@
 var SPRITE_SHEETS_CONFIG = {
   classes: {
     fighter: {
-      drawHeight: 118,
+      drawHeight: 150,
       anims: {
-        idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 8  },
+        idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 10 },
         run:    { src: 'assets/f6_greatwhitenorth_run.png',    fps: 12 },
-        attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 14 },
+        attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 16 },
         hurt:   { src: 'assets/f6_greatwhitenorth_hit.png',    fps: 10 }
       }
     }
@@ -29,7 +29,7 @@ function registerSpriteImage(cacheKey, src, cfg) {
     entry.loaded = true;
   };
   img.onerror = function() {
-    console.warn('Sprite não encontrado no caminho:', src);
+    console.warn('Sprite não encontrado:', src);
   };
   img.src = src;
   LOADED_SPRITE_IMAGES[cacheKey] = entry;
@@ -82,11 +82,9 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
 
   var sx = colIdx * cellW;
   var sy = rowIdx * cellH;
-  var sw = cellW;
-  var sh = cellH;
 
-  var drawH = cfg.drawHeight || 118;
-  var drawW = drawH * (sw / sh);
+  var drawH = cfg.drawHeight || 150;
+  var drawW = drawH * (cellW / cellH);
 
   ctx.save();
   ctx.translate(x, y);
@@ -99,7 +97,7 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
     ctx.shadowBlur = 13;
   }
 
-  ctx.drawImage(srcImg, sx, sy, sw, sh, -drawW * 0.50, -drawH * 0.80, drawW, drawH);
+  ctx.drawImage(srcImg, sx, sy, cellW, cellH, -drawW * 0.50, -drawH * 0.72, drawW, drawH);
   ctx.restore();
   return true;
 }
