@@ -1,295 +1,296 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Project: Shayenor - 2.5D Web MMORPG</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crônicas de Teos — RPG 2.5D</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- TELA DE SELEÇÃO E CRIAÇÃO DE PERSONAGEM -->
-  <div id="screen-char-select" class="screen active">
-    <div class="char-select-container">
-      <header class="game-logo">
-        <h1>PROJECT: SHAYENOR</h1>
-        <p>Crônicas de Teos • Versão Web 2.5D</p>
-      </header>
+  <!-- ================= TELA DE CRIAÇÃO E SELEÇÃO DE PERSONAGENS ================= -->
+  <div id="char-screen">
+    <h1>⚔️ Crônicas de Teos</h1>
+    <p class="subtitle">Escolha sua Facção, Classe Clássica e Modo de Dificuldade</p>
 
-      <div class="char-main-grid">
-        <!-- SLOTS DE PERSONAGENS (3 SLOTS) -->
-        <section class="panel slots-panel">
-          <h2>Seus Personagens (Local Save)</h2>
-          <div id="char-slots-list" class="slots-list">
-            <!-- Gerado via JS -->
-          </div>
-          <div class="slot-actions">
-            <button id="btn-enter-world" class="btn btn-gold" disabled>Entrar no Mundo</button>
-            <button id="btn-open-create" class="btn btn-primary">Criar Novo</button>
-            <button id="btn-delete-char" class="btn btn-danger" disabled>Excluir</button>
-          </div>
-        </section>
+    <!-- PASSO 1: FACÇÃO -->
+    <div class="ep-box">
+      <h2>1. Escolha sua Facção</h2>
+      <div class="faction-row">
+        <div id="fac-light" class="faction-btn active-light" onclick="selectFaction('light')">
+          <div style="font-size:1.35rem; margin-bottom:2px;">☀️ Aliança da Luz</div>
+          <div style="font-size:0.74rem; color:#94a3b8;">Humanos &amp; Elfos • Floresta de Erina</div>
+        </div>
+        <div id="fac-fury" class="faction-btn" onclick="selectFaction('fury')">
+          <div style="font-size:1.35rem; margin-bottom:2px;">🔥 União da Fúria</div>
+          <div style="font-size:0.74rem; color:#94a3b8;">Nordeins &amp; Vails • Floresta de Iris</div>
+        </div>
+      </div>
 
-        <!-- PAINEL DE CRIAÇÃO DE PERSONAGEM -->
-        <section id="panel-create-char" class="panel create-panel hidden">
-          <h2>Forjar Novo Herói</h2>
-          
-          <div class="form-group">
-            <label for="input-char-name">Nome do Personagem:</label>
-            <input type="text" id="input-char-name" maxlength="14" placeholder="Ex: Kaelen, Lyra..." />
-          </div>
+      <!-- PASSO 2: CLASSES -->
+      <h2 style="margin-top:14px;">2. Escolha sua Classe (Alcance &amp; 6 Skills Exclusivas)</h2>
+      <div id="class-grid" class="class-grid"></div>
 
-          <div class="form-group">
-            <label>Escolha a Classe:</label>
-            <div id="class-grid" class="class-grid">
-              <!-- Gerado via JS -->
-            </div>
-          </div>
+      <!-- PASSO 3: MODO -->
+      <h2 style="margin-top:14px;">3. Modo de Dificuldade</h2>
+      <div class="mode-row">
+        <div id="mode-nm" class="mode-card" onclick="selectMode('nm')">
+          <div class="mode-title" style="color:#38bdf8;">📘 Normal (NM)</div>
+          <div class="mode-desc">+5 Pontos de Status por nível. Ressurreição livre sem perda de personagem.</div>
+        </div>
+        <div id="mode-hm" class="mode-card selected-hm" onclick="selectMode('hm')">
+          <div class="mode-title" style="color:#c084fc;">📙 Difícil (HM) — Recomendado</div>
+          <div class="mode-desc">+7 Pontos de Status por nível. Bônus maiores nos Ranks de Kill.</div>
+        </div>
+        <div id="mode-um" class="mode-card" onclick="selectMode('um')">
+          <div class="mode-title" style="color:#fb7185;">📕 Extremo (UM)</div>
+          <div class="mode-desc">+9 Pontos por nível. Morte permanente se não possuir Runa de Ressurreição!</div>
+        </div>
+      </div>
 
-          <div id="class-preview-box" class="class-preview-box">
-            <h3 id="preview-class-name">Selecione uma classe</h3>
-            <span id="preview-class-role" class="badge">Função</span>
-            <p id="preview-class-desc">Clique em uma classe acima para ver seus atributos base, armas e habilidades exclusivas.</p>
-            <div id="preview-class-stats" class="mini-stats"></div>
-            <div id="preview-class-skills" class="mini-skills"></div>
-          </div>
+      <!-- NOME & CRIAR -->
+      <div class="create-bar">
+        <input type="text" id="hero-name-input" maxlength="16" placeholder="Nome do Herói...">
+        <button type="button" id="btn-create-hero" class="btn-create" onclick="createHero()">Entrar em Teos</button>
+      </div>
+    </div>
 
-          <div class="create-actions">
-            <button id="btn-confirm-create" class="btn btn-gold">Confirmar Criação</button>
-            <button id="btn-cancel-create" class="btn btn-secondary">Cancelar</button>
-          </div>
-        </section>
+    <!-- PERSONAGENS SALVOS (3 SLOTS) -->
+    <div class="ep-box">
+      <h2>Seus Personagens Salvos (Até 3 Slots)</h2>
+      <div id="slots-grid" class="slots-grid"></div>
+    </div>
+  </div>
+
+  <!-- ================= CANVAS 2.5D ================= -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- ================= HUD SUPERIOR ESQUERDO ================= -->
+  <div id="hud-top-left">
+    <div id="hud-portrait" class="hud-portrait">
+      ⚔️
+      <span id="hud-lvl" class="hud-lvl-pill">Nv.1</span>
+    </div>
+    <div class="hud-bars-col">
+      <div class="hud-name-line">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span id="hud-kill-emblem"></span>
+          <span id="hud-name">Herói</span>
+        </div>
+        <span id="hud-mode-badge" class="mode-badge">HM</span>
+      </div>
+      <div class="vital-bar">
+        <div id="bar-hp" class="fill-hp"></div>
+        <div id="txt-hp" class="vital-txt">HP 100 / 100</div>
+      </div>
+      <div class="vital-bar">
+        <div id="bar-mp" class="fill-mp"></div>
+        <div id="txt-mp" class="vital-txt">MP 100 / 100</div>
+      </div>
+      <div class="vital-bar" style="margin-bottom:0;">
+        <div id="bar-sp" class="fill-sp"></div>
+        <div id="txt-sp" class="vital-txt">SP 100 / 100</div>
+      </div>
+      <div id="hud-buffs-row" class="hud-buffs-row"></div>
+    </div>
+  </div>
+
+  <!-- ================= HUD ALVO SELECIONADO ================= -->
+  <div id="hud-target-box">
+    <div class="target-header">
+      <span id="target-name">[Nv.1] Monstro</span>
+      <span id="target-elem" class="elem-tag">⚪ Neutro</span>
+    </div>
+    <div class="target-hp-bg">
+      <div id="target-hp-fill" class="target-hp-fill"></div>
+      <div id="target-hp-txt" class="vital-txt">100 / 100</div>
+    </div>
+    <div id="target-cast-txt" style="display:none; font-size:0.7rem; color:#fde047; font-weight:bold; margin-top:4px;"></div>
+  </div>
+
+  <!-- ================= HUD SUPERIOR DIREITO (RADAR & MENUS) ================= -->
+  <div id="hud-top-right">
+    <div class="radar-wrap">
+      <div class="zone-card">
+        <div id="hud-zone" class="zone-title">🌲 Floresta de Erina</div>
+        <div class="zone-sub">
+          💰 <b id="hud-gold">0</b> Ouro &nbsp;|&nbsp; 🔥 BR: <b id="hud-br">0</b>
+        </div>
+        <div id="hud-kill-info" style="font-size:0.72rem; color:#cbd5e1; margin-top:4px; display:flex; align-items:center; justify-content:flex-end; gap:4px;">
+          Sem Rank | Kills: 0 | Derrotas: 0
+        </div>
+      </div>
+      <div class="minimap-box">
+        <canvas id="minimapCanvas" width="124" height="124"></canvas>
+      </div>
+    </div>
+
+    <div class="hud-btn-row">
+      <button type="button" id="btn-hud-status" class="btn-ep" onclick="toggleWindow('status-modal')">📊 Status (C)</button>
+      <button type="button" class="btn-ep" onclick="toggleWindow('bag-modal')">🎒 Mochila (B)</button>
+      <button type="button" class="btn-ep smith-btn" onclick="toggleWindow('smith-modal')">🔨 Ferreiro (F)</button>
+      <button type="button" class="btn-ep shop-btn" onclick="toggleWindow('shop-modal')">👑 Loja (L)</button>
+      <button type="button" class="btn-ep" onclick="returnToCharSelect()">🚪 Trocar Herói</button>
+    </div>
+  </div>
+
+  <!-- ================= DICA DE CONTROLES ================= -->
+  <div id="controls-hint">
+    <b>Controles:</b> Clique ou <b>WASD / Setas</b> para mover<br>
+    <b>1 a 6:</b> Skills da Classe &nbsp;|&nbsp; <b>7/8:</b> Poções &nbsp;|&nbsp; <b>A:</b> Auto-Combate<br>
+    <b>C:</b> Status &nbsp;|&nbsp; <b>B:</b> Mochila &nbsp;|&nbsp; <b>F:</b> Ferreiro &nbsp;|&nbsp; <b>L:</b> Loja
+  </div>
+
+  <!-- ================= HUD INFERIOR (6 SKILLS + POÇÕES + AUTO + XP) ================= -->
+  <div id="hud-bottom">
+    <div id="skill-dock" class="skill-dock"></div>
+    <div class="xp-strip">
+      <div id="bar-xp" class="xp-fill"></div>
+      <div id="txt-xp" class="xp-lbl">XP: 0 / 100 (0%)</div>
+    </div>
+  </div>
+
+  <!-- ================= JANELA: STATUS DO PERSONAGEM (TECLA C) ================= -->
+  <div id="status-modal" class="ep-window">
+    <div class="ep-win-header">
+      <h3>📊 Atributos &amp; Status de Combate</h3>
+      <button type="button" class="btn-x" onclick="closeAllWindows()">✕</button>
+    </div>
+    <div class="status-body">
+      <div class="status-top-summary">
+        <div>
+          <div id="st-hero-title" style="font-weight:bold; font-size:0.96rem; color:#fff; display:flex; align-items:center; gap:6px;">Herói</div>
+          <div id="st-hero-sub" style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">Classe • Modo</div>
+        </div>
+        <div class="pts-avail-box">Pontos Livres: <span id="st-free-pts">0</span></div>
+      </div>
+
+      <div class="status-columns">
+        <div class="stat-alloc-col">
+          <div class="stat-col-title">Distribuir Pontos</div>
+          <div id="attr-alloc-list"></div>
+          <button type="button" class="btn-reset-stats" onclick="resetStatPoints()">🔄 Resetar Pontos Distribuídos</button>
+        </div>
+        <div class="stat-derived-col">
+          <div class="stat-col-title">Status Totais (Com Equipamentos &amp; Lapis)</div>
+          <div id="derived-stats-list"></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- TELA PRINCIPAL DO JOGO (MUNDO 2.5D) -->
-  <div id="screen-game" class="screen">
-    <!-- CANVAS DO MUNDO 2.5D -->
-    <canvas id="game-canvas"></canvas>
-
-    <!-- HUD SUPERIOR ESQUERDO: STATUS DO JOGADOR -->
-    <div class="hud-top-left">
-      <div class="player-frame">
-        <div class="player-avatar" id="hud-avatar">⚔️</div>
-        <div class="player-bars">
-          <div class="player-title-row">
-            <span id="hud-name">Herói</span>
-            <span id="hud-level" class="lvl-badge">Nv. 1</span>
-          </div>
-          <div class="bar-container hp-bar">
-            <div id="hud-hp-fill" class="bar-fill" style="width: 100%;"></div>
-            <span id="hud-hp-text">150 / 150</span>
-          </div>
-          <div class="bar-container mp-bar">
-            <div id="hud-mp-fill" class="bar-fill" style="width: 100%;"></div>
-            <span id="hud-mp-text">120 / 120</span>
-          </div>
-          <div class="bar-container sp-bar">
-            <div id="hud-sp-fill" class="bar-fill" style="width: 100%;"></div>
-            <span id="hud-sp-text">100 / 100</span>
-          </div>
-          <div class="bar-container xp-bar">
-            <div id="hud-xp-fill" class="bar-fill" style="width: 0%;"></div>
-            <span id="hud-xp-text">XP: 0%</span>
-          </div>
-        </div>
-      </div>
+  <!-- ================= JANELA: INVENTÁRIO & EQUIPAMENTOS (TECLA B) ================= -->
+  <div id="bag-modal" class="ep-window">
+    <div class="ep-win-header">
+      <h3>🎒 Equipamentos &amp; Mochila (120 Espaços) — Ouro: $<span id="bag-gold-lbl">0</span></h3>
+      <button type="button" class="btn-x" onclick="closeAllWindows()">✕</button>
     </div>
-
-    <!-- HUD SUPERIOR CENTRO: ALVO SELECIONADO -->
-    <div id="hud-target" class="hud-top-center hidden">
-      <div class="target-header">
-        <span id="target-rank" class="target-rank">NORMAL</span>
-        <span id="target-name">Mob</span>
-        <span id="target-level">Nv. 1</span>
-      </div>
-      <div class="bar-container target-hp-bar">
-        <div id="target-hp-fill" class="bar-fill" style="width: 100%;"></div>
-        <span id="target-hp-text">100 / 100</span>
-      </div>
-    </div>
-
-    <!-- HUD SUPERIOR DIREITO: MENU RÁPIDO & MOEDAS -->
-    <div class="hud-top-right">
-      <div class="currency-box">
-        <span title="Ouro">🪙 <b id="hud-gold">0</b></span>
-        <span title="Pontos Ap (Loja)">💎 <b id="hud-ap">5000</b></span>
-      </div>
-      <div class="hud-menu-buttons">
-        <button class="hud-btn" onclick="Game.toggleModal('modal-stats')">📊 Status (T)</button>
-        <button class="hud-btn" onclick="Game.toggleModal('modal-inventory')">🎒 Bolsa (I)</button>
-        <button class="hud-btn btn-shop-glow" onclick="Game.toggleModal('modal-shop')">🛒 Loja Fawkes</button>
-        <button class="hud-btn btn-exit" onclick="Game.returnToCharSelect()">🚪 Trocar Char</button>
-      </div>
-    </div>
-
-    <!-- LOG DE COMBATE E DROPS (CANTO INFERIOR ESQUERDO) -->
-    <div id="combat-log" class="combat-log"></div>
-
-    <!-- BARRA DE HABILIDADES INFERIOR (6 SKILLS + POÇÕES) -->
-    <div class="hud-bottom-bar">
-      <div id="skill-bar" class="skill-bar"></div>
-      <div class="quick-items">
-        <button class="skill-slot potion-slot" onclick="Game.usePotion('hp')" title="Poção de Vida (Tecla Q)">
-          <span>🧪</span>
-          <small id="qty-pot-hp">15</small>
-        </button>
-        <button class="skill-slot potion-slot" onclick="Game.usePotion('mp')" title="Poção de Mana (Tecla E)">
-          <span>⚗️</span>
-          <small id="qty-pot-mp">15</small>
-        </button>
-        <button class="skill-slot mount-slot" onclick="Game.toggleMount()" title="Montaria (Tecla M)">
-          <span id="hud-mount-icon">🐎</span>
-          <small>Montar</small>
-        </button>
-      </div>
-    </div>
-
-    <!-- MODAL: STATUS CLÁSSICO DO SHAIYA (IMAGEM 2)[cite: 9] -->
-    <div id="modal-stats" class="game-modal hidden shaiya-status-modal">
-      <div class="modal-header shaiya-header">
-        <h3>Status (T)</h3>
-        <button class="close-btn" onclick="Game.toggleModal('modal-stats')">✖</button>
-      </div>
-      <div class="modal-body shaiya-body">
-        <div class="status-top-bar">
-          <div class="field-box"><span>Class</span> <b id="ui-class-name">Guerreiro</b></div>
-          <div class="field-box"><span>Mode</span> <b>ULTIMATE</b></div>
-        </div>
-        <div class="status-row-full" style="margin-top: 6px;">
-          <span>Title</span> <div class="shaiya-input-box" id="ui-title">Herói de Teos</div>
-        </div>
-
-        <div class="status-exp-box" style="margin-top: 8px;">
-          <span>EXP</span>
-          <div class="exp-numbers"><b id="ui-exp-current">0</b> / <b id="ui-exp-max">100</b></div>
-        </div>
-
-        <div class="attributes-grid-shaiya">
-          <div class="attr-col">
-            <div class="shaiya-attr-row"><span>STR</span> <div class="val-box"><b id="ui-str">10</b> <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>REC</span> <div class="val-box"><b id="ui-rec">10</b> <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>INT</span> <div class="val-box"><b id="ui-int">10</b> <span class="bonus">+0</span></div></div>
+    <div class="inv-layout">
+      <!-- PAPERDOLL -->
+      <div class="paperdoll-panel">
+        <div style="font-size:0.74rem; color:#94a3b8; font-weight:bold; text-transform:uppercase;">Equipamentos Ativos</div>
+        <div class="paperdoll-grid">
+          <div class="pd-col">
+            <div id="pd-helm" class="pd-slot" onclick="inspectEquipped('helm')"></div>
+            <div id="pd-armor" class="pd-slot" onclick="inspectEquipped('armor')"></div>
+            <div id="pd-pants" class="pd-slot" onclick="inspectEquipped('pants')"></div>
+            <div id="pd-gloves" class="pd-slot" onclick="inspectEquipped('gloves')"></div>
+            <div id="pd-boots" class="pd-slot" onclick="inspectEquipped('boots')"></div>
           </div>
-          <div class="attr-col">
-            <div class="shaiya-attr-row"><span>WIS</span> <div class="val-box"><b id="ui-wis">10</b> <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>DEX</span> <div class="val-box"><b id="ui-dex">10</b> <span class="bonus">+0</span></div></div>
-            <div class="shaiya-attr-row"><span>LUC</span> <div class="val-box"><b id="ui-luk">10</b> <span class="bonus">+0</span></div></div>
+          <div class="pd-center-figure">
+            <div id="pd-hero-ico" style="font-size:2.7rem; margin-bottom:4px;">⚔️</div>
+            <div id="pd-hero-name" style="font-weight:bold; font-size:0.9rem; color:#fff;">Herói</div>
+            <div id="pd-hero-br" style="font-size:0.78rem; color:#fbbf24; font-weight:bold; margin:4px 0;">BR: 0</div>
+            <div id="pd-hero-elem" style="margin-bottom:4px;"></div>
+            <div id="pd-hero-def-elem"></div>
+          </div>
+          <div class="pd-col">
+            <div id="pd-weapon" class="pd-slot" onclick="inspectEquipped('weapon')"></div>
+            <div id="pd-shield" class="pd-slot" onclick="inspectEquipped('shield')"></div>
+            <div id="pd-cape" class="pd-slot" onclick="inspectEquipped('cape')"></div>
+            <div id="pd-amulet" class="pd-slot" onclick="inspectEquipped('amulet')"></div>
+            <div id="pd-mount" class="pd-slot" onclick="inspectEquipped('mount')"></div>
+          </div>
+        </div>
+        <div class="pd-bottom-row">
+          <div id="pd-ring1" class="pd-slot" onclick="inspectEquipped('ring1')"></div>
+          <div id="pd-ring2" class="pd-slot" onclick="inspectEquipped('ring2')"></div>
+          <div id="pd-loop1" class="pd-slot" onclick="inspectEquipped('loop1')"></div>
+          <div id="pd-loop2" class="pd-slot" onclick="inspectEquipped('loop2')"></div>
+        </div>
+      </div>
+
+      <!-- MOCHILA & TOOLTIP -->
+      <div class="bag-right-panel">
+        <div class="bag-top-actions">
+          <div class="bag-tabs-bar" style="flex:1;">
+            <button type="button" id="btab-0" class="bag-tab active" onclick="switchBagPage(0)">Aba 1</button>
+            <button type="button" id="btab-1" class="bag-tab" onclick="switchBagPage(1)">Aba 2</button>
+            <button type="button" id="btab-2" class="bag-tab" onclick="switchBagPage(2)">Aba 3</button>
+            <button type="button" id="btab-3" class="bag-tab" onclick="switchBagPage(3)">Aba 4</button>
+            <button type="button" id="btab-4" class="bag-tab" onclick="switchBagPage(4)">Aba 5</button>
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn-sell-bulk btn-sell-eq" onclick="sellAllEquipsInBag()">💰 Vender Equips</button>
+            <button type="button" class="btn-sell-bulk btn-sell-lap" onclick="sellAllLapisInBag()">💎 Vender Lapis</button>
           </div>
         </div>
 
-        <div class="usable-points-row">
-          <span>Usable Points</span> <b id="ui-stat-points" class="gold-text">0 Point</b>
-          <button class="btn btn-gold btn-sm" style="padding: 2px 8px; font-size: 0.7rem;" onclick="Game.distributeAllPoints()">Distribuir +</button>
-        </div>
+        <div id="bag-cells-grid" class="bag-cells-grid"></div>
 
-        <div class="combat-stats-grid">
-          <div class="combat-bars-col">
-            <div class="c-bar hp"><label>HP</label><div class="inner" id="ui-bar-hp" style="width:100%"></div><span id="ui-txt-hp">150</span></div>
-            <div class="c-bar mp"><label>MP</label><div class="inner" id="ui-bar-mp" style="width:100%"></div><span id="ui-txt-mp">120</span></div>
-            <div class="c-bar sp"><label>SP</label><div class="inner" id="ui-bar-sp" style="width:100%"></div><span id="ui-txt-sp">100</span></div>
-            <div class="stat-element-row"><span>Stat</span> <b>non-elemental</b></div>
-            <div class="speed-indicator"><span>a bit slow</span> <span>fast</span></div>
-          </div>
-
-          <div class="combat-values-col">
-            <div class="val-row"><span>ATK</span> <b id="ui-val-atk">15 - 25</b></div>
-            <div class="val-row"><span>Magic</span> <b id="ui-val-magic">15 - 25</b></div>
-            <div class="val-row"><span>DEF</span> <b id="ui-val-def">20</b></div>
-            <div class="val-row"><span>Resist</span> <b id="ui-val-resist">10</b></div>
-            <div class="val-row"><span>ATK Speed</span> <b>Normal</b></div>
-            <div class="val-row"><span>MOV Speed</span> <b>Rápido</b></div>
+        <div id="item-tooltip-box" class="item-tooltip-box">
+          <div style="color:#64748b; font-size:0.8rem; text-align:center; margin:auto;">
+            Clique em um item equipado ou da mochila para ver detalhes, comparar atributos, equipar ou vender.
           </div>
         </div>
-
-        <div class="status-footer-kd">
-          <div class="kd-box"><span>Kill</span> <b id="ui-kills">0</b></div>
-          <div class="kd-box"><span>Death</span> <b id="ui-deaths">0</b></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL: INVENTÁRIO -->
-    <!-- MODAL: INVENTÁRIO CLÁSSICO COM BONECO EQUIPÁVEL (IMAGEM 3) -->
-    <div id="modal-inventory" class="game-modal hidden shaiya-inv-modal">
-      <div class="modal-header shaiya-header">
-        <h3>Inventário (I)</h3>
-        <button class="close-btn" onclick="Game.toggleModal('modal-inventory')">✖</button>
-      </div>
-      <div class="modal-body shaiya-inv-body">
-        
-        <!-- PARTE SUPERIOR: BONECO E SLOTS DE EQUIPAMENTOS -->
-        <div class="equipment-layout-container">
-          <!-- Coluna Esquerda de Equipamentos -->
-          <div class="eq-col-left">
-            <div class="eq-slot" id="eq-helmet" title="Elmo">🪖</div>
-            <div class="eq-slot" id="eq-armor" title="Peitoral">👕</div>
-            <div class="eq-slot" id="eq-pants" title="Calça">👖</div>
-            <div class="eq-slot" id="eq-gauntlets" title="Luvas">🧤</div>
-            <div class="eq-slot" id="eq-boots" title="Botas">👢</div>
-          </div>
-
-          <!-- Centro: Visualização do Boneco do Personagem -->
-          <div class="character-doll-box">
-            <div class="doll-avatar-icon" id="doll-avatar">⚔️</div>
-            <div class="doll-name-tag" id="doll-name">Herói</div>
-          </div>
-
-          <!-- Coluna Direita de Equipamentos e Acessórios -->
-          <div class="eq-col-right">
-            <div class="eq-slot" id="eq-accessory" title="Colar / Anel">💍</div>
-            <div class="eq-slot" id="eq-mount" title="Montaria">🐎</div>
-            <div class="eq-slot-double">
-              <div class="eq-slot" id="eq-weapon" title="Arma Principal">⚔️</div>
-              <div class="eq-slot" id="eq-shield" title="Escudo / Segunda Arma">🛡️</div>
-            </div>
-            <div class="eq-slot" id="eq-cape" title="Capa">🧥</div>
-          </div>
-        </div>
-
-        <!-- ABAS DA MOCHILA (I, II, III, IV, V) -->
-        <div class="bag-tabs-bar">
-          <button class="bag-tab active" onclick="Game.switchBagTab(1)">I</button>
-          <button class="bag-tab" onclick="Game.switchBagTab(2)">II</button>
-          <button class="bag-tab" onclick="Game.switchBagTab(3)">III</button>
-          <button class="bag-tab" onclick="Game.switchBagTab(4)">IV</button>
-          <button class="bag-tab" onclick="Game.switchBagTab(5)">V</button>
-        </div>
-
-        <!-- GRADE DE ITENS DA BOLSA -->
-        <div id="inventory-grid" class="shaiya-inventory-grid">
-          <!-- Gerado via JS -->
-        </div>
-
-        <!-- RODAPÉ: OURO E BOTÃO VENDER TUDO -->
-        <div class="shaiya-inv-footer">
-          <button class="btn btn-danger btn-sm" onclick="Game.sellAllJunk()">💰 Vender Tudo</button>
-          <div class="gold-display-box">
-            <span>Total de Ouro:</span> <b id="inv-total-gold">1500</b> 🪙
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- MODAL: LOJA FAWKES -->
-    <div id="modal-shop" class="game-modal hidden">
-      <div class="modal-header">
-        <h3>Loja Exclusiva Shayenor (AP: <span id="shop-ap-display">5000</span>)</h3>
-        <button class="close-btn" onclick="Game.toggleModal('modal-shop')">✖</button>
-      </div>
-      <div class="modal-body">
-        <div class="shop-tabs">
-          <button class="shop-tab active" onclick="Game.renderShop('packs')">Pacotes</button>
-          <button class="shop-tab" onclick="Game.renderShop('lapis')">Lapis</button>
-        </div>
-        <div id="shop-items-grid" class="shop-grid"></div>
       </div>
     </div>
   </div>
 
-  <!-- SCRIPTS -->
+  <!-- ================= JANELA: FERREIRO DE TEOS (TECLA F) ================= -->
+  <div id="smith-modal" class="ep-window">
+    <div class="ep-win-header">
+      <h3>🔨 Ferreiro de Teos — Linkagem de Lapis &amp; Encantamento</h3>
+      <button type="button" class="btn-x" onclick="closeAllWindows()">✕</button>
+    </div>
+    <div class="smith-top-bar">
+      <div class="smith-mode-switch">
+        <button type="button" id="stab-link" class="smith-tab-btn active" onclick="switchSmithTab('link')">💎 Linkar / Extrair Lapis</button>
+        <button type="button" id="stab-enchant" class="smith-tab-btn" onclick="switchSmithTab('enchant')">✨ Encantar Item (+1 a +20)</button>
+      </div>
+      <div style="font-size:0.84rem; color:#fbbf24; font-weight:bold;">💰 Seu Ouro: $<span id="smith-gold-val">0</span></div>
+    </div>
+    <div id="smith-banner"></div>
+    <div class="smith-body">
+      <div class="smith-step-box smith-col-1">
+        <div class="stat-col-title"><span class="step-badge">PASSO 1</span>Escolha o Item Equipado</div>
+        <div id="smith-eq-list"></div>
+      </div>
+      <div id="smith-center-panel" class="smith-step-box smith-col-2"></div>
+      <div id="smith-right-panel" class="smith-step-box smith-col-3"></div>
+    </div>
+  </div>
+
+  <!-- ================= JANELA: LOJA EXCLUSIVA DE TEOS (TECLA L) ================= -->
+  <div id="shop-modal" class="ep-window">
+    <div class="ep-win-header">
+      <h3>👑 Loja Exclusiva de Teos (Sets Deusa, Acessórios, Montarias &amp; Lapis Especiais)</h3>
+      <button type="button" class="btn-x" onclick="closeAllWindows()">✕</button>
+    </div>
+    <div class="shop-top-bar">
+      <div class="shop-cats-bar">
+        <button type="button" id="scat-sets" class="shop-cat-btn active" onclick="switchShopCat('sets')">👑 Sets Deusa (6 Slots)</button>
+        <button type="button" id="scat-acc" class="shop-cat-btn" onclick="switchShopCat('acc')">📿 Acessórios Deusa</button>
+        <button type="button" id="scat-mounts" class="shop-cat-btn" onclick="switchShopCat('mounts')">🐎 Montarias Exclusivas</button>
+        <button type="button" id="scat-lapis" class="shop-cat-btn" onclick="switchShopCat('lapis')">💎 Lapis Sônico / Veloz / ABS</button>
+      </div>
+      <div style="font-size:0.85rem; color:#fbbf24; font-weight:bold;">💰 Seu Ouro: $<span id="shop-gold-val">0</span></div>
+    </div>
+    <div id="shop-banner"></div>
+    <div id="shop-grid" class="shop-grid"></div>
+  </div>
+
+  <!-- ================= SCRIPTS MODULARES NA ORDEM CORRETA ================= -->
   <script src="js/data-classes.js"></script>
   <script src="js/data-items.js"></script>
   <script src="js/data-mobs.js"></script>
