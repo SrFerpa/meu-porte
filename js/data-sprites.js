@@ -4,27 +4,20 @@
 var SPRITE_SHEETS_CONFIG = {
   // 1. CLASSES JOGÁVEIS (assets/)
   classes: {
-    fighter: {
-      src: 'assets/fighter.png',
-      cols: 6,
-      flipFacing: true,      // Corrige o lado para onde a espada aponta ao andar/atacar
-      removeSolidBg: true,   // Remove o fundo cinza sólido automaticamente
-      drawHeight: 114,
-      // Faixas verticais exatas (0.0 a 1.0) de cada linha na sua imagem para NUNCA vazar a fileira de baixo:
-      rowBands: [
-        { y0: 0.01, y1: 0.225 }, // Linha 0: Idle (parado)
-        { y0: 0.235, y1: 0.455 }, // Linha 1: Run / Jump
-        { y0: 0.475, y1: 0.715 }, // Linha 2: Attack (golpes + rastro laranja)
-        { y0: 0.725, y1: 0.945 }  // Linha 3: Hurt (dano/recuo)
-      ],
-      anims: {
-        idle:   { row: 0, startCol: 0, frames: 4, fps: 5,  expandX: 0.08 },
-        run:    { row: 1, startCol: 0, frames: 3, fps: 10, expandX: 0.12 },
-        jump:   { row: 1, startCol: 3, frames: 3, fps: 8,  expandX: 0.10 },
-        attack: { row: 2, startCol: 0, frames: 6, fps: 15, expandX: 0.16 },
-        hurt:   { row: 3, startCol: 0, frames: 3, fps: 10, expandX: 0.08 }
-      }
-    }
+   fighter2: {
+  src: 'assets/fighter2.png',
+  cols: 4,
+  rows: 4, // Exato para essa imagem
+  labelColRatio: 0,
+  removeCheckerBg: false, // Não precisa mais de filtro automático
+  drawHeight: 112,
+  anims: {
+    idle:   { row: 0, frames: 4, fps: 5  },
+    run:    { row: 1, frames: 4, fps: 11 },
+    jump:   { row: 2, frames: 4, fps: 8  },
+    attack: { row: 3, frames: 4, fps: 15 }
+  }
+}
     // Quando subir as outras classes em assets/, basta descomentar e ajustar:
     // defender: { src: 'assets/defender.png', cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 10 }, attack: { row: 2, startCol: 0, frames: 6, fps: 14 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
     // ranger:   { src: 'assets/ranger.png',   cols: 6, rows: 4, removeSolidBg: true, drawHeight: 108, anims: { idle: { row: 0, startCol: 0, frames: 4, fps: 5 }, run: { row: 1, startCol: 0, frames: 3, fps: 12 }, attack: { row: 2, startCol: 0, frames: 6, fps: 16 }, hurt: { row: 3, startCol: 0, frames: 3, fps: 10 } } },
