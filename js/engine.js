@@ -732,13 +732,48 @@ const Game = {
   renderStatsModal() {
     const char = this.getActiveChar();
     if (!char) return;
-    document.getElementById('ui-stat-points').textContent = char.statPoints;
+
+    document.getElementById('ui-class-name').textContent = char.className;
+    document.getElementById('ui-title').textContent = `Nv. ${char.level} - ${char.faction}`;
+    document.getElementById('ui-exp-current').textContent = char.xp;
+    document.getElementById('ui-exp-max').textContent = char.maxXp;
+
+    document.getElementById('ui-stat-points').textContent = `${char.statPoints} Point`;
     document.getElementById('ui-str').textContent = char.stats.str;
     document.getElementById('ui-dex').textContent = char.stats.dex;
     document.getElementById('ui-rec').textContent = char.stats.rec;
     document.getElementById('ui-int').textContent = char.stats.int;
     document.getElementById('ui-wis').textContent = char.stats.wis;
     document.getElementById('ui-luk').textContent = char.stats.luk;
+
+    // Barras e Valores de Combate
+    document.getElementById('ui-bar-hp').style.width = `${(char.hp / char.maxHp) * 100}%`;
+    document.getElementById('ui-txt-hp').textContent = char.hp;
+    document.getElementById('ui-bar-mp').style.width = `${(char.mp / char.maxMp) * 100}%`;
+    document.getElementById('ui-txt-mp').textContent = char.mp;
+    document.getElementById('ui-bar-sp').style.width = `100%`;
+    document.getElementById('ui-txt-sp').textContent = '100';
+
+    const minAtk = Math.floor(char.stats.str * 1.5 + 10);
+    const maxAtk = Math.floor(char.stats.str * 2.2 + 18);
+    document.getElementById('ui-val-atk').textContent = `${minAtk} - ${maxAtk}`;
+    document.getElementById('ui-val-magic').textContent = `${Math.floor(char.stats.int * 1.8 + 10)} - ${Math.floor(char.stats.int * 2.5 + 20)}`;
+    document.getElementById('ui-val-def').textContent = Math.floor(char.stats.rec * 1.5 + 15);
+    document.getElementById('ui-val-resist').textContent = Math.floor(char.stats.wis * 1.2 + 5);
+
+    document.getElementById('ui-kills').textContent = char.kills || 0;
+    document.getElementById('ui-deaths').textContent = char.deaths || 0;
+  },
+
+  distributeAllPoints() {
+    const char = this.getActiveChar();
+    if (!char || char.statPoints <= 0) return;
+    // Distribui automaticamente nos atributos principais da classe
+    char.stats.str += char.statPoints;
+    char.statPoints = 0;
+    this.renderStatsModal();
+    this.updateHud();
+    this.logCombat('⚡ Todos os pontos disponíveis foram distribuídos com sucesso!');
   },
 
   addStat(statName) {
