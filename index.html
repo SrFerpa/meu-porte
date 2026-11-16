@@ -3,62 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crônicas de Teos — RPG 2.5D</title>
+  <title>Crônicas de Teos — Shaiya Fawkes 2.5D</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ================= TELA DE CRIAÇÃO E SELEÇÃO DE PERSONAGENS ================= -->
+  <!-- ================= TELA DINÂMICA DE SELEÇÃO E CRIAÇÃO DE PERSONAGEM ================= -->
   <div id="char-screen">
-    <h1>⚔️ Crônicas de Teos</h1>
-    <p class="subtitle">Escolha sua Facção, Classe Clássica e Modo de Dificuldade</p>
+    <div class="char-header-bar">
+      <h1>⚔️ Crônicas de Teos</h1>
+      <span class="um-only-pill">📕 MODO EXTREMO (UM) • +9 PTS/NV</span>
+    </div>
+    <p class="subtitle">Selecione um dos seus 3 heróis criados ou forje um novo guerreiro da Luz ou da Fúria</p>
 
-    <!-- PASSO 1: FACÇÃO -->
+    <!-- 3 SLOTS DE PERSONAGENS (RESUMO COMPACTO: LV, PODER, KILL, CLASSE) -->
     <div class="ep-box">
-      <h2>1. Escolha sua Facção</h2>
-      <div class="faction-row">
-        <div id="fac-light" class="faction-btn active-light" onclick="selectFaction('light')">
-          <div style="font-size:1.35rem; margin-bottom:2px;">☀️ Aliança da Luz</div>
-          <div style="font-size:0.74rem; color:#94a3b8;">Humanos &amp; Elfos • Floresta de Erina</div>
-        </div>
-        <div id="fac-fury" class="faction-btn" onclick="selectFaction('fury')">
-          <div style="font-size:1.35rem; margin-bottom:2px;">🔥 União da Fúria</div>
-          <div style="font-size:0.74rem; color:#94a3b8;">Nordeins &amp; Vails • Floresta de Iris</div>
-        </div>
+      <div class="box-title-row">
+        <h2>👥 Seus Personagens (3 Slots)</h2>
+        <button type="button" id="btn-toggle-creator" class="btn-new-hero-toggle" onclick="toggleCreatorPanel(true)">➕ Criar Novo Personagem</button>
       </div>
-
-      <!-- PASSO 2: CLASSES -->
-      <h2 style="margin-top:14px;">2. Escolha sua Classe (Alcance &amp; 6 Skills Exclusivas)</h2>
-      <div id="class-grid" class="class-grid"></div>
-
-      <!-- PASSO 3: MODO -->
-      <h2 style="margin-top:14px;">3. Modo de Dificuldade</h2>
-      <div class="mode-row">
-        <div id="mode-nm" class="mode-card" onclick="selectMode('nm')">
-          <div class="mode-title" style="color:#38bdf8;">📘 Normal (NM)</div>
-          <div class="mode-desc">+5 Pontos de Status por nível. Ressurreição livre sem perda de personagem.</div>
-        </div>
-        <div id="mode-hm" class="mode-card selected-hm" onclick="selectMode('hm')">
-          <div class="mode-title" style="color:#c084fc;">📙 Difícil (HM) — Recomendado</div>
-          <div class="mode-desc">+7 Pontos de Status por nível. Bônus maiores nos Ranks de Kill.</div>
-        </div>
-        <div id="mode-um" class="mode-card" onclick="selectMode('um')">
-          <div class="mode-title" style="color:#fb7185;">📕 Extremo (UM)</div>
-          <div class="mode-desc">+9 Pontos por nível. Morte permanente se não possuir Runa de Ressurreição!</div>
-        </div>
-      </div>
-
-      <!-- NOME & CRIAR -->
-      <div class="create-bar">
-        <input type="text" id="hero-name-input" maxlength="16" placeholder="Nome do Herói...">
-        <button type="button" id="btn-create-hero" class="btn-create" onclick="createHero()">Entrar em Teos</button>
-      </div>
+      <div id="slots-grid" class="slots-grid"></div>
     </div>
 
-    <!-- PERSONAGENS SALVOS (3 SLOTS) -->
-    <div class="ep-box">
-      <h2>Seus Personagens Salvos (Até 3 Slots)</h2>
-      <div id="slots-grid" class="slots-grid"></div>
+    <!-- PAINEL DINÂMICO DE CRIAÇÃO (LIGHT VS DARK + PRÉVIA DA CLASSE) -->
+    <div id="creator-panel" class="ep-box">
+      <div class="box-title-row">
+        <h2>✨ Forjar Novo Herói — Modo Extremo (UM)</h2>
+        <span style="font-size:0.74rem; color:#fb7185; font-weight:bold;">⚠️ Morte Permanente (Começa com 1x Runa de Ressurreição)</span>
+      </div>
+
+      <!-- ESCOLHA DE FACÇÃO LIGHT VS DARK -->
+      <div class="faction-row">
+        <div id="fac-light" class="faction-btn active-light" onclick="selectFaction('light')">
+          <div class="fac-title">☀️ LIGHT — Aliança da Luz</div>
+          <div class="fac-sub">Humanos &amp; Elfos • Floresta de Erina</div>
+        </div>
+        <div id="fac-fury" class="faction-btn" onclick="selectFaction('fury')">
+          <div class="fac-title">🔥 DARK — União da Fúria</div>
+          <div class="fac-sub">Nordeins &amp; Vails • Floresta de Iris</div>
+        </div>
+      </div>
+
+      <!-- GRID DE CLASSES + PRÉVIA DINÂMICA AO LADO -->
+      <div class="creator-split">
+        <div id="class-grid" class="class-grid"></div>
+        <div id="class-preview-card" class="class-preview-card"></div>
+      </div>
+
+      <!-- BARRA FINAL DE NOME E CONFIRMAÇÃO -->
+      <div class="create-bar">
+        <input type="text" id="hero-name-input" maxlength="16" placeholder="Digite o nome do Herói...">
+        <button type="button" id="btn-create-hero" class="btn-create" onclick="createHero()">⚔️ Criar e Entrar no Mundo</button>
+      </div>
     </div>
   </div>
 
@@ -77,7 +73,7 @@
           <span id="hud-kill-emblem"></span>
           <span id="hud-name">Herói</span>
         </div>
-        <span id="hud-mode-badge" class="mode-badge">HM</span>
+        <span id="hud-mode-badge" class="mode-badge" style="background:#881337; color:#fb7185;">UM</span>
       </div>
       <div class="vital-bar">
         <div id="bar-hp" class="fill-hp"></div>
@@ -114,7 +110,7 @@
       <div class="zone-card">
         <div id="hud-zone" class="zone-title">🌲 Floresta de Erina</div>
         <div class="zone-sub">
-          💰 <b id="hud-gold">0</b> Ouro &nbsp;|&nbsp; 🔥 BR: <b id="hud-br">0</b>
+          💰 <b id="hud-gold">0</b> Ouro &nbsp;|&nbsp; 🔥 Poder: <b id="hud-br">0</b>
         </div>
         <div id="hud-kill-info" style="font-size:0.72rem; color:#cbd5e1; margin-top:4px; display:flex; align-items:center; justify-content:flex-end; gap:4px;">
           Sem Rank | Kills: 0 | Derrotas: 0
@@ -130,7 +126,7 @@
       <button type="button" class="btn-ep" onclick="toggleWindow('bag-modal')">🎒 Mochila (B)</button>
       <button type="button" class="btn-ep smith-btn" onclick="toggleWindow('smith-modal')">🔨 Ferreiro (F)</button>
       <button type="button" class="btn-ep shop-btn" onclick="toggleWindow('shop-modal')">👑 Loja (L)</button>
-      <button type="button" class="btn-ep" onclick="returnToCharSelect()">🚪 Trocar Herói</button>
+      <button type="button" class="btn-ep menu-btn" onclick="returnToCharSelect()">🏠 Menu Principal</button>
     </div>
   </div>
 
@@ -160,7 +156,7 @@
       <div class="status-top-summary">
         <div>
           <div id="st-hero-title" style="font-weight:bold; font-size:0.96rem; color:#fff; display:flex; align-items:center; gap:6px;">Herói</div>
-          <div id="st-hero-sub" style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">Classe • Modo</div>
+          <div id="st-hero-sub" style="font-size:0.74rem; color:#94a3b8; margin-top:2px;">Classe • Modo Extremo (UM)</div>
         </div>
         <div class="pts-avail-box">Pontos Livres: <span id="st-free-pts">0</span></div>
       </div>
@@ -200,7 +196,7 @@
           <div class="pd-center-figure">
             <div id="pd-hero-ico" style="font-size:2.7rem; margin-bottom:4px;">⚔️</div>
             <div id="pd-hero-name" style="font-weight:bold; font-size:0.9rem; color:#fff;">Herói</div>
-            <div id="pd-hero-br" style="font-size:0.78rem; color:#fbbf24; font-weight:bold; margin:4px 0;">BR: 0</div>
+            <div id="pd-hero-br" style="font-size:0.78rem; color:#fbbf24; font-weight:bold; margin:4px 0;">Poder: 0</div>
             <div id="pd-hero-elem" style="margin-bottom:4px;"></div>
             <div id="pd-hero-def-elem"></div>
           </div>
@@ -220,7 +216,7 @@
         </div>
       </div>
 
-      <!-- MOCHILA & TOOLTIP -->
+      <!-- MOCHILA & AÇÕES RÁPIDAS -->
       <div class="bag-right-panel">
         <div class="bag-top-actions">
           <div class="bag-tabs-bar" style="flex:1;">
@@ -230,9 +226,9 @@
             <button type="button" id="btab-3" class="bag-tab" onclick="switchBagPage(3)">Aba 4</button>
             <button type="button" id="btab-4" class="bag-tab" onclick="switchBagPage(4)">Aba 5</button>
           </div>
-          <div style="display:flex; gap:6px;">
-            <button type="button" class="btn-sell-bulk btn-sell-eq" onclick="sellAllEquipsInBag()">💰 Vender Equips</button>
-            <button type="button" class="btn-sell-bulk btn-sell-lap" onclick="sellAllLapisInBag()">💎 Vender Lapis</button>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="btn-sell-bulk btn-equip-best" onclick="equipBestItemsFromBag()">✨ Equipar Melhores</button>
+            <button type="button" class="btn-sell-bulk btn-sell-all" onclick="sellAllLooseItemsInBag()">💰 Vender Tudo</button>
           </div>
         </div>
 
@@ -240,7 +236,7 @@
 
         <div id="item-tooltip-box" class="item-tooltip-box">
           <div style="color:#64748b; font-size:0.8rem; text-align:center; margin:auto;">
-            Clique em um item equipado ou da mochila para ver detalhes, comparar atributos, equipar ou vender.
+            Clique em qualquer item da mochila para ver seus atributos e escolher entre <b>Equipar</b> ou <b>Vender</b>.
           </div>
         </div>
       </div>
@@ -274,15 +270,15 @@
   <!-- ================= JANELA: LOJA EXCLUSIVA DE TEOS (TECLA L) ================= -->
   <div id="shop-modal" class="ep-window">
     <div class="ep-win-header">
-      <h3>👑 Loja Exclusiva de Teos (Sets Deusa, Acessórios, Montarias &amp; Lapis Especiais)</h3>
+      <h3>👑 Loja Exclusiva de Teos — Packs Deusa por Classe, Montarias &amp; Lapis</h3>
       <button type="button" class="btn-x" onclick="closeAllWindows()">✕</button>
     </div>
     <div class="shop-top-bar">
       <div class="shop-cats-bar">
-        <button type="button" id="scat-sets" class="shop-cat-btn active" onclick="switchShopCat('sets')">👑 Sets Deusa (6 Slots)</button>
-        <button type="button" id="scat-acc" class="shop-cat-btn" onclick="switchShopCat('acc')">📿 Acessórios Deusa</button>
+        <button type="button" id="scat-sets" class="shop-cat-btn active" onclick="switchShopCat('sets')">👑 Packs Deusa por Classe</button>
         <button type="button" id="scat-mounts" class="shop-cat-btn" onclick="switchShopCat('mounts')">🐎 Montarias Exclusivas</button>
-        <button type="button" id="scat-lapis" class="shop-cat-btn" onclick="switchShopCat('lapis')">💎 Lapis Sônico / Veloz / ABS</button>
+        <button type="button" id="scat-lapis" class="shop-cat-btn" onclick="switchShopCat('lapis')">💎 Lapis Sônico / Veloz</button>
+        <button type="button" id="scat-elem" class="shop-cat-btn" onclick="switchShopCat('elem')">🔥 Lapis Elementais</button>
       </div>
       <div style="font-size:0.85rem; color:#fbbf24; font-weight:bold;">💰 Seu Ouro: $<span id="shop-gold-val">0</span></div>
     </div>
@@ -290,7 +286,7 @@
     <div id="shop-grid" class="shop-grid"></div>
   </div>
 
-  <!-- ================= SCRIPTS MODULARES NA ORDEM CORRETA ================= -->
+  <!-- ================= SCRIPTS MODULARES ================= -->
   <script src="js/data-classes.js"></script>
   <script src="js/data-items.js"></script>
   <script src="js/data-mobs.js"></script>
