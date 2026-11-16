@@ -1,15 +1,15 @@
 // ================= TABELA EXATA DE KILL RANKS (1 A 50.000 KILLS) =================
 var SHAIYA_KILL_RANKS = [
-  { kills: 1,     type: 'bar1',     bg: 'blue', nm: 1,  hm: 2,  um: 3,  title: 'Recruta (1+ Kill)' },
-  { kills: 50,    type: 'bar2',     bg: 'blue', nm: 2,  hm: 4,  um: 5,  title: 'Soldado (50+ Kills)' },
-  { kills: 300,   type: 'bar3',     bg: 'blue', nm: 3,  hm: 6,  um: 8,  title: 'Cabo (300+ Kills)' },
-  { kills: 1000,  type: 'chev1',    bg: 'blue', nm: 5,  hm: 8,  um: 10, title: 'Sargento (1.000+ Kills)' },
-  { kills: 5000,  type: 'chev2',    bg: 'blue', nm: 8,  hm: 12, um: 15, title: 'Tenente (5.000+ Kills)' },
-  { kills: 10000, type: 'dia1',     bg: 'blue', nm: 12, hm: 16, um: 20, title: 'Capitão (10.000+ Kills)' },
-  { kills: 20000, type: 'dia2',     bg: 'blue', nm: 15, hm: 20, um: 25, title: 'Major (20.000+ Kills)' },
-  { kills: 30000, type: 'dia3',     bg: 'blue', nm: 18, hm: 24, um: 30, title: 'Coronel (30.000+ Kills)' },
-  { kills: 40000, type: 'starBlue', bg: 'blue', nm: 22, hm: 28, um: 35, title: 'General (40.000+ Kills)' },
-  { kills: 50000, type: 'starRed',  bg: 'red',  nm: 28, hm: 35, um: 45, title: 'Marechal Supremo (50.000+ Kills)' }
+  { kills: 1,     type: 'bar1',     bg: 'blue', pts: 3,  title: 'Recruta (1+ Kill)' },
+  { kills: 50,    type: 'bar2',     bg: 'blue', pts: 5,  title: 'Soldado (50+ Kills)' },
+  { kills: 300,   type: 'bar3',     bg: 'blue', pts: 8,  title: 'Cabo (300+ Kills)' },
+  { kills: 1000,  type: 'chev1',    bg: 'blue', pts: 10, title: 'Sargento (1.000+ Kills)' },
+  { kills: 5000,  type: 'chev2',    bg: 'blue', pts: 15, title: 'Tenente (5.000+ Kills)' },
+  { kills: 10000, type: 'dia1',     bg: 'blue', pts: 20, title: 'Capitão (10.000+ Kills)' },
+  { kills: 20000, type: 'dia2',     bg: 'blue', pts: 25, title: 'Major (20.000+ Kills)' },
+  { kills: 30000, type: 'dia3',     bg: 'blue', pts: 30, title: 'Coronel (30.000+ Kills)' },
+  { kills: 40000, type: 'starBlue', bg: 'blue', pts: 35, title: 'General (40.000+ Kills)' },
+  { kills: 50000, type: 'starRed',  bg: 'red',  pts: 45, title: 'Marechal Supremo (50.000+ Kills)' }
 ];
 
 function getKillRankInfo(kills) {
@@ -151,18 +151,19 @@ function drawShaiyaRankBadgeOnCanvas(ctx, rankInfo, rightX, centerY) {
   return r * 2;
 }
 
-// ================= 6 CLASSES CLÁSSICAS: ALCANCE (PERTO VS LONGE) & 6 SKILLS ÚNICAS =================
+// ================= 6 CLASSES CLÁSSICAS: LIGHT & DARK COM PRÉVIA COMPLETA =================
 var ARCHETYPES = {
-  // 1. LUTADOR / GUERREIRO — Corpo a corpo (range: 95)
   fighter: {
     lightName: 'Lutador', furyName: 'Guerreiro', raceLight: 'Humano', raceFury: 'Nordein',
-    combatType: 'Corpo a Corpo',
+    combatType: 'Corpo a Corpo (Perto)',
+    roleTag: 'DPS Físico / Berserker',
     icon: '⚔️', color: '#f87171', armorColor: '#991b1b', trimColor: '#fbbf24',
     atkStyle: 'phys', resourceType: 'sp', range: 95,
     autoStat: 'str', autoStatLabel: '+1 FOR / Nível',
-    weaponRuleLabel: 'Espada 2M, Machado de Batalha, Lança Dupla',
+    weaponRuleLabel: 'Espada 2M, Machado de Batalha & Lança Dupla',
     baseStats: { str: 14, dex: 10, rec: 11, int: 6, wis: 6, luc: 9 },
-    desc: 'Corpo a corpo (95). Espadas 2M e Machados de Batalha. Dano físico explosivo em área e alvo único.',
+    lightLore: 'Campeão humano da Aliança da Luz. Empunha armas pesadas de duas mãos para romper linhas inimigas.',
+    furyLore: 'Colosso Nordein da União da Fúria. Canaliza fúria brutal para dizimar alvos em área com golpes devastadores.',
     skills: [
       { name: 'Corte Mortal',       icon: '⚔️', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 100, color: '#f87171', vfx: 'slash' },
       { name: 'Corte Sangrento',    icon: '🩸', mult: 1.55, cost: 18, res: 'sp', cd: 4.0, range: 100, color: '#dc2626', vfx: 'bleed', dot: 0.45 },
@@ -173,16 +174,17 @@ var ARCHETYPES = {
     ]
   },
 
-  // 2. DEFENSOR / GUARDIÃO — Corpo a corpo (range: 95)
   defender: {
     lightName: 'Defensor', furyName: 'Guardião', raceLight: 'Humano', raceFury: 'Nordein',
-    combatType: 'Corpo a Corpo',
+    combatType: 'Corpo a Corpo (Perto)',
+    roleTag: 'Tanque / Escudo Torre',
     icon: '🛡️', color: '#fbbf24', armorColor: '#1e3a8a', trimColor: '#fbbf24',
     atkStyle: 'phys', resourceType: 'sp', range: 95,
     autoStat: 'rec', autoStatLabel: '+1 REC / Nível',
     weaponRuleLabel: 'Espada 1M, Martelo de Guerra & Escudo Torre',
     baseStats: { str: 10, dex: 8, rec: 16, int: 6, wis: 8, luc: 8 },
-    desc: 'Corpo a corpo (95). Único que equipa Escudo Torre + Espada 1M/Martelo. Defesa suprema e controle.',
+    lightLore: 'Paladino humano inabalável. Única classe capaz de erguer Escudos Torre para proteger aliados.',
+    furyLore: 'Muralha viva Nordein. Absorve impactos colossais com seu escudo e atordoa hordas inteiras.',
     skills: [
       { name: 'Golpe de Escudo',    icon: '🛡️', mult: 1.30, cost: 10, res: 'sp', cd: 1.2, range: 95,  color: '#fbbf24', vfx: 'slash' },
       { name: 'Provocação Sísmica', icon: '💢', mult: 1.45, cost: 16, res: 'sp', cd: 4.5, range: 120, color: '#f97316', vfx: 'smash', stun: 2.2 },
@@ -193,16 +195,17 @@ var ARCHETYPES = {
     ]
   },
 
-  // 3. PATRULHEIRO / ASSASSINO — Corpo a corpo ágil (range: 90)
   ranger: {
     lightName: 'Patrulheiro', furyName: 'Assassino', raceLight: 'Elfo', raceFury: 'Vail',
-    combatType: 'Corpo a Corpo',
+    combatType: 'Corpo a Corpo (Perto)',
+    roleTag: 'Furtividade / Crítico & Esquiva',
     icon: '🗡️', color: '#c084fc', armorColor: '#4c1d95', trimColor: '#e879f9',
     atkStyle: 'phys', resourceType: 'sp', range: 90,
     autoStat: 'dex', autoStatLabel: '+1 DES / Nível',
-    weaponRuleLabel: 'Adagas Duplas & Garra',
+    weaponRuleLabel: 'Adagas Duplas & Garra Reversa',
     baseStats: { str: 11, dex: 15, rec: 8, int: 6, wis: 6, luc: 12 },
-    desc: 'Corpo a corpo (90). Adagas Duplas e Garras. Alta esquiva, investida sombria e críticos letais.',
+    lightLore: 'Batedor élfico ágil das florestas de Erina. Desvia de golpes fatais e aplica venenos mortais.',
+    furyLore: 'Executor Vail das sombras de Iris. Teleporta-se atrás do alvo com garras e adagas duplas.',
     skills: [
       { name: 'Corte Venenoso',     icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.0, range: 95,  color: '#c084fc', vfx: 'slash', dot: 0.35 },
       { name: 'Passo das Sombras',  icon: '👤', mult: 1.85, cost: 18, res: 'sp', cd: 4.0, range: 240, color: '#a855f7', vfx: 'dash', dash: true },
@@ -213,16 +216,17 @@ var ARCHETYPES = {
     ]
   },
 
-  // 4. ARQUEIRO / CAÇADOR — Longa Distância (range: 360)
   archer: {
     lightName: 'Arqueiro', furyName: 'Caçador', raceLight: 'Elfo', raceFury: 'Nordein',
-    combatType: 'Longa Distância',
+    combatType: 'Longa Distância (Longe)',
+    roleTag: 'Atirador / Máximo Crítico',
     icon: '🏹', color: '#34d399', armorColor: '#065f46', trimColor: '#34d399',
     atkStyle: 'phys', resourceType: 'sp', range: 360,
     autoStat: 'luc', autoStatLabel: '+1 SOR / Nível',
-    weaponRuleLabel: 'Arco Longo & Besta',
+    weaponRuleLabel: 'Arco Longo & Besta Pesada',
     baseStats: { str: 10, dex: 12, rec: 8, int: 6, wis: 6, luc: 16 },
-    desc: 'Longa Distância (360). Arco Longo e Besta. Disparo de projéteis à distância com crítico máximo.',
+    lightLore: 'Atirador de elite élfico. Abate inimigos a longa distância com flechas precisas e letais.',
+    furyLore: 'Predador implacável Nordein. Usa bestas pesadas e saraivadas de flechas perfurantes.',
     skills: [
       { name: 'Disparo Preciso',    icon: '🏹', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 365, color: '#34d399', vfx: 'proj', proj: true },
       { name: 'Flecha Tóxica',      icon: '🧪', mult: 1.75, cost: 18, res: 'sp', cd: 4.0, range: 365, color: '#a3e635', vfx: 'proj', proj: true, dot: 0.45 },
@@ -233,16 +237,17 @@ var ARCHETYPES = {
     ]
   },
 
-  // 5. MAGO / PAGÃO — Longa Distância Mágica (range: 320)
   mage: {
     lightName: 'Mago', furyName: 'Pagão', raceLight: 'Elfo', raceFury: 'Vail',
-    combatType: 'Longa Distância',
+    combatType: 'Longa Distância (Longe)',
+    roleTag: 'Dano Elemental em Área',
     icon: '🔮', color: '#38bdf8', armorColor: '#1e1b4b', trimColor: '#38bdf8',
     atkStyle: 'magic', resourceType: 'mp', range: 320,
     autoStat: 'int', autoStatLabel: '+1 INT / Nível',
-    weaponRuleLabel: 'Cajado Arcano & Orbe',
+    weaponRuleLabel: 'Cajado Arcano & Orbe Elemental',
     baseStats: { str: 6, dex: 8, rec: 8, int: 17, wis: 11, luc: 8 },
-    desc: 'Longa Distância (320). Cajado Arcano e Orbe. Magia elemental devastadora em área.',
+    lightLore: 'Erudito élfico das artes arcanas. Invoca meteoros e tempestades elementais sobre seus inimigos.',
+    furyLore: 'Feiticeiro Vail das artes proibidas. Domina chamas infernais e magia destrutiva de longo alcance.',
     skills: [
       { name: 'Bola de Fogo',       icon: '🔥', mult: 1.45, cost: 12, res: 'mp', cd: 1.2, range: 325, color: '#fb7185', vfx: 'proj', proj: true },
       { name: 'Lança de Gelo',      icon: '❄️', mult: 1.85, cost: 20, res: 'mp', cd: 4.0, range: 325, color: '#38bdf8', vfx: 'proj', proj: true, stun: 1.8 },
@@ -253,16 +258,17 @@ var ARCHETYPES = {
     ]
   },
 
-  // 6. SACERDOTE / ORÁCULO — Longa Distância Divina (range: 300)
   priest: {
     lightName: 'Sacerdote', furyName: 'Oráculo', raceLight: 'Humano', raceFury: 'Vail',
-    combatType: 'Longa Distância',
+    combatType: 'Longa Distância (Longe)',
+    roleTag: 'Cura Divina / Suporte & Luz',
     icon: '✨', color: '#fde047', armorColor: '#0369a1', trimColor: '#fde047',
     atkStyle: 'magic', resourceType: 'mp', range: 300,
     autoStat: 'wis', autoStatLabel: '+1 SAB / Nível',
     weaponRuleLabel: 'Cetro Sagrado & Cajado Divino',
     baseStats: { str: 6, dex: 8, rec: 9, int: 11, wis: 17, luc: 7 },
-    desc: 'Longa Distância (300). Cetro Sagrado e Cajado Divino. Cura divina, bênçãos e luz purificadora.',
+    lightLore: 'Clérigo humano devoto da Deusa Etain. Restaura vida, concede bênçãos e purifica as trevas.',
+    furyLore: 'Místico Vail canalizador de energia espiritual. Equilibra curas poderosas e julgamentos celestiais.',
     skills: [
       { name: 'Raio Sagrado',       icon: '✨', mult: 1.35, cost: 10, res: 'mp', cd: 1.2, range: 305, color: '#fde047', vfx: 'proj', proj: true },
       { name: 'Cura Maior',         icon: '💚', mult: 0,    cost: 24, res: 'mp', cd: 4.5, range: 0,   color: '#34d399', vfx: 'aura', heal: 0.48 },
@@ -274,10 +280,14 @@ var ARCHETYPES = {
   }
 };
 
-var MODES = {
-  nm: { label: 'Normal (NM)',  short: 'NM', ptsPerLvl: 5, color: '#38bdf8', badgeBg: '#0c4a6e' },
-  hm: { label: 'Difícil (HM)', short: 'HM', ptsPerLvl: 7, color: '#c084fc', badgeBg: '#4c1d95' },
-  um: { label: 'Extremo (UM)', short: 'UM', ptsPerLvl: 9, color: '#fb7185', badgeBg: '#881337' }
+// MODO ÚNICO ATIVO: EXTREMO (UM)
+var EXTREME_MODE = {
+  key: 'um',
+  label: 'Extremo (UM)',
+  short: 'UM',
+  ptsPerLvl: 9,
+  color: '#fb7185',
+  badgeBg: '#881337'
 };
 
 function getArchetypeDisplayName(archKey, faction) {
