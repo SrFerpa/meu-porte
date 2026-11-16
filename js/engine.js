@@ -788,28 +788,86 @@ const Game = {
   renderInventory() {
     const char = this.getActiveChar();
     if (!char) return;
-    document.getElementById('inv-count').textContent = char.inventory.length;
+
+    // Atualizar nome e avatar no boneco central
+    document.getElementById('doll-name').textContent = char.name;
+    document.getElementById('doll-avatar').textContent = char.icon;
+    document.getElementById('inv-total-gold').textContent = char.gold;
+
+    // Preencher slots de equipamentos do boneco
+    const eqSlots = ['helmet', 'armor', 'pants', 'gauntlets', 'boots', 'accessory', 'mount', 'weapon', 'shield', 'cape'];
+    eqSlots.hidratar = true;
+    eqSlots.forEach(slotKey => {
+      const slotEl = document.getElementById(`eq-${slotKey}`);
+      if (!slotEl) return;
+      const equippedItem = char.equipment[slotKey];
+      if (equippedItem) {
+        slotEl.innerHTML = equippedItem.icon || '🛡️';
+        slotEl.title = `${equippedItem.name} (${slotKey.toUpperCase()}) - Clique para desequipar`;
+        slotEl.onclick = () => {
+          // Desequipar e mandar de volta para a bolsa
+          char.inventory.push(equippedItem);
+          char.equipment[slotKey] = null;
+          this.renderInventory();
+          this.updateHud();
+          this.logCombat(`Desequipou ${equippedItem.name}.`);
+        };
+      } else {
+        // Ícones padrão vazios
+        const defaults = { helmet: '🪖', armor: '👕', pants: '👖', gauntlets: '🧤', boots: '👢', accessory: '💍', mount: '🐎', weapon: '⚔️', shield: '🛡️', cape: '🧥' };
+        slotEl.innerHTML = defaults[slotKey] || '✨';
+        slotEl.title = `Slot Vazio: ${slotKey.toUpperCase()}`;
+        slotEl.onclick = null;
+      }
+    });
+
+    // Preencher grade de itens da bolsa (24 slots fixos para parecer o inventário clássico)
     const grid = document.getElementById('inventory-grid');
     grid.innerHTML = '';
 
-    char.inventory.forEach((item, index) => {
-      const card = document.createElement('div');
-      card.className = `inv-item ${item.rarity === 'deusa' ? 'rarity-deusa' : item.type === 'lapis' ? 'rarity-lapis' : ''}`;
-      card.innerHTML = `<div><strong>${item.name}</strong></div><div style="font-size:0.68rem; color:#aaa;">${item.desc || ''}</div>`;
-      card.onclick = () => {
-        if (item.type === 'armor' || item.type === 'weapon') {
-          const old = char.equipment[item.type];
-          char.equipment[item.type] = item;
-          char.inventory.splice(index, 1);
-          if (old) char.inventory.push(old);
-          this.renderInventory();
-          this.logCombat(`Equipou ${item.name}!`);
-        }
-      };
-      grid.appendChild(card);
-    });
+    for (let i = 0; i < 24; i++) {
+      const item = char.inventory[i];
+      const slotDiv = document.createElement('div');
+      slotDiv.className = 'inv-item-slot';
+
+      if (item) {
+        if (item.rarity === 'deusa') slotDiv.classList.add('rarity-deusa');
+        if (item.type === 'lapis') slotDiv.classList.add('rarity-lapis');
+        
+        slotDiv.innerHTML = item.icon || (item.type === 'weapon' ? '⚔️' : item.type === 'armor' ? '🛡️' : item.type === 'lapis' ? '💎' : '📦');
+        slotDiv.title = `${item.name}: ${item.desc || ''}\n(Clique para equipar/usar)`;
+
+        slotDiv.onclick = () => {
+          if (item.type === 'armor' || item.type === 'weapon') {
+            // Descobrir qual slot de equipamento preencher
+            let targetSlot = item.type === 'weapon' ? 'weapon' : 'armor';
+            if (item.id && item.id.includes('defensor')) targetSlot = 'armor';
+
+            const oldItem = char.equipment[targetSlot];
+            char.equipment[targetSlot] = item;
+            char.inventory.splice(i, 1);
+            if (oldItem) char.inventory.push(oldItem);
+
+            this.renderInventory();
+            this.updateHud();
+            this.logCombat(`Equipou ${item.name}!`);
+          } else {
+            alert(`Usou o item: ${item.name}`);
+          }
+        };
+      } else {
+        slotDiv.style.opacity = '0.3';
+      }
+
+      grid.appendChild(slotDiv);
+    }
   },
 
+  switchBagTab(tabNum) {
+    document.querySelectorAll('.bag-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    this.renderInventory();
+  },
   sellAllJunk() {
     const char = this.getActiveChar();
     if (!char) return;
