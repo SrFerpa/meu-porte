@@ -5,16 +5,14 @@ var SPRITE_SHEETS_CONFIG = {
   // 1. CLASSES JOGÁVEIS (assets/)
  classes: {
   fighter: {
-    drawHeight: 118,
-    anims: {
-      idle:   { src: 'assets/lutador_idle.png',   fps: 8  },
-      run:    { src: 'assets/lutador_run.png',    fps: 12 },
-      attack: { src: 'assets/lutador_attack.png', fps: 14 },
-      hurt:   { src: 'assets/lutador_hit.png',    fps: 10 }
-    }
+  drawHeight: 118,
+  anims: {
+    idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 8  },
+    run:    { src: 'assets/f6_greatwhitenorth_run.png',    fps: 12 },
+    attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 14 },
+    hurt:   { src: 'assets/f6_greatwhitenorth_hit.png',    fps: 10 }
   }
 }
-
   // 2. MONSTROS E BOSSES (assets/) — chave = nome exato do monstro em data-mobs.js
   mobs: {
     // Exemplo:
