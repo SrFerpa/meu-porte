@@ -211,17 +211,65 @@
     </div>
 
     <!-- MODAL: INVENTÁRIO -->
-    <div id="modal-inventory" class="game-modal hidden">
-      <div class="modal-header">
-        <h3>Inventário (<span id="inv-count">0</span>/40)</h3>
+    <!-- MODAL: INVENTÁRIO CLÁSSICO COM BONECO EQUIPÁVEL (IMAGEM 3) -->
+    <div id="modal-inventory" class="game-modal hidden shaiya-inv-modal">
+      <div class="modal-header shaiya-header">
+        <h3>Inventário (I)</h3>
         <button class="close-btn" onclick="Game.toggleModal('modal-inventory')">✖</button>
       </div>
-      <div class="modal-body">
-        <div class="inv-toolbar">
-          <button class="btn btn-danger btn-sm" onclick="Game.sellAllJunk()">💰 Vender Tudo</button>
-          <span class="inv-tip">Clique para Equipar</span>
+      <div class="modal-body shaiya-inv-body">
+        
+        <!-- PARTE SUPERIOR: BONECO E SLOTS DE EQUIPAMENTOS -->
+        <div class="equipment-layout-container">
+          <!-- Coluna Esquerda de Equipamentos -->
+          <div class="eq-col-left">
+            <div class="eq-slot" id="eq-helmet" title="Elmo">🪖</div>
+            <div class="eq-slot" id="eq-armor" title="Peitoral">👕</div>
+            <div class="eq-slot" id="eq-pants" title="Calça">👖</div>
+            <div class="eq-slot" id="eq-gauntlets" title="Luvas">🧤</div>
+            <div class="eq-slot" id="eq-boots" title="Botas">👢</div>
+          </div>
+
+          <!-- Centro: Visualização do Boneco do Personagem -->
+          <div class="character-doll-box">
+            <div class="doll-avatar-icon" id="doll-avatar">⚔️</div>
+            <div class="doll-name-tag" id="doll-name">Herói</div>
+          </div>
+
+          <!-- Coluna Direita de Equipamentos e Acessórios -->
+          <div class="eq-col-right">
+            <div class="eq-slot" id="eq-accessory" title="Colar / Anel">💍</div>
+            <div class="eq-slot" id="eq-mount" title="Montaria">🐎</div>
+            <div class="eq-slot-double">
+              <div class="eq-slot" id="eq-weapon" title="Arma Principal">⚔️</div>
+              <div class="eq-slot" id="eq-shield" title="Escudo / Segunda Arma">🛡️</div>
+            </div>
+            <div class="eq-slot" id="eq-cape" title="Capa">🧥</div>
+          </div>
         </div>
-        <div id="inventory-grid" class="inventory-grid"></div>
+
+        <!-- ABAS DA MOCHILA (I, II, III, IV, V) -->
+        <div class="bag-tabs-bar">
+          <button class="bag-tab active" onclick="Game.switchBagTab(1)">I</button>
+          <button class="bag-tab" onclick="Game.switchBagTab(2)">II</button>
+          <button class="bag-tab" onclick="Game.switchBagTab(3)">III</button>
+          <button class="bag-tab" onclick="Game.switchBagTab(4)">IV</button>
+          <button class="bag-tab" onclick="Game.switchBagTab(5)">V</button>
+        </div>
+
+        <!-- GRADE DE ITENS DA BOLSA -->
+        <div id="inventory-grid" class="shaiya-inventory-grid">
+          <!-- Gerado via JS -->
+        </div>
+
+        <!-- RODAPÉ: OURO E BOTÃO VENDER TUDO -->
+        <div class="shaiya-inv-footer">
+          <button class="btn btn-danger btn-sm" onclick="Game.sellAllJunk()">💰 Vender Tudo</button>
+          <div class="gold-display-box">
+            <span>Total de Ouro:</span> <b id="inv-total-gold">1500</b> 🪙
+          </div>
+        </div>
+
       </div>
     </div>
 
