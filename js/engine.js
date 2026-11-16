@@ -63,10 +63,10 @@ function updatePlayerAnimation(dt, isMoving) {
   if (!cfg || !cfg.anims) return;
   var anim = cfg.anims[playerAnim.state] || cfg.anims.idle;
   playerAnim.timer += dt;
-  var frameDur = 1 / (anim.fps || 8);
+  var frameDur = 1 / (anim.fps || 10);
   if (playerAnim.timer >= frameDur) {
     playerAnim.timer -= frameDur;
-    playerAnim.frame = (playerAnim.frame + 1) % (anim.frames || 1);
+    playerAnim.frame = (playerAnim.frame + 1) % 60;
   }
 }
 
@@ -1975,7 +1975,7 @@ function updateSimulation(dt) {
     if (m.animTimer >= 0.14) {
       m.animTimer = 0;
       m.animFrame = (m.animFrame || 0) + 1;
-      if (m.animState === 'attack' && m.animFrame >= 4) m.animState = 'idle';
+      if (m.animState === 'attack' && m.animFrame >= 6) m.animState = 'idle';
     }
   });
 
