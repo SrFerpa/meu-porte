@@ -319,6 +319,7 @@ function createHero() {
     glacial_lich:      'Cetro Glacial Inicial'
   };
 
+  var startWStats = buildClassBonusStats(selectedArch, 1, 1.25, 1.0);
   var starterWeapon = {
     id: 'start_w_' + Date.now(),
     name: starterNames[selectedArch] || 'Arma Inicial de Teos',
@@ -333,6 +334,12 @@ function createHero() {
     sockets: [null, null],
     physAtk: arch.atkStyle === 'phys' ? 15 : 0,
     magAtk:  arch.atkStyle === 'magic' ? 15 : 0,
+    bonusStr: startWStats.bonusStr,
+    bonusDex: startWStats.bonusDex,
+    bonusRec: startWStats.bonusRec,
+    bonusInt: startWStats.bonusInt,
+    bonusWis: startWStats.bonusWis,
+    bonusLuc: startWStats.bonusLuc,
     sellPrice: 15
   };
 
@@ -343,6 +350,7 @@ function createHero() {
   };
 
   if (selectedArch === 'solar_guard') {
+    var startShStats = buildClassBonusStats('solar_guard', 1, 1.25, 0.9);
     equipObj.shield = {
       id: 'start_sh_' + Date.now(),
       name: 'Escudo Solar de Treino',
@@ -357,6 +365,12 @@ function createHero() {
       physDef: 14,
       magDef: 11,
       blockChance: 14,
+      bonusStr: startShStats.bonusStr,
+      bonusDex: startShStats.bonusDex,
+      bonusRec: startShStats.bonusRec,
+      bonusInt: startShStats.bonusInt,
+      bonusWis: startShStats.bonusWis,
+      bonusLuc: startShStats.bonusLuc,
       sellPrice: 15
     };
   }
@@ -396,7 +410,6 @@ function createHero() {
   nameInput.value = '';
   startWithSlot(emptyIdx);
 }
-
 function startWithSlot(idx) {
   var slots = loadSlots();
   if (!slots[idx]) return;
@@ -1187,10 +1200,25 @@ function inspectEquipped(slotKey) {
     return;
   }
   var rMeta = RARITIES[item.rarity] || RARITIES.comum;
+  var statsLine = [];
+  if (item.physAtk) statsLine.push('ATQ Fís: +' + item.physAtk);
+  if (item.magAtk)  statsLine.push('ATQ Mág: +' + item.magAtk);
+  if (item.physDef) statsLine.push('DEF Fís: +' + item.physDef);
+  if (item.magDef)  statsLine.push('DEF Mág: +' + item.magDef);
+  if (item.blockChance) statsLine.push('Bloq: +' + item.blockChance + '%');
+  if (item.bonusStr) statsLine.push('FOR +' + item.bonusStr);
+  if (item.bonusDex) statsLine.push('DES +' + item.bonusDex);
+  if (item.bonusRec) statsLine.push('REC +' + item.bonusRec);
+  if (item.bonusInt) statsLine.push('INT +' + item.bonusInt);
+  if (item.bonusWis) statsLine.push('SAB +' + item.bonusWis);
+  if (item.bonusLuc) statsLine.push('SOR +' + item.bonusLuc);
+  if (item.speedBonus) statsLine.push('Vel +' + item.speedBonus);
+
   box.innerHTML =
     '<div>' +
       '<div style="font-weight:bold; font-size:0.9rem; color:' + rMeta.color + ';">' + item.icon + ' ' + item.name + (item.plus > 0 ? ' +' + item.plus : '') + ' (Equipado)</div>' +
-      '<div style="font-size:0.74rem; color:#cbd5e1; margin-top:5px;">Poder do Item: <b>' + getItemPowerScore(item) + '</b></div>' +
+      '<div style="font-size:0.74rem; color:#cbd5e1; margin-top:4px;">' + (statsLine.join(' • ') || 'Equipamento') + '</div>' +
+      '<div style="font-size:0.71rem; color:#fbbf24; margin-top:2px;">Poder do Item: <b>' + getItemPowerScore(item) + '</b></div>' +
     '</div>' +
     '<div class="tooltip-actions">' +
       '<button type="button" class="btn-act btn-act-sell" onclick="unequipToBag(\'' + slotKey + '\')">🎒 Guardar na Mochila</button>' +
@@ -1610,6 +1638,58 @@ function buyGoddessClassPack(archKey) {
       sellPrice: 320
     });
   });
+
+  var w = pack.weaponTemplate;
+  player.bag.push({
+    id: 'goddess_w_' + Math.random().toString(36).slice(2, 7),
+    name: w.name,
+    slot: 'weapon',
+    icon: w.icon,
+    wType: w.wType,
+    is2H: w.is2H,
+    reqArch: [archKey],
+    rarity: 'deusa',
+    plus: 0,
+    element: 'none',
+    sockets: [null, null, null, null, null, null],
+    physAtk: w.style === 'phys' ? w.baseAtk * 3 : 0,
+    magAtk:  w.style === 'magic' ? w.baseAtk * 3 : 0,
+    bonusStr: pack.stats.str || 0,
+    bonusDex: pack.stats.dex || 0,
+    bonusRec: pack.stats.rec || 0,
+    bonusInt: pack.stats.int || 0,
+    bonusWis: pack.stats.wis || 0,
+    bonusLuc: pack.stats.luc || 0,
+    sellPrice: 400
+  });
+
+  if (pack.includeGoddessShield) {
+    player.bag.push({
+      id: 'goddess_sh_' + Math.random().toString(36).slice(2, 7),
+      name: 'Escudo Deusa do Bastião Solar',
+      slot: 'shield',
+      icon: '🛡️',
+      wType: 'Escudo Deusa',
+      reqArch: ['solar_guard'],
+      rarity: 'deusa',
+      plus: 0,
+      element: 'none',
+      sockets: [null, null, null, null, null, null],
+      physDef: 58,
+      magDef: 52,
+      blockChance: 28,
+      bonusRec: pack.stats.rec || 35,
+      bonusStr: pack.stats.str || 18,
+      bonusWis: pack.stats.wis || 15,
+      sellPrice: 380
+    });
+  }
+
+  showShopBanner('👑 ' + pack.title + ' entregue na sua mochila! (Exclusivo para ' + pack.classLabel + ')', true);
+  saveCurrentHero();
+  renderShopWindow();
+  updateAllHUD();
+}
 
   var w = pack.weaponTemplate;
   player.bag.push({
