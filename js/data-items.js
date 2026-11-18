@@ -65,92 +65,117 @@ var SLOT_META = {
   mount:  { label: 'Montaria', icon: '🐎' }
 };
 
-// ================= ARMAS & ESCUDOS EXCLUSIVOS POR CLASSE (SHAIYA FAWKES) =================
+// ================= ARMAS & ESCUDOS EXCLUSIVOS DAS 8 CLASSES =================
 var SHAIYA_WEAPONS_DB = [
-  // Lutador / Guerreiro (Apenas 2M)
-  { name: 'Espada Bastarda de Teos',      slot: 'weapon', icon: '🗡️', wType: 'Espada 2M',     is2H: true,  reqArch: ['fighter'],  style: 'phys', baseAtk: 26 },
-  { name: 'Machado de Batalha Fawkes',    slot: 'weapon', icon: '🪓', wType: 'Machado 2M',    is2H: true,  reqArch: ['fighter'],  style: 'phys', baseAtk: 29 },
-  { name: 'Lança Dupla de Keolloseu',     slot: 'weapon', icon: '🔱', wType: 'Lança Dupla',   is2H: true,  reqArch: ['fighter'],  style: 'phys', baseAtk: 27 },
+  // 1. Guardião Solar (Tanque / Vanguarda)
+  { name: 'Machados Duplos Solares',      slot: 'weapon', icon: '🪓', wType: 'Machados Duplos', is2H: false, reqArch: ['solar_guard'],       style: 'phys',  baseAtk: 21 },
+  { name: 'Martelo Flamejante do Zênite', slot: 'weapon', icon: '🔨', wType: 'Martelo Solar',   is2H: false, reqArch: ['solar_guard'],       style: 'phys',  baseAtk: 22 },
+  { name: 'Escudo Torre do Sol Dourado',  slot: 'shield', icon: '🛡️', wType: 'Escudo Solar',    is2H: false, reqArch: ['solar_guard'],       style: 'def',   baseDef: 26, blockChance: 20 },
+  { name: 'Égide Sagrada de Solaris',     slot: 'shield', icon: '🛡️', wType: 'Escudo Deusa',    is2H: false, reqArch: ['solar_guard'],       style: 'def',   baseDef: 36, blockChance: 26 },
 
-  // Defensor / Guardião (Armas 1M + Único com Escudo)
-  { name: 'Espada Longa do Guardião',     slot: 'weapon', icon: '⚔️', wType: 'Espada 1M',     is2H: false, reqArch: ['defender'], style: 'phys', baseAtk: 18 },
-  { name: 'Martelo de Guerra de Etain',   slot: 'weapon', icon: '🔨', wType: 'Martelo 1M',    is2H: false, reqArch: ['defender'], style: 'phys', baseAtk: 20 },
-  { name: 'Escudo Torre de Aço Rúnico',   slot: 'shield', icon: '🛡️', wType: 'Escudo Torre',  is2H: false, reqArch: ['defender'], style: 'def',  baseDef: 24, blockChance: 18 },
-  { name: 'Égide Sagrada de Fawkes',      slot: 'shield', icon: '🛡️', wType: 'Escudo Deusa',  is2H: false, reqArch: ['defender'], style: 'def',  baseDef: 34, blockChance: 25 },
+  // 2. Valquíria Tempestuosa (Duelista Alada)
+  { name: 'Lança-Espada Relampejante',    slot: 'weapon', icon: '⚡', wType: 'Lança-Espada',    is2H: true,  reqArch: ['storm_valkyrie'],    style: 'phys',  baseAtk: 26 },
+  { name: 'Alabarda Celestial Dourada',   slot: 'weapon', icon: '🔱', wType: 'Lança Alada',     is2H: true,  reqArch: ['storm_valkyrie'],    style: 'phys',  baseAtk: 28 },
 
-  // Patrulheiro / Assassino
-  { name: 'Adagas Duplas das Sombras',    slot: 'weapon', icon: '🗡️', wType: 'Adagas Duplas', is2H: true,  reqArch: ['ranger'],   style: 'phys', baseAtk: 24 },
-  { name: 'Garras Reversas de Vail',      slot: 'weapon', icon: '🪝', wType: 'Garra',         is2H: true,  reqArch: ['ranger'],   style: 'phys', baseAtk: 25 },
+  // 3. Colosso Telúrico (Suporte Colossal / Invocador)
+  { name: 'Orbe Solar Flutuante',         slot: 'weapon', icon: '🌞', wType: 'Orbe Solar',      is2H: true,  reqArch: ['telluric_colossus'], style: 'magic', baseAtk: 25 },
+  { name: 'Núcleo Rúnico da Montanha',    slot: 'weapon', icon: '🏔️', wType: 'Núcleo Telúrico', is2H: true,  reqArch: ['telluric_colossus'], style: 'magic', baseAtk: 27 },
 
-  // Arqueiro / Caçador
-  { name: 'Arco Longo Élfico',            slot: 'weapon', icon: '🏹', wType: 'Arco Longo',    is2H: true,  reqArch: ['archer'],   style: 'phys', baseAtk: 25 },
-  { name: 'Besta Pesada de Caça',         slot: 'weapon', icon: '🏹', wType: 'Besta',         is2H: true,  reqArch: ['archer'],   style: 'phys', baseAtk: 27 },
+  // 4. Serafim Dracônico (Mago Elemental / Artilharia)
+  { name: 'Foco de Cristal Turquesa',     slot: 'weapon', icon: '💎', wType: 'Foco Cristalino', is2H: true,  reqArch: ['crystal_seraph'],    style: 'magic', baseAtk: 29 },
+  { name: 'Asas-Lâmina de Safira',        slot: 'weapon', icon: '🐉', wType: 'Relíquia Dracônica', is2H: true, reqArch: ['crystal_seraph'], style: 'magic', baseAtk: 31 },
 
-  // Mago / Pagão
-  { name: 'Cajado Arcano de Apulune',     slot: 'weapon', icon: '🪄', wType: 'Cajado Arcano', is2H: true,  reqArch: ['mage'],     style: 'magic', baseAtk: 28 },
-  { name: 'Orbe Elemental Etéreo',        slot: 'weapon', icon: '🔮', wType: 'Orbe',          is2H: false, reqArch: ['mage'],     style: 'magic', baseAtk: 25 },
+  // 5. Ceifador Espectral (Assassino / DPS Crítico)
+  { name: 'Lâminas Venenosas Espectrais', slot: 'weapon', icon: '🗡️', wType: 'Lâminas Duplas',  is2H: true,  reqArch: ['spectral_reaper'],   style: 'phys',  baseAtk: 26 },
+  { name: 'Foices Etéreas Carmesins',     slot: 'weapon', icon: '⚔️', wType: 'Foices Duplas',   is2H: true,  reqArch: ['spectral_reaper'],   style: 'phys',  baseAtk: 28 },
 
-  // Sacerdote / Oráculo
-  { name: 'Cetro Sagrado da Luz',         slot: 'weapon', icon: '✝️', wType: 'Cetro Sagrado', is2H: false, reqArch: ['priest'],   style: 'magic', baseAtk: 23 },
-  { name: 'Cajado Divino da Profecia',    slot: 'weapon', icon: '🪄', wType: 'Cajado Divino', is2H: true,  reqArch: ['priest'],   style: 'magic', baseAtk: 25 }
+  // 6. Flagelo Abissal (Lutador Sombrio / Chicote)
+  { name: 'Chicote de Fogo Carmesim',     slot: 'weapon', icon: '🔥', wType: 'Chicote Abissal', is2H: true,  reqArch: ['abyssal_scourge'],   style: 'phys',  baseAtk: 27 },
+  { name: 'Correntes Flamejantes do Abismo', slot: 'weapon', icon: '⛓️', wType: 'Corrente Ígnea', is2H: true, reqArch: ['abyssal_scourge'], style: 'phys',  baseAtk: 29 },
+
+  // 7. Arquilich Real (Mago Sombrio / Necromante)
+  { name: 'Cajado de Garra Arcana',       slot: 'weapon', icon: '💀', wType: 'Cajado Necrótico', is2H: true, reqArch: ['royal_lich'],        style: 'magic', baseAtk: 30 },
+  { name: 'Cetro Real do Submundo',       slot: 'weapon', icon: '👑', wType: 'Cetro Sombrio',   is2H: true,  reqArch: ['royal_lich'],        style: 'magic', baseAtk: 32 },
+
+  // 8. Soberano Glacial (Controlador Arcano / Gelo)
+  { name: 'Cetro de Garra Glacial',       slot: 'weapon', icon: '❄️', wType: 'Cetro Glacial',   is2H: true,  reqArch: ['glacial_lich'],      style: 'magic', baseAtk: 29 },
+  { name: 'Cajado do Zero Absoluto',      slot: 'weapon', icon: '🔱', wType: 'Cajado Ártico',   is2H: true,  reqArch: ['glacial_lich'],      style: 'magic', baseAtk: 31 }
 ];
 
-// ================= PACKS DE SETS DEUSA POR CLASSE (EXCLUSIVOS DA LOJA) =================
+// ================= PACKS DE SETS DEUSA PARA AS 8 CLASSES (EXCLUSIVOS DA LOJA) =================
 var GODDESS_CLASS_PACKS = {
-  fighter: {
-    title: 'Pack Set Deusa: Fúria de Teos',
-    classLabel: 'Lutador / Guerreiro',
-    icon: '⚔️',
-    price: 2600,
-    weaponTemplate: { name: 'Espada Bastarda Deusa de Teos', slot: 'weapon', icon: '🗡️', wType: 'Espada 2M', is2H: true, style: 'phys', baseAtk: 34 },
-    stats: { str: 38, dex: 20, rec: 24, luc: 18 },
-    desc: 'Set Deusa 6 Slots exclusivo para Lutador/Guerreiro + Espada Bastarda Deusa 2M.'
-  },
-  defender: {
-    title: 'Pack Set Deusa: Égide Imortal',
-    classLabel: 'Defensor / Guardião',
+  solar_guard: {
+    title: 'Pack Set Deusa: Bastião Solar',
+    classLabel: 'Guardião Solar',
     icon: '🛡️',
     price: 2600,
-    weaponTemplate: { name: 'Martelo Deusa de Etain', slot: 'weapon', icon: '🔨', wType: 'Martelo 1M', is2H: false, style: 'phys', baseAtk: 24 },
+    weaponTemplate: { name: 'Machados Solares Deusa de Solaris', slot: 'weapon', icon: '🪓', wType: 'Machados Duplos', is2H: false, style: 'phys', baseAtk: 26 },
     includeGoddessShield: true,
-    stats: { rec: 42, str: 20, wis: 24, dex: 16 },
-    desc: 'Set Deusa 6 Slots exclusivo para Defensor/Guardião + Martelo 1M + Escudo Deusa.'
+    stats: { rec: 44, str: 22, wis: 22, dex: 16 },
+    desc: 'Set Deusa 6 Slots exclusivo para Guardião Solar + Machados Solares + Égide Deusa.'
   },
-  ranger: {
-    title: 'Pack Set Deusa: Lâmina Fantasma',
-    classLabel: 'Patrulheiro / Assassino',
-    icon: '🗡️',
+  storm_valkyrie: {
+    title: 'Pack Set Deusa: Tempestade Dourada',
+    classLabel: 'Valquíria Tempestuosa',
+    icon: '⚡',
     price: 2600,
-    weaponTemplate: { name: 'Garras Deusa do Abismo', slot: 'weapon', icon: '🪝', wType: 'Garra', is2H: true, style: 'phys', baseAtk: 31 },
-    stats: { dex: 40, str: 22, luc: 26, rec: 14 },
-    desc: 'Set Deusa 6 Slots exclusivo para Patrulheiro/Assassino + Garras Deusa.'
+    weaponTemplate: { name: 'Lança-Espada Deusa dos Céus', slot: 'weapon', icon: '⚡', wType: 'Lança-Espada', is2H: true, style: 'phys', baseAtk: 34 },
+    stats: { dex: 42, str: 24, luc: 24, rec: 14 },
+    desc: 'Set Deusa 6 Slots exclusivo para Valquíria Tempestuosa + Lança-Espada Deusa.'
   },
-  archer: {
-    title: 'Pack Set Deusa: Vento Cortante',
-    classLabel: 'Arqueiro / Caçador',
-    icon: '🏹',
+  telluric_colossus: {
+    title: 'Pack Set Deusa: Titã Primordial',
+    classLabel: 'Colosso Telúrico',
+    icon: '🏔️',
     price: 2600,
-    weaponTemplate: { name: 'Arco Longo Deusa de Apulune', slot: 'weapon', icon: '🏹', wType: 'Arco Longo', is2H: true, style: 'phys', baseAtk: 32 },
-    stats: { luc: 42, dex: 26, str: 20, rec: 14 },
-    desc: 'Set Deusa 6 Slots exclusivo para Arqueiro/Caçador + Arco Longo Deusa.'
+    weaponTemplate: { name: 'Orbe Solar Deusa da Montanha', slot: 'weapon', icon: '🌞', wType: 'Orbe Solar', is2H: true, style: 'magic', baseAtk: 32 },
+    stats: { rec: 40, wis: 40, int: 24, dex: 12 },
+    desc: 'Set Deusa 6 Slots exclusivo para Colosso Telúrico + Orbe Solar Deusa.'
   },
-  mage: {
-    title: 'Pack Set Deusa: Chama Arcana',
-    classLabel: 'Mago / Pagão',
-    icon: '🔮',
+  crystal_seraph: {
+    title: 'Pack Set Deusa: Asas de Safira',
+    classLabel: 'Serafim Dracônico',
+    icon: '🐉',
     price: 2600,
-    weaponTemplate: { name: 'Cajado Arcano Deusa de Fawkes', slot: 'weapon', icon: '🪄', wType: 'Cajado Arcano', is2H: true, style: 'magic', baseAtk: 36 },
-    stats: { int: 44, wis: 26, rec: 18, luc: 16 },
-    desc: 'Set Deusa 6 Slots exclusivo para Mago/Pagão + Cajado Arcano Deusa.'
+    weaponTemplate: { name: 'Relíquia Dracônica Deusa', slot: 'weapon', icon: '💎', wType: 'Relíquia Dracônica', is2H: true, style: 'magic', baseAtk: 37 },
+    stats: { int: 46, dex: 24, wis: 22, luc: 16 },
+    desc: 'Set Deusa 6 Slots exclusivo para Serafim Dracônico + Relíquia Dracônica Deusa.'
   },
-  priest: {
-    title: 'Pack Set Deusa: Luz de Etain',
-    classLabel: 'Sacerdote / Oráculo',
-    icon: '✨',
+  spectral_reaper: {
+    title: 'Pack Set Deusa: Colheita Carmesim',
+    classLabel: 'Ceifador Espectral',
+    icon: '⚔️',
     price: 2600,
-    weaponTemplate: { name: 'Cetro Divino Deusa de Etain', slot: 'weapon', icon: '✝️', wType: 'Cetro Sagrado', is2H: false, style: 'magic', baseAtk: 30 },
-    stats: { wis: 44, rec: 26, int: 22, dex: 14 },
-    desc: 'Set Deusa 6 Slots exclusivo para Sacerdote/Oráculo + Cetro Divino Deusa.'
+    weaponTemplate: { name: 'Foices Etéreas Deusa do Abismo', slot: 'weapon', icon: '⚔️', wType: 'Foices Duplas', is2H: true, style: 'phys', baseAtk: 35 },
+    stats: { luc: 44, str: 26, dex: 26, rec: 14 },
+    desc: 'Set Deusa 6 Slots exclusivo para Ceifador Espectral + Foices Etéreas Deusa.'
+  },
+  abyssal_scourge: {
+    title: 'Pack Set Deusa: Soberano Infernal',
+    classLabel: 'Flagelo Abissal',
+    icon: '🔥',
+    price: 2600,
+    weaponTemplate: { name: 'Chicote Infernal Deusa de Teos', slot: 'weapon', icon: '🔥', wType: 'Chicote Abissal', is2H: true, style: 'phys', baseAtk: 35 },
+    stats: { str: 40, rec: 28, int: 22, dex: 16 },
+    desc: 'Set Deusa 6 Slots exclusivo para Flagelo Abissal + Chicote Infernal Deusa.'
+  },
+  royal_lich: {
+    title: 'Pack Set Deusa: Coroa Necrótica',
+    classLabel: 'Arquilich Real',
+    icon: '💀',
+    price: 2600,
+    weaponTemplate: { name: 'Cajado de Garra Deusa Real', slot: 'weapon', icon: '💀', wType: 'Cajado Necrótico', is2H: true, style: 'magic', baseAtk: 38 },
+    stats: { int: 46, wis: 32, luc: 18, rec: 14 },
+    desc: 'Set Deusa 6 Slots exclusivo para Arquilich Real + Cajado de Garra Deusa.'
+  },
+  glacial_lich: {
+    title: 'Pack Set Deusa: Zero Absoluto',
+    classLabel: 'Soberano Glacial',
+    icon: '❄️',
+    price: 2600,
+    weaponTemplate: { name: 'Cetro Glacial Deusa Eterna', slot: 'weapon', icon: '❄️', wType: 'Cetro Glacial', is2H: true, style: 'magic', baseAtk: 36 },
+    stats: { int: 44, wis: 28, dex: 22, rec: 16 },
+    desc: 'Set Deusa 6 Slots exclusivo para Soberano Glacial + Cetro Glacial Deusa.'
   }
 };
 
@@ -163,7 +188,6 @@ var EXCLUSIVE_MOUNTS = [
 
 // ================= CATÁLOGO DE LAPIS DO SHAIYA FAWKES (NV. 1 A 7, DUPLAS, SÔNICO, VELOZ & ELEMENTOS) =================
 var LAPIS_CATALOG = {
-  // Lapis Clássicas Nv. 1 a Nv. 7
   str:        { name: 'Lapis de Força',          code: 'FOR',     kind: 'stat',  color: '#f87171', targetType: 'any',    stats: { str: [0, 5, 10, 18, 28, 42, 60, 82] } },
   dex:        { name: 'Lapis de Destreza',       code: 'DES',     kind: 'stat',  color: '#34d399', targetType: 'any',    stats: { dex: [0, 5, 10, 18, 28, 42, 60, 82] } },
   rec:        { name: 'Lapis de Resistência',    code: 'REC',     kind: 'stat',  color: '#fbbf24', targetType: 'any',    stats: { rec: [0, 5, 10, 18, 28, 42, 60, 82] } },
@@ -171,17 +195,14 @@ var LAPIS_CATALOG = {
   wis:        { name: 'Lapis de Sabedoria',      code: 'SAB',     kind: 'stat',  color: '#c084fc', targetType: 'any',    stats: { wis: [0, 5, 10, 18, 28, 42, 60, 82] } },
   luc:        { name: 'Lapis de Sorte',          code: 'SOR',     kind: 'stat',  color: '#f472b6', targetType: 'any',    stats: { luc: [0, 5, 10, 18, 28, 42, 60, 82] } },
 
-  // Lapis Duplas / Deusa estilo Shaiya Fawkes
-  dual_fury:  { name: 'Lapis Dupla Fúria (FOR+SOR)',   code: 'FOR/SOR', kind: 'stat', color: '#fb7185', targetType: 'any', stats: { str: [0, 22, 36, 52], luc: [0, 22, 36, 52] } },
-  dual_arc:   { name: 'Lapis Dupla Arcana (INT+SAB)',  code: 'INT/SAB', kind: 'stat', color: '#60a5fa', targetType: 'any', stats: { int: [0, 22, 36, 52], wis: [0, 22, 36, 52] } },
-  dual_tank:  { name: 'Lapis Dupla Bastilha (REC+DES)',code: 'REC/DES', kind: 'stat', color: '#facc15', targetType: 'any', stats: { rec: [0, 24, 38, 55], dex: [0, 18, 30, 45] } },
+  dual_fury:  { name: 'Lapis Dupla Fúria (FOR+SOR)',    code: 'FOR/SOR', kind: 'stat', color: '#fb7185', targetType: 'any', stats: { str: [0, 22, 36, 52], luc: [0, 22, 36, 52] } },
+  dual_arc:   { name: 'Lapis Dupla Arcana (INT+SAB)',   code: 'INT/SAB', kind: 'stat', color: '#60a5fa', targetType: 'any', stats: { int: [0, 22, 36, 52], wis: [0, 22, 36, 52] } },
+  dual_tank:  { name: 'Lapis Dupla Bastilha (REC+DES)', code: 'REC/DES', kind: 'stat', color: '#facc15', targetType: 'any', stats: { rec: [0, 24, 38, 55], dex: [0, 18, 30, 45] } },
 
-  // Lapis Especiais (Loja & Bosses)
   sonic:      { name: 'Lapis Sônico',            code: 'SONIC',   kind: 'sonic', color: '#f43f5e', targetType: 'weapon', cdr: [0, 10, 18, 26] },
   swift:      { name: 'Lapis Veloz',             code: 'VELOZ',   kind: 'swift', color: '#38bdf8', targetType: 'boots',  spd: [0, 30, 60, 90] },
   abs:        { name: 'Lapis de Absorção',       code: 'ABS',     kind: 'abs',   color: '#fbbf24', targetType: 'armor',  abs: [0, 10, 20, 32, 48, 70, 100, 135] },
 
-  // Lapis Elementais (Armas e Peitoral)
   elem_fire:  { name: 'Lapis Elemental Fogo',    code: 'FOGO',    kind: 'elem',  color: '#fb7185', targetType: 'elem_slot', element: 'fire' },
   elem_wind:  { name: 'Lapis Elemental Vento',   code: 'VENTO',   kind: 'elem',  color: '#fde047', targetType: 'elem_slot', element: 'wind' },
   elem_earth: { name: 'Lapis Elemental Terra',   code: 'TERRA',   kind: 'elem',  color: '#34d399', targetType: 'elem_slot', element: 'earth' },
@@ -207,14 +228,12 @@ function formatLapisEffect(sock) {
   return out.join(', ');
 }
 
-// Lógica de compatibilidade de Lapis do Shaiya (ex: não permite 2 Lapis iguais no mesmo item e respeita tipo do slot)
 function canLinkLapisToItem(item, lapisItem) {
   if (!item || !lapisItem || !LAPIS_CATALOG[lapisItem.lapisKey]) return { ok: false, reason: 'Inválido' };
   if (!Array.isArray(item.sockets) || item.sockets.length === 0) return { ok: false, reason: 'Item sem slots' };
 
   var meta = LAPIS_CATALOG[lapisItem.lapisKey];
 
-  // Regra de slot específico do Shaiya
   if (meta.targetType === 'weapon' && item.slot !== 'weapon') {
     return { ok: false, reason: 'Lapis Sônico só pode ser linkada em Armas!' };
   }
@@ -228,7 +247,6 @@ function canLinkLapisToItem(item, lapisItem) {
     return { ok: false, reason: 'Lapis Elemental só pode ser linkada em Arma ou Peitoral!' };
   }
 
-  // Regra clássica do Shaiya: não permite duas Lapis idênticas (mesma chave e mesmo nível) no mesmo equipamento
   for (var i = 0; i < item.sockets.length; i++) {
     var s = item.sockets[i];
     if (s && s.lapisKey === lapisItem.lapisKey && (s.level || 1) === (lapisItem.level || 1)) {
@@ -244,16 +262,16 @@ function canEquipItem(item) {
   if (!item || !player) return { ok: false, reason: 'Inválido' };
   if (item.slot === 'consumable' || item.slot === 'lapis') return { ok: false, reason: 'Não equipável' };
 
-  // Bloqueio estrito por classe (outra classe não pode usar)
+  // Bloqueio estrito por classe
   if (Array.isArray(item.reqArch) && item.reqArch.length > 0) {
     if (item.reqArch.indexOf(player.archKey) === -1) {
       return { ok: false, reason: 'Exclusivo: ' + formatAllowedClassesLabel(item.reqArch) };
     }
   }
 
-  // Lógica do Escudo: apenas Defensor/Guardião pode equipar
-  if (item.slot === 'shield' && player.archKey !== 'defender') {
-    return { ok: false, reason: 'Apenas Defensor/Guardião usa Escudo' };
+  // Apenas o Guardião Solar (Tanque) pode equipar Escudos
+  if (item.slot === 'shield' && player.archKey !== 'solar_guard') {
+    return { ok: false, reason: 'Apenas Guardião Solar usa Escudo' };
   }
 
   return { ok: true, reason: '' };
@@ -307,7 +325,7 @@ function generateDropItem(lvl, tier) {
     };
   }
 
-  // 45% chance de dropar Peça de Set exclusiva de uma classe
+  // 45% chance de dropar Peça de Set exclusiva de uma das 8 classes
   var archKeys = Object.keys(ARCHETYPES);
   var chosenArch = archKeys[Math.floor(Math.random() * archKeys.length)];
   var armorSlots = ['helm', 'armor', 'pants', 'gloves', 'boots', 'cape'];
