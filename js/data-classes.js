@@ -151,131 +151,191 @@ function drawShaiyaRankBadgeOnCanvas(ctx, rankInfo, rightX, centerY) {
   return r * 2;
 }
 
-// ================= 6 CLASSES CLÁSSICAS: LIGHT & DARK COM PRÉVIA COMPLETA =================
+// ================= 8 NOVAS CLASSES EXCLUSIVAS (SPRITES + DINÂMICA SHAIYA) =================
 var ARCHETYPES = {
-  fighter: {
-    lightName: 'Lutador', furyName: 'Guerreiro', raceLight: 'Humano', raceFury: 'Nordein',
+  // -------------------- FACÇÃO: ALIANÇA DA LUZ (LIGHT) --------------------
+  solar_guard: {
+    faction: 'light',
+    lightName: 'Guardião Solar', furyName: 'Guardião Solar',
+    raceLight: 'Solaris', raceFury: 'Solaris',
     combatType: 'Corpo a Corpo (Perto)',
-    roleTag: 'DPS Físico / Berserker',
-    icon: '⚔️', color: '#f87171', armorColor: '#991b1b', trimColor: '#fbbf24',
-    atkStyle: 'phys', resourceType: 'sp', range: 95,
-    autoStat: 'str', autoStatLabel: '+1 FOR / Nível',
-    weaponRuleLabel: 'Espada 2M, Machado de Batalha & Lança Dupla',
-    baseStats: { str: 14, dex: 10, rec: 11, int: 6, wis: 6, luc: 9 },
-    lightLore: 'Campeão humano da Aliança da Luz. Empunha armas pesadas de duas mãos para romper linhas inimigas.',
-    furyLore: 'Colosso Nordein da União da Fúria. Canaliza fúria brutal para dizimar alvos em área com golpes devastadores.',
-    skills: [
-      { name: 'Corte Mortal',       icon: '⚔️', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 100, color: '#f87171', vfx: 'slash' },
-      { name: 'Corte Sangrento',    icon: '🩸', mult: 1.55, cost: 18, res: 'sp', cd: 4.0, range: 100, color: '#dc2626', vfx: 'bleed', dot: 0.45 },
-      { name: 'Grito de Batalha',   icon: '📯', mult: 0,    cost: 22, res: 'sp', cd: 7.5, range: 0,   color: '#fbbf24', vfx: 'aura', heal: 0.22, buff: { id: 'atk', label: '⚔️ +25% ATQ', dur: 10 } },
-      { name: 'Redemoinho',         icon: '🌪️', mult: 2.05, cost: 28, res: 'sp', cd: 5.5, range: 145, color: '#ef4444', vfx: 'whirl', aoe: true },
-      { name: 'Quebra-Armadura',    icon: '🔨', mult: 2.35, cost: 32, res: 'sp', cd: 6.5, range: 105, color: '#f59e0b', vfx: 'smash', stun: 1.8 },
-      { name: 'Fúria de Teos',      icon: '💥', mult: 3.45, cost: 45, res: 'sp', cd: 10.0,range: 115, color: '#fbbf24', vfx: 'nova' }
-    ]
-  },
-
-  defender: {
-    lightName: 'Defensor', furyName: 'Guardião', raceLight: 'Humano', raceFury: 'Nordein',
-    combatType: 'Corpo a Corpo (Perto)',
-    roleTag: 'Tanque / Escudo Torre',
-    icon: '🛡️', color: '#fbbf24', armorColor: '#1e3a8a', trimColor: '#fbbf24',
-    atkStyle: 'phys', resourceType: 'sp', range: 95,
+    roleTag: 'Tanque / Vanguarda Solar',
+    icon: '🛡️', color: '#f5c84c', armorColor: '#b45309', trimColor: '#fef08a',
+    atkStyle: 'phys', resourceType: 'sp', range: 100,
     autoStat: 'rec', autoStatLabel: '+1 REC / Nível',
-    weaponRuleLabel: 'Espada 1M, Martelo de Guerra & Escudo Torre',
-    baseStats: { str: 10, dex: 8, rec: 16, int: 6, wis: 8, luc: 8 },
-    lightLore: 'Paladino humano inabalável. Única classe capaz de erguer Escudos Torre para proteger aliados.',
-    furyLore: 'Muralha viva Nordein. Absorve impactos colossais com seu escudo e atordoa hordas inteiras.',
+    weaponRuleLabel: 'Armadura Pesada Dourada & Machados Duplos Flamejantes',
+    baseStats: { str: 14, dex: 9, rec: 20, int: 6, wis: 10, luc: 7 },
+    lightLore: 'Bastião blindado pela luz sagrada. Absorve impactos massivos na linha de frente e incinera inimigos com seus machados solares.',
+    furyLore: 'Bastião blindado pela luz sagrada. Absorve impactos massivos na linha de frente e incinera inimigos com seus machados solares.',
     skills: [
-      { name: 'Golpe de Escudo',    icon: '🛡️', mult: 1.30, cost: 10, res: 'sp', cd: 1.2, range: 95,  color: '#fbbf24', vfx: 'slash' },
-      { name: 'Provocação Sísmica', icon: '💢', mult: 1.45, cost: 16, res: 'sp', cd: 4.5, range: 120, color: '#f97316', vfx: 'smash', stun: 2.2 },
-      { name: 'Muralha de Aço',     icon: '🏰', mult: 0,    cost: 22, res: 'sp', cd: 8.0, range: 0,   color: '#38bdf8', vfx: 'aura', heal: 0.25, buff: { id: 'def', label: '🛡️ +40% DEF', dur: 12 } },
-      { name: 'Terremoto',          icon: '🌋', mult: 1.95, cost: 28, res: 'sp', cd: 5.5, range: 150, color: '#f59e0b', vfx: 'whirl', aoe: true },
-      { name: 'Barreira Divina',    icon: '💠', mult: 0,    cost: 30, res: 'sp', cd: 9.0, range: 0,   color: '#60a5fa', vfx: 'aura', heal: 0.42 },
-      { name: 'Bastilha de Etain',  icon: '☀️', mult: 2.95, cost: 40, res: 'sp', cd: 10.0,range: 115, color: '#fde047', vfx: 'nova' }
+      { name: 'Corte Incandescente',  icon: '🪓', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 105, color: '#fb923c', vfx: 'solar_slash', dot: 0.35 },
+      { name: 'Égide do Sol Nascente',icon: '🛡️', mult: 0,    cost: 20, res: 'sp', cd: 7.5, range: 0,   color: '#fde047', vfx: 'solar_shield', heal: 0.25, buff: { id: 'def', label: '☀️ +35% DEF', dur: 10 } },
+      { name: 'Brado da Vanguarda',   icon: '📯', mult: 1.25, cost: 18, res: 'sp', cd: 5.5, range: 140, color: '#facc15', vfx: 'solar_roar', aoe: true },
+      { name: 'Impacto Sísmico Solar',icon: '🌋', mult: 2.15, cost: 28, res: 'sp', cd: 6.0, range: 135, color: '#f97316', vfx: 'solar_quake', aoe: true, stun: 1.6 },
+      { name: 'Aura Inabalável',      icon: '🔥', mult: 0,    cost: 26, res: 'sp', cd: 8.5, range: 0,   color: '#fef08a', vfx: 'solar_aura', heal: 0.32, buff: { id: 'atk', label: '🔥 +20% ATQ/DEF', dur: 10 } },
+      { name: 'Julgamento do Zênite', icon: '☀️', mult: 3.30, cost: 42, res: 'sp', cd: 10.0,range: 145, color: '#eab308', vfx: 'solar_zenith', aoe: true, heal: 0.15 }
     ]
   },
 
-  ranger: {
-    lightName: 'Patrulheiro', furyName: 'Assassino', raceLight: 'Elfo', raceFury: 'Vail',
-    combatType: 'Corpo a Corpo (Perto)',
-    roleTag: 'Furtividade / Crítico & Esquiva',
-    icon: '🗡️', color: '#c084fc', armorColor: '#4c1d95', trimColor: '#e879f9',
-    atkStyle: 'phys', resourceType: 'sp', range: 90,
+  storm_valkyrie: {
+    faction: 'light',
+    lightName: 'Valquíria Tempestuosa', furyName: 'Valquíria Tempestuosa',
+    raceLight: 'Serafita', raceFury: 'Serafita',
+    combatType: 'Corpo a Corpo / Médio Alcance',
+    roleTag: 'Duelista Alada / Perfuradora',
+    icon: '⚡', color: '#38bdf8', armorColor: '#1e293b', trimColor: '#facc15',
+    atkStyle: 'phys', resourceType: 'sp', range: 115,
     autoStat: 'dex', autoStatLabel: '+1 DES / Nível',
-    weaponRuleLabel: 'Adagas Duplas & Garra Reversa',
-    baseStats: { str: 11, dex: 15, rec: 8, int: 6, wis: 6, luc: 12 },
-    lightLore: 'Batedor élfico ágil das florestas de Erina. Desvia de golpes fatais e aplica venenos mortais.',
-    furyLore: 'Executor Vail das sombras de Iris. Teleporta-se atrás do alvo com garras e adagas duplas.',
+    weaponRuleLabel: 'Armadura Média Alada & Lança-Espada Relampejante',
+    baseStats: { str: 14, dex: 19, rec: 10, int: 8, wis: 8, luc: 13 },
+    lightLore: 'Guerreira alada abençoada pelos céus. Atravessa o campo de batalha na velocidade do raio perfurando defesas inimigas.',
+    furyLore: 'Guerreira alada abençoada pelos céus. Atravessa o campo de batalha na velocidade do raio perfurando defesas inimigas.',
     skills: [
-      { name: 'Corte Venenoso',     icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.0, range: 95,  color: '#c084fc', vfx: 'slash', dot: 0.35 },
-      { name: 'Passo das Sombras',  icon: '👤', mult: 1.85, cost: 18, res: 'sp', cd: 4.0, range: 240, color: '#a855f7', vfx: 'dash', dash: true },
-      { name: 'Evasão Sombria',     icon: '💨', mult: 0,    cost: 20, res: 'sp', cd: 8.0, range: 0,   color: '#34d399', vfx: 'aura', buff: { id: 'eva', label: '💨 +25% Esquiva', dur: 10 } },
-      { name: 'Chuva de Adagas',    icon: '🌀', mult: 2.15, cost: 26, res: 'sp', cd: 5.5, range: 135, color: '#f43f5e', vfx: 'whirl', aoe: true },
-      { name: 'Golpe Fantasma',     icon: '👻', mult: 2.65, cost: 32, res: 'sp', cd: 6.5, range: 105, color: '#e879f9', vfx: 'smash', stun: 1.5 },
-      { name: 'Execução Fatal',     icon: '💀', mult: 3.70, cost: 42, res: 'sp', cd: 9.5, range: 100, color: '#fbbf24', vfx: 'nova' }
+      { name: 'Estocada Relampejante',    icon: '⚡', mult: 1.40, cost: 10, res: 'sp', cd: 1.0, range: 120, color: '#38bdf8', vfx: 'storm_thrust' },
+      { name: 'Voo das Valquírias',       icon: '🪽', mult: 1.90, cost: 18, res: 'sp', cd: 4.0, range: 250, color: '#7dd3fc', vfx: 'storm_dash', dash: true },
+      { name: 'Cadeia de Raios',          icon: '🌩️', mult: 2.05, cost: 24, res: 'sp', cd: 5.0, range: 220, color: '#0284c7', vfx: 'storm_chain', aoe: true },
+      { name: 'Barreira Estática',        icon: '💠', mult: 0,    cost: 22, res: 'sp', cd: 8.0, range: 0,   color: '#bae6fd', vfx: 'storm_static', buff: { id: 'eva', label: '⚡ +30% Vel/Esq', dur: 10 } },
+      { name: 'Chuva de Lanças Celestes', icon: '🔱', mult: 2.45, cost: 32, res: 'sp', cd: 6.5, range: 170, color: '#eab308', vfx: 'storm_lances', aoe: true },
+      { name: 'Fúria da Tempestade',      icon: '⛈️', mult: 3.55, cost: 44, res: 'sp', cd: 9.5, range: 150, color: '#00d4ff', vfx: 'storm_meteor', aoe: true, stun: 1.5 }
     ]
   },
 
-  archer: {
-    lightName: 'Arqueiro', furyName: 'Caçador', raceLight: 'Elfo', raceFury: 'Nordein',
-    combatType: 'Longa Distância (Longe)',
-    roleTag: 'Atirador / Máximo Crítico',
-    icon: '🏹', color: '#34d399', armorColor: '#065f46', trimColor: '#34d399',
-    atkStyle: 'phys', resourceType: 'sp', range: 360,
-    autoStat: 'luc', autoStatLabel: '+1 SOR / Nível',
-    weaponRuleLabel: 'Arco Longo & Besta Pesada',
-    baseStats: { str: 10, dex: 12, rec: 8, int: 6, wis: 6, luc: 16 },
-    lightLore: 'Atirador de elite élfico. Abate inimigos a longa distância com flechas precisas e letais.',
-    furyLore: 'Predador implacável Nordein. Usa bestas pesadas e saraivadas de flechas perfurantes.',
-    skills: [
-      { name: 'Disparo Preciso',    icon: '🏹', mult: 1.35, cost: 10, res: 'sp', cd: 1.1, range: 365, color: '#34d399', vfx: 'proj', proj: true },
-      { name: 'Flecha Tóxica',      icon: '🧪', mult: 1.75, cost: 18, res: 'sp', cd: 4.0, range: 365, color: '#a3e635', vfx: 'proj', proj: true, dot: 0.45 },
-      { name: 'Olho de Falcão',     icon: '🦅', mult: 0,    cost: 22, res: 'sp', cd: 8.0, range: 0,   color: '#fbbf24', vfx: 'aura', buff: { id: 'crit', label: '💥 +25% Crítico', dur: 11 } },
-      { name: 'Saraivada Mortal',   icon: '🌧️', mult: 2.15, cost: 28, res: 'sp', cd: 5.5, range: 365, color: '#fbbf24', vfx: 'whirl', proj: true, aoe: true },
-      { name: 'Tiro Atordoante',    icon: '⚡', mult: 2.45, cost: 32, res: 'sp', cd: 6.5, range: 370, color: '#38bdf8', vfx: 'proj', proj: true, stun: 2.0 },
-      { name: 'Flecha do Destino',  icon: '🎯', mult: 3.50, cost: 42, res: 'sp', cd: 9.5, range: 390, color: '#f43f5e', vfx: 'nova', proj: true }
-    ]
-  },
-
-  mage: {
-    lightName: 'Mago', furyName: 'Pagão', raceLight: 'Elfo', raceFury: 'Vail',
-    combatType: 'Longa Distância (Longe)',
-    roleTag: 'Dano Elemental em Área',
-    icon: '🔮', color: '#38bdf8', armorColor: '#1e1b4b', trimColor: '#38bdf8',
-    atkStyle: 'magic', resourceType: 'mp', range: 320,
-    autoStat: 'int', autoStatLabel: '+1 INT / Nível',
-    weaponRuleLabel: 'Cajado Arcano & Orbe Elemental',
-    baseStats: { str: 6, dex: 8, rec: 8, int: 17, wis: 11, luc: 8 },
-    lightLore: 'Erudito élfico das artes arcanas. Invoca meteoros e tempestades elementais sobre seus inimigos.',
-    furyLore: 'Feiticeiro Vail das artes proibidas. Domina chamas infernais e magia destrutiva de longo alcance.',
-    skills: [
-      { name: 'Bola de Fogo',       icon: '🔥', mult: 1.45, cost: 12, res: 'mp', cd: 1.2, range: 325, color: '#fb7185', vfx: 'proj', proj: true },
-      { name: 'Lança de Gelo',      icon: '❄️', mult: 1.85, cost: 20, res: 'mp', cd: 4.0, range: 325, color: '#38bdf8', vfx: 'proj', proj: true, stun: 1.8 },
-      { name: 'Poder Arcano',       icon: '🔮', mult: 0,    cost: 24, res: 'mp', cd: 8.5, range: 0,   color: '#c084fc', vfx: 'aura', buff: { id: 'atk', label: '🔮 +30% Magia', dur: 10 } },
-      { name: 'Tempestade Etérea',  icon: '⚡', mult: 2.35, cost: 34, res: 'mp', cd: 6.0, range: 325, color: '#c084fc', vfx: 'whirl', aoe: true },
-      { name: 'Chama Infernal',     icon: '🌋', mult: 2.75, cost: 40, res: 'mp', cd: 7.0, range: 330, color: '#f97316', vfx: 'nova', dot: 0.5 },
-      { name: 'Meteoro de Apulune', icon: '☄️', mult: 3.85, cost: 55, res: 'mp', cd: 10.5,range: 345, color: '#fbbf24', vfx: 'nova', proj: true, aoe: true }
-    ]
-  },
-
-  priest: {
-    lightName: 'Sacerdote', furyName: 'Oráculo', raceLight: 'Humano', raceFury: 'Vail',
-    combatType: 'Longa Distância (Longe)',
-    roleTag: 'Cura Divina / Suporte & Luz',
-    icon: '✨', color: '#fde047', armorColor: '#0369a1', trimColor: '#fde047',
-    atkStyle: 'magic', resourceType: 'mp', range: 300,
+  telluric_colossus: {
+    faction: 'light',
+    lightName: 'Colosso Telúrico', furyName: 'Colosso Telúrico',
+    raceLight: 'Titã Ancestral', raceFury: 'Titã Ancestral',
+    combatType: 'Médio / Longo Alcance',
+    roleTag: 'Suporte Colossal / Tanque Mágico',
+    icon: '🏔️', color: '#2dd4bf', armorColor: '#065f46', trimColor: '#fbbf24',
+    atkStyle: 'magic', resourceType: 'mp', range: 290,
     autoStat: 'wis', autoStatLabel: '+1 SAB / Nível',
-    weaponRuleLabel: 'Cetro Sagrado & Cajado Divino',
-    baseStats: { str: 6, dex: 8, rec: 9, int: 11, wis: 17, luc: 7 },
-    lightLore: 'Clérigo humano devoto da Deusa Etain. Restaura vida, concede bênçãos e purifica as trevas.',
-    furyLore: 'Místico Vail canalizador de energia espiritual. Equilibra curas poderosas e julgamentos celestiais.',
+    weaponRuleLabel: 'Carapaça Rúnica & Orbe Solar Flutuante',
+    baseStats: { str: 8, dex: 6, rec: 19, int: 14, wis: 18, luc: 7 },
+    lightLore: 'Titã ancestral que carrega montanhas e um sol vivo nas costas. Protege aliados com auras telúricas e devasta áreas inteiras.',
+    furyLore: 'Titã ancestral que carrega montanhas e um sol vivo nas costas. Protege aliados com auras telúricas e devasta áreas inteiras.',
     skills: [
-      { name: 'Raio Sagrado',       icon: '✨', mult: 1.35, cost: 10, res: 'mp', cd: 1.2, range: 305, color: '#fde047', vfx: 'proj', proj: true },
-      { name: 'Cura Maior',         icon: '💚', mult: 0,    cost: 24, res: 'mp', cd: 4.5, range: 0,   color: '#34d399', vfx: 'aura', heal: 0.48 },
-      { name: 'Bênção de Etain',    icon: '🌟', mult: 0,    cost: 26, res: 'mp', cd: 9.0, range: 0,   color: '#38bdf8', vfx: 'aura', buff: { id: 'def', label: '🌟 +35% DEF/ATQ', dur: 12 } },
-      { name: 'Julgamento Divino',  icon: '☀️', mult: 2.15, cost: 32, res: 'mp', cd: 6.0, range: 305, color: '#fbbf24', vfx: 'whirl', aoe: true },
-      { name: 'Prisão de Luz',      icon: '⛓️', mult: 2.40, cost: 36, res: 'mp', cd: 7.0, range: 310, color: '#fef08a', vfx: 'smash', stun: 2.2 },
-      { name: 'Ira Celestial',      icon: '👼', mult: 3.35, cost: 48, res: 'mp', cd: 9.5, range: 315, color: '#38bdf8', vfx: 'nova', proj: true }
+      { name: 'Raio do Orbe Solar',      icon: '🌞', mult: 1.40, cost: 11, res: 'mp', cd: 1.2, range: 300, color: '#fbbf24', vfx: 'telluric_beam', proj: true },
+      { name: 'Pisada Tectônica',        icon: '🏔️', mult: 1.95, cost: 22, res: 'mp', cd: 5.0, range: 165, color: '#2dd4bf', vfx: 'telluric_stomp', aoe: true, stun: 1.4 },
+      { name: 'Bastião da Montanha',     icon: '🛡️', mult: 0,    cost: 24, res: 'mp', cd: 8.5, range: 0,   color: '#14b8a6', vfx: 'telluric_bastion', buff: { id: 'def', label: '🏔️ +40% DEF', dur: 12 } },
+      { name: 'Ressurgência Cristalina', icon: '💚', mult: 0,    cost: 28, res: 'mp', cd: 5.5, range: 0,   color: '#5eead4', vfx: 'telluric_heal', heal: 0.45 },
+      { name: 'Erupção de Cristais',     icon: '💎', mult: 2.40, cost: 34, res: 'mp', cd: 6.5, range: 260, color: '#0d9488', vfx: 'telluric_crystals', aoe: true, stun: 1.8 },
+      { name: 'Supernova Telúrica',      icon: '💥', mult: 3.45, cost: 48, res: 'mp', cd: 10.0,range: 240, color: '#fde047', vfx: 'telluric_nova', aoe: true, heal: 0.25 }
+    ]
+  },
+
+  crystal_seraph: {
+    faction: 'light',
+    lightName: 'Serafim Dracônico', furyName: 'Serafim Dracônico',
+    raceLight: 'Draconato', raceFury: 'Draconato',
+    combatType: 'Longa Distância (Longe)',
+    roleTag: 'Mago Elemental / Artilharia',
+    icon: '🐉', color: '#06b6d4', armorColor: '#164e63', trimColor: '#67e8f9',
+    atkStyle: 'magic', resourceType: 'mp', range: 340,
+    autoStat: 'int', autoStatLabel: '+1 INT / Nível',
+    weaponRuleLabel: 'Escamas Dracônicas Leves & Asas de Cristal',
+    baseStats: { str: 6, dex: 14, rec: 8, int: 20, wis: 14, luc: 10 },
+    lightLore: 'Híbrido dracônico de asas cristalinas. Dispara rajadas arcanas cortantes e sopros glaciais à distância antes que o inimigo se aproxime.',
+    furyLore: 'Híbrido dracônico de asas cristalinas. Dispara rajadas arcanas cortantes e sopros glaciais à distância antes que o inimigo se aproxime.',
+    skills: [
+      { name: 'Rajada de Penas de Cristal', icon: '💎', mult: 1.45, cost: 11, res: 'mp', cd: 1.1, range: 345, color: '#22d3ee', vfx: 'crystal_feathers', proj: true },
+      { name: 'Sopro Dracônico Glacial',    icon: '❄️', mult: 2.00, cost: 22, res: 'mp', cd: 4.5, range: 260, color: '#67e8f9', vfx: 'crystal_breath', aoe: true, stun: 1.4 },
+      { name: 'Ascensão Alada',             icon: '🪽', mult: 1.65, cost: 20, res: 'mp', cd: 5.5, range: 220, color: '#a5f3fc', vfx: 'crystal_ascend', dash: true },
+      { name: 'Escamas Prismáticas',        icon: '💠', mult: 0,    cost: 24, res: 'mp', cd: 8.5, range: 0,   color: '#06b6d4', vfx: 'crystal_scales', buff: { id: 'atk', label: '💎 +30% Magia/Def', dur: 10 } },
+      { name: 'Lança de Safira',            icon: '🔷', mult: 2.75, cost: 34, res: 'mp', cd: 6.5, range: 350, color: '#0891b2', vfx: 'crystal_lance', proj: true },
+      { name: 'Tempestade do Serafim',      icon: '🌨️', mult: 3.80, cost: 50, res: 'mp', cd: 10.0,range: 340, color: '#00f2fe', vfx: 'crystal_storm', aoe: true, stun: 2.0 }
+    ]
+  },
+
+  // -------------------- FACÇÃO: UNIÃO DA FÚRIA (DARK) --------------------
+  spectral_reaper: {
+    faction: 'fury',
+    lightName: 'Ceifador Espectral', furyName: 'Ceifador Espectral',
+    raceLight: 'Espectro', raceFury: 'Espectro',
+    combatType: 'Corpo a Corpo (Perto)',
+    roleTag: 'Assassino / DPS Crítico Letal',
+    icon: '⚔️', color: '#10b981', armorColor: '#881337', trimColor: '#34d399',
+    atkStyle: 'phys', resourceType: 'sp', range: 95,
+    autoStat: 'luc', autoStatLabel: '+1 SOR / Nível',
+    weaponRuleLabel: 'Armadura Leve Carmesim, Lâminas & Foices Etéreas',
+    baseStats: { str: 16, dex: 16, rec: 8, int: 6, wis: 7, luc: 19 },
+    lightLore: 'Executor veloz que combina lâminas venenosas e foices espectrais. Especialista em emboscadas letais e golpes críticos sucessivos.',
+    furyLore: 'Executor veloz que combina lâminas venenosas e foices espectrais. Especialista em emboscadas letais e golpes críticos sucessivos.',
+    skills: [
+      { name: 'Laceração Venenosa',    icon: '🗡️', mult: 1.40, cost: 10, res: 'sp', cd: 1.0, range: 95,  color: '#10b981', vfx: 'reaper_slash', dot: 0.45 },
+      { name: 'Passo Fantasma',        icon: '👻', mult: 1.85, cost: 18, res: 'sp', cd: 4.0, range: 240, color: '#34d399', vfx: 'reaper_blink', dash: true },
+      { name: 'Giro das Foices Etéreas',icon: '🌀', mult: 2.20, cost: 24, res: 'sp', cd: 5.0, range: 140, color: '#059669', vfx: 'reaper_scythes', aoe: true },
+      { name: 'Marca da Execução',     icon: '💀', mult: 0,    cost: 20, res: 'sp', cd: 7.5, range: 0,   color: '#6ee7b7', vfx: 'reaper_mark', buff: { id: 'crit', label: '💚 +35% Crítico', dur: 10 } },
+      { name: 'Frenesi Carmesim',      icon: '🩸', mult: 2.50, cost: 30, res: 'sp', cd: 6.5, range: 105, color: '#f43f5e', vfx: 'reaper_frenzy', buff: { id: 'eva', label: '⚔️ +25% Esquiva', dur: 8 } },
+      { name: 'Colheita de Almas',     icon: '☠️', mult: 3.85, cost: 42, res: 'sp', cd: 9.5, range: 115, color: '#00ffaa', vfx: 'reaper_harvest', aoe: true }
+    ]
+  },
+
+  abyssal_scourge: {
+    faction: 'fury',
+    lightName: 'Flagelo Abissal', furyName: 'Flagelo Abissal',
+    raceLight: 'Abissal', raceFury: 'Abissal',
+    combatType: 'Médio Alcance (Chicote)',
+    roleTag: 'Lutador Sombrio / Drenagem',
+    icon: '🔥', color: '#f43f5e', armorColor: '#4c0519', trimColor: '#38bdf8',
+    atkStyle: 'phys', resourceType: 'sp', range: 155,
+    autoStat: 'str', autoStatLabel: '+1 FOR / Nível',
+    weaponRuleLabel: 'Armadura Demoníaca & Chicote de Fogo Carmesim',
+    baseStats: { str: 18, dex: 11, rec: 15, int: 12, wis: 8, luc: 8 },
+    lightLore: 'Soberano das profundezas que domina o combate a média distância. Puxa alvos com seu chicote flamejante e drena sua vitalidade.',
+    furyLore: 'Soberano das profundezas que domina o combate a média distância. Puxa alvos com seu chicote flamejante e drena sua vitalidade.',
+    skills: [
+      { name: 'Açoite Infernal',       icon: '🔥', mult: 1.40, cost: 10, res: 'sp', cd: 1.1, range: 165, color: '#f43f5e', vfx: 'abyss_whip', dot: 0.40 },
+      { name: 'Corrente do Abismo',    icon: '⛓️', mult: 1.80, cost: 18, res: 'sp', cd: 4.5, range: 240, color: '#e11d48', vfx: 'abyss_pull', stun: 1.5 },
+      { name: 'Sifão de Vitalidade',   icon: '🩸', mult: 1.95, cost: 24, res: 'sp', cd: 5.5, range: 170, color: '#c026d3', vfx: 'abyss_siphon', heal: 0.35, aoe: true },
+      { name: 'Chamas da Ruína',       icon: '🌋', mult: 2.25, cost: 28, res: 'sp', cd: 6.0, range: 160, color: '#be123c', vfx: 'abyss_ruin', aoe: true, dot: 0.50 },
+      { name: 'Pacto Demoníaco',       icon: '😈', mult: 0,    cost: 24, res: 'sp', cd: 8.5, range: 0,   color: '#9333ea', vfx: 'abyss_pact', buff: { id: 'atk', label: '🔥 +35% ATQ Abissal', dur: 11 } },
+      { name: 'Cataclismo do Submundo',icon: '💥', mult: 3.60, cost: 44, res: 'sp', cd: 10.0,range: 185, color: '#ff1e56', vfx: 'abyss_cataclysm', aoe: true }
+    ]
+  },
+
+  royal_lich: {
+    faction: 'fury',
+    lightName: 'Arquilich Real', furyName: 'Arquilich Real',
+    raceLight: 'Morto-Vivo', raceFury: 'Morto-Vivo',
+    combatType: 'Longa Distância (Longe)',
+    roleTag: 'Mago Sombrio / Necromante',
+    icon: '💀', color: '#a855f7', armorColor: '#3b0764', trimColor: '#facc15',
+    atkStyle: 'magic', resourceType: 'mp', range: 330,
+    autoStat: 'int', autoStatLabel: '+1 INT / Nível',
+    weaponRuleLabel: 'Manto Real Sombrio & Cajado de Garra Arcana',
+    baseStats: { str: 6, dex: 9, rec: 8, int: 20, wis: 18, luc: 11 },
+    lightLore: 'Mestre da magia proibida. Enfia maldições sombrias nos inimigos, drena energia vital e invoca espíritos do submundo.',
+    furyLore: 'Mestre da magia proibida. Enfia maldições sombrias nos inimigos, drena energia vital e invoca espíritos do submundo.',
+    skills: [
+      { name: 'Garra da Ruína Arcana',   icon: '🔮', mult: 1.45, cost: 12, res: 'mp', cd: 1.2, range: 335, color: '#a855f7', vfx: 'lich_claw', proj: true },
+      { name: 'Maldição da Decadência',  icon: '☠️', mult: 1.90, cost: 20, res: 'mp', cd: 4.5, range: 320, color: '#7e22ce', vfx: 'lich_curse', aoe: true, dot: 0.55 },
+      { name: 'Colheita de Mana',        icon: '💧', mult: 1.65, cost: 15, res: 'mp', cd: 6.0, range: 280, color: '#6366f1', vfx: 'lich_drain', heal: 0.25 },
+      { name: 'Legião Espectral',        icon: '👻', mult: 2.45, cost: 32, res: 'mp', cd: 6.5, range: 330, color: '#9333ea', vfx: 'lich_legion', proj: true, aoe: true },
+      { name: 'Coroa do Soberano Morto', icon: '👑', mult: 0,    cost: 26, res: 'mp', cd: 8.5, range: 0,   color: '#eab308', vfx: 'lich_crown', buff: { id: 'atk', label: '👑 +35% Magia', dur: 11 } },
+      { name: 'Vórtice do Abismo Real',  icon: '🌑', mult: 3.85, cost: 52, res: 'mp', cd: 10.5,range: 340, color: '#c084fc', vfx: 'lich_vortex', aoe: true }
+    ]
+  },
+
+  glacial_lich: {
+    faction: 'fury',
+    lightName: 'Soberano Glacial', furyName: 'Soberano Glacial',
+    raceLight: 'Espectro Gélido', raceFury: 'Espectro Gélido',
+    combatType: 'Longa Distância (Longe)',
+    roleTag: 'Controlador Arcano / Congelamento',
+    icon: '❄️', color: '#93c5fd', armorColor: '#1e3a8a', trimColor: '#e0f2fe',
+    atkStyle: 'magic', resourceType: 'mp', range: 330,
+    autoStat: 'int', autoStatLabel: '+1 INT / Nível',
+    weaponRuleLabel: 'Vestes Espectrais Gélidas & Cetro de Garra Glacial',
+    baseStats: { str: 6, dex: 13, rec: 9, int: 19, wis: 16, luc: 9 },
+    lightLore: 'Entidade do frio eterno. Congela exércitos inteiros no lugar e estilhaça alvos imobilizados com lanças de gelo.',
+    furyLore: 'Entidade do frio eterno. Congela exércitos inteiros no lugar e estilhaça alvos imobilizados com lanças de gelo.',
+    skills: [
+      { name: 'Estilhaço Glacial',         icon: '❄️', mult: 1.40, cost: 11, res: 'mp', cd: 1.1, range: 335, color: '#93c5fd', vfx: 'glacial_shard', proj: true },
+      { name: 'Prisão do Frio Eterno',     icon: '🧊', mult: 1.85, cost: 22, res: 'mp', cd: 5.0, range: 320, color: '#60a5fa', vfx: 'glacial_prison', stun: 2.2 },
+      { name: 'Nova Ártica',               icon: '💠', mult: 2.15, cost: 26, res: 'mp', cd: 5.5, range: 170, color: '#bfdbfe', vfx: 'glacial_nova', aoe: true },
+      { name: 'Manto do Inverno',          icon: '🛡️', mult: 0,    cost: 24, res: 'mp', cd: 8.5, range: 0,   color: '#dbeafe', vfx: 'glacial_cloak', buff: { id: 'def', label: '❄️ +35% DEF Mágica', dur: 11 } },
+      { name: 'Lanças do Zero Absoluto',   icon: '🔱', mult: 2.65, cost: 34, res: 'mp', cd: 6.5, range: 340, color: '#3b82f6', vfx: 'glacial_spikes', proj: true, aoe: true },
+      { name: 'Apocalipse Glacial',        icon: '🌨️', mult: 3.75, cost: 50, res: 'mp', cd: 10.0,range: 345, color: '#e0f2fe', vfx: 'glacial_apocalypse', aoe: true, stun: 2.0 }
     ]
   }
 };
@@ -292,12 +352,15 @@ var EXTREME_MODE = {
 
 function getArchetypeDisplayName(archKey, faction) {
   var a = ARCHETYPES[archKey];
+  if (!a) return archKey;
   return faction === 'fury' ? a.furyName : a.lightName;
 }
 
 function formatAllowedClassesLabel(reqArch) {
   if (!Array.isArray(reqArch) || reqArch.length === 0) return 'Todas as Classes';
   return reqArch.map(function(ak) {
-    return ARCHETYPES[ak].lightName + '/' + ARCHETYPES[ak].furyName;
+    var a = ARCHETYPES[ak];
+    if (!a) return ak;
+    return a.lightName === a.furyName ? a.lightName : (a.lightName + '/' + a.furyName);
   }).join(', ');
 }
