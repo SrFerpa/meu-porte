@@ -4,11 +4,11 @@ var ctx = canvas.getContext('2d');
 var miniCanvas = document.getElementById('minimapCanvas');
 var miniCtx = miniCanvas.getContext('2d');
 
-var SAVE_KEY = 'shaiya_fawkes_v4_slots';
+var SAVE_KEY = 'shaiya_fawkes_v5_8classes';
 var WORLD_SIZE = 3200;
 
 var selectedFaction = 'light';
-var selectedArch = 'fighter';
+var selectedArch = 'solar_guard';
 var creatorVisible = true;
 var currentSlotIdx = null;
 var player = null;
@@ -112,7 +112,7 @@ function saveCurrentHero() {
   saveSlots(slots);
 }
 
-// ================= TELA DINÂMICA DE SELEÇÃO E CRIAÇÃO =================
+// ================= TELA DINÂMICA DE SELEÇÃO E CRIAÇÃO (8 CLASSES) =================
 function toggleCreatorPanel(forceShow) {
   var slots = loadSlots();
   var hasFreeSlot = slots.some(function(s) { return s === null; });
@@ -129,6 +129,13 @@ function selectFaction(fac) {
   selectedFaction = fac;
   document.getElementById('fac-light').className = 'faction-btn' + (fac === 'light' ? ' active-light' : '');
   document.getElementById('fac-fury').className  = 'faction-btn' + (fac === 'fury'  ? ' active-fury'  : '');
+
+  var factionKeys = Object.keys(ARCHETYPES).filter(function(k) {
+    return !ARCHETYPES[k].faction || ARCHETYPES[k].faction === fac;
+  });
+  if (factionKeys.length > 0 && factionKeys.indexOf(selectedArch) === -1) {
+    selectedArch = factionKeys[0];
+  }
   renderClassGrid();
 }
 
@@ -141,7 +148,16 @@ function renderClassGrid() {
   var grid = document.getElementById('class-grid');
   grid.innerHTML = '';
 
-  Object.keys(ARCHETYPES).forEach(function(key) {
+  var availableKeys = Object.keys(ARCHETYPES).filter(function(key) {
+    var a = ARCHETYPES[key];
+    return !a.faction || a.faction === selectedFaction;
+  });
+
+  if (availableKeys.indexOf(selectedArch) === -1 && availableKeys.length > 0) {
+    selectedArch = availableKeys[0];
+  }
+
+  availableKeys.forEach(function(key) {
     var a = ARCHETYPES[key];
     var displayName = selectedFaction === 'fury' ? a.furyName : a.lightName;
     var raceName = selectedFaction === 'fury' ? a.raceFury : a.raceLight;
@@ -152,7 +168,7 @@ function renderClassGrid() {
     card.innerHTML =
       '<div class="class-icon" style="background:' + a.armorColor + '; border:2px solid ' + a.trimColor + ';">' + a.icon + '</div>' +
       '<h3 style="color:' + a.color + ';">' + displayName + '</h3>' +
-      '<div class="sub-race">' + raceName + ' • ' + (a.range > 150 ? 'Longe' : 'Perto') + '</div>' +
+      '<div class="sub-race">' + raceName + ' • ' + (a.range > 180 ? 'Longe' : (a.range > 130 ? 'Médio' : 'Perto')) + '</div>' +
       '<div class="auto-stat">' + a.autoStatLabel + '</div>';
     grid.appendChild(card);
   });
@@ -163,7 +179,7 @@ function renderClassGrid() {
 function renderClassPreviewCard() {
   var box = document.getElementById('class-preview-card');
   if (!box) return;
-  var a = ARCHETYPES[selectedArch];
+  var a = ARCHETYPES[selectedArch] || ARCHETYPES.solar_guard;
   var isFury = selectedFaction === 'fury';
   var displayName = isFury ? a.furyName : a.lightName;
   var raceName = isFury ? a.raceFury : a.raceLight;
@@ -194,7 +210,7 @@ function renderClassPreviewCard() {
       '</div>' +
     '</div>' +
     '<div>' +
-      '<div style="font-size:0.68rem; color:#fbbf24; font-weight:bold; text-transform:uppercase; margin-top:6px;">6 Habilidades Principais da Classe:</div>' +
+      '<div style="font-size:0.68rem; color:#fbbf24; font-weight:bold; text-transform:uppercase; margin-top:6px;">6 Habilidades Exclusivas da Classe:</div>' +
       '<div class="preview-skills-strip">' + skillsHtml + '</div>' +
     '</div>';
 }
@@ -230,7 +246,7 @@ function renderSlotsGrid() {
         '<div style="font-weight:bold; font-size:0.86rem;">Slot ' + (i + 1) + ' — Vazio</div>' +
         '<div style="font-size:0.72rem; margin-top:2px;">Clique para criar um novo personagem</div>';
     } else {
-      var arch = ARCHETYPES[hero.archKey] || ARCHETYPES.fighter;
+      var arch = ARCHETYPES[hero.archKey] || ARCHETYPES.solar_guard;
       var cName = getArchetypeDisplayName(hero.archKey, hero.faction);
       var facLabel = hero.faction === 'fury' ? '🔥 Dark' : '☀️ Light';
       var power = calculateHeroPower(hero);
@@ -292,24 +308,31 @@ function createHero() {
   }
 
   var arch = ARCHETYPES[selectedArch];
+  var starterNames = {
+    solar_guard:       'Machados Solares Iniciais',
+    storm_valkyrie:    'Lança-Espada Inicial',
+    telluric_colossus: 'Orbe Solar Telúrico Inicial',
+    crystal_seraph:    'Foco de Cristal Inicial',
+    spectral_reaper:   'Lâminas Espectrais Iniciais',
+    abyssal_scourge:   'Chicote Abissal Inicial',
+    royal_lich:        'Cajado de Garra Inicial',
+    glacial_lich:      'Cetro Glacial Inicial'
+  };
+
   var starterWeapon = {
     id: 'start_w_' + Date.now(),
-    name: selectedArch === 'defender' ? 'Espada Inicial do Guardião' :
-          selectedArch === 'archer'   ? 'Arco Inicial de Caça' :
-          selectedArch === 'mage'     ? 'Cajado Inicial Arcano' :
-          selectedArch === 'priest'   ? 'Cetro Inicial da Luz' :
-          selectedArch === 'ranger'   ? 'Adagas Iniciais' : 'Espada Bastarda Inicial',
+    name: starterNames[selectedArch] || 'Arma Inicial de Teos',
     slot: 'weapon',
     icon: arch.icon,
-    wType: arch.weaponRuleLabel.split(',')[0],
-    is2H: selectedArch !== 'defender',
+    wType: arch.weaponRuleLabel.split('&')[0].trim(),
+    is2H: selectedArch !== 'solar_guard',
     reqArch: [selectedArch],
     rarity: 'nobre',
     plus: 0,
     element: 'none',
     sockets: [null, null],
-    physAtk: arch.atkStyle === 'phys' ? 14 : 0,
-    magAtk:  arch.atkStyle === 'magic' ? 14 : 0,
+    physAtk: arch.atkStyle === 'phys' ? 15 : 0,
+    magAtk:  arch.atkStyle === 'magic' ? 15 : 0,
     sellPrice: 15
   };
 
@@ -319,21 +342,21 @@ function createHero() {
     cape: null, amulet: null, ring1: null, ring2: null, loop1: null, loop2: null, mount: null
   };
 
-  if (selectedArch === 'defender') {
+  if (selectedArch === 'solar_guard') {
     equipObj.shield = {
       id: 'start_sh_' + Date.now(),
-      name: 'Escudo de Treino do Defensor',
+      name: 'Escudo Solar de Treino',
       slot: 'shield',
       icon: '🛡️',
-      wType: 'Escudo Torre',
-      reqArch: ['defender'],
+      wType: 'Escudo Solar',
+      reqArch: ['solar_guard'],
       rarity: 'nobre',
       plus: 0,
       element: 'none',
       sockets: [null, null],
-      physDef: 12,
-      magDef: 10,
-      blockChance: 12,
+      physDef: 14,
+      magDef: 11,
+      blockChance: 14,
       sellPrice: 15
     };
   }
@@ -351,7 +374,7 @@ function createHero() {
     deaths: 0,
     freePts: 9,
     allocStats: { str: 0, dex: 0, rec: 0, int: 0, wis: 0, luc: 0 },
-    hp: 200, mp: 120, sp: 120,
+    hp: 240, mp: 140, sp: 140,
     x: 520, y: 520,
     tx: 520, ty: 520,
     facing: 1,
@@ -377,6 +400,9 @@ function createHero() {
 function startWithSlot(idx) {
   var slots = loadSlots();
   if (!slots[idx]) return;
+  if (!ARCHETYPES[slots[idx].archKey]) {
+    slots[idx].archKey = slots[idx].faction === 'fury' ? 'spectral_reaper' : 'solar_guard';
+  }
   currentSlotIdx = idx;
   player = slots[idx];
 
@@ -417,7 +443,7 @@ function returnToCharSelect() {
   renderSlotsGrid();
 }
 
-// ================= CÁLCULO DE STATUS, PODER E ELEMENTOS =================
+// ================= CÁLCULO DE STATUS (ESTILO SHAIYA), PODER E ELEMENTOS =================
 function getItemPowerScore(item) {
   if (!item) return 0;
   var rMult = (RARITIES[item.rarity] ? RARITIES[item.rarity].mult : 1);
@@ -448,7 +474,7 @@ function calculateHeroPower(heroObj) {
 }
 
 function getPlayerDerivedStats() {
-  var arch = ARCHETYPES[player.archKey];
+  var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
   var total = {
     str: arch.baseStats.str + (player.allocStats.str || 0),
     dex: arch.baseStats.dex + (player.allocStats.dex || 0),
@@ -513,12 +539,18 @@ function getPlayerDerivedStats() {
     total.int += rkBonus; total.wis += rkBonus; total.luc += rkBonus;
   }
 
-  var maxHp = 150 + player.lvl * 32 + total.rec * 14;
-  var maxMp = 80  + player.lvl * 18 + total.wis * 11;
+  // Escalonamento estilo Shaiya por papel da classe
+  var isTank = (player.archKey === 'solar_guard' || player.archKey === 'telluric_colossus');
+  var isCaster = (arch.atkStyle === 'magic');
+  var hpPerRec = isTank ? 18 : (isCaster ? 12 : 14);
+  var mpPerWis = isCaster ? 15 : 10;
+
+  var maxHp = 150 + player.lvl * (isTank ? 38 : 30) + total.rec * hpPerRec;
+  var maxMp = 80  + player.lvl * (isCaster ? 22 : 15) + total.wis * mpPerWis;
   var maxSp = 80  + player.lvl * 18 + total.dex * 9;
 
-  var physAtk = Math.round(total.str * 2.4 + total.dex * 0.7 + eqPhysAtk);
-  var magAtk  = Math.round(total.int * 2.6 + total.wis * 0.8 + eqMagAtk);
+  var physAtk = Math.round(total.str * 2.4 + total.dex * 0.75 + eqPhysAtk);
+  var magAtk  = Math.round(total.int * 2.6 + total.wis * 0.85 + eqMagAtk);
   var physDef = Math.round(total.rec * 1.9 + total.dex * 0.5 + eqPhysDef);
   var magDef  = Math.round(total.wis * 2.0 + total.rec * 0.6 + eqMagDef);
 
@@ -527,12 +559,15 @@ function getPlayerDerivedStats() {
     if (b.id === 'def') { physDef = Math.round(physDef * 1.40); magDef = Math.round(magDef * 1.40); }
   });
 
-  var critChance = Math.min(75, Math.round(5 + total.luc * 0.45));
-  var evaChance  = Math.min(60, Math.round(4 + total.dex * 0.35));
+  var critChance = Math.min(75, Math.round(5 + total.luc * 0.48));
+  var evaChance  = Math.min(60, Math.round(4 + total.dex * 0.38));
   player.buffs.forEach(function(b) {
     if (b.id === 'crit') critChance = Math.min(85, critChance + 25);
     if (b.id === 'eva')  evaChance  = Math.min(75, evaChance + 25);
   });
+
+  var baseSpeed = (player.archKey === 'storm_valkyrie' || player.archKey === 'spectral_reaper') ? 232 :
+                  (player.archKey === 'telluric_colossus' ? 198 : 215);
 
   return {
     stats: total,
@@ -541,7 +576,7 @@ function getPlayerDerivedStats() {
     physDef: physDef, magDef: magDef,
     absDamage: absDamage,
     cdrPct: Math.min(50, cdrPct),
-    moveSpeed: 215 + moveBonus,
+    moveSpeed: baseSpeed + moveBonus,
     critChance: critChance,
     evaChance: evaChance,
     blockChance: Math.min(45, blockChance),
@@ -604,11 +639,11 @@ function spawnOneMonster(seedIdx) {
   });
 }
 
-// ================= COMBATE, SKILLS & ELEMENTOS =================
+// ================= COMBATE, SKILLS & EFEITOS VISUAIS DAS 8 CLASSES =================
 function buildSkillDock() {
   var dock = document.getElementById('skill-dock');
   dock.innerHTML = '';
-  var arch = ARCHETYPES[player.archKey];
+  var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
 
   arch.skills.forEach(function(sk, i) {
     var slot = document.createElement('div');
@@ -676,9 +711,21 @@ function findNearestMonster() {
   return best;
 }
 
+function spawnSkillVFX(x, y, sk, isSelf) {
+  vfxList.push({
+    x: x,
+    y: y,
+    r: isSelf ? 16 : 14,
+    maxR: isSelf ? 90 : (sk.aoe ? 140 : 72),
+    color: sk.color,
+    vfxType: sk.vfx || 'ring',
+    alpha: 0.95
+  });
+}
+
 function useClassSkill(idx) {
   if (!player || player.hp <= 0) return;
-  var arch = ARCHETYPES[player.archKey];
+  var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
   var sk = arch.skills[idx];
   if (!sk) return;
 
@@ -696,6 +743,7 @@ function useClassSkill(idx) {
   var st = getPlayerDerivedStats();
   var target = getSelectedTarget();
 
+  // Habilidades de Buff / Aura / Autocura (range === 0)
   if (sk.range === 0) {
     if (sk.res === 'mp') player.mp -= sk.cost; else player.sp -= sk.cost;
     skillCooldowns[idx] = sk.cd * (1 - st.cdrPct / 100);
@@ -711,7 +759,7 @@ function useClassSkill(idx) {
       player.buffs.push({ id: sk.buff.id, label: sk.buff.label, timer: sk.buff.dur });
       addFloatingText(player.x, player.y - 56, sk.buff.label, '#fde047');
     }
-    vfxList.push({ x: player.x, y: player.y, r: 15, maxR: 85, color: sk.color, alpha: 0.9 });
+    spawnSkillVFX(player.x, player.y, sk, true);
     updateAllHUD();
     return;
   }
@@ -742,6 +790,13 @@ function useClassSkill(idx) {
     player.ty = player.y;
   }
 
+  // Cura secundária em habilidades ofensivas (ex: Sifão de Vitalidade, Julgamento do Zênite, Supernova Telúrica)
+  if (sk.heal) {
+    var secondaryHeal = Math.round(st.maxHp * sk.heal);
+    player.hp = Math.min(st.maxHp, player.hp + secondaryHeal);
+    addFloatingText(player.x, player.y - 46, '+' + secondaryHeal + ' HP', '#34d399');
+  }
+
   var basePower = arch.atkStyle === 'magic' ? st.magAtk : st.physAtk;
   var elemMult = getElementMultiplier(st.atkElem, target.elem);
   var isCrit = (Math.random() * 100) < st.critChance;
@@ -749,7 +804,7 @@ function useClassSkill(idx) {
   var targetsHit = [target];
   if (sk.aoe) {
     monsters.forEach(function(m) {
-      if (m.id !== target.id && m.hp > 0 && Math.hypot(m.x - target.x, m.y - target.y) <= 135) {
+      if (m.id !== target.id && m.hp > 0 && Math.hypot(m.x - target.x, m.y - target.y) <= 140) {
         targetsHit.push(m);
       }
     });
@@ -761,10 +816,18 @@ function useClassSkill(idx) {
     applyDamageToMonster(t, rawDmg, isCrit, elemMult, sk);
   });
 
-  if (sk.proj) {
-    projectiles.push({ x: player.x, y: player.y - 14, tx: target.x, ty: target.y - 14, color: sk.color, life: 0.25 });
+  if (sk.proj || sk.vfx === 'abyss_whip' || sk.vfx === 'abyss_pull' || sk.vfx === 'telluric_beam') {
+    projectiles.push({
+      x: player.x,
+      y: player.y - 14,
+      tx: target.x,
+      ty: target.y - 14,
+      color: sk.color,
+      vfxType: sk.vfx || 'beam',
+      life: 0.28
+    });
   }
-  vfxList.push({ x: target.x, y: target.y, r: 12, maxR: sk.aoe ? 130 : 65, color: sk.color, alpha: 0.95 });
+  spawnSkillVFX(target.x, target.y, sk, false);
   updateAllHUD();
 }
 
@@ -993,8 +1056,9 @@ function switchBagPage(p) {
 function renderInventoryWindow() {
   if (!player) return;
   var st = getPlayerDerivedStats();
+  var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
   document.getElementById('bag-gold-lbl').textContent = player.gold;
-  document.getElementById('pd-hero-ico').textContent = ARCHETYPES[player.archKey].icon;
+  document.getElementById('pd-hero-ico').textContent = arch.icon;
   document.getElementById('pd-hero-name').textContent = player.name;
   document.getElementById('pd-hero-br').textContent = 'Poder: ' + st.power;
 
@@ -1410,7 +1474,7 @@ function showSmithBanner(msg, ok) {
   b.textContent = msg;
 }
 
-// ================= LOJA EXCLUSIVA: PACKS DEUSA POR CLASSE, MONTARIAS & LAPIS =================
+// ================= LOJA EXCLUSIVA: PACKS DEUSA DAS 8 CLASSES, MONTARIAS & LAPIS =================
 function switchShopCat(cat) {
   shopCategory = cat;
   ['sets', 'mounts', 'lapis', 'elem'].forEach(function(c) {
@@ -1570,11 +1634,11 @@ function buyGoddessClassPack(archKey) {
   if (pack.includeGoddessShield) {
     player.bag.push({
       id: 'goddess_sh_' + Math.random().toString(36).slice(2, 7),
-      name: 'Escudo Deusa da Égide Imortal',
+      name: 'Escudo Deusa do Bastião Solar',
       slot: 'shield',
       icon: '🛡️',
       wType: 'Escudo Deusa',
-      reqArch: ['defender'],
+      reqArch: ['solar_guard'],
       rarity: 'deusa',
       plus: 0,
       element: 'none',
@@ -1785,7 +1849,7 @@ function addFloatingText(x, y, text, color) {
 function updateAllHUD() {
   if (!player) return;
   var st = getPlayerDerivedStats();
-  var arch = ARCHETYPES[player.archKey];
+  var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
 
   document.getElementById('hud-portrait').firstChild.textContent = arch.icon;
   document.getElementById('hud-lvl').textContent = 'Nv.' + player.lvl;
@@ -1916,7 +1980,7 @@ function updateSimulation(dt) {
     var tgt = getSelectedTarget() || findNearestMonster();
     if (tgt) {
       selectedTargetId = tgt.id;
-      var archRange = ARCHETYPES[player.archKey].range;
+      var archRange = (ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard).range;
       var distToTgt = Math.hypot(tgt.x - player.x, tgt.y - player.y);
       if (distToTgt > archRange - 10) {
         player.tx = tgt.x;
@@ -1984,8 +2048,8 @@ function updateSimulation(dt) {
     if (projectiles[p].life <= 0) projectiles.splice(p, 1);
   }
   for (var v = vfxList.length - 1; v >= 0; v--) {
-    vfxList[v].r += 240 * dt;
-    vfxList[v].alpha -= 2.2 * dt;
+    vfxList[v].r += 250 * dt;
+    vfxList[v].alpha -= 2.1 * dt;
     if (vfxList[v].alpha <= 0) vfxList.splice(v, 1);
   }
   for (var f = floatingTexts.length - 1; f >= 0; f--) {
@@ -2081,7 +2145,7 @@ function renderWorld() {
     ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48 * (m.hp / m.maxHp), 5);
   });
 
-  var arch = ARCHETYPES[player.archKey];
+  var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
   ctx.fillStyle = 'rgba(0,0,0,0.48)';
   ctx.beginPath(); ctx.ellipse(player.x, player.y + 18, 24, 9, 0, 0, Math.PI * 2); ctx.fill();
 
@@ -2111,18 +2175,75 @@ function renderWorld() {
   ctx.fillStyle = '#fde047';
   ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
 
+  // Renderização de Projéteis, Feixes Solares e Chicotes Abissais
   projectiles.forEach(function(p) {
+    ctx.save();
     ctx.strokeStyle = p.color;
-    ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.tx, p.ty); ctx.stroke();
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 10;
+    ctx.lineWidth = (p.vfxType === 'telluric_beam') ? 7 : 4;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    if (p.vfxType === 'abyss_whip' || p.vfxType === 'abyss_pull') {
+      var midX = (p.x + p.tx) / 2;
+      var midY = (p.y + p.ty) / 2 - 28;
+      ctx.quadraticCurveTo(midX, midY, p.tx, p.ty);
+    } else {
+      ctx.lineTo(p.tx, p.ty);
+    }
+    ctx.stroke();
+    ctx.restore();
   });
 
+  // Renderização dos Efeitos Visuais Específicos das 48 Skills
   vfxList.forEach(function(v) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, v.alpha);
     ctx.strokeStyle = v.color;
+    ctx.fillStyle = v.color;
+    ctx.shadowColor = v.color;
+    ctx.shadowBlur = 12;
     ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2); ctx.stroke();
+
+    var t = v.vfxType || '';
+    if (t.indexOf('reaper') !== -1) {
+      // Cortes em X e foices espectrais
+      ctx.beginPath();
+      ctx.moveTo(v.x - v.r * 0.7, v.y - v.r * 0.7);
+      ctx.lineTo(v.x + v.r * 0.7, v.y + v.r * 0.7);
+      ctx.moveTo(v.x + v.r * 0.7, v.y - v.r * 0.7);
+      ctx.lineTo(v.x - v.r * 0.7, v.y + v.r * 0.7);
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.85, 0, Math.PI * 2); ctx.stroke();
+    } else if (t.indexOf('storm') !== -1) {
+      // Raios zigue-zague celestes
+      ctx.beginPath();
+      ctx.moveTo(v.x, v.y - v.r);
+      ctx.lineTo(v.x - 14, v.y - v.r * 0.3);
+      ctx.lineTo(v.x + 14, v.y + v.r * 0.2);
+      ctx.lineTo(v.x, v.y + v.r * 0.6);
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.8, 0, Math.PI * 2); ctx.stroke();
+    } else if (t.indexOf('crystal') !== -1 || t.indexOf('glacial') !== -1) {
+      // Estilhaços de cristal / estrelas de gelo
+      for (var k = 0; k < 6; k++) {
+        var ang = (k * Math.PI) / 3;
+        ctx.beginPath();
+        ctx.moveTo(v.x, v.y);
+        ctx.lineTo(v.x + Math.cos(ang) * v.r * 0.9, v.y + Math.sin(ang) * v.r * 0.9);
+        ctx.stroke();
+      }
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.65, 0, Math.PI * 2); ctx.stroke();
+    } else if (t.indexOf('lich') !== -1 || t.indexOf('abyss') !== -1) {
+      // Vórtice sombrio / espiral abissal
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.55, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      // Ondas solares e telúricas
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = Math.max(0, v.alpha * 0.22);
+      ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.7, 0, Math.PI * 2); ctx.fill();
+    }
     ctx.restore();
   });
 
