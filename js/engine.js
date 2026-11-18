@@ -146,6 +146,7 @@ function selectArch(archKey) {
 
 function renderClassGrid() {
   var grid = document.getElementById('class-grid');
+  if (!grid || typeof ARCHETYPES === 'undefined') return;
   grid.innerHTML = '';
 
   var availableKeys = Object.keys(ARCHETYPES).filter(function(key) {
@@ -178,7 +179,7 @@ function renderClassGrid() {
 
 function renderClassPreviewCard() {
   var box = document.getElementById('class-preview-card');
-  if (!box) return;
+  if (!box || typeof ARCHETYPES === 'undefined') return;
   var a = ARCHETYPES[selectedArch] || ARCHETYPES.solar_guard;
   var isFury = selectedFaction === 'fury';
   var displayName = isFury ? a.furyName : a.lightName;
@@ -218,6 +219,7 @@ function renderClassPreviewCard() {
 function renderSlotsGrid() {
   var slots = loadSlots();
   var grid = document.getElementById('slots-grid');
+  if (!grid) return;
   grid.innerHTML = '';
 
   var occupiedCount = slots.filter(function(s) { return s !== null; }).length;
@@ -319,7 +321,10 @@ function createHero() {
     glacial_lich:      'Cetro Glacial Inicial'
   };
 
-  var startWStats = buildClassBonusStats(selectedArch, 1, 1.25, 1.0);
+  var startWStats = (typeof buildClassBonusStats === 'function')
+    ? buildClassBonusStats(selectedArch, 1, 1.25, 1.0)
+    : { bonusStr: 2, bonusDex: 2, bonusRec: 2, bonusInt: 2, bonusWis: 2, bonusLuc: 2 };
+
   var starterWeapon = {
     id: 'start_w_' + Date.now(),
     name: starterNames[selectedArch] || 'Arma Inicial de Teos',
@@ -350,7 +355,10 @@ function createHero() {
   };
 
   if (selectedArch === 'solar_guard') {
-    var startShStats = buildClassBonusStats('solar_guard', 1, 1.25, 0.9);
+    var startShStats = (typeof buildClassBonusStats === 'function')
+      ? buildClassBonusStats('solar_guard', 1, 1.25, 0.9)
+      : { bonusStr: 2, bonusDex: 0, bonusRec: 3, bonusInt: 0, bonusWis: 1, bonusLuc: 0 };
+
     equipObj.shield = {
       id: 'start_sh_' + Date.now(),
       name: 'Escudo Solar de Treino',
@@ -410,6 +418,7 @@ function createHero() {
   nameInput.value = '';
   startWithSlot(emptyIdx);
 }
+
 function startWithSlot(idx) {
   var slots = loadSlots();
   if (!slots[idx]) return;
@@ -552,7 +561,6 @@ function getPlayerDerivedStats() {
     total.int += rkBonus; total.wis += rkBonus; total.luc += rkBonus;
   }
 
-  // Escalonamento estilo Shaiya por papel da classe
   var isTank = (player.archKey === 'solar_guard' || player.archKey === 'telluric_colossus');
   var isCaster = (arch.atkStyle === 'magic');
   var hpPerRec = isTank ? 18 : (isCaster ? 12 : 14);
@@ -756,7 +764,6 @@ function useClassSkill(idx) {
   var st = getPlayerDerivedStats();
   var target = getSelectedTarget();
 
-  // Habilidades de Buff / Aura / Autocura (range === 0)
   if (sk.range === 0) {
     if (sk.res === 'mp') player.mp -= sk.cost; else player.sp -= sk.cost;
     skillCooldowns[idx] = sk.cd * (1 - st.cdrPct / 100);
@@ -803,7 +810,6 @@ function useClassSkill(idx) {
     player.ty = player.y;
   }
 
-  // Cura secundária em habilidades ofensivas (ex: Sifão de Vitalidade, Julgamento do Zênite, Supernova Telúrica)
   if (sk.heal) {
     var secondaryHeal = Math.round(st.maxHp * sk.heal);
     player.hp = Math.min(st.maxHp, player.hp + secondaryHeal);
@@ -1691,52 +1697,6 @@ function buyGoddessClassPack(archKey) {
   updateAllHUD();
 }
 
-  var w = pack.weaponTemplate;
-  player.bag.push({
-    id: 'goddess_w_' + Math.random().toString(36).slice(2, 7),
-    name: w.name,
-    slot: 'weapon',
-    icon: w.icon,
-    wType: w.wType,
-    is2H: w.is2H,
-    reqArch: [archKey],
-    rarity: 'deusa',
-    plus: 0,
-    element: 'none',
-    sockets: [null, null, null, null, null, null],
-    physAtk: w.style === 'phys' ? w.baseAtk * 3 : 0,
-    magAtk:  w.style === 'magic' ? w.baseAtk * 3 : 0,
-    bonusStr: pack.stats.str || 0,
-    bonusInt: pack.stats.int || 0,
-    sellPrice: 400
-  });
-
-  if (pack.includeGoddessShield) {
-    player.bag.push({
-      id: 'goddess_sh_' + Math.random().toString(36).slice(2, 7),
-      name: 'Escudo Deusa do Bastião Solar',
-      slot: 'shield',
-      icon: '🛡️',
-      wType: 'Escudo Deusa',
-      reqArch: ['solar_guard'],
-      rarity: 'deusa',
-      plus: 0,
-      element: 'none',
-      sockets: [null, null, null, null, null, null],
-      physDef: 58,
-      magDef: 52,
-      blockChance: 28,
-      bonusRec: 35,
-      sellPrice: 380
-    });
-  }
-
-  showShopBanner('👑 ' + pack.title + ' entregue na sua mochila! (Exclusivo para ' + pack.classLabel + ')', true);
-  saveCurrentHero();
-  renderShopWindow();
-  updateAllHUD();
-}
-
 function buyExclusiveMount(mntId) {
   var mnt = EXCLUSIVE_MOUNTS.find(function(m) { return m.id === mntId; });
   if (!mnt) return;
@@ -2255,7 +2215,6 @@ function renderWorld() {
   ctx.fillStyle = '#fde047';
   ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
 
-  // Renderização de Projéteis, Feixes Solares e Chicotes Abissais
   projectiles.forEach(function(p) {
     ctx.save();
     ctx.strokeStyle = p.color;
@@ -2275,7 +2234,6 @@ function renderWorld() {
     ctx.restore();
   });
 
-  // Renderização dos Efeitos Visuais Específicos das 48 Skills
   vfxList.forEach(function(v) {
     ctx.save();
     ctx.globalAlpha = Math.max(0, v.alpha);
@@ -2287,7 +2245,6 @@ function renderWorld() {
 
     var t = v.vfxType || '';
     if (t.indexOf('reaper') !== -1) {
-      // Cortes em X e foices espectrais
       ctx.beginPath();
       ctx.moveTo(v.x - v.r * 0.7, v.y - v.r * 0.7);
       ctx.lineTo(v.x + v.r * 0.7, v.y + v.r * 0.7);
@@ -2296,7 +2253,6 @@ function renderWorld() {
       ctx.stroke();
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.85, 0, Math.PI * 2); ctx.stroke();
     } else if (t.indexOf('storm') !== -1) {
-      // Raios zigue-zague celestes
       ctx.beginPath();
       ctx.moveTo(v.x, v.y - v.r);
       ctx.lineTo(v.x - 14, v.y - v.r * 0.3);
@@ -2305,7 +2261,6 @@ function renderWorld() {
       ctx.stroke();
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.8, 0, Math.PI * 2); ctx.stroke();
     } else if (t.indexOf('crystal') !== -1 || t.indexOf('glacial') !== -1) {
-      // Estilhaços de cristal / estrelas de gelo
       for (var k = 0; k < 6; k++) {
         var ang = (k * Math.PI) / 3;
         ctx.beginPath();
@@ -2315,11 +2270,9 @@ function renderWorld() {
       }
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.65, 0, Math.PI * 2); ctx.stroke();
     } else if (t.indexOf('lich') !== -1 || t.indexOf('abyss') !== -1) {
-      // Vórtice sombrio / espiral abissal
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2); ctx.stroke();
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.55, 0, Math.PI * 2); ctx.stroke();
     } else {
-      // Ondas solares e telúricas
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r, 0, Math.PI * 2); ctx.stroke();
       ctx.globalAlpha = Math.max(0, v.alpha * 0.22);
       ctx.beginPath(); ctx.arc(v.x, v.y, v.r * 0.7, 0, Math.PI * 2); ctx.fill();
