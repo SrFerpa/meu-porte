@@ -1,17 +1,31 @@
-// ================= CONFIGURAÇÃO CENTRAL DE SPRITES (CLASSES, MOBS & BOSSES) =================
+// ================= CONFIGURAÇÃO CENTRAL DE SPRITES (8 CLASSES, MOBS & BOSSES) =================
+function buildClassSpriteConfig(prefix, drawHeight) {
+  return {
+    drawHeight: drawHeight || 150,
+    flipFacing: false,
+    removeCheckerboard: true,
+    anims: {
+      idle:   { src: 'assets/' + prefix + '_IDLE.PNG',   fallbackSrc: 'assets/LUT_IDLE.PNG',   cols: 4, rows: 1, frames: 4, fps: 8,  loop: true },
+      run:    { src: 'assets/' + prefix + '_RUN.PNG',    fallbackSrc: 'assets/LUT_RUN.PNG',    cols: 6, rows: 1, frames: 6, fps: 12, loop: true },
+      attack: { src: 'assets/' + prefix + '_ATTACK.PNG', fallbackSrc: 'assets/LUT_ATTACK.PNG', cols: 6, rows: 1, frames: 6, fps: 16, loop: false },
+      hurt:   { src: 'assets/' + prefix + '_HIT.PNG',    fallbackSrc: 'assets/LUT_HIT.PNG',    cols: 4, rows: 1, frames: 4, fps: 10, loop: false }
+    }
+  };
+}
+
 var SPRITE_SHEETS_CONFIG = {
   classes: {
-    fighter: {
-      drawHeight: 150,
-      flipFacing: false,
-      removeCheckerboard: true, // Remove automaticamente o fundo quadriculado cinza/preto
-      anims: {
-        idle:   { src: 'assets/LUT_IDLE.PNG',   cols: 4, rows: 1, frames: 4, fps: 8,  loop: true },
-        run:    { src: 'assets/LUT_RUN.PNG',    cols: 6, rows: 1, frames: 6, fps: 12, loop: true },
-        attack: { src: 'assets/LUT_ATTACK.PNG', cols: 6, rows: 1, frames: 6, fps: 16, loop: false },
-        hurt:   { src: 'assets/LUT_HIT.PNG',    cols: 4, rows: 1, frames: 4, fps: 10, loop: false }
-      }
-    }
+    // Aliança da Luz (Light)
+    solar_guard:       buildClassSpriteConfig('SOLAR_GUARD', 152),
+    storm_valkyrie:    buildClassSpriteConfig('STORM_VALKYRIE', 150),
+    telluric_colossus: buildClassSpriteConfig('TELLURIC_COLOSSUS', 164),
+    crystal_seraph:    buildClassSpriteConfig('CRYSTAL_SERAPH', 150),
+
+    // União da Fúria (Dark)
+    spectral_reaper:   buildClassSpriteConfig('SPECTRAL_REAPER', 150),
+    abyssal_scourge:   buildClassSpriteConfig('ABYSSAL_SCOURGE', 152),
+    royal_lich:        buildClassSpriteConfig('ROYAL_LICH', 152),
+    glacial_lich:      buildClassSpriteConfig('GLACIAL_LICH', 150)
   },
   mobs: {}
 };
@@ -29,7 +43,6 @@ function stripCheckerboardToCanvas(img) {
   var imgData = ctx.getImageData(0, 0, w, h);
   var data = imgData.data;
 
-  // Coleta amostras dos quadrados claros e escuros do fundo nas bordas superiores
   var bgSamples = [];
   var sampleStep = Math.max(1, Math.floor(w / 80));
   for (var x = 0; x < w; x += sampleStep) {
@@ -37,7 +50,6 @@ function stripCheckerboardToCanvas(img) {
       var idx = (y * w + x) * 4;
       var r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
       if (a === 0) continue;
-      // Verifica se é tom neutro (cinza/preto típico de quadriculado)
       var maxDiff = Math.max(Math.abs(r - g), Math.abs(g - b), Math.abs(r - b));
       if (maxDiff <= 14 && r < 140) {
         var alreadyAdded = bgSamples.some(function(s) {
@@ -50,7 +62,6 @@ function stripCheckerboardToCanvas(img) {
 
   if (bgSamples.length === 0) return img;
 
-  // Usa Flood Fill a partir de toda a borda externa para apagar só o fundo (sem furar o personagem)
   var visited = new Uint8Array(w * h);
   var stack = [];
 
@@ -83,7 +94,7 @@ function stripCheckerboardToCanvas(img) {
 
     var pIdx = pos * 4;
     if (isBgColor(pIdx)) {
-      data[pIdx + 3] = 0; // Aplica transparência real
+      data[pIdx + 3] = 0;
       var px = pos % w;
       var py = (pos / w) | 0;
       if (px > 0) stack.push(pos - 1);
@@ -100,10 +111,12 @@ function stripCheckerboardToCanvas(img) {
 // ================= MOTOR LEVE DE PRÉ-CARREGAMENTO E DESENHO DE SPRITES =================
 var LOADED_SPRITE_IMAGES = {};
 
-function registerSpriteImage(cacheKey, src, cfg) {
+function registerSpriteImage(cacheKey, src, cfg, fallbackSrc) {
   if (!src || LOADED_SPRITE_IMAGES[cacheKey]) return;
   var img = new Image();
   var entry = { source: img, loaded: false, cfg: cfg, autoCols: 1 };
+  var triedFallback = false;
+
   img.onload = function() {
     entry.source = cfg.removeCheckerboard ? stripCheckerboardToCanvas(img) : img;
     if (img.naturalHeight > 0 && img.naturalWidth >= img.naturalHeight) {
@@ -112,7 +125,10 @@ function registerSpriteImage(cacheKey, src, cfg) {
     entry.loaded = true;
   };
   img.onerror = function() {
-    console.warn('Sprite não encontrado:', src);
+    if (!triedFallback && fallbackSrc && fallbackSrc !== src) {
+      triedFallback = true;
+      img.src = fallbackSrc;
+    }
   };
   img.src = src;
   LOADED_SPRITE_IMAGES[cacheKey] = entry;
@@ -124,11 +140,11 @@ function preloadAllConfiguredSprites() {
     Object.keys(dict).forEach(function(key) {
       var cfg = dict[key];
       if (!cfg) return;
-      if (cfg.src) registerSpriteImage(group + ':' + key, cfg.src, cfg);
+      if (cfg.src) registerSpriteImage(group + ':' + key, cfg.src, cfg, cfg.fallbackSrc);
       if (cfg.anims) {
         Object.keys(cfg.anims).forEach(function(animName) {
           var a = cfg.anims[animName];
-          if (a && a.src) registerSpriteImage(group + ':' + key + ':' + animName, a.src, cfg);
+          if (a && a.src) registerSpriteImage(group + ':' + key + ':' + animName, a.src, cfg, a.fallbackSrc);
         });
       }
     });
