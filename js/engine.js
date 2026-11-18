@@ -746,6 +746,18 @@ function spawnSkillVFX(x, y, sk, isSelf) {
 
 function useClassSkill(idx) {
   if (!player || player.hp <= 0) return;
+
+  if (typeof BossSkillsModule !== 'undefined') {
+    if (BossSkillsModule.hasDebuff('debuff_stun')) {
+      addFloatingText(player.x, player.y - 36, '💫 Atordoado!', '#eab308');
+      return;
+    }
+    if (BossSkillsModule.hasDebuff('debuff_silence')) {
+      addFloatingText(player.x, player.y - 36, '🔇 Silenciado!', '#a855f7');
+      return;
+    }
+  }
+
   var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
   var sk = arch.skills[idx];
   if (!sk) return;
@@ -1987,6 +1999,12 @@ function updateSimulation(dt) {
     if (player.buffs[b].timer <= 0) player.buffs.splice(b, 1);
   }
 
+  var effectiveSpeed = st.moveSpeed;
+  if (typeof BossSkillsModule !== 'undefined') {
+    if (BossSkillsModule.hasDebuff('debuff_stun')) effectiveSpeed = 0;
+    else if (BossSkillsModule.hasDebuff('debuff_slow')) effectiveSpeed *= 0.55;
+  }
+
   var vx = 0, vy = 0;
   if (keys['w'] || keys['arrowup'])    vy -= 1;
   if (keys['s'] || keys['arrowdown'])  vy += 1;
@@ -1997,8 +2015,8 @@ function updateSimulation(dt) {
   if (vx !== 0 || vy !== 0) {
     isMovingNow = true;
     var len = Math.hypot(vx, vy);
-    player.x = Math.max(60, Math.min(WORLD_SIZE - 60, player.x + (vx / len) * st.moveSpeed * dt));
-    player.y = Math.max(60, Math.min(WORLD_SIZE - 60, player.y + (vy / len) * st.moveSpeed * dt));
+    player.x = Math.max(60, Math.min(WORLD_SIZE - 60, player.x + (vx / len) * effectiveSpeed * dt));
+    player.y = Math.max(60, Math.min(WORLD_SIZE - 60, player.y + (vy / len) * effectiveSpeed * dt));
     player.tx = player.x;
     player.ty = player.y;
     if (vx !== 0) player.facing = vx > 0 ? 1 : -1;
@@ -2007,8 +2025,8 @@ function updateSimulation(dt) {
     var d = Math.hypot(dx, dy);
     if (d > 6) {
       isMovingNow = true;
-      player.x += (dx / d) * st.moveSpeed * dt;
-      player.y += (dy / d) * st.moveSpeed * dt;
+      player.x += (dx / d) * effectiveSpeed * dt;
+      player.y += (dy / d) * effectiveSpeed * dt;
       player.facing = dx >= 0 ? 1 : -1;
     }
   }
@@ -2082,6 +2100,10 @@ function updateSimulation(dt) {
       if (m.animState === 'attack' && m.animFrame >= 6) m.animState = 'idle';
     }
   });
+
+  if (typeof BossSkillsModule !== 'undefined') {
+    BossSkillsModule.update(dt);
+  }
 
   for (var p = projectiles.length - 1; p >= 0; p--) {
     projectiles[p].life -= dt;
