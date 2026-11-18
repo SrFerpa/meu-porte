@@ -3,11 +3,12 @@ var SPRITE_SHEETS_CONFIG = {
   classes: {
     fighter: {
       drawHeight: 150,
+      flipFacing: false, // Mude para true se o personagem olhar para o lado invertido ao andar
       anims: {
-        idle:   { src: 'assets/f6_greatwhitenorth_idle.png',   fps: 10 },
-        run:    { src: 'assets/f6_greatwhitenorth_run.png',    fps: 12 },
-        attack: { src: 'assets/f6_greatwhitenorth_attack.png', fps: 16 },
-        hurt:   { src: 'assets/f6_greatwhitenorth_hit.png',    fps: 10 }
+        idle:   { src: 'assets/LUT_IDLE.PNG',   cols: 4, rows: 1, frames: 4, fps: 8,  loop: true },
+        run:    { src: 'assets/LUT_RUN.PNG',    cols: 6, rows: 1, frames: 6, fps: 12, loop: true },
+        attack: { src: 'assets/LUT_ATTACK.PNG', cols: 6, rows: 1, frames: 6, fps: 16, loop: false },
+        hurt:   { src: 'assets/LUT_HIT.PNG',    cols: 4, rows: 1, frames: 4, fps: 10, loop: false }
       }
     }
   },
@@ -56,7 +57,9 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
   var cfg = (SPRITE_SHEETS_CONFIG[group] || {})[key];
   if (!cfg || !cfg.anims) return false;
 
-  var usedState = cfg.anims[animState] ? animState : 'idle';
+  // Aceita tanto 'hurt' quanto 'hit' caso alguma parte do jogo chame pelo nome antigo
+  var normalizedState = (animState === 'hit' && !cfg.anims.hit) ? 'hurt' : animState;
+  var usedState = cfg.anims[normalizedState] ? normalizedState : 'idle';
   var anim = cfg.anims[usedState];
   if (!anim) return false;
 
@@ -77,13 +80,19 @@ function drawConfiguredSprite(ctx, group, key, animState, frameIndex, x, y, faci
 
   var cellW = W / cols;
   var cellH = H / rows;
-  var colIdx = (anim.startCol || 0) + (frameIndex % totalFrames);
+
+  // Se loop for false (attack/hurt), trava no último frame em vez de reiniciar antes do estado mudar
+  var safeFrame = (anim.loop === false)
+    ? Math.min(frameIndex, totalFrames - 1)
+    : (frameIndex % totalFrames);
+
+  var colIdx = (anim.startCol || 0) + safeFrame;
   var rowIdx = anim.row || 0;
 
   var sx = colIdx * cellW;
   var sy = rowIdx * cellH;
 
-  var drawH = cfg.drawHeight || 150;
+  var drawH = anim.drawHeight || cfg.drawHeight || 150;
   var drawW = drawH * (cellW / cellH);
 
   ctx.save();
