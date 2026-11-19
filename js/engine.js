@@ -2037,14 +2037,8 @@ if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
   if (typeof player.tx !== 'number' || isNaN(player.tx)) player.tx = player.x;
   if (typeof player.ty !== 'number' || isNaN(player.ty)) player.ty = player.y;
   
-  var vx = 0, vy = 0;
-  if (keys['w'] || keys['arrowup'])    vy -= 1;
-  if (keys['s'] || keys['arrowdown'])  vy += 1;
-  if (keys['a'] || keys['arrowleft'])  vx -= 1;
-  if (keys['d'] || keys['arrowright']) vx += 1;
-
-  var isMovingNow = false;
-if (vx !== 0 || vy !== 0) {
+ var isMovingNow = false;
+  if (vx !== 0 || vy !== 0) {
     if (player.autoCombat) player.autoCombat = false;
     isMovingNow = true;
     var len = Math.hypot(vx, vy);
@@ -2053,8 +2047,6 @@ if (vx !== 0 || vy !== 0) {
     player.tx = player.x;
     player.ty = player.y;
     if (vx !== 0) player.facing = vx > 0 ? 1 : -1;
-  }
-  
   } else {
     var dx = player.tx - player.x, dy = player.ty - player.y;
     var d = Math.hypot(dx, dy);
@@ -2065,7 +2057,6 @@ if (vx !== 0 || vy !== 0) {
       player.facing = dx >= 0 ? 1 : -1;
     }
   }
-
   // Colisão sólida do jogador com árvores, rochas e estruturas
   if (typeof WorldSceneryModule !== 'undefined') {
     WorldSceneryModule.resolveCollision(player, 16);
