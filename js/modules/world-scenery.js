@@ -31,8 +31,10 @@ var WorldSceneryModule = (function () {
   function getFactionSpawn(faction) {
     var W = getMapSize();
     if (faction === 'fury') {
+      // Paroutian Fortress (Nordeste)
       return { x: Math.round(W * 0.75), y: Math.round(W * 0.25) };
     }
+    // Delphinian Fortress (Sudoeste)
     return { x: Math.round(W * 0.23), y: Math.round(W * 0.78) };
   }
 
@@ -52,8 +54,8 @@ var WorldSceneryModule = (function () {
 
   function buildMapGeometry(W) {
     bridges = [
-      { x: W * 0.495, y: W * 0.475, r: 72, angle: -0.65 },
-      { x: W * 0.145, y: W * 0.565, r: 64, angle: 0.35 }
+      { x: W * 0.495, y: W * 0.475, r: 72, angle: -0.65 }, // Ponte Central (Torre Vermelha)
+      { x: W * 0.145, y: W * 0.565, r: 64, angle: 0.35 }   // Ponte Oeste (Iron Blood)
     ];
 
     var riverPaths = [
@@ -107,18 +109,18 @@ var WorldSceneryModule = (function () {
   }
 
   function isOnRoadOrBase(x, y, margin, W) {
-    if (Math.hypot(x - W * 0.23, y - W * 0.78) < 220 + margin) return true;
-    if (Math.hypot(x - W * 0.75, y - W * 0.25) < 220 + margin) return true;
-    if (Math.hypot(x - W * 0.55, y - W * 0.46) < 150 + margin) return true;
+    if (Math.hypot(x - W * 0.23, y - W * 0.78) < 230 + margin) return true;
+    if (Math.hypot(x - W * 0.75, y - W * 0.25) < 230 + margin) return true;
+    if (Math.hypot(x - W * 0.55, y - W * 0.46) < 155 + margin) return true;
 
     var roadSegs = [
-      [0.10, 0.89, 0.23, 0.77],
-      [0.23, 0.77, 0.36, 0.66],
+      [0.10, 0.89, 0.23, 0.78],
+      [0.23, 0.78, 0.36, 0.66],
       [0.36, 0.66, 0.42, 0.53],
       [0.42, 0.53, 0.55, 0.46],
       [0.55, 0.46, 0.59, 0.35],
-      [0.59, 0.35, 0.75, 0.24],
-      [0.75, 0.24, 0.90, 0.08],
+      [0.59, 0.35, 0.75, 0.25],
+      [0.75, 0.25, 0.90, 0.08],
       [0.42, 0.53, 0.34, 0.49],
       [0.34, 0.49, 0.25, 0.51]
     ];
@@ -142,6 +144,7 @@ var WorldSceneryModule = (function () {
     buildMapGeometry(W);
     var rand = createSeededRandom(202609);
 
+    // 1. Muralha de Montanhas nas 4 bordas externas do mapa
     var step = 76;
     for (var bx = 40; bx <= W - 40; bx += step) {
       props.push({ x: bx, y: 40, kind: 'mountain', scale: 1.15, hitRadius: 42 });
@@ -152,6 +155,7 @@ var WorldSceneryModule = (function () {
       props.push({ x: W - 40, y: by, kind: 'mountain', scale: 1.15, hitRadius: 42 });
     }
 
+    // 2. Maciço Rochoso Norte
     var northMountains = [
       [0.41, 0.17], [0.44, 0.19], [0.40, 0.22], [0.44, 0.24], [0.38, 0.20]
     ];
@@ -165,15 +169,20 @@ var WorldSceneryModule = (function () {
       });
     }
 
+    // 3. Fortalezas com pátio 100% aberto + APENAS 1 torre lateral por base
+    // Delphinian Fortress (Sudoeste - Luz)
     props.push({ x: W * 0.23, y: W * 0.78, kind: 'fortress_light', scale: 1.0, hitRadius: 0 });
-    props.push({ x: W * 0.16, y: W * 0.66, kind: 'watchtower', scale: 1.0, hitRadius: 20 });
+    props.push({ x: W * 0.17, y: W * 0.73, kind: 'watchtower', scale: 1.0, hitRadius: 0 });
 
+    // Paroutian Fortress (Nordeste - Fúria)
     props.push({ x: W * 0.75, y: W * 0.25, kind: 'fortress_fury', scale: 1.0, hitRadius: 0 });
-    props.push({ x: W * 0.78, y: W * 0.13, kind: 'watchtower', scale: 1.0, hitRadius: 20 });
+    props.push({ x: W * 0.81, y: W * 0.20, kind: 'watchtower', scale: 1.0, hitRadius: 0 });
 
+    // 4. Torre Vermelha Central (Altar do Boss Mundial)
     var tower = getRedTowerPos();
-    props.push({ x: tower.x, y: tower.y, kind: 'red_tower', scale: 1.1, hitRadius: 26 });
+    props.push({ x: tower.x, y: tower.y, kind: 'red_tower', scale: 1.1, hitRadius: 24 });
 
+    // 5. Grama e flores no solo
     for (var i = 0; i < 800; i++) {
       var gx = 100 + rand() * (W - 200);
       var gy = 100 + rand() * (W - 200);
@@ -186,6 +195,7 @@ var WorldSceneryModule = (function () {
       });
     }
 
+    // 6. Árvores e rochas nas áreas verdes
     for (var j = 0; j < 220; j++) {
       var px = 130 + rand() * (W - 260);
       var py = 130 + rand() * (W - 260);
@@ -220,6 +230,7 @@ var WorldSceneryModule = (function () {
     var W = getMapSize();
     var rEnt = entityRadius || 16;
 
+    // A) Colisão com obstáculos sólidos (montanhas, árvores, rochas, torre central)
     for (var i = 0; i < props.length; i++) {
       var p = props[i];
       if (!p.hitRadius || p.hitRadius <= 0) continue;
@@ -243,6 +254,7 @@ var WorldSceneryModule = (function () {
       }
     }
 
+    // B) Colisão com os Rios Azuis (exceto pontes)
     if (!isOnBridge(entity.x, entity.y)) {
       for (var sIdx = 0; sIdx < riverSegments.length; sIdx++) {
         var s = riverSegments[sIdx];
@@ -272,6 +284,7 @@ var WorldSceneryModule = (function () {
       }
     }
 
+    // C) Limite interno das muralhas externas do mapa
     entity.x = Math.max(92, Math.min(W - 92, entity.x));
     entity.y = Math.max(92, Math.min(W - 92, entity.y));
   }
@@ -422,6 +435,7 @@ var WorldSceneryModule = (function () {
       var bannerCol = isLight ? '#38bdf8' : '#f43f5e';
       var glowCol   = isLight ? 'rgba(56, 189, 248, 0.24)' : 'rgba(244, 63, 94, 0.24)';
 
+      // Pátio aberto limpo (sem torres internas para não engatar)
       ctx.fillStyle = '#3f3b37';
       ctx.beginPath(); ctx.arc(0, 0, 130, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = bannerCol;
@@ -434,13 +448,6 @@ var WorldSceneryModule = (function () {
       ctx.strokeStyle = bannerCol;
       ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(0, -10, 30 * pulse, 0, Math.PI * 2); ctx.stroke();
-
-      [-90, 90].forEach(function (tx) {
-        ctx.fillStyle = '#57534e';
-        ctx.fillRect(tx - 16, -54, 32, 58);
-        ctx.fillStyle = bannerCol;
-        ctx.fillRect(tx - 6, -42, 12, 22);
-      });
     } else if (p.kind === 'red_tower') {
       var rPulse = 1 + Math.sin(now * 1.4) * 0.14;
       ctx.fillStyle = 'rgba(225, 29, 72, 0.25)';
@@ -463,10 +470,11 @@ var WorldSceneryModule = (function () {
       ctx.fillStyle = '#fda4af';
       ctx.fillText('🩸 ALTAR DO BOSS MUNDIAL (Nv. 15)', 0, -94);
     } else if (p.kind === 'watchtower') {
+      // Torre única de vigia da fortaleza
       ctx.fillStyle = '#57534e';
-      ctx.fillRect(-14, -44, 28, 48);
+      ctx.fillRect(-16, -52, 32, 56);
       ctx.fillStyle = '#78716c';
-      ctx.fillRect(-18, -50, 36, 8);
+      ctx.fillRect(-20, -58, 40, 8);
     } else if (p.kind === 'tree') {
       ctx.fillStyle = 'rgba(0,0,0,0.32)';
       ctx.beginPath(); ctx.ellipse(4, 8, 34, 13, 0, 0, Math.PI * 2); ctx.fill();
