@@ -2064,7 +2064,7 @@ function updateSimulation(dt) {
   }
 
   monsters.forEach(function(m) {
-    if (m.hp <= 0) return;
+    if (m.hp <= 0 || m.isPvpRival) return;
     if (m.stunTimer > 0) { m.stunTimer -= dt; return; }
     if (m.dotTimer > 0) {
       m.dotTimer -= dt;
@@ -2111,6 +2111,9 @@ function updateSimulation(dt) {
 
   if (typeof BossSkillsModule !== 'undefined') {
     BossSkillsModule.update(dt);
+  }
+  if (typeof PvpRivalsModule !== 'undefined') {
+    PvpRivalsModule.update(dt);
   }
 
   for (var p = projectiles.length - 1; p >= 0; p--) {
@@ -2181,9 +2184,19 @@ function renderWorld() {
   ctx.lineWidth = 4;
   ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80);
 
+  if (typeof BossSkillsModule !== 'undefined') {
+    BossSkillsModule.renderGroundTelegraphs(ctx);
+  }
+
   monsters.forEach(function(m) {
     if (m.hp <= 0) return;
     var isSelected = selectedTargetId === m.id;
+
+    if (m.isPvpRival && typeof PvpRivalsModule !== 'undefined') {
+      PvpRivalsModule.renderRival(ctx, m, isSelected);
+      return;
+    }
+
     if (isSelected) {
       ctx.strokeStyle = '#fbbf24';
       ctx.lineWidth = 2.5;
