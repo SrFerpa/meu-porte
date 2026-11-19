@@ -886,10 +886,16 @@ function handleMonsterDeath(m) {
   player.kills = (player.kills || 0) + 1;
   player.xp += m.xp;
   player.gold += m.gold;
-  addFloatingText(player.x, player.y - 52, '+' + m.xp + ' XP  +$' + m.gold, '#34d399');
 
-  if (Math.random() < (m.tier === 'normal' ? 0.42 : 0.95)) {
-    var dropItem = (Math.random() < 0.32) ? generateRandomLapisItem(m.tier) : generateDropItem(m.lvl, m.tier);
+  if (m.isPvpRival) {
+    addFloatingText(player.x, player.y - 58, '⚔️ +1 KILL PVP! +' + m.xp + ' XP  +$' + m.gold, '#fbbf24');
+  } else {
+    addFloatingText(player.x, player.y - 52, '+' + m.xp + ' XP  +$' + m.gold, '#34d399');
+  }
+
+  var dropChance = m.isPvpRival ? 0.85 : (m.tier === 'normal' ? 0.42 : 0.95);
+  if (Math.random() < dropChance) {
+    var dropItem = (Math.random() < 0.35) ? generateRandomLapisItem(m.isPvpRival ? 'boss' : m.tier) : generateDropItem(m.lvl, m.isPvpRival ? 'miniboss' : m.tier);
     if (player.bag.length < 120) {
       player.bag.push(dropItem);
       var rCol = RARITIES[dropItem.rarity] ? RARITIES[dropItem.rarity].color : '#38bdf8';
@@ -915,7 +921,9 @@ function handleMonsterDeath(m) {
   setTimeout(function() {
     var idx = monsters.indexOf(m);
     if (idx !== -1) monsters.splice(idx, 1);
-    spawnOneMonster(Math.floor(Math.random() * 50));
+    if (!m.isPvpRival) {
+      spawnOneMonster(Math.floor(Math.random() * 50));
+    }
   }, 2400);
 }
 
