@@ -2031,7 +2031,11 @@ function updateSimulation(dt) {
     if (BossSkillsModule.hasDebuff('debuff_stun')) effectiveSpeed = 0;
     else if (BossSkillsModule.hasDebuff('debuff_slow')) effectiveSpeed *= 0.55;
   }
-
+  
+if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
+  if (typeof player.tx !== 'number' || isNaN(player.tx)) player.tx = player.x;
+  if (typeof player.ty !== 'number' || isNaN(player.ty)) player.ty = player.y;
+  
   var vx = 0, vy = 0;
   if (keys['w'] || keys['arrowup'])    vy -= 1;
   if (keys['s'] || keys['arrowdown'])  vy += 1;
