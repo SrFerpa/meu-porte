@@ -2039,6 +2039,11 @@ function updateSimulation(dt) {
     }
   }
 
+  // Colisão sólida do jogador com árvores, rochas e estruturas
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.resolveCollision(player, 16);
+  }
+
   updatePlayerAnimation(dt, isMovingNow);
 
   if (player.autoCombat) {
@@ -2078,6 +2083,9 @@ function updateSimulation(dt) {
       m.facing = player.x >= m.x ? 1 : -1;
       m.x += ((player.x - m.x) / dPlayer) * 105 * dt;
       m.y += ((player.y - m.y) / dPlayer) * 105 * dt;
+      if (typeof WorldSceneryModule !== 'undefined') {
+        WorldSceneryModule.resolveCollision(m, m.tier === 'boss' ? 22 : 15);
+      }
     } else if (dPlayer <= 54) {
       m.facing = player.x >= m.x ? 1 : -1;
       m.atkCd -= dt;
@@ -2133,7 +2141,6 @@ function updateSimulation(dt) {
 
   updateAllHUD();
 }
-
 function handlePlayerExtremeDeath() {
   player.deaths = (player.deaths || 0) + 1;
   var runeIdx = player.bag.findIndex(function(it) { return it && it.effect === 'res_rune'; });
@@ -2178,6 +2185,11 @@ function renderWorld() {
 
   if (typeof BossSkillsModule !== 'undefined') {
     BossSkillsModule.renderGroundTelegraphs(ctx);
+  }
+
+  // Estruturas que estão ATRÁS do jogador (Y <= player.y)
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'back');
   }
 
   monsters.forEach(function(m) {
@@ -2250,8 +2262,9 @@ function renderWorld() {
   ctx.fillStyle = '#fde047';
   ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
 
+  // Estruturas que estão NA FRENTE do jogador (Y > player.y)
   if (typeof WorldSceneryModule !== 'undefined') {
-    WorldSceneryModule.renderProps(ctx, camX, camY, canvas.width, canvas.height, isFury);
+    WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'front');
   }
 
   projectiles.forEach(function(p) {
