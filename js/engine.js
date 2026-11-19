@@ -628,17 +628,32 @@ function spawnOneMonster(seedIdx) {
   ];
 
   var tpl = db[seedIdx % db.length];
-  var mx = 280 + Math.random() * (WORLD_SIZE - 560);
-  var my = 280 + Math.random() * (WORLD_SIZE - 560);
-  if (Math.hypot(mx - player.x, my - player.y) < 260) mx += 340;
+  var mx = 220 + Math.random() * (WORLD_SIZE - 440);
+  var my = 220 + Math.random() * (WORLD_SIZE - 440);
 
-  var scale = 1 + Math.max(0, player.lvl - 1) * 0.14;
-  monsters.push({
+  if (typeof WorldSceneryModule !== 'undefined') {
+    var spLight = WorldSceneryModule.getFactionSpawn('light');
+    var spFury  = WorldSceneryModule.getFactionSpawn('fury');
+    for (var tries = 0; tries < 15; tries++) {
+      mx = 180 + Math.random() * (WORLD_SIZE - 360);
+      my = 180 + Math.random() * (WORLD_SIZE - 360);
+      var inWater = WorldSceneryModule.isInWater(mx, my, 24);
+      var nearBase = Math.hypot(mx - spLight.x, my - spLight.y) < 230 || Math.hypot(mx - spFury.x, my - spFury.y) < 230;
+      if (!inWater && !nearBase) break;
+    }
+  }
+
+  // Nível do mob escala de 1 (perto das fortalezas) até 15 (perto da Torre Vermelha central)
+  var zoneLvl = (typeof WorldSceneryModule !== 'undefined') ? WorldSceneryModule.getZoneLevelAt(mx, my) : Math.min(15, tpl.baseLvl || 1);
+  var mobLvl = Math.min(15, Math.max(1, zoneLvl + (tpl.tier === 'boss' ? 2 : 0)));
+  var scale = 1 + (mobLvl - 1) * 0.16;
+
+  var mobObj = {
     id: 'mob_' + Math.random().toString(36).slice(2, 9),
     name: tpl.name,
     icon: tpl.icon,
     tier: tpl.tier || 'normal',
-    lvl: Math.max(tpl.baseLvl || 1, player.lvl + (tpl.tier === 'boss' ? 2 : 0)),
+    lvl: mobLvl,
     hp: Math.round(tpl.hp * scale),
     maxHp: Math.round(tpl.hp * scale),
     atk: Math.round(tpl.atk * scale),
@@ -657,9 +672,13 @@ function spawnOneMonster(seedIdx) {
     stunTimer: 0,
     dotTimer: 0,
     dotDmg: 0
-  });
-}
+  };
 
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.resolveCollision(mobObj, 18);
+  }
+  monsters.push(mobObj);
+}
 // ================= COMBATE, SKILLS & EFEITOS VISUAIS DAS 8 CLASSES =================
 function buildSkillDock() {
   var dock = document.getElementById('skill-dock');
@@ -2153,7 +2172,17 @@ function handlePlayerExtremeDeath() {
     player.hp = st.maxHp;
     player.mp = st.maxMp;
     player.sp = st.maxSp;
-    addFloatingText(player.x, player.y - 50, '✝️ Runa de Ressurreição usada!', '#fbbf24');
+
+    if (typeof WorldSceneryModule !== 'undefined') {
+      var sp = WorldSceneryModule.getFactionSpawn(player.faction);
+      player.x = sp.x;
+      player.y = sp.y;
+      player.tx = sp.x;
+      player.ty = sp.y;
+    }
+
+    var fortName = player.faction === 'fury' ? 'Paroutian Fortress' : 'Delphinian Fortress';
+    addFloatingText(player.x, player.y - 54, '✝️ Ressuscitado em ' + fortName + '!', '#fbbf24');
     saveCurrentHero();
   } else {
     alert('💀 Morte Permanente no Modo Extremo (UM)! Você não possuía Runa de Ressurreição.');
@@ -2173,14 +2202,12 @@ function renderWorld() {
   ctx.save();
   ctx.translate(-camX, -camY);
 
-  if (typeof WorldSceneryModule !== 'undefined') {
-    WorldSceneryModule.renderGround(ctx, camX, camY, canvas.width, canvas.height, isFury);
-  } else {
-    ctx.fillStyle = isFury ? '#170d14' : '#0c1a14';
-    ctx.fillRect(camX, camY, canvas.width, canvas.height);
-    ctx.strokeStyle = '#fbbf24';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80);
+ if (typeof WorldSceneryModule !== 'undefined' && player) {
+    var startSpawn = WorldSceneryModule.getFactionSpawn(player.faction);
+    player.x = startSpawn.x;
+    player.y = startSpawn.y;
+    player.tx = startSpawn.x;
+    player.ty = startSpawn.y;
   }
 
   if (typeof BossSkillsModule !== 'undefined') {
