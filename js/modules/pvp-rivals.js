@@ -46,7 +46,7 @@ var PvpRivalsModule = (function () {
     var fakeKills = [0, 5, 65, 340, 1200, 5500, 12000][Math.floor(Math.random() * 7)];
     var elem = ELEM_POOL[Math.floor(Math.random() * ELEM_POOL.length)];
 
-    monsters.push({
+    var rivalObj = {
       id: 'pvp_' + Math.random().toString(36).slice(2, 9),
       isPvpRival: true,
       rivalFaction: enemyFaction,
@@ -78,7 +78,14 @@ var PvpRivalsModule = (function () {
       skillCd: 3.2,
       aggroRange: arch.range > 200 ? 380 : 320,
       combatRange: Math.max(54, Math.min(260, arch.range - 20))
-    });
+    };
+
+    // Garante que o rival não nasça preso dentro de uma pedra ou árvore
+    if (typeof WorldSceneryModule !== 'undefined') {
+      WorldSceneryModule.resolveCollision(rivalObj, 16);
+    }
+
+    monsters.push(rivalObj);
   }
 
   function executeRivalAttack(m, st, isSpecial) {
@@ -137,7 +144,7 @@ var PvpRivalsModule = (function () {
     }
   }
 
-  // Atualiza IA de patrulha, perseguição e combate dos rivais
+  // Atualiza IA de patrulha, perseguição, colisão com cenário e combate dos rivais
   function update(dt) {
     if (!player || player.hp <= 0) return;
 
@@ -177,6 +184,11 @@ var PvpRivalsModule = (function () {
           isMoving = true;
           m.x += ((player.x - m.x) / dPlayer) * moveSpd * dt;
           m.y += ((player.y - m.y) / dPlayer) * moveSpd * dt;
+
+          // Colisão sólida com árvores, rochas e estruturas durante perseguição
+          if (typeof WorldSceneryModule !== 'undefined') {
+            WorldSceneryModule.resolveCollision(m, 16);
+          }
         } else {
           m.atkCd -= dt;
           m.skillCd -= dt;
@@ -198,8 +210,21 @@ var PvpRivalsModule = (function () {
         if (pDist > 14) {
           isMoving = true;
           m.facing = pdx >= 0 ? 1 : -1;
+          var prevX = m.x;
+          var prevY = m.y;
+
           m.x += (pdx / pDist) * 85 * dt;
           m.y += (pdy / pDist) * 85 * dt;
+
+          // Colisão sólida durante patrulha
+          if (typeof WorldSceneryModule !== 'undefined') {
+            WorldSceneryModule.resolveCollision(m, 16);
+            // Se bater em um obstáculo e quase não sair do lugar, escolhe nova rota
+            if (Math.hypot(m.x - prevX, m.y - prevY) < 12 * dt) {
+              m.patrolX = Math.max(180, Math.min(WORLD_SIZE - 180, m.x + (Math.random() * 440 - 220)));
+              m.patrolY = Math.max(180, Math.min(WORLD_SIZE - 180, m.y + (Math.random() * 440 - 220)));
+            }
+          }
         } else if (Math.random() < dt * 0.6) {
           m.patrolX = Math.max(180, Math.min(WORLD_SIZE - 180, m.x + (Math.random() * 440 - 220)));
           m.patrolY = Math.max(180, Math.min(WORLD_SIZE - 180, m.y + (Math.random() * 440 - 220)));
