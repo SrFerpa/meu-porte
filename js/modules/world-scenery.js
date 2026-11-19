@@ -31,8 +31,12 @@ var WorldSceneryModule = (function () {
   function getFactionSpawn(faction) {
     var W = getMapSize();
     if (faction === 'fury') {
-      // Paroutian Fortress (Nordeste)
-      return { x: Math.round(W * 0.75), y: Math.round(W * 0.24) };
+      // Paroutian Fortress (Nordeste - pátio aberto)
+      return { x: Math.round(W * 0.75), y: Math.round(W * 0.25) };
+    }
+    // Delphinian Fortress (Sudoeste - pátio aberto)
+    return { x: Math.round(W * 0.23), y: Math.round(W * 0.78) };
+  }
     }
     // Delphinian Fortress (Sudoeste)
     return { x: Math.round(W * 0.23), y: Math.round(W * 0.77) };
