@@ -1888,7 +1888,7 @@ window.addEventListener('keydown', function(e) {
   if (e.key >= '1' && e.key <= '6') useClassSkill(parseInt(e.key, 10) - 1);
   if (e.key === '7') quickUsePotion('hp');
   if (e.key === '8') quickUsePotion('mp_sp');
-  if (e.key.toLowerCase() === 'a') toggleAutoCombat();
+  if (e.key.toLowerCase() === 'z') toggleAutoCombat();
   if (e.key.toLowerCase() === 'c') toggleWindow('status-modal');
   if (e.key.toLowerCase() === 'b') toggleWindow('bag-modal');
   if (e.key.toLowerCase() === 'f') toggleWindow('smith-modal');
@@ -1913,7 +1913,8 @@ canvas.addEventListener('mousedown', function(e) {
   if (clickedMob) {
     selectedTargetId = clickedMob.id;
     useClassSkill(0);
-  } else {
+} else {
+    player.autoCombat = false;
     player.tx = Math.max(60, Math.min(WORLD_SIZE - 60, wx));
     player.ty = Math.max(60, Math.min(WORLD_SIZE - 60, wy));
   }
@@ -2043,7 +2044,8 @@ if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
   if (keys['d'] || keys['arrowright']) vx += 1;
 
   var isMovingNow = false;
-  if (vx !== 0 || vy !== 0) {
+if (vx !== 0 || vy !== 0) {
+    if (player.autoCombat) player.autoCombat = false;
     isMovingNow = true;
     var len = Math.hypot(vx, vy);
     player.x = Math.max(60, Math.min(WORLD_SIZE - 60, player.x + (vx / len) * effectiveSpeed * dt));
@@ -2051,6 +2053,8 @@ if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
     player.tx = player.x;
     player.ty = player.y;
     if (vx !== 0) player.facing = vx > 0 ? 1 : -1;
+  }
+  
   } else {
     var dx = player.tx - player.x, dy = player.ty - player.y;
     var d = Math.hypot(dx, dy);
