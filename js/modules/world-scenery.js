@@ -31,15 +31,9 @@ var WorldSceneryModule = (function () {
   function getFactionSpawn(faction) {
     var W = getMapSize();
     if (faction === 'fury') {
-      // Paroutian Fortress (Nordeste - pátio aberto)
       return { x: Math.round(W * 0.75), y: Math.round(W * 0.25) };
     }
-    // Delphinian Fortress (Sudoeste - pátio aberto)
     return { x: Math.round(W * 0.23), y: Math.round(W * 0.78) };
-  }
-    }
-    // Delphinian Fortress (Sudoeste)
-    return { x: Math.round(W * 0.23), y: Math.round(W * 0.77) };
   }
 
   function getRedTowerPos() {
@@ -57,13 +51,11 @@ var WorldSceneryModule = (function () {
   }
 
   function buildMapGeometry(W) {
-    // 1. Pontes transitáveis sobre os rios
     bridges = [
-      { x: W * 0.495, y: W * 0.475, r: 72, angle: -0.65 }, // Ponte Central para Torre Vermelha
-      { x: W * 0.145, y: W * 0.565, r: 64, angle: 0.35 }   // Ponte Oeste (Iron Blood)
+      { x: W * 0.495, y: W * 0.475, r: 72, angle: -0.65 },
+      { x: W * 0.145, y: W * 0.565, r: 64, angle: 0.35 }
     ];
 
-    // 2. Rios Azuis fiéis à imagem de Proelium Frontier
     var riverPaths = [
       [
         [0.14, 0.08], [0.16, 0.16], [0.15, 0.25], [0.22, 0.28], [0.34, 0.31],
@@ -115,8 +107,8 @@ var WorldSceneryModule = (function () {
   }
 
   function isOnRoadOrBase(x, y, margin, W) {
-    if (Math.hypot(x - W * 0.23, y - W * 0.77) < 210 + margin) return true;
-    if (Math.hypot(x - W * 0.75, y - W * 0.24) < 210 + margin) return true;
+    if (Math.hypot(x - W * 0.23, y - W * 0.78) < 220 + margin) return true;
+    if (Math.hypot(x - W * 0.75, y - W * 0.25) < 220 + margin) return true;
     if (Math.hypot(x - W * 0.55, y - W * 0.46) < 150 + margin) return true;
 
     var roadSegs = [
@@ -150,7 +142,6 @@ var WorldSceneryModule = (function () {
     buildMapGeometry(W);
     var rand = createSeededRandom(202609);
 
-    // 1. Montanhas cercando SOMENTE as 4 bordas externas do mapa (W = 3200)
     var step = 76;
     for (var bx = 40; bx <= W - 40; bx += step) {
       props.push({ x: bx, y: 40, kind: 'mountain', scale: 1.15, hitRadius: 42 });
@@ -161,7 +152,6 @@ var WorldSceneryModule = (function () {
       props.push({ x: W - 40, y: by, kind: 'mountain', scale: 1.15, hitRadius: 42 });
     }
 
-    // 2. Maciço Rochoso Norte (entre os dois braços do rio)
     var northMountains = [
       [0.41, 0.17], [0.44, 0.19], [0.40, 0.22], [0.44, 0.24], [0.38, 0.20]
     ];
@@ -175,18 +165,15 @@ var WorldSceneryModule = (function () {
       });
     }
 
-    // 3. Fortalezas (hitRadius: 0 no pátio para você andar livremente dentro da base)
-    props.push({ x: W * 0.23, y: W * 0.77, kind: 'fortress_light', scale: 1.0, hitRadius: 0 });
-    props.push({ x: W * 0.17, y: W * 0.67, kind: 'watchtower', scale: 1.0, hitRadius: 20 });
+    props.push({ x: W * 0.23, y: W * 0.78, kind: 'fortress_light', scale: 1.0, hitRadius: 0 });
+    props.push({ x: W * 0.16, y: W * 0.66, kind: 'watchtower', scale: 1.0, hitRadius: 20 });
 
-    props.push({ x: W * 0.75, y: W * 0.24, kind: 'fortress_fury', scale: 1.0, hitRadius: 0 });
-    props.push({ x: W * 0.77, y: W * 0.14, kind: 'watchtower', scale: 1.0, hitRadius: 20 });
+    props.push({ x: W * 0.75, y: W * 0.25, kind: 'fortress_fury', scale: 1.0, hitRadius: 0 });
+    props.push({ x: W * 0.78, y: W * 0.13, kind: 'watchtower', scale: 1.0, hitRadius: 20 });
 
-    // 4. Torre Vermelha Central (Altar do Boss Mundial)
     var tower = getRedTowerPos();
     props.push({ x: tower.x, y: tower.y, kind: 'red_tower', scale: 1.1, hitRadius: 26 });
 
-    // 5. Grama e flores no solo
     for (var i = 0; i < 800; i++) {
       var gx = 100 + rand() * (W - 200);
       var gy = 100 + rand() * (W - 200);
@@ -199,11 +186,10 @@ var WorldSceneryModule = (function () {
       });
     }
 
-    // 6. Árvores e rochas nas áreas abertas
     for (var j = 0; j < 220; j++) {
       var px = 130 + rand() * (W - 260);
       var py = 130 + rand() * (W - 260);
-      if (isInWater(px, py, 32) || isOnRoadOrBase(px, py, 38, W)) continue;
+      if (isInWater(px, py, 32) || isOnRoadOrBase(px, py, 44, W)) continue;
 
       var tooClose = false;
       for (var k = 0; k < props.length; k++) {
@@ -234,7 +220,6 @@ var WorldSceneryModule = (function () {
     var W = getMapSize();
     var rEnt = entityRadius || 16;
 
-    // A) Colisão com obstáculos sólidos (montanhas, árvores, rochas, torre)
     for (var i = 0; i < props.length; i++) {
       var p = props[i];
       if (!p.hitRadius || p.hitRadius <= 0) continue;
@@ -258,7 +243,6 @@ var WorldSceneryModule = (function () {
       }
     }
 
-    // B) Colisão com os Rios Azuis (exceto pontes)
     if (!isOnBridge(entity.x, entity.y)) {
       for (var sIdx = 0; sIdx < riverSegments.length; sIdx++) {
         var s = riverSegments[sIdx];
@@ -288,7 +272,6 @@ var WorldSceneryModule = (function () {
       }
     }
 
-    // C) Limite interno das muralhas externas do mapa
     entity.x = Math.max(92, Math.min(W - 92, entity.x));
     entity.y = Math.max(92, Math.min(W - 92, entity.y));
   }
@@ -297,11 +280,9 @@ var WorldSceneryModule = (function () {
     ensureBuilt();
     var W = getMapSize();
 
-    // 1. Limpa completamente o fundo da câmera (evita qualquer rastro de frame)
     ctx.fillStyle = '#262b1c';
     ctx.fillRect(camX, camY, viewW, viewH);
 
-    // 2. Manchas orgânicas de grama e terra
     var tile = 260;
     var startX = Math.floor(camX / tile) * tile;
     var startY = Math.floor(camY / tile) * tile;
@@ -315,13 +296,12 @@ var WorldSceneryModule = (function () {
       }
     }
 
-    // 3. Estradas de terra batida
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
     var roadPaths = [
-      [[0.10, 0.89], [0.23, 0.77], [0.36, 0.66], [0.42, 0.53], [0.55, 0.46], [0.59, 0.35], [0.75, 0.24], [0.90, 0.08]],
+      [[0.10, 0.89], [0.23, 0.78], [0.36, 0.66], [0.42, 0.53], [0.55, 0.46], [0.59, 0.35], [0.75, 0.25], [0.90, 0.08]],
       [[0.42, 0.53], [0.34, 0.49], [0.25, 0.51]]
     ];
 
@@ -342,7 +322,6 @@ var WorldSceneryModule = (function () {
     }
     ctx.restore();
 
-    // 4. Rios Azuis
     ctx.save();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -376,7 +355,6 @@ var WorldSceneryModule = (function () {
     ctx.stroke();
     ctx.restore();
 
-    // 5. Pontes de Pedra sobre o rio
     for (var bIdx = 0; bIdx < bridges.length; bIdx++) {
       var b = bridges[bIdx];
       ctx.save();
@@ -390,7 +368,6 @@ var WorldSceneryModule = (function () {
       ctx.restore();
     }
 
-    // 6. Detalhes de grama e flores
     for (var i = 0; i < groundDetails.length; i++) {
       var d = groundDetails[i];
       if (d.x < camX - 30 || d.x > camX + viewW + 30 || d.y < camY - 30 || d.y > camY + viewH + 30) continue;
@@ -410,16 +387,15 @@ var WorldSceneryModule = (function () {
       }
     }
 
-    // 7. Rótulos das regiões
     ctx.save();
     ctx.font = 'bold 16px Segoe UI';
     ctx.textAlign = 'center';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
     ctx.fillText('⚔️ IRON BLOOD (Nv. 6–12)', W * 0.27, W * 0.45);
     ctx.fillStyle = 'rgba(125, 211, 252, 0.9)';
-    ctx.fillText('☀️ DELPHINIAN FORTRESS (Spawn Luz)', W * 0.23, W * 0.83);
+    ctx.fillText('☀️ DELPHINIAN FORTRESS (Spawn Luz)', W * 0.23, W * 0.84);
     ctx.fillStyle = 'rgba(253, 164, 175, 0.9)';
-    ctx.fillText('🔥 PAROUTIAN FORTRESS (Spawn Fúria)', W * 0.75, W * 0.30);
+    ctx.fillText('🔥 PAROUTIAN FORTRESS (Spawn Fúria)', W * 0.75, W * 0.31);
     ctx.restore();
   }
 
