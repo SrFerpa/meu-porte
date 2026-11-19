@@ -2160,29 +2160,21 @@ function handlePlayerExtremeDeath() {
 
 function renderWorld() {
   var isFury = player.faction === 'fury';
-  ctx.fillStyle = isFury ? '#170d14' : '#0c1a14';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
   var camX = player.x - canvas.width / 2;
   var camY = player.y - canvas.height / 2;
 
   ctx.save();
   ctx.translate(-camX, -camY);
 
-  ctx.strokeStyle = isFury ? 'rgba(244, 63, 94, 0.08)' : 'rgba(52, 211, 153, 0.08)';
-  ctx.lineWidth = 1;
-  var startX = Math.floor(camX / 80) * 80;
-  var startY = Math.floor(camY / 80) * 80;
-  for (var gx = startX; gx < camX + canvas.width + 80; gx += 80) {
-    ctx.beginPath(); ctx.moveTo(gx, camY); ctx.lineTo(gx, camY + canvas.height); ctx.stroke();
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.renderGround(ctx, camX, camY, canvas.width, canvas.height, isFury);
+  } else {
+    ctx.fillStyle = isFury ? '#170d14' : '#0c1a14';
+    ctx.fillRect(camX, camY, canvas.width, canvas.height);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80);
   }
-  for (var gy = startY; gy < camY + canvas.height + 80; gy += 80) {
-    ctx.beginPath(); ctx.moveTo(camX, gy); ctx.lineTo(camX + canvas.width, gy); ctx.stroke();
-  }
-
-  ctx.strokeStyle = '#fbbf24';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(40, 40, WORLD_SIZE - 80, WORLD_SIZE - 80);
 
   if (typeof BossSkillsModule !== 'undefined') {
     BossSkillsModule.renderGroundTelegraphs(ctx);
@@ -2257,6 +2249,10 @@ function renderWorld() {
   }
   ctx.fillStyle = '#fde047';
   ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
+
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.renderProps(ctx, camX, camY, canvas.width, canvas.height, isFury);
+  }
 
   projectiles.forEach(function(p) {
     ctx.save();
