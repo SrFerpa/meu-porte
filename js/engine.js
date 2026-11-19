@@ -2199,6 +2199,9 @@ function renderWorld() {
   var camX = player.x - canvas.width / 2;
   var camY = player.y - canvas.height / 2;
 
+  ctx.fillStyle = '#262b1c';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
   ctx.save();
   ctx.translate(-camX, -camY);
 
