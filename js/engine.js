@@ -2216,18 +2216,13 @@ function renderWorld() {
   ctx.save();
   ctx.translate(-camX, -camY);
 
- if (typeof WorldSceneryModule !== 'undefined' && player) {
-    var startSpawn = WorldSceneryModule.getFactionSpawn(player.faction);
-    player.x = startSpawn.x;
-    player.y = startSpawn.y;
-    player.tx = startSpawn.x;
-    player.ty = startSpawn.y;
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.renderGroundLayer(ctx, camX, camY, canvas.width, canvas.height, isFury);
   }
 
   if (typeof BossSkillsModule !== 'undefined') {
     BossSkillsModule.renderGroundTelegraphs(ctx);
   }
-
   // Estruturas que estão ATRÁS do jogador (Y <= player.y)
   if (typeof WorldSceneryModule !== 'undefined') {
     WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'back');
