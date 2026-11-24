@@ -112,7 +112,7 @@ function saveCurrentHero() {
   saveSlots(slots);
 }
 
-// ================= TELA DINÂMICA DE SELEÇÃO E CRIAÇÃO (8 CLASSES) =================
+// ================= TELA DINÂMIZA DE SELEÇÃO E CRIAÇÃO (8 CLASSES) =================
 function toggleCreatorPanel(forceShow) {
   var slots = loadSlots();
   var hasFreeSlot = slots.some(function(s) { return s === null; });
@@ -383,6 +383,10 @@ function createHero() {
     };
   }
 
+  var spawnPos = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getFactionSpawn === 'function')
+    ? WorldSceneryModule.getFactionSpawn(selectedFaction)
+    : (selectedFaction === 'fury' ? { x: 2400, y: 800 } : { x: 736, y: 2496 });
+
   var newHero = {
     name: name,
     faction: selectedFaction,
@@ -397,8 +401,8 @@ function createHero() {
     freePts: 9,
     allocStats: { str: 0, dex: 0, rec: 0, int: 0, wis: 0, luc: 0 },
     hp: 240, mp: 140, sp: 140,
-    x: 520, y: 520,
-    tx: 520, ty: 520,
+    x: spawnPos.x, y: spawnPos.y,
+    tx: spawnPos.x, ty: spawnPos.y,
     facing: 1,
     isMoving: false,
     autoCombat: false,
@@ -433,6 +437,17 @@ function startWithSlot(idx) {
   if (!player.debuffs) player.debuffs = [];
   if (typeof player.kills !== 'number') player.kills = 0;
   if (typeof player.deaths !== 'number') player.deaths = 0;
+
+  var sp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getFactionSpawn === 'function')
+    ? WorldSceneryModule.getFactionSpawn(player.faction)
+    : (player.faction === 'fury' ? { x: 2400, y: 800 } : { x: 736, y: 2496 });
+
+  if (typeof player.x !== 'number' || isNaN(player.x) || (player.x === 520 && player.y === 520)) {
+    player.x = sp.x;
+    player.y = sp.y;
+  }
+  player.tx = player.x;
+  player.ty = player.y;
 
   var st = getPlayerDerivedStats();
   player.hp = Math.min(st.maxHp, player.hp || st.maxHp);
@@ -632,19 +647,20 @@ function spawnOneMonster(seedIdx) {
   var my = 220 + Math.random() * (WORLD_SIZE - 440);
 
   if (typeof WorldSceneryModule !== 'undefined') {
-    var spLight = WorldSceneryModule.getFactionSpawn('light');
-    var spFury  = WorldSceneryModule.getFactionSpawn('fury');
+    var spLight = typeof WorldSceneryModule.getFactionSpawn === 'function' ? WorldSceneryModule.getFactionSpawn('light') : { x: 736, y: 2496 };
+    var spFury  = typeof WorldSceneryModule.getFactionSpawn === 'function' ? WorldSceneryModule.getFactionSpawn('fury')  : { x: 2400, y: 800 };
     for (var tries = 0; tries < 15; tries++) {
       mx = 180 + Math.random() * (WORLD_SIZE - 360);
       my = 180 + Math.random() * (WORLD_SIZE - 360);
-      var inWater = WorldSceneryModule.isInWater(mx, my, 24);
+      var inWater = typeof WorldSceneryModule.isInWater === 'function' ? WorldSceneryModule.isInWater(mx, my, 24) : false;
       var nearBase = Math.hypot(mx - spLight.x, my - spLight.y) < 230 || Math.hypot(mx - spFury.x, my - spFury.y) < 230;
       if (!inWater && !nearBase) break;
     }
   }
 
-  // Nível do mob escala de 1 (perto das fortalezas) até 15 (perto da Torre Vermelha central)
-  var zoneLvl = (typeof WorldSceneryModule !== 'undefined') ? WorldSceneryModule.getZoneLevelAt(mx, my) : Math.min(15, tpl.baseLvl || 1);
+  var zoneLvl = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getZoneLevelAt === 'function')
+    ? WorldSceneryModule.getZoneLevelAt(mx, my)
+    : Math.min(15, tpl.baseLvl || 1);
   var mobLvl = Math.min(15, Math.max(1, zoneLvl + (tpl.tier === 'boss' ? 2 : 0)));
   var scale = 1 + (mobLvl - 1) * 0.16;
 
@@ -674,11 +690,12 @@ function spawnOneMonster(seedIdx) {
     dotDmg: 0
   };
 
-  if (typeof WorldSceneryModule !== 'undefined') {
+  if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
     WorldSceneryModule.resolveCollision(mobObj, 18);
   }
   monsters.push(mobObj);
 }
+
 // ================= COMBATE, SKILLS & EFEITOS VISUAIS DAS 8 CLASSES =================
 function buildSkillDock() {
   var dock = document.getElementById('skill-dock');
@@ -1922,6 +1939,7 @@ canvas.addEventListener('mousedown', function(e) {
   }
   updateAllHUD();
 });
+
 // ================= HUD & TEXTOS FLUTUANTES =================
 function addFloatingText(x, y, text, color) {
   floatingTexts.push({ x: x, y: y, text: text, color: color || '#fff', life: 1.15 });
@@ -2028,7 +2046,7 @@ function updateSimulation(dt) {
     if (player.buffs[b].timer <= 0) player.buffs.splice(b, 1);
   }
 
- var effectiveSpeed = (st && typeof st.moveSpeed === 'number' && !isNaN(st.moveSpeed) && st.moveSpeed > 0) ? st.moveSpeed : 210;
+  var effectiveSpeed = (st && typeof st.moveSpeed === 'number' && !isNaN(st.moveSpeed) && st.moveSpeed > 0) ? st.moveSpeed : 210;
   if (typeof BossSkillsModule !== 'undefined') {
     if (BossSkillsModule.hasDebuff('debuff_stun')) effectiveSpeed = 0;
     else if (BossSkillsModule.hasDebuff('debuff_slow')) effectiveSpeed *= 0.55;
@@ -2070,7 +2088,7 @@ function updateSimulation(dt) {
     }
   }
 
-  if (typeof WorldSceneryModule !== 'undefined') {
+  if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
     WorldSceneryModule.resolveCollision(player, 16);
   }
 
@@ -2113,7 +2131,7 @@ function updateSimulation(dt) {
       m.facing = player.x >= m.x ? 1 : -1;
       m.x += ((player.x - m.x) / dPlayer) * 105 * dt;
       m.y += ((player.y - m.y) / dPlayer) * 105 * dt;
-      if (typeof WorldSceneryModule !== 'undefined') {
+      if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
         WorldSceneryModule.resolveCollision(m, m.tier === 'boss' ? 22 : 15);
       }
     } else if (dPlayer <= 54) {
@@ -2171,6 +2189,7 @@ function updateSimulation(dt) {
 
   updateAllHUD();
 }
+
 function handlePlayerExtremeDeath() {
   player.deaths = (player.deaths || 0) + 1;
   var runeIdx = player.bag.findIndex(function(it) { return it && it.effect === 'res_rune'; });
@@ -2184,13 +2203,14 @@ function handlePlayerExtremeDeath() {
     player.mp = st.maxMp;
     player.sp = st.maxSp;
 
-    if (typeof WorldSceneryModule !== 'undefined') {
-      var sp = WorldSceneryModule.getFactionSpawn(player.faction);
-      player.x = sp.x;
-      player.y = sp.y;
-      player.tx = sp.x;
-      player.ty = sp.y;
-    }
+    var sp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getFactionSpawn === 'function')
+      ? WorldSceneryModule.getFactionSpawn(player.faction)
+      : (player.faction === 'fury' ? { x: 2400, y: 800 } : { x: 736, y: 2496 });
+
+    player.x = sp.x;
+    player.y = sp.y;
+    player.tx = sp.x;
+    player.ty = sp.y;
 
     var fortName = player.faction === 'fury' ? 'Paroutian Fortress' : 'Delphinian Fortress';
     addFloatingText(player.x, player.y - 54, '✝️ Ressuscitado em ' + fortName + '!', '#fbbf24');
@@ -2206,26 +2226,40 @@ function handlePlayerExtremeDeath() {
 }
 
 function renderWorld() {
+  if (!player || !canvas || !ctx) return;
   var isFury = player.faction === 'fury';
   var camX = player.x - canvas.width / 2;
   var camY = player.y - canvas.height / 2;
 
-  ctx.fillStyle = '#262b1c';
+  ctx.fillStyle = isFury ? '#2b1c1c' : '#262b1c';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.save();
   ctx.translate(-camX, -camY);
 
   if (typeof WorldSceneryModule !== 'undefined') {
-    WorldSceneryModule.renderGroundLayer(ctx, camX, camY, canvas.width, canvas.height, isFury);
+    try {
+      if (typeof WorldSceneryModule.renderGroundLayer === 'function') {
+        WorldSceneryModule.renderGroundLayer(ctx, camX, camY, canvas.width, canvas.height, isFury);
+      } else if (typeof WorldSceneryModule.renderTerrain === 'function') {
+        WorldSceneryModule.renderTerrain(ctx, camX, camY, canvas.width, canvas.height, isFury);
+      }
+    } catch (errGround) {
+      console.warn('Erro ao desenhar terreno:', errGround);
+    }
   }
 
-  if (typeof BossSkillsModule !== 'undefined') {
+  if (typeof BossSkillsModule !== 'undefined' && typeof BossSkillsModule.renderGroundTelegraphs === 'function') {
     BossSkillsModule.renderGroundTelegraphs(ctx);
   }
+
   // Estruturas que estão ATRÁS do jogador (Y <= player.y)
-  if (typeof WorldSceneryModule !== 'undefined') {
-    WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'back');
+  if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.renderPropsLayer === 'function') {
+    try {
+      WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'back');
+    } catch (errBack) {
+      console.warn('Erro props back:', errBack);
+    }
   }
 
   monsters.forEach(function(m) {
@@ -2299,8 +2333,12 @@ function renderWorld() {
   ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
 
   // Estruturas que estão NA FRENTE do jogador (Y > player.y)
-  if (typeof WorldSceneryModule !== 'undefined') {
-    WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'front');
+  if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.renderPropsLayer === 'function') {
+    try {
+      WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'front');
+    } catch (errFront) {
+      console.warn('Erro props front:', errFront);
+    }
   }
 
   projectiles.forEach(function(p) {
