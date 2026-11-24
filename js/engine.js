@@ -13,6 +13,15 @@ var creatorVisible = true;
 var currentSlotIdx = null;
 var player = null;
 
+// ================= ESTADO DA MASMORRA & LOBBY PASSIVO =================
+var dungeonState = {
+  isLobby: true,
+  dgIndex: 0,
+  floor: 1,
+  floorCleared: false,
+  portalCooldown: 0
+};
+
 var monsters = [];
 var projectiles = [];
 var vfxList = [];
@@ -112,7 +121,7 @@ function saveCurrentHero() {
   saveSlots(slots);
 }
 
-// ================= TELA DINÂMIZA DE SELEÇÃO E CRIAÇÃO (8 CLASSES) =================
+// ================= TELA DINÂMICA DE SELEÇÃO E CRIAÇÃO (8 CLASSES) =================
 function toggleCreatorPanel(forceShow) {
   var slots = loadSlots();
   var hasFreeSlot = slots.some(function(s) { return s === null; });
@@ -383,9 +392,9 @@ function createHero() {
     };
   }
 
-  var spawnPos = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getFactionSpawn === 'function')
-    ? WorldSceneryModule.getFactionSpawn(selectedFaction)
-    : (selectedFaction === 'fury' ? { x: 2400, y: 800 } : { x: 736, y: 2496 });
+  var lobbySp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getLobbySpawn === 'function')
+    ? WorldSceneryModule.getLobbySpawn()
+    : { x: 1600, y: 1720 };
 
   var newHero = {
     name: name,
@@ -401,8 +410,8 @@ function createHero() {
     freePts: 9,
     allocStats: { str: 0, dex: 0, rec: 0, int: 0, wis: 0, luc: 0 },
     hp: 240, mp: 140, sp: 140,
-    x: spawnPos.x, y: spawnPos.y,
-    tx: spawnPos.x, ty: spawnPos.y,
+    x: lobbySp.x, y: lobbySp.y,
+    tx: lobbySp.x, ty: lobbySp.y,
     facing: 1,
     isMoving: false,
     autoCombat: false,
@@ -438,21 +447,12 @@ function startWithSlot(idx) {
   if (typeof player.kills !== 'number') player.kills = 0;
   if (typeof player.deaths !== 'number') player.deaths = 0;
 
-  var sp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getFactionSpawn === 'function')
-    ? WorldSceneryModule.getFactionSpawn(player.faction)
-    : (player.faction === 'fury' ? { x: 2400, y: 800 } : { x: 736, y: 2496 });
-
-  if (typeof player.x !== 'number' || isNaN(player.x) || (player.x === 520 && player.y === 520)) {
-    player.x = sp.x;
-    player.y = sp.y;
-  }
-  player.tx = player.x;
-  player.ty = player.y;
+  enterLobbySafeZone(true);
 
   var st = getPlayerDerivedStats();
-  player.hp = Math.min(st.maxHp, player.hp || st.maxHp);
-  player.mp = Math.min(st.maxMp, player.mp || st.maxMp);
-  player.sp = Math.min(st.maxSp, player.sp || st.maxSp);
+  player.hp = st.maxHp;
+  player.mp = st.maxMp;
+  player.sp = st.maxSp;
 
   document.getElementById('char-screen').style.display = 'none';
   document.getElementById('hud-top-left').style.display = 'flex';
@@ -460,8 +460,6 @@ function startWithSlot(idx) {
   document.getElementById('hud-bottom').style.display = 'flex';
   document.getElementById('controls-hint').style.display = 'block';
 
-  selectedTargetId = null;
-  spawnInitialMonsters();
   buildSkillDock();
   updateAllHUD();
 }
@@ -478,6 +476,167 @@ function returnToCharSelect() {
   document.getElementById('controls-hint').style.display = 'none';
   creatorVisible = false;
   renderSlotsGrid();
+}
+
+// ================= TRANSIÇÃO ENTRE LOBBY PASSIVO E ANDARES DAS DUNGEONS =================
+function enterLobbySafeZone(silent) {
+  dungeonState.isLobby = true;
+  dungeonState.floorCleared = false;
+  dungeonState.portalCooldown = 1.0;
+  monsters = [];
+  projectiles = [];
+  vfxList = [];
+  selectedTargetId = null;
+  if (player) {
+    player.autoCombat = false;
+    var sp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getLobbySpawn === 'function')
+      ? WorldSceneryModule.getLobbySpawn()
+      : { x: 1600, y: 1720 };
+    player.x = sp.x;
+    player.y = sp.y;
+    player.tx = sp.x;
+    player.ty = sp.y;
+    var st = getPlayerDerivedStats();
+    player.hp = st.maxHp;
+    player.mp = st.maxMp;
+    player.sp = st.maxSp;
+    if (!silent) {
+      addFloatingText(player.x, player.y - 45, '🏛️ Bem-vindo ao Santuário Seguro!', '#38bdf8');
+    }
+  }
+  updateAllHUD();
+}
+
+function enterDungeonFloor(dgIndex, floorNum) {
+  dungeonState.isLobby = false;
+  dungeonState.dgIndex = dgIndex;
+  dungeonState.floor = Math.max(1, floorNum || 1);
+  dungeonState.floorCleared = false;
+  dungeonState.portalCooldown = 1.0;
+
+  monsters = [];
+  projectiles = [];
+  vfxList = [];
+  selectedTargetId = null;
+
+  var sp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getArenaSpawn === 'function')
+    ? WorldSceneryModule.getArenaSpawn()
+    : { x: 1600, y: 1760 };
+
+  player.x = sp.x;
+  player.y = sp.y;
+  player.tx = sp.x;
+  player.ty = sp.y;
+
+  spawnDungeonFloorWave(dgIndex, dungeonState.floor);
+
+  var cfgs = (typeof WorldSceneryModule !== 'undefined') ? WorldSceneryModule.DG_CONFIGS : [];
+  var dgCfg = cfgs[dgIndex] || { shortName: 'Dungeon' };
+  addFloatingText(player.x, player.y - 50, '⚔️ ' + dgCfg.shortName + ' — Andar ' + dungeonState.floor + '!', '#fbbf24');
+  updateAllHUD();
+}
+
+function spawnDungeonFloorWave(dgIndex, floorNum) {
+  monsters = [];
+  var cfgs = (typeof WorldSceneryModule !== 'undefined') ? WorldSceneryModule.DG_CONFIGS : [];
+  var dgCfg = cfgs[dgIndex] || { minLvl: 1, maxLvl: 15, elem: 'earth' };
+  var bounds = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getActiveBounds === 'function')
+    ? WorldSceneryModule.getActiveBounds(false)
+    : { x: 1050, y: 1050, w: 1100, h: 850 };
+
+  var isBossFloor = (floorNum % 10 === 0);
+  var isMiniBossFloor = (!isBossFloor && floorNum % 5 === 0);
+
+  // Calcula nível do andar dentro da faixa escolhida (escala mesmo acima do andar 15)
+  var span = Math.max(1, dgCfg.maxLvl - dgCfg.minLvl);
+  var progressRatio = Math.min(1, ((floorNum - 1) % 15) / 14);
+  var extraLoops = Math.floor((floorNum - 1) / 15) * 4;
+  var baseMobLvl = Math.round(dgCfg.minLvl + span * progressRatio + extraLoops);
+
+  // Elementos da DG (para DG 45-60 'mixed', alterna entre os 4 elementos)
+  var elemPool = ['fire', 'wind', 'earth', 'water'];
+  function pickFloorElement(idx) {
+    if (dgCfg.elem !== 'mixed') return dgCfg.elem;
+    return elemPool[(floorNum + idx) % elemPool.length];
+  }
+
+  var elemThemeNames = {
+    earth: ['Golem Telúrico', 'Guardião de Rocha', 'Javali de Pedra', 'Titã da Terra'],
+    wind:  ['Harpia Tempestuosa', 'Lobo Ciclone', 'Espectro do Vendaval', 'Senhor dos Ventos'],
+    water: ['Elemental Glacial', 'Serpente Abissal', 'Hidra das Profundezas', 'Leviatã de Gelo'],
+    fire:  ['Cão Infernal', 'Elemental Ígneo', 'Salamandra Vulcânica', 'Senhor das Cinzas']
+  };
+  var elemIcons = { earth: '🪨', wind: '🌪️', water: '💧', fire: '🔥' };
+  var elemColors = { earth: '#a16207', wind: '#10b981', water: '#2563eb', fire: '#dc2626' };
+
+  function buildScaledMob(idx, tier, customX, customY) {
+    var el = pickFloorElement(idx);
+    var namesArr = elemThemeNames[el] || elemThemeNames.earth;
+    var mobLvl = baseMobLvl + (tier === 'boss' ? 3 : (tier === 'miniboss' ? 1 : 0));
+    var scale = 1 + (mobLvl - 1) * 0.24 + (floorNum - 1) * 0.04;
+    var tierMult = tier === 'boss' ? 6.5 : (tier === 'miniboss' ? 3.2 : 1.0);
+    var atkMult  = tier === 'boss' ? 2.1 : (tier === 'miniboss' ? 1.5 : 1.0);
+
+    var prefix = tier === 'boss' ? '👑 [BOSS] ' : (tier === 'miniboss' ? '🔥 [MINI] ' : '');
+    var rawName = namesArr[idx % namesArr.length];
+
+    var mObj = {
+      id: 'dg_mob_' + floorNum + '_' + idx + '_' + Math.random().toString(36).slice(2, 6),
+      name: prefix + rawName,
+      icon: elemIcons[el] || '👹',
+      tier: tier,
+      lvl: mobLvl,
+      hp: Math.round(115 * scale * tierMult),
+      maxHp: Math.round(115 * scale * tierMult),
+      atk: Math.round(15 * scale * atkMult),
+      def: Math.round(6 * scale * (tier === 'boss' ? 1.6 : 1.0)),
+      xp: Math.round(42 * scale * (tier === 'boss' ? 4.5 : (tier === 'miniboss' ? 2.4 : 1.0))),
+      gold: Math.round(25 * scale * (tier === 'boss' ? 5.0 : (tier === 'miniboss' ? 2.5 : 1.0))),
+      elem: el,
+      color: elemColors[el] || '#ef4444',
+      x: customX,
+      y: customY,
+      homeX: customX,
+      homeY: customY,
+      facing: 1,
+      animState: 'idle',
+      animFrame: 0,
+      animTimer: 0,
+      atkCd: 0,
+      stunTimer: 0,
+      dotTimer: 0,
+      dotDmg: 0
+    };
+    if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
+      WorldSceneryModule.resolveCollision(mObj, tier === 'boss' ? 24 : 16, false);
+    }
+    return mObj;
+  }
+
+  var cx = bounds.x + bounds.w / 2;
+  var topY = bounds.y + 250;
+
+  if (isBossFloor) {
+    // 1 Boss Supremo no centro + 2 guardas elementais
+    monsters.push(buildScaledMob(3, 'boss', cx, topY));
+    monsters.push(buildScaledMob(0, 'normal', cx - 170, topY + 65));
+    monsters.push(buildScaledMob(1, 'normal', cx + 170, topY + 65));
+  } else if (isMiniBossFloor) {
+    // 1 Mini-Boss + 3 mobs elementais
+    monsters.push(buildScaledMob(2, 'miniboss', cx, topY));
+    monsters.push(buildScaledMob(0, 'normal', cx - 190, topY + 70));
+    monsters.push(buildScaledMob(1, 'normal', cx + 190, topY + 70));
+    monsters.push(buildScaledMob(3, 'normal', cx, topY + 120));
+  } else {
+    // Onda padrão de 5 a 7 mobs elementais
+    var count = Math.min(7, 5 + Math.floor(dgIndex / 2));
+    for (var i = 0; i < count; i++) {
+      var angle = (Math.PI * (i + 1)) / (count + 1);
+      var mx = cx + Math.cos(angle) * 320;
+      var my = topY + Math.sin(angle) * 160;
+      monsters.push(buildScaledMob(i, 'normal', mx, my));
+    }
+  }
 }
 
 // ================= CÁLCULO DE STATUS (ESTILO SHAIYA), PODER E ELEMENTOS =================
@@ -622,81 +781,11 @@ function getPlayerDerivedStats() {
   };
 }
 
-// ================= MUNDO 2.5D & MONSTROS =================
+// ================= COMBATE, SKILLS & EFEITOS VISUAIS DAS 8 CLASSES =================
 var selectedTargetId = null;
 var skillCooldowns = [0, 0, 0, 0, 0, 0];
 var autoAttackTimer = 0;
 
-function spawnInitialMonsters() {
-  monsters = [];
-  for (var i = 0; i < 34; i++) {
-    spawnOneMonster(i);
-  }
-}
-
-function spawnOneMonster(seedIdx) {
-  var db = (typeof MOBS_DB !== 'undefined' && MOBS_DB.length) ? MOBS_DB : [
-    { name: 'Javali Selvagem', icon: '🐗', tier: 'normal', baseLvl: 1, hp: 95, atk: 12, def: 4, xp: 32, gold: 18, elem: 'earth', color: '#a16207' },
-    { name: 'Lobo das Sombras', icon: '🐺', tier: 'normal', baseLvl: 3, hp: 145, atk: 18, def: 6, xp: 48, gold: 26, elem: 'wind', color: '#475569' },
-    { name: 'Elemental Ígneo', icon: '🔥', tier: 'miniboss', baseLvl: 6, hp: 360, atk: 34, def: 14, xp: 130, gold: 75, elem: 'fire', color: '#dc2626' },
-    { name: 'Guardião Abissal', icon: '👹', tier: 'boss', baseLvl: 10, hp: 920, atk: 58, def: 24, xp: 380, gold: 220, elem: 'water', color: '#1d4ed8' }
-  ];
-
-  var tpl = db[seedIdx % db.length];
-  var mx = 220 + Math.random() * (WORLD_SIZE - 440);
-  var my = 220 + Math.random() * (WORLD_SIZE - 440);
-
-  if (typeof WorldSceneryModule !== 'undefined') {
-    var spLight = typeof WorldSceneryModule.getFactionSpawn === 'function' ? WorldSceneryModule.getFactionSpawn('light') : { x: 736, y: 2496 };
-    var spFury  = typeof WorldSceneryModule.getFactionSpawn === 'function' ? WorldSceneryModule.getFactionSpawn('fury')  : { x: 2400, y: 800 };
-    for (var tries = 0; tries < 15; tries++) {
-      mx = 180 + Math.random() * (WORLD_SIZE - 360);
-      my = 180 + Math.random() * (WORLD_SIZE - 360);
-      var inWater = typeof WorldSceneryModule.isInWater === 'function' ? WorldSceneryModule.isInWater(mx, my, 24) : false;
-      var nearBase = Math.hypot(mx - spLight.x, my - spLight.y) < 230 || Math.hypot(mx - spFury.x, my - spFury.y) < 230;
-      if (!inWater && !nearBase) break;
-    }
-  }
-
-  var zoneLvl = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getZoneLevelAt === 'function')
-    ? WorldSceneryModule.getZoneLevelAt(mx, my)
-    : Math.min(15, tpl.baseLvl || 1);
-  var mobLvl = Math.min(15, Math.max(1, zoneLvl + (tpl.tier === 'boss' ? 2 : 0)));
-  var scale = 1 + (mobLvl - 1) * 0.16;
-
-  var mobObj = {
-    id: 'mob_' + Math.random().toString(36).slice(2, 9),
-    name: tpl.name,
-    icon: tpl.icon,
-    tier: tpl.tier || 'normal',
-    lvl: mobLvl,
-    hp: Math.round(tpl.hp * scale),
-    maxHp: Math.round(tpl.hp * scale),
-    atk: Math.round(tpl.atk * scale),
-    def: Math.round(tpl.def * scale),
-    xp: Math.round(tpl.xp * scale),
-    gold: Math.round(tpl.gold * scale),
-    elem: tpl.elem || 'none',
-    color: tpl.color || '#ef4444',
-    x: mx, y: my,
-    homeX: mx, homeY: my,
-    facing: 1,
-    animState: 'idle',
-    animFrame: 0,
-    animTimer: 0,
-    atkCd: 0,
-    stunTimer: 0,
-    dotTimer: 0,
-    dotDmg: 0
-  };
-
-  if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
-    WorldSceneryModule.resolveCollision(mobObj, 18);
-  }
-  monsters.push(mobObj);
-}
-
-// ================= COMBATE, SKILLS & EFEITOS VISUAIS DAS 8 CLASSES =================
 function buildSkillDock() {
   var dock = document.getElementById('skill-dock');
   dock.innerHTML = '';
@@ -734,11 +823,15 @@ function buildSkillDock() {
   autoBtn.id = 'btn-auto-combat';
   autoBtn.className = 'btn-auto-ep' + (player.autoCombat ? ' active' : '');
   autoBtn.onclick = toggleAutoCombat;
-  autoBtn.innerHTML = 'AUTO<br>(A)';
+  autoBtn.innerHTML = 'AUTO<br>(Z)';
   dock.appendChild(autoBtn);
 }
 
 function toggleAutoCombat() {
+  if (dungeonState.isLobby) {
+    addFloatingText(player.x, player.y - 36, 'Entre em uma Dungeon primeiro!', '#38bdf8');
+    return;
+  }
   player.autoCombat = !player.autoCombat;
   var btn = document.getElementById('btn-auto-combat');
   if (btn) btn.className = 'btn-auto-ep' + (player.autoCombat ? ' active' : '');
@@ -829,6 +922,11 @@ function useClassSkill(idx) {
     }
     spawnSkillVFX(player.x, player.y, sk, true);
     updateAllHUD();
+    return;
+  }
+
+  if (dungeonState.isLobby) {
+    addFloatingText(player.x, player.y - 36, 'Área Segura (Sem combate no Lobby)', '#38bdf8');
     return;
   }
 
@@ -929,9 +1027,15 @@ function handleMonsterDeath(m) {
     addFloatingText(player.x, player.y - 52, '+' + m.xp + ' XP  +$' + m.gold, '#34d399');
   }
 
-  var dropChance = m.isPvpRival ? 0.85 : (m.tier === 'normal' ? 0.42 : 0.95);
+  // Chance de drop escala com o Tier da DG (DG 45-60 dropa muito mais Lapis e Deusa!)
+  var dgBonus = dungeonState.dgIndex * 0.12;
+  var dropChance = m.isPvpRival ? 0.90 : Math.min(1.0, (m.tier === 'normal' ? 0.45 : 1.0) + dgBonus);
   if (Math.random() < dropChance) {
-    var dropItem = (Math.random() < 0.35) ? generateRandomLapisItem(m.isPvpRival ? 'boss' : m.tier) : generateDropItem(m.lvl, m.isPvpRival ? 'miniboss' : m.tier);
+    var lapisProb = 0.35 + dungeonState.dgIndex * 0.08;
+    var dropTier = (dungeonState.dgIndex >= 4 && m.tier === 'boss') ? 'boss' : (m.isPvpRival ? 'miniboss' : m.tier);
+    var dropItem = (Math.random() < lapisProb)
+      ? generateRandomLapisItem(dropTier)
+      : generateDropItem(m.lvl, dropTier);
     if (player.bag.length < 120) {
       player.bag.push(dropItem);
       var rCol = RARITIES[dropItem.rarity] ? RARITIES[dropItem.rarity].color : '#38bdf8';
@@ -939,10 +1043,11 @@ function handleMonsterDeath(m) {
     }
   }
 
-  while (player.xp >= player.nextXp) {
+  // Evolução de nível até o Nv. 60
+  while (player.lvl < 60 && player.xp >= player.nextXp) {
     player.xp -= player.nextXp;
     player.lvl += 1;
-    player.nextXp = Math.round(player.nextXp * 1.32);
+    player.nextXp = Math.round(player.nextXp * 1.24);
     player.freePts += EXTREME_MODE.ptsPerLvl;
     var st = getPlayerDerivedStats();
     player.hp = st.maxHp;
@@ -954,13 +1059,15 @@ function handleMonsterDeath(m) {
   if (selectedTargetId === m.id) selectedTargetId = null;
   saveCurrentHero();
 
-  setTimeout(function() {
-    var idx = monsters.indexOf(m);
-    if (idx !== -1) monsters.splice(idx, 1);
-    if (!m.isPvpRival) {
-      spawnOneMonster(Math.floor(Math.random() * 50));
-    }
-  }, 2400);
+  // Verifica se todos os inimigos do andar morreram para abrir os 2 Portais de escolha!
+  var remaining = monsters.filter(function(other) { return other.hp > 0; }).length;
+  if (!dungeonState.isLobby && remaining === 0 && !dungeonState.floorCleared) {
+    dungeonState.floorCleared = true;
+    player.autoCombat = false;
+    var btn = document.getElementById('btn-auto-combat');
+    if (btn) btn.className = 'btn-auto-ep';
+    addFloatingText(player.x, player.y - 68, '🌀 ANDAR LIMPO! Escolha um Portal no topo!', '#38bdf8');
+  }
 }
 
 // ================= INVENTÁRIO: EQUIPAR MELHORES, VENDER TUDO & CLICAR NO ITEM =================
@@ -1920,22 +2027,35 @@ window.addEventListener('keyup', function(e) {
 
 canvas.addEventListener('mousedown', function(e) {
   if (!player || document.getElementById('char-screen').style.display !== 'none') return;
-  var mapLimit = (typeof WORLD_SIZE === 'number' && WORLD_SIZE > 200) ? WORLD_SIZE : 3200;
   var rect = canvas.getBoundingClientRect();
   var wx = (e.clientX - rect.left) + (player.x - canvas.width / 2);
   var wy = (e.clientY - rect.top) + (player.y - canvas.height / 2);
+
+  // Interação direta no Lobby (clicar em NPC ou Portal)
+  if (dungeonState.isLobby && typeof WorldSceneryModule !== 'undefined') {
+    var npcs = WorldSceneryModule.getLobbyNpcs();
+    for (var n = 0; n < npcs.length; n++) {
+      if (Math.hypot(npcs[n].x - wx, npcs[n].y - wy) <= 34) {
+        toggleWindow(npcs[n].action);
+        return;
+      }
+    }
+  }
 
   var clickedMob = monsters.find(function(m) {
     return m.hp > 0 && Math.hypot(m.x - wx, m.y - wy) <= 38;
   });
 
-  if (clickedMob) {
+  if (clickedMob && !dungeonState.isLobby) {
     selectedTargetId = clickedMob.id;
     useClassSkill(0);
   } else {
     player.autoCombat = false;
-    player.tx = Math.max(96, Math.min(mapLimit - 96, wx));
-    player.ty = Math.max(96, Math.min(mapLimit - 96, wy));
+    var b = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getActiveBounds === 'function')
+      ? WorldSceneryModule.getActiveBounds(dungeonState.isLobby)
+      : { x: 1050, y: 1050, w: 1100, h: 850 };
+    player.tx = Math.max(b.x + 40, Math.min(b.x + b.w - 40, wx));
+    player.ty = Math.max(b.y + 40, Math.min(b.y + b.h - 40, wy));
   }
   updateAllHUD();
 });
@@ -1964,7 +2084,14 @@ function updateAllHUD() {
   document.getElementById('bar-sp').style.width = Math.max(0, Math.min(100, (player.sp / st.maxSp) * 100)) + '%';
   document.getElementById('txt-sp').textContent = 'SP ' + Math.round(player.sp) + ' / ' + st.maxSp;
 
-  document.getElementById('hud-zone').textContent = player.faction === 'fury' ? '🔥 Floresta de Iris (Dark)' : '🌲 Floresta de Erina (Light)';
+  if (dungeonState.isLobby) {
+    document.getElementById('hud-zone').textContent = '🏛️ Santuário Seguro (Lobby)';
+  } else {
+    var cfgs = (typeof WorldSceneryModule !== 'undefined') ? WorldSceneryModule.DG_CONFIGS : [];
+    var dCfg = cfgs[dungeonState.dgIndex] || { shortName: 'Dungeon' };
+    document.getElementById('hud-zone').textContent = '⚔️ ' + dCfg.shortName + ' • Andar ' + dungeonState.floor;
+  }
+
   document.getElementById('hud-gold').textContent = player.gold;
   document.getElementById('hud-br').textContent = st.power;
 
@@ -1978,9 +2105,11 @@ function updateAllHUD() {
     statBtn.textContent = player.freePts > 0 ? '📊 Status (+' + player.freePts + ')' : '📊 Status (C)';
   }
 
-  var xpPct = Math.min(100, Math.round((player.xp / player.nextXp) * 100));
+  var xpPct = player.lvl >= 60 ? 100 : Math.min(100, Math.round((player.xp / player.nextXp) * 100));
   document.getElementById('bar-xp').style.width = xpPct + '%';
-  document.getElementById('txt-xp').textContent = 'XP: ' + player.xp + ' / ' + player.nextXp + ' (' + xpPct + '%)';
+  document.getElementById('txt-xp').textContent = player.lvl >= 60
+    ? 'NÍVEL MÁXIMO (60)'
+    : ('XP: ' + player.xp + ' / ' + player.nextXp + ' (' + xpPct + '%)');
 
   var hpQty = player.bag.reduce(function(a, it) { return a + (it && it.effect === 'hp' ? (it.qty || 1) : 0); }, 0);
   var mpQty = player.bag.reduce(function(a, it) { return a + (it && it.effect === 'mp_sp' ? (it.qty || 1) : 0); }, 0);
@@ -1996,7 +2125,7 @@ function updateAllHUD() {
 
   var target = getSelectedTarget();
   var tBox = document.getElementById('hud-target-box');
-  if (!target) {
+  if (!target || dungeonState.isLobby) {
     tBox.style.display = 'none';
   } else {
     tBox.style.display = 'flex';
@@ -2027,9 +2156,15 @@ function gameLoop(now) {
 function updateSimulation(dt) {
   var st = getPlayerDerivedStats();
 
-  player.hp = Math.min(st.maxHp, player.hp + st.maxHp * 0.015 * dt);
-  player.mp = Math.min(st.maxMp, player.mp + st.maxMp * 0.04 * dt);
-  player.sp = Math.min(st.maxSp, player.sp + st.maxSp * 0.05 * dt);
+  // Regeneração acelerada no Lobby seguro
+  var regenMult = dungeonState.isLobby ? 5.0 : 1.0;
+  player.hp = Math.min(st.maxHp, player.hp + st.maxHp * 0.015 * regenMult * dt);
+  player.mp = Math.min(st.maxMp, player.mp + st.maxMp * 0.04 * regenMult * dt);
+  player.sp = Math.min(st.maxSp, player.sp + st.maxSp * 0.05 * regenMult * dt);
+
+  if (dungeonState.portalCooldown > 0) {
+    dungeonState.portalCooldown = Math.max(0, dungeonState.portalCooldown - dt);
+  }
 
   for (var i = 0; i < 6; i++) {
     if (skillCooldowns[i] > 0) {
@@ -2047,16 +2182,10 @@ function updateSimulation(dt) {
   }
 
   var effectiveSpeed = (st && typeof st.moveSpeed === 'number' && !isNaN(st.moveSpeed) && st.moveSpeed > 0) ? st.moveSpeed : 210;
-  if (typeof BossSkillsModule !== 'undefined') {
+  if (!dungeonState.isLobby && typeof BossSkillsModule !== 'undefined') {
     if (BossSkillsModule.hasDebuff('debuff_stun')) effectiveSpeed = 0;
     else if (BossSkillsModule.hasDebuff('debuff_slow')) effectiveSpeed *= 0.55;
   }
-
-  var mapLimit = (typeof WORLD_SIZE === 'number' && WORLD_SIZE > 200) ? WORLD_SIZE : 3200;
-  if (typeof player.x !== 'number' || isNaN(player.x)) player.x = player.faction === 'fury' ? 2400 : 736;
-  if (typeof player.y !== 'number' || isNaN(player.y)) player.y = player.faction === 'fury' ? 800 : 2496;
-  if (typeof player.tx !== 'number' || isNaN(player.tx)) player.tx = player.x;
-  if (typeof player.ty !== 'number' || isNaN(player.ty)) player.ty = player.y;
 
   var moveDt = (typeof dt === 'number' && !isNaN(dt) && dt > 0) ? Math.min(0.1, dt) : 0.016;
 
@@ -2071,8 +2200,8 @@ function updateSimulation(dt) {
     if (player.autoCombat) player.autoCombat = false;
     isMovingNow = true;
     var len = Math.hypot(vx, vy);
-    player.x = Math.max(96, Math.min(mapLimit - 96, player.x + (vx / len) * effectiveSpeed * moveDt));
-    player.y = Math.max(96, Math.min(mapLimit - 96, player.y + (vy / len) * effectiveSpeed * moveDt));
+    player.x += (vx / len) * effectiveSpeed * moveDt;
+    player.y += (vy / len) * effectiveSpeed * moveDt;
     player.tx = player.x;
     player.ty = player.y;
     if (vx !== 0) player.facing = vx > 0 ? 1 : -1;
@@ -2082,94 +2211,121 @@ function updateSimulation(dt) {
     if (d > 6) {
       isMovingNow = true;
       var step = Math.min(d, effectiveSpeed * moveDt);
-      player.x = Math.max(96, Math.min(mapLimit - 96, player.x + (dx / d) * step));
-      player.y = Math.max(96, Math.min(mapLimit - 96, player.y + (dy / d) * step));
+      player.x += (dx / d) * step;
+      player.y += (dy / d) * step;
       player.facing = dx >= 0 ? 1 : -1;
     }
   }
 
   if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
-    WorldSceneryModule.resolveCollision(player, 16);
+    WorldSceneryModule.resolveCollision(player, 16, dungeonState.isLobby);
   }
 
   updatePlayerAnimation(moveDt, isMovingNow);
 
-  if (player.autoCombat) {
-    autoAttackTimer -= dt;
-    var tgt = getSelectedTarget() || findNearestMonster();
-    if (tgt) {
-      selectedTargetId = tgt.id;
-      var archRange = (ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard).range;
-      var distToTgt = Math.hypot(tgt.x - player.x, tgt.y - player.y);
-      if (distToTgt > archRange - 10) {
-        player.tx = tgt.x;
-        player.ty = tgt.y;
-      } else if (autoAttackTimer <= 0) {
-        autoAttackTimer = 0.65;
-        for (var sIdx = 5; sIdx >= 0; sIdx--) {
-          if (skillCooldowns[sIdx] <= 0) {
-            useClassSkill(sIdx);
-            break;
+  // Checa pisada nos Portais do Lobby ou nos Portais de Fim de Andar
+  if (dungeonState.portalCooldown <= 0 && typeof WorldSceneryModule !== 'undefined') {
+    if (dungeonState.isLobby) {
+      var portals = WorldSceneryModule.getLobbyPortals();
+      for (var ptIdx = 0; ptIdx < portals.length; ptIdx++) {
+        var pt = portals[ptIdx];
+        if (Math.hypot(player.x - pt.x, player.y - pt.y) <= pt.r - 4) {
+          enterDungeonFloor(pt.dgIndex, 1);
+          return;
+        }
+      }
+    } else if (dungeonState.floorCleared) {
+      var exits = WorldSceneryModule.getFloorExitPortals();
+      if (Math.hypot(player.x - exits.lobby.x, player.y - exits.lobby.y) <= exits.lobby.r - 4) {
+        enterLobbySafeZone(false);
+        return;
+      }
+      if (Math.hypot(player.x - exits.next.x, player.y - exits.next.y) <= exits.next.r - 4) {
+        enterDungeonFloor(dungeonState.dgIndex, dungeonState.floor + 1);
+        return;
+      }
+    }
+  }
+
+  // Combate e IA só rodam dentro das Dungeons (Lobby é 100% passivo)
+  if (!dungeonState.isLobby) {
+    if (player.autoCombat && !dungeonState.floorCleared) {
+      autoAttackTimer -= dt;
+      var tgt = getSelectedTarget() || findNearestMonster();
+      if (tgt) {
+        selectedTargetId = tgt.id;
+        var archRange = (ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard).range;
+        var distToTgt = Math.hypot(tgt.x - player.x, tgt.y - player.y);
+        if (distToTgt > archRange - 10) {
+          player.tx = tgt.x;
+          player.ty = tgt.y;
+        } else if (autoAttackTimer <= 0) {
+          autoAttackTimer = 0.65;
+          for (var sIdx = 5; sIdx >= 0; sIdx--) {
+            if (skillCooldowns[sIdx] <= 0) {
+              useClassSkill(sIdx);
+              break;
+            }
           }
         }
       }
     }
-  }
 
-  monsters.forEach(function(m) {
-    if (m.hp <= 0 || m.isPvpRival) return;
-    if (m.stunTimer > 0) { m.stunTimer -= dt; return; }
-    if (m.dotTimer > 0) {
-      m.dotTimer -= dt;
-      if (Math.random() < dt * 2) applyDamageToMonster(m, m.dotDmg, false, 1.0, null);
-    }
-
-    var dPlayer = Math.hypot(player.x - m.x, player.y - m.y);
-    var mobMoving = false;
-    if (dPlayer < 290 && dPlayer > 48) {
-      mobMoving = true;
-      m.facing = player.x >= m.x ? 1 : -1;
-      m.x += ((player.x - m.x) / dPlayer) * 105 * dt;
-      m.y += ((player.y - m.y) / dPlayer) * 105 * dt;
-      if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
-        WorldSceneryModule.resolveCollision(m, m.tier === 'boss' ? 22 : 15);
+    monsters.forEach(function(m) {
+      if (m.hp <= 0 || m.isPvpRival) return;
+      if (m.stunTimer > 0) { m.stunTimer -= dt; return; }
+      if (m.dotTimer > 0) {
+        m.dotTimer -= dt;
+        if (Math.random() < dt * 2) applyDamageToMonster(m, m.dotDmg, false, 1.0, null);
       }
-    } else if (dPlayer <= 54) {
-      m.facing = player.x >= m.x ? 1 : -1;
-      m.atkCd -= dt;
-      if (m.atkCd <= 0) {
-        m.atkCd = 1.65;
-        m.animState = 'attack';
-        m.animFrame = 0;
-        if (Math.random() * 100 < st.evaChance) {
-          addFloatingText(player.x, player.y - 36, '💨 Esquivou!', '#34d399');
-        } else if (Math.random() * 100 < st.blockChance) {
-          addFloatingText(player.x, player.y - 36, '🛡️ Bloqueado!', '#fbbf24');
-        } else {
-          var eMult = getElementMultiplier(m.elem, st.defElem);
-          var dmgTaken = Math.max(1, Math.round((m.atk - st.physDef * 0.45) * eMult) - st.absDamage);
-          player.hp -= dmgTaken;
-          triggerPlayerAnim('hurt', 0.28);
-          addFloatingText(player.x, player.y - 34, '-' + dmgTaken, '#f43f5e');
-          if (player.hp <= 0) handlePlayerExtremeDeath();
+
+      var dPlayer = Math.hypot(player.x - m.x, player.y - m.y);
+      var mobMoving = false;
+      if (dPlayer < 520 && dPlayer > 48) {
+        mobMoving = true;
+        m.facing = player.x >= m.x ? 1 : -1;
+        m.x += ((player.x - m.x) / dPlayer) * 112 * dt;
+        m.y += ((player.y - m.y) / dPlayer) * 112 * dt;
+        if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.resolveCollision === 'function') {
+          WorldSceneryModule.resolveCollision(m, m.tier === 'boss' ? 24 : 15, false);
+        }
+      } else if (dPlayer <= 54) {
+        m.facing = player.x >= m.x ? 1 : -1;
+        m.atkCd -= dt;
+        if (m.atkCd <= 0) {
+          m.atkCd = 1.65;
+          m.animState = 'attack';
+          m.animFrame = 0;
+          if (Math.random() * 100 < st.evaChance) {
+            addFloatingText(player.x, player.y - 36, '💨 Esquivou!', '#34d399');
+          } else if (Math.random() * 100 < st.blockChance) {
+            addFloatingText(player.x, player.y - 36, '🛡️ Bloqueado!', '#fbbf24');
+          } else {
+            var eMult = getElementMultiplier(m.elem, st.defElem);
+            var dmgTaken = Math.max(1, Math.round((m.atk - st.physDef * 0.45) * eMult) - st.absDamage);
+            player.hp -= dmgTaken;
+            triggerPlayerAnim('hurt', 0.28);
+            addFloatingText(player.x, player.y - 34, '-' + dmgTaken, '#f43f5e');
+            if (player.hp <= 0) handlePlayerExtremeDeath();
+          }
         }
       }
-    }
 
-    if (m.animState !== 'attack') m.animState = mobMoving ? 'run' : 'idle';
-    m.animTimer = (m.animTimer || 0) + dt;
-    if (m.animTimer >= 0.14) {
-      m.animTimer = 0;
-      m.animFrame = (m.animFrame || 0) + 1;
-      if (m.animState === 'attack' && m.animFrame >= 6) m.animState = 'idle';
-    }
-  });
+      if (m.animState !== 'attack') m.animState = mobMoving ? 'run' : 'idle';
+      m.animTimer = (m.animTimer || 0) + dt;
+      if (m.animTimer >= 0.14) {
+        m.animTimer = 0;
+        m.animFrame = (m.animFrame || 0) + 1;
+        if (m.animState === 'attack' && m.animFrame >= 6) m.animState = 'idle';
+      }
+    });
 
-  if (typeof BossSkillsModule !== 'undefined') {
-    BossSkillsModule.update(dt);
-  }
-  if (typeof PvpRivalsModule !== 'undefined') {
-    PvpRivalsModule.update(dt);
+    if (typeof BossSkillsModule !== 'undefined') {
+      BossSkillsModule.update(dt);
+    }
+    if (typeof PvpRivalsModule !== 'undefined' && dungeonState.dgIndex >= 1 && !dungeonState.floorCleared) {
+      PvpRivalsModule.update(dt);
+    }
   }
 
   for (var p = projectiles.length - 1; p >= 0; p--) {
@@ -2198,22 +2354,8 @@ function handlePlayerExtremeDeath() {
     if (player.bag[runeIdx].qty > 1) player.bag[runeIdx].qty -= 1;
     else player.bag.splice(runeIdx, 1);
 
-    var st = getPlayerDerivedStats();
-    player.hp = st.maxHp;
-    player.mp = st.maxMp;
-    player.sp = st.maxSp;
-
-    var sp = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getFactionSpawn === 'function')
-      ? WorldSceneryModule.getFactionSpawn(player.faction)
-      : (player.faction === 'fury' ? { x: 2400, y: 800 } : { x: 736, y: 2496 });
-
-    player.x = sp.x;
-    player.y = sp.y;
-    player.tx = sp.x;
-    player.ty = sp.y;
-
-    var fortName = player.faction === 'fury' ? 'Paroutian Fortress' : 'Delphinian Fortress';
-    addFloatingText(player.x, player.y - 54, '✝️ Ressuscitado em ' + fortName + '!', '#fbbf24');
+    enterLobbySafeZone(true);
+    addFloatingText(player.x, player.y - 54, '✝️ Runa UM ativada! Ressuscitado no Santuário Seguro!', '#fbbf24');
     saveCurrentHero();
   } else {
     alert('💀 Morte Permanente no Modo Extremo (UM)! Você não possuía Runa de Ressurreição.');
@@ -2231,76 +2373,65 @@ function renderWorld() {
   var camX = player.x - canvas.width / 2;
   var camY = player.y - canvas.height / 2;
 
-  ctx.fillStyle = isFury ? '#2b1c1c' : '#262b1c';
+  ctx.fillStyle = '#09070d';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   ctx.save();
   ctx.translate(-camX, -camY);
 
-  if (typeof WorldSceneryModule !== 'undefined') {
-    try {
-      if (typeof WorldSceneryModule.renderGroundLayer === 'function') {
-        WorldSceneryModule.renderGroundLayer(ctx, camX, camY, canvas.width, canvas.height, isFury);
-      } else if (typeof WorldSceneryModule.renderTerrain === 'function') {
-        WorldSceneryModule.renderTerrain(ctx, camX, camY, canvas.width, canvas.height, isFury);
-      }
-    } catch (errGround) {
-      console.warn('Erro ao desenhar terreno:', errGround);
-    }
+  if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.renderGroundLayer === 'function') {
+    WorldSceneryModule.renderGroundLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, dungeonState);
   }
 
-  if (typeof BossSkillsModule !== 'undefined' && typeof BossSkillsModule.renderGroundTelegraphs === 'function') {
+  if (!dungeonState.isLobby && typeof BossSkillsModule !== 'undefined' && typeof BossSkillsModule.renderGroundTelegraphs === 'function') {
     BossSkillsModule.renderGroundTelegraphs(ctx);
   }
 
-  // Estruturas que estão ATRÁS do jogador (Y <= player.y)
   if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.renderPropsLayer === 'function') {
-    try {
-      WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'back');
-    } catch (errBack) {
-      console.warn('Erro props back:', errBack);
-    }
+    WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'back', dungeonState);
   }
 
-  monsters.forEach(function(m) {
-    if (m.hp <= 0) return;
-    var isSelected = selectedTargetId === m.id;
+  if (!dungeonState.isLobby) {
+    monsters.forEach(function(m) {
+      if (m.hp <= 0) return;
+      var isSelected = selectedTargetId === m.id;
 
-    if (m.isPvpRival && typeof PvpRivalsModule !== 'undefined') {
-      PvpRivalsModule.renderRival(ctx, m, isSelected);
-      return;
-    }
+      if (m.isPvpRival && typeof PvpRivalsModule !== 'undefined') {
+        PvpRivalsModule.renderRival(ctx, m, isSelected);
+        return;
+      }
 
-    if (isSelected) {
-      ctx.strokeStyle = '#fbbf24';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.ellipse(m.x, m.y + 16, 26, 11, 0, 0, Math.PI * 2); ctx.stroke();
-    }
+      if (isSelected) {
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.ellipse(m.x, m.y + 16, 26, 11, 0, 0, Math.PI * 2); ctx.stroke();
+      }
 
-    var drewMob = (typeof drawConfiguredSprite === 'function')
-      ? drawConfiguredSprite(ctx, 'mobs', m.name, m.animState || 'idle', m.animFrame || 0, m.x, m.y, m.facing || 1, null)
-      : false;
+      var drewMob = (typeof drawConfiguredSprite === 'function')
+        ? drawConfiguredSprite(ctx, 'mobs', m.name, m.animState || 'idle', m.animFrame || 0, m.x, m.y, m.facing || 1, null)
+        : false;
 
-    if (!drewMob) {
-      ctx.fillStyle = m.color;
-      ctx.beginPath(); ctx.arc(m.x, m.y, m.tier === 'boss' ? 26 : 19, 0, Math.PI * 2); ctx.fill();
-      ctx.font = (m.tier === 'boss' ? '26px' : '20px') + ' Segoe UI';
+      if (!drewMob) {
+        ctx.fillStyle = m.color;
+        ctx.beginPath(); ctx.arc(m.x, m.y, m.tier === 'boss' ? 28 : (m.tier === 'miniboss' ? 23 : 19), 0, Math.PI * 2); ctx.fill();
+        ctx.font = (m.tier === 'boss' ? '28px' : '20px') + ' Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillText(m.icon, m.x, m.y + 7);
+      }
+
+      var el = ELEMENTS[m.elem] || ELEMENTS.none;
+      var mobTopY = drewMob ? -58 : -32;
+      ctx.font = 'bold 11px Segoe UI';
       ctx.textAlign = 'center';
-      ctx.fillText(m.icon, m.x, m.y + 7);
-    }
+      ctx.fillStyle = m.tier === 'boss' ? '#fbbf24' : '#fff';
+      ctx.fillText(el.icon + ' [Nv.' + m.lvl + '] ' + m.name, m.x, m.y + mobTopY);
 
-    var el = ELEMENTS[m.elem] || ELEMENTS.none;
-    var mobTopY = drewMob ? -58 : -30;
-    ctx.font = 'bold 11px Segoe UI';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#fff';
-    ctx.fillText(el.icon + ' [Nv.' + m.lvl + '] ' + m.name, m.x, m.y + mobTopY);
-
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48, 5);
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48 * (m.hp / m.maxHp), 5);
-  });
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48, 5);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(m.x - 24, m.y + mobTopY + 6, 48 * (m.hp / m.maxHp), 5);
+    });
+  }
 
   var arch = ARCHETYPES[player.archKey] || ARCHETYPES.solar_guard;
   ctx.fillStyle = 'rgba(0,0,0,0.48)';
@@ -2332,13 +2463,8 @@ function renderWorld() {
   ctx.fillStyle = '#fde047';
   ctx.fillText(player.name, player.x + (rkInfo ? 8 : 0), player.y + nameOffsetY);
 
-  // Estruturas que estão NA FRENTE do jogador (Y > player.y)
   if (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.renderPropsLayer === 'function') {
-    try {
-      WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'front');
-    } catch (errFront) {
-      console.warn('Erro props front:', errFront);
-    }
+    WorldSceneryModule.renderPropsLayer(ctx, camX, camY, canvas.width, canvas.height, isFury, player.y, 'front', dungeonState);
   }
 
   projectiles.forEach(function(p) {
@@ -2420,17 +2546,44 @@ function renderWorld() {
 function renderMinimap() {
   miniCtx.fillStyle = '#070a10';
   miniCtx.fillRect(0, 0, 124, 124);
-  var scale = 124 / WORLD_SIZE;
 
-  monsters.forEach(function(m) {
-    if (m.hp <= 0) return;
-    miniCtx.fillStyle = m.tier === 'boss' ? '#fbbf24' : '#ef4444';
-    miniCtx.fillRect(m.x * scale - 1.5, m.y * scale - 1.5, 3, 3);
-  });
+  var b = (typeof WorldSceneryModule !== 'undefined' && typeof WorldSceneryModule.getActiveBounds === 'function')
+    ? WorldSceneryModule.getActiveBounds(dungeonState.isLobby)
+    : { x: 1050, y: 1050, w: 1100, h: 850 };
+
+  miniCtx.strokeStyle = dungeonState.isLobby ? '#38bdf8' : '#fbbf24';
+  miniCtx.lineWidth = 1.5;
+  miniCtx.strokeRect(4, 4, 116, 116);
+
+  function mapX(wx) { return 4 + ((wx - b.x) / b.w) * 116; }
+  function mapY(wy) { return 4 + ((wy - b.y) / b.h) * 116; }
+
+  if (dungeonState.isLobby && typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.getLobbyPortals().forEach(function(pt) {
+      miniCtx.fillStyle = pt.cfg.portalColor;
+      miniCtx.beginPath();
+      miniCtx.arc(mapX(pt.x), mapY(pt.y), 3.5, 0, Math.PI * 2);
+      miniCtx.fill();
+    });
+  } else {
+    monsters.forEach(function(m) {
+      if (m.hp <= 0) return;
+      miniCtx.fillStyle = m.tier === 'boss' ? '#fbbf24' : (m.tier === 'miniboss' ? '#f97316' : '#ef4444');
+      miniCtx.fillRect(mapX(m.x) - 2, mapY(m.y) - 2, 4, 4);
+    });
+
+    if (dungeonState.floorCleared && typeof WorldSceneryModule !== 'undefined') {
+      var exits = WorldSceneryModule.getFloorExitPortals();
+      miniCtx.fillStyle = exits.lobby.color;
+      miniCtx.beginPath(); miniCtx.arc(mapX(exits.lobby.x), mapY(exits.lobby.y), 4, 0, Math.PI * 2); miniCtx.fill();
+      miniCtx.fillStyle = exits.next.color;
+      miniCtx.beginPath(); miniCtx.arc(mapX(exits.next.x), mapY(exits.next.y), 4, 0, Math.PI * 2); miniCtx.fill();
+    }
+  }
 
   miniCtx.fillStyle = '#38bdf8';
   miniCtx.beginPath();
-  miniCtx.arc(player.x * scale, player.y * scale, 3.5, 0, Math.PI * 2);
+  miniCtx.arc(mapX(player.x), mapY(player.y), 3.8, 0, Math.PI * 2);
   miniCtx.fill();
 }
 
