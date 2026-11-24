@@ -1882,17 +1882,18 @@ function closeAllWindows() {
 }
 
 window.addEventListener('keydown', function(e) {
-  keys[e.key.toLowerCase()] = true;
+  var k = e.key.toLowerCase();
+  keys[k] = true;
   if (!player || document.getElementById('char-screen').style.display !== 'none') return;
 
   if (e.key >= '1' && e.key <= '6') useClassSkill(parseInt(e.key, 10) - 1);
   if (e.key === '7') quickUsePotion('hp');
   if (e.key === '8') quickUsePotion('mp_sp');
-  if (e.key.toLowerCase() === 'z') toggleAutoCombat();
-  if (e.key.toLowerCase() === 'c') toggleWindow('status-modal');
-  if (e.key.toLowerCase() === 'b') toggleWindow('bag-modal');
-  if (e.key.toLowerCase() === 'f') toggleWindow('smith-modal');
-  if (e.key.toLowerCase() === 'l') toggleWindow('shop-modal');
+  if (k === 'z') toggleAutoCombat();
+  if (k === 'c') toggleWindow('status-modal');
+  if (k === 'b') toggleWindow('bag-modal');
+  if (k === 'f') toggleWindow('smith-modal');
+  if (k === 'l') toggleWindow('shop-modal');
   if (e.key === 'Escape') closeAllWindows();
 });
 
@@ -1902,6 +1903,7 @@ window.addEventListener('keyup', function(e) {
 
 canvas.addEventListener('mousedown', function(e) {
   if (!player || document.getElementById('char-screen').style.display !== 'none') return;
+  var mapLimit = (typeof WORLD_SIZE === 'number' && WORLD_SIZE > 200) ? WORLD_SIZE : 3200;
   var rect = canvas.getBoundingClientRect();
   var wx = (e.clientX - rect.left) + (player.x - canvas.width / 2);
   var wy = (e.clientY - rect.top) + (player.y - canvas.height / 2);
@@ -1913,14 +1915,13 @@ canvas.addEventListener('mousedown', function(e) {
   if (clickedMob) {
     selectedTargetId = clickedMob.id;
     useClassSkill(0);
-} else {
+  } else {
     player.autoCombat = false;
-    player.tx = Math.max(60, Math.min(WORLD_SIZE - 60, wx));
-    player.ty = Math.max(60, Math.min(WORLD_SIZE - 60, wy));
+    player.tx = Math.max(96, Math.min(mapLimit - 96, wx));
+    player.ty = Math.max(96, Math.min(mapLimit - 96, wy));
   }
   updateAllHUD();
 });
-
 // ================= HUD & TEXTOS FLUTUANTES =================
 function addFloatingText(x, y, text, color) {
   floatingTexts.push({ x: x, y: y, text: text, color: color || '#fff', life: 1.15 });
@@ -2027,15 +2028,19 @@ function updateSimulation(dt) {
     if (player.buffs[b].timer <= 0) player.buffs.splice(b, 1);
   }
 
-  var effectiveSpeed = st.moveSpeed;
+ var effectiveSpeed = (st && typeof st.moveSpeed === 'number' && !isNaN(st.moveSpeed) && st.moveSpeed > 0) ? st.moveSpeed : 210;
   if (typeof BossSkillsModule !== 'undefined') {
     if (BossSkillsModule.hasDebuff('debuff_stun')) effectiveSpeed = 0;
     else if (BossSkillsModule.hasDebuff('debuff_slow')) effectiveSpeed *= 0.55;
   }
-  
-if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
+
+  var mapLimit = (typeof WORLD_SIZE === 'number' && WORLD_SIZE > 200) ? WORLD_SIZE : 3200;
+  if (typeof player.x !== 'number' || isNaN(player.x)) player.x = player.faction === 'fury' ? 2400 : 736;
+  if (typeof player.y !== 'number' || isNaN(player.y)) player.y = player.faction === 'fury' ? 800 : 2496;
   if (typeof player.tx !== 'number' || isNaN(player.tx)) player.tx = player.x;
   if (typeof player.ty !== 'number' || isNaN(player.ty)) player.ty = player.y;
+
+  var moveDt = (typeof dt === 'number' && !isNaN(dt) && dt > 0) ? Math.min(0.1, dt) : 0.016;
 
   var vx = 0, vy = 0;
   if (keys['w'] || keys['arrowup'])    vy -= 1;
@@ -2048,8 +2053,8 @@ if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
     if (player.autoCombat) player.autoCombat = false;
     isMovingNow = true;
     var len = Math.hypot(vx, vy);
-    player.x = Math.max(60, Math.min(WORLD_SIZE - 60, player.x + (vx / len) * effectiveSpeed * dt));
-    player.y = Math.max(60, Math.min(WORLD_SIZE - 60, player.y + (vy / len) * effectiveSpeed * dt));
+    player.x = Math.max(96, Math.min(mapLimit - 96, player.x + (vx / len) * effectiveSpeed * moveDt));
+    player.y = Math.max(96, Math.min(mapLimit - 96, player.y + (vy / len) * effectiveSpeed * moveDt));
     player.tx = player.x;
     player.ty = player.y;
     if (vx !== 0) player.facing = vx > 0 ? 1 : -1;
@@ -2058,13 +2063,18 @@ if (!effectiveSpeed || isNaN(effectiveSpeed)) effectiveSpeed = 190;
     var d = Math.hypot(dx, dy);
     if (d > 6) {
       isMovingNow = true;
-      player.x += (dx / d) * effectiveSpeed * dt;
-      player.y += (dy / d) * effectiveSpeed * dt;
+      var step = Math.min(d, effectiveSpeed * moveDt);
+      player.x = Math.max(96, Math.min(mapLimit - 96, player.x + (dx / d) * step));
+      player.y = Math.max(96, Math.min(mapLimit - 96, player.y + (dy / d) * step));
       player.facing = dx >= 0 ? 1 : -1;
     }
   }
 
-  updatePlayerAnimation(dt, isMovingNow);
+  if (typeof WorldSceneryModule !== 'undefined') {
+    WorldSceneryModule.resolveCollision(player, 16);
+  }
+
+  updatePlayerAnimation(moveDt, isMovingNow);
 
   if (player.autoCombat) {
     autoAttackTimer -= dt;
