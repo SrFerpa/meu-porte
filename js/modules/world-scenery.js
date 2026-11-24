@@ -1,520 +1,385 @@
-// ================= MÓDULO: MAPA 1 - PROELIUM FRONTIER (LAYOUT OFICIAL + COLISÃO SÓLIDA) =================
-var WorldSceneryModule = (function () {
-  var builtForSize = 0;
-  var props = [];
-  var groundDetails = [];
-  var riverSegments = [];
-  var bridges = [];
+// ================= MÓDULO DE CENÁRIO: LOBBY PASSIVO & TORRE DO ABISMO (5 DUNGEONS) =================
+var WorldSceneryModule = (function() {
+  var LOBBY_BOUNDS = { x: 1100, y: 1100, w: 1000, h: 850 };
+  var ARENA_BOUNDS = { x: 1050, y: 1050, w: 1100, h: 850 };
 
-  function getMapSize() {
-    return (typeof WORLD_SIZE !== 'undefined' && WORLD_SIZE > 0) ? WORLD_SIZE : 3200;
+  var DG_CONFIGS = [
+    {
+      id: 0,
+      name: 'DG 1–15: Cavernas Telúricas',
+      shortName: 'DG 1–15',
+      minLvl: 1,
+      maxLvl: 15,
+      elem: 'earth',
+      weakElem: 'wind',
+      portalColor: '#a16207',
+      floorBg: '#242118',
+      tileA: '#2e2a1f',
+      tileB: '#28241a',
+      borderLava: '#78350f',
+      torchColor: '#fbbf24'
+    },
+    {
+      id: 1,
+      name: 'DG 15–25: Cânion das Tempestades',
+      shortName: 'DG 15–25',
+      minLvl: 15,
+      maxLvl: 25,
+      elem: 'wind',
+      weakElem: 'fire',
+      portalColor: '#10b981',
+      floorBg: '#162622',
+      tileA: '#1d332d',
+      tileB: '#182b26',
+      borderLava: '#065f46',
+      torchColor: '#34d399'
+    },
+    {
+      id: 2,
+      name: 'DG 25–35: Abismo Glacial',
+      shortName: 'DG 25–35',
+      minLvl: 25,
+      maxLvl: 35,
+      elem: 'water',
+      weakElem: 'earth',
+      portalColor: '#2563eb',
+      floorBg: '#131d2e',
+      tileA: '#19273d',
+      tileB: '#152134',
+      borderLava: '#1d4ed8',
+      torchColor: '#38bdf8'
+    },
+    {
+      id: 3,
+      name: 'DG 35–45: Forja Vulcânica',
+      shortName: 'DG 35–45',
+      minLvl: 35,
+      maxLvl: 45,
+      elem: 'fire',
+      weakElem: 'water',
+      portalColor: '#dc2626',
+      floorBg: '#291515',
+      tileA: '#361b1b',
+      tileB: '#2e1717',
+      borderLava: '#b91c1c',
+      torchColor: '#fb923c'
+    },
+    {
+      id: 4,
+      name: 'DG 45–60: Trono do Abismo',
+      shortName: 'DG 45–60',
+      minLvl: 45,
+      maxLvl: 60,
+      elem: 'mixed',
+      weakElem: 'all',
+      portalColor: '#9333ea',
+      floorBg: '#1e1329',
+      tileA: '#281936',
+      tileB: '#22152e',
+      borderLava: '#7e22ce',
+      torchColor: '#e879f9'
+    }
+  ];
+
+  // Posição dos 5 Portais no topo do Lobby
+  function getLobbyPortals() {
+    var baseY = LOBBY_BOUNDS.y + 165;
+    var startX = LOBBY_BOUNDS.x + 140;
+    var gapX = 180;
+    return DG_CONFIGS.map(function(cfg, idx) {
+      return {
+        dgIndex: idx,
+        x: startX + idx * gapX,
+        y: baseY,
+        r: 42,
+        cfg: cfg
+      };
+    });
   }
 
-  function createSeededRandom(seed) {
-    var s = seed % 2147483647;
-    if (s <= 0) s += 2147483646;
-    return function () {
-      s = (s * 16807) % 2147483647;
-      return (s - 1) / 2147483646;
+  // NPCs decorativos/interativos no Lobby
+  function getLobbyNpcs() {
+    return [
+      { id: 'npc_smith', name: '🔨 Ferreiro de Teos (F)', x: LOBBY_BOUNDS.x + 210, y: LOBBY_BOUNDS.y + 470, color: '#f59e0b', action: 'smith-modal' },
+      { id: 'npc_shop',  name: '👑 Loja Exclusiva (L)',  x: LOBBY_BOUNDS.x + 790, y: LOBBY_BOUNDS.y + 470, color: '#ec4899', action: 'shop-modal' }
+    ];
+  }
+
+  // Portais de saída quando limpa um andar da DG
+  function getFloorExitPortals() {
+    return {
+      lobby: {
+        x: ARENA_BOUNDS.x + 340,
+        y: ARENA_BOUNDS.y + 150,
+        r: 44,
+        label: '🏛️ Voltar ao Lobby Seguro',
+        color: '#38bdf8'
+      },
+      next: {
+        x: ARENA_BOUNDS.x + 760,
+        y: ARENA_BOUNDS.y + 150,
+        r: 44,
+        label: '🔥 Próximo Andar',
+        color: '#fbbf24'
+      }
     };
   }
 
-  function distToSegment(px, py, ax, ay, bx, by) {
-    var dx = bx - ax;
-    var dy = by - ay;
-    var l2 = dx * dx + dy * dy;
-    if (l2 === 0) return Math.hypot(px - ax, py - ay);
-    var t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / l2));
-    return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+  function getLobbySpawn() {
+    return { x: LOBBY_BOUNDS.x + LOBBY_BOUNDS.w / 2, y: LOBBY_BOUNDS.y + 620 };
   }
 
-  function getFactionSpawn(faction) {
-    var W = getMapSize();
-    if (faction === 'fury') {
-      // Paroutian Fortress (Nordeste)
-      return { x: Math.round(W * 0.75), y: Math.round(W * 0.25) };
-    }
-    // Delphinian Fortress (Sudoeste)
-    return { x: Math.round(W * 0.23), y: Math.round(W * 0.78) };
+  function getArenaSpawn() {
+    return { x: ARENA_BOUNDS.x + ARENA_BOUNDS.w / 2, y: ARENA_BOUNDS.y + ARENA_BOUNDS.h - 140 };
   }
 
-  function getRedTowerPos() {
-    var W = getMapSize();
-    return { x: Math.round(W * 0.55), y: Math.round(W * 0.46) };
+  function getFactionSpawn() {
+    return getLobbySpawn();
   }
 
-  function getZoneLevelAt(x, y) {
-    var W = getMapSize();
-    var tower = getRedTowerPos();
-    var distCenter = Math.hypot(x - tower.x, y - tower.y);
-    var maxDist = W * 0.55;
-    var ratio = 1 - Math.min(1, distCenter / maxDist);
-    return Math.max(1, Math.min(15, Math.round(1 + ratio * 14)));
+  function getActiveBounds(isLobby) {
+    return isLobby ? LOBBY_BOUNDS : ARENA_BOUNDS;
   }
 
-  function buildMapGeometry(W) {
-    bridges = [
-      { x: W * 0.495, y: W * 0.475, r: 72, angle: -0.65 }, // Ponte Central (Torre Vermelha)
-      { x: W * 0.145, y: W * 0.565, r: 64, angle: 0.35 }   // Ponte Oeste (Iron Blood)
+  // Pilares internos da arena (poucos e bem espaçados para nunca travar o jogador)
+  function getArenaPillars(isLobby) {
+    if (isLobby) return [];
+    var b = ARENA_BOUNDS;
+    return [
+      { x: b.x + 280, y: b.y + 320, r: 26 },
+      { x: b.x + b.w - 280, y: b.y + 320, r: 26 },
+      { x: b.x + 280, y: b.y + b.h - 280, r: 26 },
+      { x: b.x + b.w - 280, y: b.y + b.h - 280, r: 26 }
     ];
-
-    var riverPaths = [
-      [
-        [0.14, 0.08], [0.16, 0.16], [0.15, 0.25], [0.22, 0.28], [0.34, 0.31],
-        [0.15, 0.25], [0.11, 0.34], [0.12, 0.44], [0.14, 0.55], [0.20, 0.61],
-        [0.32, 0.64], [0.39, 0.72], [0.43, 0.83], [0.45, 0.93]
-      ],
-      [
-        [0.49, 0.06], [0.48, 0.18], [0.51, 0.30], [0.52, 0.42], [0.49, 0.54],
-        [0.45, 0.65], [0.43, 0.76], [0.45, 0.88]
-      ],
-      [
-        [0.49, 0.54], [0.60, 0.53], [0.72, 0.50], [0.83, 0.47], [0.91, 0.44]
-      ]
-    ];
-
-    riverSegments = [];
-    for (var p = 0; p < riverPaths.length; p++) {
-      var path = riverPaths[p];
-      for (var i = 0; i < path.length - 1; i++) {
-        riverSegments.push({
-          ax: path[i][0] * W,
-          ay: path[i][1] * W,
-          bx: path[i + 1][0] * W,
-          by: path[i + 1][1] * W,
-          width: 44
-        });
-      }
-    }
   }
 
-  function isOnBridge(x, y) {
-    for (var i = 0; i < bridges.length; i++) {
-      if (Math.hypot(x - bridges[i].x, y - bridges[i].y) <= bridges[i].r) return true;
-    }
-    return false;
-  }
+  function resolveCollision(entity, radius, isLobby) {
+    var b = getActiveBounds(isLobby !== false);
+    var pad = (radius || 16) + 28;
+    if (entity.x < b.x + pad) entity.x = b.x + pad;
+    if (entity.x > b.x + b.w - pad) entity.x = b.x + b.w - pad;
+    if (entity.y < b.y + pad) entity.y = b.y + pad;
+    if (entity.y > b.y + b.h - pad) entity.y = b.y + b.h - pad;
 
-  function isInWater(x, y, extraMargin) {
-    ensureBuilt();
-    if (isOnBridge(x, y)) return false;
-    var margin = extraMargin || 0;
-    for (var i = 0; i < riverSegments.length; i++) {
-      var s = riverSegments[i];
-      if (distToSegment(x, y, s.ax, s.ay, s.bx, s.by) < s.width + margin) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function isOnRoadOrBase(x, y, margin, W) {
-    if (Math.hypot(x - W * 0.23, y - W * 0.78) < 230 + margin) return true;
-    if (Math.hypot(x - W * 0.75, y - W * 0.25) < 230 + margin) return true;
-    if (Math.hypot(x - W * 0.55, y - W * 0.46) < 155 + margin) return true;
-
-    var roadSegs = [
-      [0.10, 0.89, 0.23, 0.78],
-      [0.23, 0.78, 0.36, 0.66],
-      [0.36, 0.66, 0.42, 0.53],
-      [0.42, 0.53, 0.55, 0.46],
-      [0.55, 0.46, 0.59, 0.35],
-      [0.59, 0.35, 0.75, 0.25],
-      [0.75, 0.25, 0.90, 0.08],
-      [0.42, 0.53, 0.34, 0.49],
-      [0.34, 0.49, 0.25, 0.51]
-    ];
-
-    for (var i = 0; i < roadSegs.length; i++) {
-      var r = roadSegs[i];
-      if (distToSegment(x, y, r[0] * W, r[1] * W, r[2] * W, r[3] * W) < 58 + margin) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function ensureBuilt() {
-    var W = getMapSize();
-    if (builtForSize === W) return;
-    builtForSize = W;
-    props = [];
-    groundDetails = [];
-
-    buildMapGeometry(W);
-    var rand = createSeededRandom(202609);
-
-    // 1. Muralha de Montanhas nas 4 bordas externas do mapa
-    var step = 76;
-    for (var bx = 40; bx <= W - 40; bx += step) {
-      props.push({ x: bx, y: 40, kind: 'mountain', scale: 1.15, hitRadius: 42 });
-      props.push({ x: bx, y: W - 40, kind: 'mountain', scale: 1.15, hitRadius: 42 });
-    }
-    for (var by = 100; by <= W - 100; by += step) {
-      props.push({ x: 40, y: by, kind: 'mountain', scale: 1.15, hitRadius: 42 });
-      props.push({ x: W - 40, y: by, kind: 'mountain', scale: 1.15, hitRadius: 42 });
-    }
-
-    // 2. Maciço Rochoso Norte
-    var northMountains = [
-      [0.41, 0.17], [0.44, 0.19], [0.40, 0.22], [0.44, 0.24], [0.38, 0.20]
-    ];
-    for (var m = 0; m < northMountains.length; m++) {
-      props.push({
-        x: northMountains[m][0] * W,
-        y: northMountains[m][1] * W,
-        kind: 'mountain',
-        scale: 1.05,
-        hitRadius: 36
-      });
-    }
-
-    // 3. Fortalezas com pátio 100% aberto + APENAS 1 torre lateral por base
-    // Delphinian Fortress (Sudoeste - Luz)
-    props.push({ x: W * 0.23, y: W * 0.78, kind: 'fortress_light', scale: 1.0, hitRadius: 0 });
-    props.push({ x: W * 0.17, y: W * 0.73, kind: 'watchtower', scale: 1.0, hitRadius: 0 });
-
-    // Paroutian Fortress (Nordeste - Fúria)
-    props.push({ x: W * 0.75, y: W * 0.25, kind: 'fortress_fury', scale: 1.0, hitRadius: 0 });
-    props.push({ x: W * 0.81, y: W * 0.20, kind: 'watchtower', scale: 1.0, hitRadius: 0 });
-
-    // 4. Torre Vermelha Central (Altar do Boss Mundial)
-    var tower = getRedTowerPos();
-    props.push({ x: tower.x, y: tower.y, kind: 'red_tower', scale: 1.1, hitRadius: 24 });
-
-    // 5. Grama e flores no solo
-    for (var i = 0; i < 800; i++) {
-      var gx = 100 + rand() * (W - 200);
-      var gy = 100 + rand() * (W - 200);
-      if (isInWater(gx, gy, 18) || isOnRoadOrBase(gx, gy, 0, W)) continue;
-      groundDetails.push({
-        x: gx, y: gy,
-        type: rand() < 0.72 ? 'grass' : 'flower',
-        scale: 0.8 + rand() * 0.5,
-        variant: Math.floor(rand() * 3)
-      });
-    }
-
-    // 6. Árvores e rochas nas áreas verdes
-    for (var j = 0; j < 220; j++) {
-      var px = 130 + rand() * (W - 260);
-      var py = 130 + rand() * (W - 260);
-      if (isInWater(px, py, 32) || isOnRoadOrBase(px, py, 44, W)) continue;
-
-      var tooClose = false;
-      for (var k = 0; k < props.length; k++) {
-        if (Math.hypot(props[k].x - px, props[k].y - py) < 96) {
-          tooClose = true;
-          break;
-        }
-      }
-      if (tooClose) continue;
-
-      var roll = rand();
-      var kind = roll > 0.76 ? 'rock' : 'tree';
-      var sc = 0.85 + rand() * 0.45;
-      props.push({
-        x: px, y: py,
-        kind: kind,
-        scale: sc,
-        hitRadius: Math.round((kind === 'rock' ? 22 : 18) * sc),
-        variant: Math.floor(rand() * 3)
-      });
-    }
-
-    props.sort(function (a, b) { return a.y - b.y; });
-  }
-
-  function resolveCollision(entity, entityRadius) {
-    ensureBuilt();
-    var W = getMapSize();
-    var rEnt = entityRadius || 16;
-
-    // A) Colisão com obstáculos sólidos (montanhas, árvores, rochas, torre central)
-    for (var i = 0; i < props.length; i++) {
-      var p = props[i];
-      if (!p.hitRadius || p.hitRadius <= 0) continue;
-
-      var maxDist = p.hitRadius + rEnt;
+    var pillars = getArenaPillars(isLobby !== false);
+    for (var i = 0; i < pillars.length; i++) {
+      var p = pillars[i];
       var dx = entity.x - p.x;
       var dy = entity.y - p.y;
-      if (Math.abs(dx) >= maxDist || Math.abs(dy) >= maxDist) continue;
-
       var dist = Math.hypot(dx, dy);
-      if (dist < maxDist) {
-        if (dist < 0.001) { dx = 0; dy = 1; dist = 1; }
-        var overlap = maxDist - dist;
-        entity.x += (dx / dist) * overlap;
-        entity.y += (dy / dist) * overlap;
-
-        if (typeof entity.tx === 'number' && Math.hypot(entity.tx - p.x, entity.ty - p.y) < maxDist) {
-          entity.tx = entity.x;
-          entity.ty = entity.y;
-        }
+      var minDist = p.r + (radius || 16);
+      if (dist > 0 && dist < minDist) {
+        entity.x = p.x + (dx / dist) * minDist;
+        entity.y = p.y + (dy / dist) * minDist;
       }
     }
-
-    // B) Colisão com os Rios Azuis (exceto pontes)
-    if (!isOnBridge(entity.x, entity.y)) {
-      for (var sIdx = 0; sIdx < riverSegments.length; sIdx++) {
-        var s = riverSegments[sIdx];
-        var abx = s.bx - s.ax;
-        var aby = s.by - s.ay;
-        var l2 = abx * abx + aby * aby;
-        var t = l2 === 0 ? 0 : Math.max(0, Math.min(1, ((entity.x - s.ax) * abx + (entity.y - s.ay) * aby) / l2));
-        var cx = s.ax + t * abx;
-        var cy = s.ay + t * aby;
-
-        var rdx = entity.x - cx;
-        var rdy = entity.y - cy;
-        var rDist = Math.hypot(rdx, rdy);
-        var minWaterDist = s.width + rEnt * 0.7;
-
-        if (rDist < minWaterDist) {
-          if (rDist < 0.001) { rdx = 1; rdy = 0; rDist = 1; }
-          var push = minWaterDist - rDist;
-          entity.x += (rdx / rDist) * push;
-          entity.y += (rdy / rDist) * push;
-
-          if (typeof entity.tx === 'number' && isInWater(entity.tx, entity.ty, 0)) {
-            entity.tx = entity.x;
-            entity.ty = entity.y;
-          }
-        }
-      }
-    }
-
-    // C) Limite interno das muralhas externas do mapa
-    entity.x = Math.max(92, Math.min(W - 92, entity.x));
-    entity.y = Math.max(92, Math.min(W - 92, entity.y));
   }
 
-  function renderGround(ctx, camX, camY, viewW, viewH) {
-    ensureBuilt();
-    var W = getMapSize();
+  function drawPortalCircle(ctx, x, y, r, color, timeSec) {
+    ctx.save();
+    var pulse = Math.sin(timeSec * 4) * 4;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 18;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(x, y, r + pulse * 0.5, (r + pulse * 0.5) * 0.68, 0, 0, Math.PI * 2);
+    ctx.stroke();
 
-    ctx.fillStyle = '#262b1c';
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.24;
+    ctx.beginPath();
+    ctx.ellipse(x, y, r * 0.85, r * 0.56, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalAlpha = 0.75;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, r * 0.52, timeSec * 2.5, timeSec * 2.5 + Math.PI * 1.4);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function renderGroundLayer(ctx, camX, camY, viewW, viewH, isFury, stateInfo) {
+    var isLobby = !stateInfo || stateInfo.isLobby;
+    var dgIdx = (stateInfo && typeof stateInfo.dgIndex === 'number') ? stateInfo.dgIndex : 0;
+    var cfg = DG_CONFIGS[dgIdx] || DG_CONFIGS[0];
+    var b = getActiveBounds(isLobby);
+    var timeSec = performance.now() / 1000;
+
+    // Fundo abissal/lava fora da sala
+    ctx.fillStyle = isLobby ? '#0b101b' : '#09070d';
     ctx.fillRect(camX, camY, viewW, viewH);
 
-    var tile = 260;
-    var startX = Math.floor(camX / tile) * tile;
-    var startY = Math.floor(camY / tile) * tile;
-    for (var tx = startX; tx < camX + viewW + tile; tx += tile) {
-      for (var ty = startY; ty < camY + viewH + tile; ty += tile) {
-        var h = Math.abs(Math.sin(tx * 12.9898 + ty * 78.233) * 43758.5453) % 1;
-        ctx.fillStyle = h > 0.5 ? 'rgba(54, 64, 38, 0.42)' : 'rgba(72, 62, 42, 0.35)';
-        ctx.beginPath();
-        ctx.ellipse(tx + 130, ty + 130, 145, 105, h * Math.PI, 0, Math.PI * 2);
-        ctx.fill();
+    // Borda externa luminosa da sala
+    ctx.fillStyle = isLobby ? '#1e293b' : cfg.borderLava;
+    ctx.fillRect(b.x - 18, b.y - 18, b.w + 36, b.h + 36);
+
+    // Piso em ladrilhos 2.5D
+    var tileSize = 64;
+    for (var gx = b.x; gx < b.x + b.w; gx += tileSize) {
+      for (var gy = b.y; gy < b.y + b.h; gy += tileSize) {
+        var odd = (((gx - b.x) / tileSize) + ((gy - b.y) / tileSize)) % 2 === 0;
+        if (isLobby) {
+          ctx.fillStyle = odd ? '#182234' : '#141d2c';
+        } else {
+          ctx.fillStyle = odd ? cfg.tileA : cfg.tileB;
+        }
+        ctx.fillRect(gx, gy, tileSize, tileSize);
       }
     }
 
+    // Círculo rúnico central
+    var cx = b.x + b.w / 2;
+    var cy = b.y + b.h / 2 + 20;
     ctx.save();
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    var roadPaths = [
-      [[0.10, 0.89], [0.23, 0.78], [0.36, 0.66], [0.42, 0.53], [0.55, 0.46], [0.59, 0.35], [0.75, 0.25], [0.90, 0.08]],
-      [[0.42, 0.53], [0.34, 0.49], [0.25, 0.51]]
-    ];
-
-    for (var rIdx = 0; rIdx < roadPaths.length; rIdx++) {
-      var rp = roadPaths[rIdx];
-      ctx.beginPath();
-      for (var ptIdx = 0; ptIdx < rp.length; ptIdx++) {
-        if (ptIdx === 0) ctx.moveTo(rp[ptIdx][0] * W, rp[ptIdx][1] * W);
-        else ctx.lineTo(rp[ptIdx][0] * W, rp[ptIdx][1] * W);
-      }
-      ctx.strokeStyle = '#5c4b36';
-      ctx.lineWidth = 82;
-      ctx.stroke();
-
-      ctx.strokeStyle = '#8c7353';
-      ctx.lineWidth = 48;
-      ctx.stroke();
-    }
-    ctx.restore();
-
-    ctx.save();
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    ctx.strokeStyle = '#164e63';
-    ctx.lineWidth = 96;
+    ctx.strokeStyle = isLobby ? 'rgba(56, 189, 248, 0.22)' : 'rgba(251, 191, 36, 0.18)';
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    for (var s1 = 0; s1 < riverSegments.length; s1++) {
-      ctx.moveTo(riverSegments[s1].ax, riverSegments[s1].ay);
-      ctx.lineTo(riverSegments[s1].bx, riverSegments[s1].by);
-    }
+    ctx.arc(cx, cy, 150, 0, Math.PI * 2);
     ctx.stroke();
-
-    ctx.strokeStyle = '#0e7490';
-    ctx.lineWidth = 74;
     ctx.beginPath();
-    for (var s2 = 0; s2 < riverSegments.length; s2++) {
-      ctx.moveTo(riverSegments[s2].ax, riverSegments[s2].ay);
-      ctx.lineTo(riverSegments[s2].bx, riverSegments[s2].by);
-    }
-    ctx.stroke();
-
-    ctx.strokeStyle = '#22d3ee';
-    ctx.globalAlpha = 0.28;
-    ctx.lineWidth = 34;
-    ctx.beginPath();
-    for (var s3 = 0; s3 < riverSegments.length; s3++) {
-      ctx.moveTo(riverSegments[s3].ax, riverSegments[s3].ay);
-      ctx.lineTo(riverSegments[s3].bx, riverSegments[s3].by);
-    }
+    ctx.arc(cx, cy, 95, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
 
-    for (var bIdx = 0; bIdx < bridges.length; bIdx++) {
-      var b = bridges[bIdx];
-      ctx.save();
-      ctx.translate(b.x, b.y);
-      ctx.rotate(b.angle);
-      ctx.fillStyle = '#57534e';
-      ctx.fillRect(-62, -38, 124, 76);
-      ctx.strokeStyle = '#a8a29e';
-      ctx.lineWidth = 5;
-      ctx.strokeRect(-62, -38, 124, 76);
-      ctx.restore();
-    }
-
-    for (var i = 0; i < groundDetails.length; i++) {
-      var d = groundDetails[i];
-      if (d.x < camX - 30 || d.x > camX + viewW + 30 || d.y < camY - 30 || d.y > camY + viewH + 30) continue;
-      if (d.type === 'grass') {
-        ctx.strokeStyle = '#4d5e36';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(d.x - 4, d.y); ctx.lineTo(d.x - 6, d.y - 7 * d.scale);
-        ctx.moveTo(d.x, d.y);     ctx.lineTo(d.x, d.y - 9 * d.scale);
-        ctx.moveTo(d.x + 4, d.y); ctx.lineTo(d.x + 6, d.y - 6 * d.scale);
-        ctx.stroke();
-      } else {
-        ctx.fillStyle = ['#fef08a', '#fda4af', '#bae6fd'][d.variant % 3];
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, 2.4 * d.scale, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    ctx.save();
-    ctx.font = 'bold 16px Segoe UI';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.fillText('⚔️ IRON BLOOD (Nv. 6–12)', W * 0.27, W * 0.45);
-    ctx.fillStyle = 'rgba(125, 211, 252, 0.9)';
-    ctx.fillText('☀️ DELPHINIAN FORTRESS (Spawn Luz)', W * 0.23, W * 0.84);
-    ctx.fillStyle = 'rgba(253, 164, 175, 0.9)';
-    ctx.fillText('🔥 PAROUTIAN FORTRESS (Spawn Fúria)', W * 0.75, W * 0.31);
-    ctx.restore();
-  }
-
-  function drawSingleProp(ctx, p, now) {
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.scale(p.scale, p.scale);
-
-    if (p.kind === 'mountain') {
-      ctx.fillStyle = 'rgba(0,0,0,0.38)';
-      ctx.beginPath(); ctx.ellipse(0, 12, 46, 16, 0, 0, Math.PI * 2); ctx.fill();
-
-      ctx.fillStyle = '#44403c';
-      ctx.beginPath();
-      ctx.moveTo(-44, 12); ctx.lineTo(-14, -46); ctx.lineTo(18, -38); ctx.lineTo(44, 12);
-      ctx.closePath(); ctx.fill();
-
-      ctx.fillStyle = '#78716c';
-      ctx.beginPath();
-      ctx.moveTo(-14, -46); ctx.lineTo(4, -18); ctx.lineTo(-26, 12); ctx.lineTo(-44, 12);
-      ctx.closePath(); ctx.fill();
-    } else if (p.kind === 'fortress_light' || p.kind === 'fortress_fury') {
-      var isLight = p.kind === 'fortress_light';
-      var bannerCol = isLight ? '#38bdf8' : '#f43f5e';
-      var glowCol   = isLight ? 'rgba(56, 189, 248, 0.24)' : 'rgba(244, 63, 94, 0.24)';
-
-      // Pátio aberto limpo (sem torres internas para não engatar)
-      ctx.fillStyle = '#3f3b37';
-      ctx.beginPath(); ctx.arc(0, 0, 130, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = bannerCol;
-      ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.arc(0, 0, 122, 0, Math.PI * 2); ctx.stroke();
-
-      var pulse = 1 + Math.sin(now) * 0.12;
-      ctx.fillStyle = glowCol;
-      ctx.beginPath(); ctx.arc(0, -10, 48 * pulse, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = bannerCol;
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(0, -10, 30 * pulse, 0, Math.PI * 2); ctx.stroke();
-    } else if (p.kind === 'red_tower') {
-      var rPulse = 1 + Math.sin(now * 1.4) * 0.14;
-      ctx.fillStyle = 'rgba(225, 29, 72, 0.25)';
-      ctx.beginPath(); ctx.arc(0, 0, 88 * rPulse, 0, Math.PI * 2); ctx.fill();
-
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(0, 0, 68, 0, Math.PI * 2); ctx.stroke();
-
-      ctx.fillStyle = '#881337';
-      ctx.beginPath();
-      ctx.moveTo(-22, 10); ctx.lineTo(-12, -68); ctx.lineTo(0, -84); ctx.lineTo(12, -68); ctx.lineTo(22, 10);
-      ctx.closePath(); ctx.fill();
-
-      ctx.fillStyle = '#fb7185';
-      ctx.beginPath(); ctx.arc(0, -54, 7 * rPulse, 0, Math.PI * 2); ctx.fill();
-
-      ctx.font = 'bold 12px Segoe UI';
+    if (isLobby) {
+      // Título do Lobby no piso
+      ctx.font = 'bold 20px Segoe UI';
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#fda4af';
-      ctx.fillText('🩸 ALTAR DO BOSS MUNDIAL (Nv. 15)', 0, -94);
-    } else if (p.kind === 'watchtower') {
-      // Torre única de vigia da fortaleza
-      ctx.fillStyle = '#57534e';
-      ctx.fillRect(-16, -52, 32, 56);
-      ctx.fillStyle = '#78716c';
-      ctx.fillRect(-20, -58, 40, 8);
-    } else if (p.kind === 'tree') {
-      ctx.fillStyle = 'rgba(0,0,0,0.32)';
-      ctx.beginPath(); ctx.ellipse(4, 8, 34, 13, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#452718';
-      ctx.fillRect(-7, -26, 14, 30);
-      ctx.fillStyle = '#2d4a22';
-      ctx.beginPath(); ctx.arc(-15, -42, 22, 0, Math.PI * 2); ctx.arc(15, -42, 22, 0, Math.PI * 2); ctx.arc(0, -56, 26, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#4d7c2c';
-      ctx.beginPath(); ctx.arc(-10, -48, 18, 0, Math.PI * 2); ctx.arc(10, -48, 18, 0, Math.PI * 2); ctx.arc(0, -62, 22, 0, Math.PI * 2); ctx.fill();
-    } else if (p.kind === 'rock') {
-      ctx.fillStyle = 'rgba(0,0,0,0.30)';
-      ctx.beginPath(); ctx.ellipse(2, 6, 24, 9, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#57534e';
-      ctx.beginPath(); ctx.moveTo(-22, 4); ctx.lineTo(-14, -18); ctx.lineTo(6, -22); ctx.lineTo(22, -10); ctx.lineTo(20, 4); ctx.closePath(); ctx.fill();
-      ctx.fillStyle = '#4d7c2c';
-      ctx.beginPath(); ctx.ellipse(-2, -14, 10, 4, -0.2, 0, Math.PI * 2); ctx.fill();
-    }
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillText('🏛️ SANTUÁRIO DE TEOS — ZONA SEGURA (SEM PVP)', cx, b.y + 62);
+      ctx.font = '13px Segoe UI';
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('Caminhe até um dos 5 Portais abaixo ou clique sobre ele para entrar na Dungeon', cx, b.y + 86);
 
-    ctx.restore();
+      // Desenha os 5 Portais de DG
+      var portals = getLobbyPortals();
+      portals.forEach(function(pt) {
+        drawPortalCircle(ctx, pt.x, pt.y, pt.r, pt.cfg.portalColor, timeSec);
+        ctx.font = 'bold 13px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(pt.cfg.shortName, pt.x, pt.y - 48);
+
+        var elLabel = pt.cfg.elem === 'earth' ? '🪨 Terra' :
+                      pt.cfg.elem === 'wind'  ? '🌪️ Vento' :
+                      pt.cfg.elem === 'water' ? '💧 Água' :
+                      pt.cfg.elem === 'fire'  ? '🔥 Fogo' : '🌀 Caos Misto';
+        var weakLabel = pt.cfg.weakElem === 'wind'  ? 'Fraqueza: 🌪️' :
+                        pt.cfg.weakElem === 'fire'  ? 'Fraqueza: 🔥' :
+                        pt.cfg.weakElem === 'earth' ? 'Fraqueza: 🪨' :
+                        pt.cfg.weakElem === 'water' ? 'Fraqueza: 💧' : 'Todas Elementos';
+
+        ctx.font = 'bold 11px Segoe UI';
+        ctx.fillStyle = '#fde047';
+        ctx.fillText(elLabel, pt.x, pt.y + 44);
+        ctx.font = '10px Segoe UI';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(weakLabel, pt.x, pt.y + 58);
+      });
+
+      // NPCs visuais do Lobby
+      getLobbyNpcs().forEach(function(npc) {
+        ctx.fillStyle = npc.color;
+        ctx.beginPath();
+        ctx.arc(npc.x, npc.y, 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.font = 'bold 12px Segoe UI';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(npc.name, npc.x, npc.y - 28);
+      });
+    } else {
+      // Cabeçalho do Andar atual na arena
+      var floorNum = (stateInfo && stateInfo.floor) ? stateInfo.floor : 1;
+      var stageTag = (floorNum % 10 === 0) ? '👑 ANDAR DE BOSS SUPREMO' :
+                     (floorNum % 5 === 0)  ? '🔥 ANDAR DE MINI-BOSS' : '⚔️ ANDAR DE COMBATE';
+      ctx.font = 'bold 18px Segoe UI';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillText(cfg.name + ' — Andar ' + floorNum + ' (' + stageTag + ')', cx, b.y + 56);
+
+      // Se a sala estiver limpa, desenha os 2 Portais de escolha no topo
+      if (stateInfo && stateInfo.floorCleared) {
+        var exits = getFloorExitPortals();
+        drawPortalCircle(ctx, exits.lobby.x, exits.lobby.y, exits.lobby.r, exits.lobby.color, timeSec);
+        ctx.font = 'bold 13px Segoe UI';
+        ctx.fillStyle = exits.lobby.color;
+        ctx.fillText(exits.lobby.label, exits.lobby.x, exits.lobby.y - 46);
+
+        drawPortalCircle(ctx, exits.next.x, exits.next.y, exits.next.r, exits.next.color, timeSec);
+        ctx.fillStyle = exits.next.color;
+        ctx.fillText(exits.next.label + ' (' + (floorNum + 1) + ')', exits.next.x, exits.next.y - 46);
+      }
+    }
   }
 
-  function renderPropsLayer(ctx, camX, camY, viewW, viewH, isFury, splitY, layer) {
-    ensureBuilt();
-    var now = performance.now() * 0.004;
-    for (var i = 0; i < props.length; i++) {
-      var p = props[i];
-      if (layer === 'back' && p.y > splitY) continue;
-      if (layer === 'front' && p.y <= splitY) continue;
-      if (p.x < camX - 180 || p.x > camX + viewW + 180 || p.y < camY - 180 || p.y > camY + viewH + 180) continue;
-      drawSingleProp(ctx, p, now);
-    }
+  function renderPropsLayer(ctx, camX, camY, viewW, viewH, isFury, playerY, layer, stateInfo) {
+    var isLobby = !stateInfo || stateInfo.isLobby;
+    var dgIdx = (stateInfo && typeof stateInfo.dgIndex === 'number') ? stateInfo.dgIndex : 0;
+    var cfg = DG_CONFIGS[dgIdx] || DG_CONFIGS[0];
+    var b = getActiveBounds(isLobby);
+
+    // Tochas nas bordas da sala
+    var torches = [
+      { x: b.x + 40, y: b.y + 40 },
+      { x: b.x + b.w - 40, y: b.y + 40 },
+      { x: b.x + 40, y: b.y + b.h - 40 },
+      { x: b.x + b.w - 40, y: b.y + b.h - 40 }
+    ];
+    torches.forEach(function(t) {
+      var isFront = t.y > playerY;
+      if ((layer === 'front' && !isFront) || (layer === 'back' && isFront)) return;
+      ctx.save();
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(t.x - 6, t.y - 24, 12, 28);
+      ctx.fillStyle = isLobby ? '#38bdf8' : cfg.torchColor;
+      ctx.shadowColor = isLobby ? '#38bdf8' : cfg.torchColor;
+      ctx.shadowBlur = 14;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y - 30, 9 + Math.sin(performance.now() * 0.01) * 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // Pilares 2.5D da arena
+    var pillars = getArenaPillars(isLobby);
+    pillars.forEach(function(p) {
+      var isFront = p.y > playerY;
+      if ((layer === 'front' && !isFront) || (layer === 'back' && isFront)) return;
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y + 12, p.r + 6, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(p.x - p.r + 4, p.y - 54, (p.r - 4) * 2, 62);
+      ctx.fillStyle = '#64748b';
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y - 54, p.r - 4, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
   }
 
   return {
-    renderGround: renderGround,
-    renderPropsLayer: renderPropsLayer,
-    resolveCollision: resolveCollision,
+    DG_CONFIGS: DG_CONFIGS,
+    getLobbyPortals: getLobbyPortals,
+    getLobbyNpcs: getLobbyNpcs,
+    getFloorExitPortals: getFloorExitPortals,
+    getLobbySpawn: getLobbySpawn,
+    getArenaSpawn: getArenaSpawn,
     getFactionSpawn: getFactionSpawn,
-    getRedTowerPos: getRedTowerPos,
-    getZoneLevelAt: getZoneLevelAt,
-    isInWater: isInWater
+    getActiveBounds: getActiveBounds,
+    resolveCollision: resolveCollision,
+    renderGroundLayer: renderGroundLayer,
+    renderPropsLayer: renderPropsLayer,
+    isInWater: function() { return false; },
+    getZoneLevelAt: function() { return 1; }
   };
 })();
